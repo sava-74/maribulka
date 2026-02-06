@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import BookingsCalendar from './BookingsCalendar.vue'
+import IncomeTable from './IncomeTable.vue'
+import ExpensesTable from './ExpensesTable.vue'
+import Reports from './Reports.vue'
+import Settings from './Settings.vue'
 
 // Текущая активная вкладка
 const activeTab = ref('bookings')
@@ -48,30 +53,11 @@ function switchTab(tab: string) {
 
     <!-- Контент вкладок -->
     <div class="tab-content">
-      <div v-if="activeTab === 'bookings'" class="section">
-        <h2>📅 Записи на съёмку</h2>
-        <p>Календарь с записями (в разработке)</p>
-      </div>
-
-      <div v-if="activeTab === 'income'" class="section">
-        <h2>💰 Приход</h2>
-        <p>Таблица прихода (в разработке)</p>
-      </div>
-
-      <div v-if="activeTab === 'expenses'" class="section">
-        <h2>💸 Расход</h2>
-        <p>Таблица расходов (в разработке)</p>
-      </div>
-
-      <div v-if="activeTab === 'reports'" class="section">
-        <h2>📊 Отчёты</h2>
-        <p>Аналитика и графики (в разработке)</p>
-      </div>
-
-      <div v-if="activeTab === 'settings'" class="section">
-        <h2>⚙️ Настройки</h2>
-        <p>Справочники (в разработке)</p>
-      </div>
+      <BookingsCalendar v-if="activeTab === 'bookings'" />
+      <IncomeTable v-if="activeTab === 'income'" />
+      <ExpensesTable v-if="activeTab === 'expenses'" />
+      <Reports v-if="activeTab === 'reports'" />
+      <Settings v-if="activeTab === 'settings'" />
     </div>
   </div>
 </template>
