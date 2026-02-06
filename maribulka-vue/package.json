@@ -4,13 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
     "@mdi/light-js": "^0.2.63",
+    "pinia": "^2.3.0",
     "vue": "^3.5.24"
   },
   "devDependencies": {

@@ -1,0 +1,16 @@
+RewriteEngine On
+RewriteBase /
+
+# Перенаправляем /api/login на login.php
+RewriteRule ^api/login$ /api/login.php [L,QSA]
+
+# API обрабатывается напрямую
+RewriteRule ^api/ - [L]
+
+# Статические файлы обрабатываются напрямую
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Все остальное на index.html (SPA)
+RewriteRule . /index.html [L]
