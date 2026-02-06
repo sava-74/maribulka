@@ -3,7 +3,10 @@
     "allow": [
       "Bash(ssh:*)",
       "Bash(scp:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
