@@ -1,0 +1,55 @@
+/* Базовое состояние кнопки - "висит в воздухе" */
+.glass-button {
+    width: 40px; /* Фиксированный размер в сложенном виде */
+    height: 40px;
+    min-width: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--neon-green);
+    background: rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    color: #333;
+    padding: 0;
+    padding-left: 8px;
+    white-space: nowrap;
+    border-radius: 8px;
+}
+
+.glass-button:hover {
+    /* Приподнимаем кнопку по диагонали вверх-влево */
+    transform: translate(-4px, -4px); 
+    /* Делаем тень глубже и мягче, чтобы усилить эффект подъема */
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3);
+    /* Контур остается зеленым (не меняем border-color) */
+}
+
+.glass-button:active {
+    transform: translate(0, 0); /* Вернули в исходную точку */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); /* Тень вернулась в норму */
+    border-color: #ffffff; /* Вспышка контура (белый или очень ярко-зеленый) */
+    filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green)); /* Усиливаем эффект свечения */
+    transition: transform 0.05s ease; /* Быстрый возврат */
+}
+
+/* 6. Кнопка расширяется вместе с сайдбаром */
+.side-bar.expanded .glass-button {
+    width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
+    /*justify-content: flex-start;*/
+    padding-left: 8px;
+}
+
+/* Иконки внутри кнопок (SVG из библиотеки MDIL) */
+.glass-button svg {
+  width: 24px !important;
+  height: 24px !important;
+  fill: #333 !important; /* Убедись, что иконка не белая на светлом фоне */
+  display: block;
+  flex-shrink: 0;
+  
+}

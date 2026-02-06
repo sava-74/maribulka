@@ -1,0 +1,18 @@
+.content {
+  /* Отступ сверху: 60px (высота Топ-бара) + 10px (margin) + 10px (запас) = 80px */
+  margin-top: 80px;
+  
+  /* Отступ слева: 58px (ширина Сайд-бара) + 10px (margin) + 10px (запас) = 78px */
+  margin-left: 78px;
+  
+  padding: 20px;
+  /*transition: margin-left 0.3s ease; /* Плавный сдвиг контента при раскрытии меню */
+  /*box-sizing: border-box;
+  color: #333;*/
+}
+
+/* Когда Сайд-бар (который находится ПЕРЕД контентом) получает класс .expanded */
+/*.side-bar.expanded + .content {
+  /* 200px (ширина бара) + 10px (margin) + 10px (запас) = 220px */
+  /*margin-left: 220px;
+}*/

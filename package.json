@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@jamescoyle/vue-icon": "^0.1.2",
+    "@mdi/light-js": "^0.2.63",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pinia": "^3.0.4",
+    "sqlite3": "^5.0.2"
+  }
+}
