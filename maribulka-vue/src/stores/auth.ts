@@ -20,5 +20,10 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('isAdmin')
   }
 
-  return { isAdmin, login, logout }
+  return {
+    isAdmin,
+    isAuthenticated: isAdmin,  // Alias for isAdmin for compatibility
+    login,
+    logout
+  }
 })
