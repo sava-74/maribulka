@@ -65,16 +65,6 @@ function formatDate(dateString: string) {
 }
 
 // Helper functions
-function getStatusColor(status: string) {
-  switch (status) {
-    case 'new': return '#60a5fa'
-    case 'completed': return '#fbbf24'
-    case 'delivered': return '#4ade80'
-    case 'cancelled': return '#f87171'
-    default: return '#9ca3af'
-  }
-}
-
 function getStatusText(status: string) {
   switch (status) {
     case 'new': return '🟡 Новая'
