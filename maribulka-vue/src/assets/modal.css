@@ -46,6 +46,9 @@
   padding: 10px;
   color: #333;
   box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .modal-input::placeholder {
@@ -94,6 +97,11 @@
 .input-field-promotion {
   flex: 1;
   min-width: 180px;
+}
+
+/* Уменьшенный шрифт для длинных полей */
+.input-field-promotion .modal-input {
+  font-size: 13px;
 }
 
 /* Строка с полями формы */

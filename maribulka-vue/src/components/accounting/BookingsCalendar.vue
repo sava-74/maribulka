@@ -124,7 +124,7 @@ const columns: ColumnDef<any>[] = [
     header: 'Кол-во',
   },
   {
-    accessorKey: 'final_price',
+    accessorKey: 'base_price',
     header: 'Стоимость',
     cell: ({ getValue }) => {
       const value = getValue()
