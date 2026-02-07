@@ -13,7 +13,8 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus, mdilPencil, mdilCreditCard, mdilDelete, mdilMagnify, mdilRefresh, mdilClipboardCheck, mdilEye } from '@mdi/light-js'
+import { mdilPlus, mdilDelete, mdilMagnify, mdilRefresh, mdilEye } from '@mdi/light-js'
+import { mdiFolderPlayOutline, mdiCameraOutline, mdiCameraOffOutline, mdiFileEditOutline, mdiCashMultiple } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AddBookingModal from './AddBookingModal.vue'
 import EditBookingModal from './EditBookingModal.vue'
@@ -21,6 +22,8 @@ import AddPaymentModal from './AddPaymentModal.vue'
 import DeleteConfirmModal from './DeleteConfirmModal.vue'
 import DeliverBookingModal from './DeliverBookingModal.vue'
 import ViewBookingModal from './ViewBookingModal.vue'
+import CancelBookingModal from './CancelBookingModal.vue'
+import ConfirmModal from '../ConfirmModal.vue'
 import '../../assets/tables.css'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
@@ -46,6 +49,8 @@ const showPaymentModal = ref(false)
 const showDeleteModal = ref(false)
 const showDeliverModal = ref(false)
 const showViewModal = ref(false)
+const showCancelModal = ref(false)
+const showConfirmCompleted = ref(false)
 
 onMounted(() => {
   // Сброс фильтров и установка текущего месяца при входе на вкладку
@@ -71,6 +76,9 @@ function getStatusText(status: string) {
     case 'completed': return '🟠 Состоялась'
     case 'delivered': return '🟢 Проведено'
     case 'cancelled': return '🔴 Отменена'
+    case 'cancelled_client': return '⚪ Отмена-К'
+    case 'cancelled_photographer': return '⚪ Отмена-Ф'
+    case 'failed': return '🔴 Не состоялась'
     default: return status
   }
 }
@@ -208,19 +216,30 @@ const selectedBooking = computed(() => {
   return bookingsStore.bookings[index]
 })
 
-// Computed: проверка что заказ проведён
+// Computed: проверка что заказ проведён или отменён (нельзя редактировать)
 const isDelivered = computed(() => {
-  return selectedBooking.value?.status === 'delivered'
+  const status = selectedBooking.value?.status
+  return status === 'delivered' || status === 'cancelled_client' || status === 'cancelled_photographer'
 })
 
-// Computed: проверка что можно выдать (дата съёмки прошла и не проведено)
+// Computed: проверка что можно отметить "Съёмка состоялась" (в день съёмки и позже, если не отменена)
+const canMarkCompleted = computed(() => {
+  if (!selectedBooking.value) return false
+  const status = selectedBooking.value.status
+  if (status === 'cancelled') return false
+  if (status !== 'new' && status !== 'failed') return false
+  const shootingDate = new Date(selectedBooking.value.shooting_date)
+  shootingDate.setHours(0, 0, 0, 0)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return shootingDate.getTime() <= today.getTime()
+})
+
+// Computed: проверка что можно выдать (статус "состоялась" и не проведено)
 const canDeliver = computed(() => {
   if (!selectedBooking.value) return false
   if (isDelivered.value) return false
-  const shootingDate = new Date(selectedBooking.value.shooting_date)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return shootingDate <= today
+  return selectedBooking.value.status === 'completed'
 })
 
 // Computed: уникальные значения для фильтров
@@ -246,9 +265,11 @@ const paymentStatuses = [
 
 const bookingStatuses = [
   { value: 'new', label: '🟡 Новая' },
-  { value: 'completed', label: '🟠 Состоялась' },
-  { value: 'delivered', label: '🟢 Сдана' },
-  { value: 'cancelled', label: '🔴 Отменена' }
+  { value: 'completed', label: '🟠 Завершена' },
+  { value: 'delivered', label: '🟢 Проведено' },
+  { value: 'cancelled_client', label: '⚪ Отменил клиент' },
+  { value: 'cancelled_photographer', label: '⚪ Отменил фотограф' },
+  { value: 'failed', label: '🔴 Не состоялась' }
 ]
 
 // Filters
@@ -315,6 +336,20 @@ function handleDelete() {
   }
 }
 
+function handleMarkCompleted() {
+  if (selectedBooking.value) {
+    showConfirmCompleted.value = true
+  }
+}
+
+async function confirmMarkCompleted() {
+  if (selectedBooking.value) {
+    await bookingsStore.markAsCompleted(selectedBooking.value.id)
+    rowSelection.value = {}
+    showConfirmCompleted.value = false
+  }
+}
+
 function handleDeliver() {
   if (selectedBooking.value) {
     showDeliverModal.value = true
@@ -327,6 +362,12 @@ function handleView() {
   }
 }
 
+function handleCancelBooking() {
+  if (selectedBooking.value) {
+    showCancelModal.value = true
+  }
+}
+
 function closeModal() {
   showAddModal.value = false
   showEditModal.value = false
@@ -334,6 +375,7 @@ function closeModal() {
   showDeleteModal.value = false
   showDeliverModal.value = false
   showViewModal.value = false
+  showCancelModal.value = false
   // Сброс выделения после закрытия модального окна
   rowSelection.value = {}
 }
@@ -369,23 +411,23 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered"
+          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
           @click="handleEdit"
           title="Редактировать"
         >
-          <svg-icon type="mdi" :path="mdilPencil"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered"
+          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.payment_status === 'fully_paid'"
           @click="handleAddPayment"
           title="Добавить оплату"
         >
-          <svg-icon type="mdi" :path="mdilCreditCard"></svg-icon>
+          <svg-icon type="mdi" :path="mdiCashMultiple"></svg-icon>
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered"
+          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
           @click="handleDelete"
           title="Удалить"
         >
@@ -393,11 +435,27 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
+          :disabled="!hasSelectedRow || !canMarkCompleted"
+          @click="handleMarkCompleted"
+          title="Съёмка состоялась"
+        >
+          <svg-icon type="mdi" :path="mdiCameraOutline"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
+          @click="handleCancelBooking"
+          title="Отменить запись"
+        >
+          <svg-icon type="mdi" :path="mdiCameraOffOutline"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
           :disabled="!hasSelectedRow || !canDeliver"
           @click="handleDeliver"
           title="Выдать съёмку"
         >
-          <svg-icon type="mdi" :path="mdilClipboardCheck"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFolderPlayOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -421,7 +479,7 @@ function openMonthPicker() {
     <div v-if="showFilters" class="filters-panel">
       <!-- Селектор месяца -->
       <div class="filter-group">
-        <label class="filter-label">Месяц:</label>
+        <label class="filter-label" style="user-select: none;">Месяц:</label>
         <input
           ref="monthInput"
           type="month"
@@ -487,12 +545,19 @@ function openMonthPicker() {
       <table class="accounting-table tanstack-table">
         <thead>
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-            <th v-for="header in headerGroup.headers" :key="header.id">
+            <th
+              v-for="header in headerGroup.headers"
+              :key="header.id"
+              @click="header.column.getToggleSortingHandler()?.($event)"
+              :class="{ 'cursor-pointer': header.column.getCanSort() }"
+            >
               <FlexRender
                 v-if="!header.isPlaceholder"
                 :render="header.column.columnDef.header"
                 :props="header.getContext()"
               />
+              <span v-if="header.column.getIsSorted() === 'asc'"> ↑</span>
+              <span v-else-if="header.column.getIsSorted() === 'desc'"> ↓</span>
             </th>
           </tr>
         </thead>
@@ -501,21 +566,15 @@ function openMonthPicker() {
             v-for="row in table.getRowModel().rows"
             :key="row.id"
             @click="row.toggleSelected()"
-            :class="{ selected: row.getIsSelected() }"
+            :class="{
+              selected: row.getIsSelected(),
+              'failed-booking': row.original.status === 'failed',
+              'cancelled-booking': row.original.status === 'cancelled_client' || row.original.status === 'cancelled_photographer'
+            }"
           >
             <td v-for="cell in row.getVisibleCells()" :key="cell.id">
-              <!-- Status badge -->
-              <template v-if="cell.column.id === 'status'">
-                <span
-                  class="status-badge"
-                  :style="{ backgroundColor: (cell.getValue() as any).color }"
-                >
-                  {{ (cell.getValue() as any).text }}
-                </span>
-              </template>
-
               <!-- Amount cells with special styling -->
-              <template v-else-if="cell.column.id === 'total_amount'">
+              <template v-if="cell.column.id === 'total_amount'">
                 <span class="amount-income">
                   <FlexRender
                     :render="cell.column.columnDef.cell"
@@ -549,5 +608,12 @@ function openMonthPicker() {
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
     <DeliverBookingModal :isVisible="showDeliverModal" :booking="selectedBooking" @close="closeModal" />
     <ViewBookingModal :isVisible="showViewModal" :booking="selectedBooking" @close="closeModal" />
+    <CancelBookingModal :isVisible="showCancelModal" :booking="selectedBooking" @close="closeModal" />
+    <ConfirmModal
+      :isVisible="showConfirmCompleted"
+      message="Съёмка состоялась?"
+      @confirm="confirmMarkCompleted"
+      @cancel="showConfirmCompleted = false"
+    />
   </div>
 </template>

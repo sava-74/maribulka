@@ -2,12 +2,17 @@
 import { computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCheck } from '@mdi/light-js'
+import { mdiPrinterOutline } from '@mdi/js'
 
 const props = defineProps<{
   isVisible: boolean
   booking: any | null
 }>()
 const emit = defineEmits(['close'])
+
+const handlePrint = () => {
+  window.print()
+}
 
 const orderInfo = computed(() => {
   if (!props.booking) return null
@@ -46,7 +51,10 @@ const orderInfo = computed(() => {
     'new': 'Новая',
     'completed': 'Завершена',
     'delivered': 'Проведено',
-    'cancelled': 'Отменена'
+    'cancelled': 'Отменена',
+    'cancelled_client': 'Отменил клиент',
+    'cancelled_photographer': 'Отменил фотограф',
+    'failed': 'Не состоялась'
   }
   const statusText = statusMap[props.booking.status] || props.booking.status
 
@@ -65,18 +73,17 @@ const orderInfo = computed(() => {
     phone: props.booking.phone,
     shootingType: props.booking.shooting_type_name,
     quantity: props.booking.quantity,
-    promotion: props.booking.promotion_id ? (props.booking.promotion_name || 'Акция') : null,
+    hasPromotion: !!props.booking.promotion_id,
+    promotion: props.booking.promotion_name,
     bookingDate: formatDate(props.booking.booking_date),
     shootingDate: formatDate(props.booking.shooting_date),
     deliveryDate: formatDate(props.booking.delivery_date),
-    createdAt: formatDateTime(props.booking.created_at),
     processedAt: formatDateTime(props.booking.processed_at),
     basePrice: Math.round(basePrice),
     discount,
     total: Math.round(total),
     paid: Math.round(paid),
-    remaining: Math.round(total - paid),
-    cancelReason: props.booking.cancel_reason
+    remaining: Math.round(total - paid)
   }
 })
 </script>
@@ -127,7 +134,7 @@ const orderInfo = computed(() => {
               <span class="info-label">Количество:</span>
               <span class="info-value">{{ orderInfo.quantity }}</span>
             </div>
-            <div class="info-row" v-if="orderInfo.promotion">
+            <div class="info-row" v-if="orderInfo.hasPromotion">
               <span class="info-label">Акция:</span>
               <span class="info-value">{{ orderInfo.promotion }}</span>
             </div>
@@ -140,10 +147,6 @@ const orderInfo = computed(() => {
             <h3>Даты</h3>
             <div class="info-row">
               <span class="info-label">Дата создания:</span>
-              <span class="info-value">{{ orderInfo.createdAt }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Дата бронирования:</span>
               <span class="info-value">{{ orderInfo.bookingDate }}</span>
             </div>
             <div class="info-row">
@@ -151,11 +154,11 @@ const orderInfo = computed(() => {
               <span class="info-value">{{ orderInfo.shootingDate }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Дата выдачи:</span>
+              <span class="info-label">Дата выдачи (план):</span>
               <span class="info-value">{{ orderInfo.deliveryDate }}</span>
             </div>
             <div class="info-row" v-if="orderInfo.processedAt !== '—'">
-              <span class="info-label">Дата проведения:</span>
+              <span class="info-label">Дата выдачи (факт):</span>
               <span class="info-value">{{ orderInfo.processedAt }}</span>
             </div>
           </div>
@@ -186,15 +189,12 @@ const orderInfo = computed(() => {
               <span class="info-value remaining">{{ orderInfo.remaining }} ₽</span>
             </div>
           </div>
-
-          <!-- Причина отмены (если есть) -->
-          <div v-if="orderInfo.cancelReason" class="info-section cancel-section">
-            <h3>Причина отмены</h3>
-            <p class="cancel-reason">{{ orderInfo.cancelReason }}</p>
-          </div>
         </div>
 
         <div class="modal-actions">
+          <button class="glass-button" @click="handlePrint" title="Печать">
+            <svg-icon type="mdi" :path="mdiPrinterOutline" />
+          </button>
           <button class="glass-button" @click="emit('close')">
             <svg-icon type="mdi" :path="mdilCheck" />
           </button>
@@ -212,26 +212,26 @@ const orderInfo = computed(() => {
 }
 
 .order-details {
-  margin: 20px 0;
+  margin: 2px 0;
   color: #333;
 }
 
 .info-section {
-  margin-bottom: 15px;
+  margin-bottom: 2px;
 }
 
 .info-section h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   color: #1f2937;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  font-size: 14px;
+  padding: 2px 0;
+  font-size: 13px;
 }
 
 .info-label {
@@ -243,6 +243,8 @@ const orderInfo = computed(() => {
   color: #111827;
   text-align: right;
   max-width: 60%;
+  word-wrap: break-word;
+  font-size: 13px;
 }
 
 .info-value.strong {
@@ -277,20 +279,7 @@ const orderInfo = computed(() => {
 .divider {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
-  margin: 15px 0;
-}
-
-.cancel-section {
-  padding: 12px;
-  background: rgba(220, 38, 38, 0.1);
-  border-radius: 6px;
-  border-left: 3px solid #dc2626;
-}
-
-.cancel-reason {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #991b1b;
+  margin: 2px 0;
 }
 
 /* Scrollbar styling */
@@ -310,5 +299,79 @@ const orderInfo = computed(() => {
 
 .view-modal::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Стили для печати А5 */
+@media print {
+  @page {
+    size: A5 portrait;
+    margin: 10mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .modal-overlay,
+  .modal-overlay * {
+    visibility: visible;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+  }
+
+  .modal-glass {
+    position: static;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .view-modal {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .modal-actions {
+    display: none !important;
+  }
+
+  .order-details {
+    color: black !important;
+  }
+
+  .info-label,
+  .info-value {
+    color: black !important;
+  }
+
+  h2 {
+    color: black !important;
+    font-size: 16pt;
+    margin-bottom: 10pt;
+  }
+
+  .info-section h3 {
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  .info-row {
+    font-size: 10pt;
+    padding: 1pt 0;
+  }
+
+  .divider {
+    background: black !important;
+  }
 }
 </style>

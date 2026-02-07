@@ -72,6 +72,14 @@ try {
 // ============================================
 
 function handleGet($db) {
+    // Автоматически обновляем статусы "Не состоялась" для просроченных записей
+    $db->exec("
+        UPDATE bookings
+        SET status = 'failed'
+        WHERE status = 'new'
+        AND shooting_date < CURDATE()
+    ");
+
     if (isset($_GET['id'])) {
         // Получить одну запись с полной информацией
         $stmt = $db->prepare("
@@ -103,10 +111,13 @@ function handleGet($db) {
             SELECT
                 b.*,
                 c.name as client_name,
-                st.name as shooting_type_name
+                st.name as shooting_type_name,
+                p.name as promotion_name,
+                p.discount_percent as promo_discount_percent
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
             WHERE b.shooting_date = ?
             ORDER BY b.shooting_date, b.created_at
         ");
@@ -120,6 +131,7 @@ function handleGet($db) {
                 b.*,
                 c.name as client_name,
                 st.name as shooting_type_name,
+                p.name as promotion_name,
                 p.discount_percent as promo_discount_percent
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
@@ -138,6 +150,7 @@ function handleGet($db) {
                 b.*,
                 c.name as client_name,
                 st.name as shooting_type_name,
+                p.name as promotion_name,
                 p.discount_percent as promo_discount_percent
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
@@ -411,10 +424,13 @@ function handleSpecialAction($db, $action, $id) {
         case 'cancel':
             // Отменить съёмку
             $data = json_decode(file_get_contents('php://input'), true);
-            $reason = $data['reason'] ?? 'Не указана';
+            $cancelledBy = $data['cancelled_by'] ?? 'client';
 
-            $stmt = $db->prepare("UPDATE bookings SET status = 'cancelled', cancel_reason = ? WHERE id = ?");
-            $stmt->execute([$reason, $id]);
+            // Определяем статус в зависимости от того, кто отменил
+            $status = ($cancelledBy === 'photographer') ? 'cancelled_photographer' : 'cancelled_client';
+
+            $stmt = $db->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+            $stmt->execute([$status, $id]);
             echo json_encode(['success' => true, 'message' => 'Съёмка отменена']);
             break;
 

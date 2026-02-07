@@ -43,7 +43,7 @@ const handleConfirm = async () => {
     emit('close')
   } else {
     alertTitle.value = 'Ошибка'
-    alertMessage.value = 'Ошибка при удалении записи'
+    alertMessage.value = result.error || 'Ошибка при удалении записи'
     showAlert.value = true
   }
 }

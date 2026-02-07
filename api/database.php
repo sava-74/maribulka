@@ -24,6 +24,9 @@ class Database {
                     PDO::ATTR_EMULATE_PREPARES => false,
                 ]
             );
+
+            // Устанавливаем часовой пояс Екатеринбург (UTC+5)
+            $this->connection->exec("SET time_zone = '+05:00'");
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);

@@ -80,6 +80,24 @@
   background: rgba(74, 222, 128, 0.3);
 }
 
+/* Строка "Не состоялась" - красный текст */
+.accounting-table tbody tr.failed-booking {
+  color: #dc2626 !important;
+}
+
+.accounting-table tbody tr.failed-booking td {
+  color: #dc2626 !important;
+}
+
+/* Строка "Отменена" - серый текст */
+.accounting-table tbody tr.cancelled-booking {
+  color: #9ca3af !important;
+}
+
+.accounting-table tbody tr.cancelled-booking td {
+  color: #9ca3af !important;
+}
+
 /* Суммы */
 .amount-income {
   font-weight: 600;

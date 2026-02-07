@@ -120,11 +120,11 @@ export const useBookingsStore = defineStore('bookings', () => {
     return result
   }
 
-  async function cancelBooking(id: number, reason: string) {
+  async function cancelBooking(id: number, cancelledBy: 'client' | 'photographer') {
     const response = await fetch(`${API_URL}/bookings.php?action=cancel&id=${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reason })
+      body: JSON.stringify({ cancelled_by: cancelledBy })
     })
     const result = await response.json()
     if (result.success) {

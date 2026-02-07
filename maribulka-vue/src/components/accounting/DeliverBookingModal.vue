@@ -76,7 +76,7 @@ const handleDeliver = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Выдача съёмки</h2>
+        <h2>Завершение заказа</h2>
 
         <div v-if="orderInfo" class="delivery-info">
           <p><strong>ID заказа:</strong> {{ orderInfo.orderId }}</p>
@@ -111,8 +111,9 @@ const handleDeliver = async () => {
             <svg-icon type="mdi" :path="mdilCurrencyRub" />
           </button>
 
-          <!-- Кнопка "Провести" - всегда активна -->
+          <!-- Кнопка "Провести" - только если оплачено полностью -->
           <button
+            v-if="orderInfo && orderInfo.isPaidFull"
             class="glass-button"
             @click="handleDeliver"
             title="Провести заказ"
