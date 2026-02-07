@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useReferencesStore } from '../../stores/references'
-import '../../assets/buttons.css'
-import '../../assets/tables.css'
-import '../../assets/layout.css'
+import { useReferencesStore } from '../stores/references'
 
 const referencesStore = useReferencesStore()
 const activeSection = ref('shooting-types')
@@ -16,38 +13,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="settings">
-    <h2 class="page-header">⚙️ Настройки и справочники</h2>
+  <div class="reference-settings">
+    <h2>⚙️ Справочники</h2>
 
     <!-- Подвкладки -->
-    <div class="subsection-tabs">
-      <button
-        class="glass-button-text"
-        @click="activeSection = 'shooting-types'"
-        :class="{ active: activeSection === 'shooting-types' }"
-      >
-        Типы съёмок
+    <div class="sub-tabs">
+      <button @click="activeSection = 'shooting-types'" :class="{ active: activeSection === 'shooting-types' }">
+        📸 Типы съёмок
       </button>
-      <button
-        class="glass-button-text"
-        @click="activeSection = 'promotions'"
-        :class="{ active: activeSection === 'promotions' }"
-      >
-        Акции
+      <button @click="activeSection = 'promotions'" :class="{ active: activeSection === 'promotions' }">
+        🎁 Акции
       </button>
-      <button
-        class="glass-button-text"
-        @click="activeSection = 'clients'"
-        :class="{ active: activeSection === 'clients' }"
-      >
-        Клиенты
+      <button @click="activeSection = 'clients'" :class="{ active: activeSection === 'clients' }">
+        👥 Клиенты
       </button>
     </div>
 
     <!-- Типы съёмок -->
-    <div v-if="activeSection === 'shooting-types'">
-      <h3 class="section-header">📸 Типы съёмок</h3>
-      <table class="accounting-table">
+    <div v-if="activeSection === 'shooting-types'" class="table-section">
+      <h3>📸 Типы съёмок</h3>
+      <table>
         <thead>
           <tr>
             <th>Название</th>
@@ -66,9 +51,9 @@ onMounted(() => {
     </div>
 
     <!-- Акции -->
-    <div v-if="activeSection === 'promotions'">
-      <h3 class="section-header">🎁 Акции</h3>
-      <table class="accounting-table">
+    <div v-if="activeSection === 'promotions'" class="table-section">
+      <h3>🎁 Акции</h3>
+      <table>
         <thead>
           <tr>
             <th>Название</th>
@@ -89,9 +74,9 @@ onMounted(() => {
     </div>
 
     <!-- Клиенты -->
-    <div v-if="activeSection === 'clients'">
-      <h3 class="section-header">👥 Клиенты</h3>
-      <table class="accounting-table">
+    <div v-if="activeSection === 'clients'" class="table-section">
+      <h3>👥 Клиенты</h3>
+      <table>
         <thead>
           <tr>
             <th>ФИО</th>
@@ -112,3 +97,75 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.reference-settings {
+  width: 100%;
+  padding: 20px;
+}
+
+.reference-settings h2 {
+  margin: 0 0 20px 0;
+  color: #fff;
+}
+
+.sub-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.sub-tabs button {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sub-tabs button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sub-tabs button.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.table-section h3 {
+  margin: 0 0 15px 0;
+  color: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+  font-weight: 600;
+  color: #fff;
+}
+
+td {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+</style>

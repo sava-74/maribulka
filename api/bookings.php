@@ -118,10 +118,12 @@ function handleGet($db) {
             SELECT
                 b.*,
                 c.name as client_name,
-                st.name as shooting_type_name
+                st.name as shooting_type_name,
+                p.discount_percent as promo_discount_percent
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
             WHERE DATE_FORMAT(b.shooting_date, '%Y-%m') = ?
             ORDER BY b.shooting_date, b.created_at
         ");
@@ -134,10 +136,12 @@ function handleGet($db) {
             SELECT
                 b.*,
                 c.name as client_name,
-                st.name as shooting_type_name
+                st.name as shooting_type_name,
+                p.discount_percent as promo_discount_percent
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
             WHERE b.status != 'cancelled'
             ORDER BY b.shooting_date DESC, b.created_at DESC
             LIMIT 100

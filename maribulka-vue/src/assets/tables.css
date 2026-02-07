@@ -1,0 +1,140 @@
+/* Стили ТОЛЬКО для таблиц */
+
+/* Контейнер таблицы с прокруткой */
+.table-container {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  overflow-x: auto;
+  position: relative;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.accounting-table {
+  width: 100%;
+  border: 1px solid rgb(0, 0, 0);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.accounting-table thead {
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.accounting-table th,
+.accounting-table td {
+  /*padding: 2px;*/
+  border-bottom: 1px solid rgb(0, 0, 0);
+  border-right: 1px solid rgb(0, 0, 0);
+  font-size: 14px;
+}
+
+.accounting-table th {
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  text-align: center; /* Все заголовки по центру */
+}
+
+.accounting-table td {
+  color: #000;
+  text-align: left; /* По умолчанию все данные по левому краю */
+}
+
+/* Центрирование для столбцов с датами и количеством */
+.accounting-table tbody td:nth-child(1), /* Дата создания */
+.accounting-table tbody td:nth-child(2), /* Дата съёмки */
+.accounting-table tbody td:nth-child(3), /* Дата выдачи */
+.accounting-table tbody td:nth-child(7)  /* Кол-во */ {
+  text-align: center;
+}
+
+/* Выравнивание по правому краю для числовых столбцов (суммы) */
+.accounting-table tbody td:nth-child(8),  /* Стоимость */
+.accounting-table tbody td:nth-child(9),  /* Скидка */
+.accounting-table tbody td:nth-child(10)  /* Сумма */ {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.accounting-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.accounting-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Выбранная строка */
+.accounting-table tbody tr.selected {
+  background: rgba(74, 222, 128, 0.2);
+  border-left: 3px solid #4ade80;
+}
+
+.accounting-table tbody tr.selected:hover {
+  background: rgba(74, 222, 128, 0.3);
+}
+
+/* Суммы */
+.amount-income {
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.amount-expense {
+  font-weight: 600;
+  color: #f87171;
+}
+
+.amount-small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Бейджи */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #000;
+  display: inline-block;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-advance {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.badge-balance {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.badge-full_payment {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+/* Пустое состояние */
+.empty-state {
+  text-align: center;
+  /*padding: 60px 20px;*/
+  color: rgb(231, 20, 20);
+}
+
+.empty-state p {
+  font-size: 18px;
+  margin: 0 0 20px 0;
+}

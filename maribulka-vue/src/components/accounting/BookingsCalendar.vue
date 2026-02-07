@@ -1,13 +1,66 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import {
+  useVueTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getFacetedUniqueValues,
+  type ColumnDef,
+  type SortingState,
+  type RowSelectionState,
+  type ColumnFiltersState,
+  FlexRender
+} from '@tanstack/vue-table'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdilPlus, mdilPencil, mdilCreditCard, mdilDelete, mdilMagnify, mdilRefresh } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
+import AddBookingModal from './AddBookingModal.vue'
+import EditBookingModal from './EditBookingModal.vue'
+import AddPaymentModal from './AddPaymentModal.vue'
+import DeleteConfirmModal from './DeleteConfirmModal.vue'
+import '../../assets/tables.css'
+import '../../assets/buttons.css'
+import '../../assets/layout.css'
+import '../../assets/modal.css'
 
 const bookingsStore = useBookingsStore()
 
+// Row selection state
+const rowSelection = ref<RowSelectionState>({})
+const sorting = ref<SortingState>([])
+const columnFilters = ref<ColumnFiltersState>([])
+
+// Видимость панели фильтров (по умолчанию скрыты)
+const showFilters = ref(false)
+
+// Ref для month input
+const monthInput = ref<HTMLInputElement | null>(null)
+
+// Модальные окна
+const showAddModal = ref(false)
+const showEditModal = ref(false)
+const showPaymentModal = ref(false)
+const showDeleteModal = ref(false)
+
 onMounted(() => {
-  bookingsStore.fetchBookings()
+  // Сброс фильтров и установка текущего месяца при входе на вкладку
+  resetFilters()
+  const currentMonth = new Date().toISOString().slice(0, 7)
+  bookingsStore.setCurrentMonth(currentMonth)
 })
 
+// Форматирование даты в DD.MM.YYYY (убираем время если есть)
+function formatDate(dateString: string) {
+  if (!dateString) return ''
+  // Убираем время если есть (2026-02-01T12:30:00 -> 2026-02-01)
+  const datePart = dateString.split('T')[0]?.split(' ')[0]
+  if (!datePart) return ''
+  const [year, month, day] = datePart.split('-')
+  return `${day}.${month}.${year}`
+}
+
+// Helper functions
 function getStatusColor(status: string) {
   switch (status) {
     case 'new': return '#60a5fa'
@@ -36,121 +89,420 @@ function getPaymentStatusText(status: string) {
     default: return status
   }
 }
+
+// Column definitions (БЕЗ checkbox и "Действия")
+const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: 'booking_date',
+    header: 'Дата создания',
+    cell: ({ getValue }) => formatDate(getValue() as string)
+  },
+  {
+    accessorKey: 'shooting_date',
+    header: 'Дата съёмки',
+    cell: ({ getValue }) => formatDate(getValue() as string)
+  },
+  {
+    accessorKey: 'delivery_date',
+    header: 'Дата выдачи',
+    cell: ({ getValue }) => formatDate(getValue() as string)
+  },
+  {
+    accessorKey: 'client_name',
+    header: 'Клиент',
+  },
+  {
+    accessorKey: 'phone',
+    header: 'Телефон',
+  },
+  {
+    accessorKey: 'shooting_type_name',
+    header: 'Тип съёмки',
+  },
+  {
+    accessorKey: 'quantity',
+    header: 'Кол-во',
+  },
+  {
+    accessorKey: 'final_price',
+    header: 'Стоимость',
+    cell: ({ getValue }) => {
+      const value = getValue()
+      return value ? `${Math.round(parseFloat(value as string))} ₽` : '—'
+    }
+  },
+  {
+    accessorKey: 'promo_discount_percent',
+    header: 'Скидка',
+    cell: ({ row }) => {
+      const promotionId = row.original.promotion_id
+      const discountPercent = parseFloat(row.original.promo_discount_percent) || 0
+      return promotionId && discountPercent > 0 ? `-${discountPercent}%` : '—'
+    }
+  },
+  {
+    accessorKey: 'total_amount',
+    header: 'Сумма',
+    cell: ({ getValue }) => `${Math.round(parseFloat(getValue() as string))} ₽`
+  },
+  {
+    accessorKey: 'payment_status',
+    header: 'Статус оплаты',
+    cell: ({ getValue }) => getPaymentStatusText(getValue() as string)
+  },
+  {
+    accessorKey: 'status',
+    header: 'Статус записи',
+    cell: ({ row }) => {
+      const status = row.getValue('status') as string
+      return {
+        text: getStatusText(status),
+        color: getStatusColor(status)
+      }
+    }
+  }
+]
+
+// Create table instance
+const table = useVueTable({
+  get data() {
+    return bookingsStore.bookings
+  },
+  columns,
+  state: {
+    get rowSelection() {
+      return rowSelection.value
+    },
+    get sorting() {
+      return sorting.value
+    },
+    get columnFilters() {
+      return columnFilters.value
+    }
+  },
+  enableRowSelection: true,
+  enableMultiRowSelection: false, // Только одна строка
+  onRowSelectionChange: updater => {
+    rowSelection.value = typeof updater === 'function' ? updater(rowSelection.value) : updater
+  },
+  onSortingChange: updater => {
+    sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater
+  },
+  onColumnFiltersChange: updater => {
+    columnFilters.value = typeof updater === 'function' ? updater(columnFilters.value) : updater
+  },
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getFacetedUniqueValues: getFacetedUniqueValues()
+})
+
+// Computed: есть ли выбранная строка
+const hasSelectedRow = computed(() => {
+  return Object.keys(rowSelection.value).length > 0
+})
+
+// Computed: выбранная запись
+const selectedBooking = computed(() => {
+  const selectedIds = Object.keys(rowSelection.value)
+  if (selectedIds.length === 0 || !selectedIds[0]) return null
+  const index = parseInt(selectedIds[0])
+  return bookingsStore.bookings[index]
+})
+
+// Computed: уникальные значения для фильтров
+const uniqueClients = computed(() => {
+  const column = table.getColumn('client_name')
+  if (!column) return []
+  const facetedValues = column.getFacetedUniqueValues()
+  return Array.from(facetedValues.keys()).sort()
+})
+
+const uniqueShootingTypes = computed(() => {
+  const column = table.getColumn('shooting_type_name')
+  if (!column) return []
+  const facetedValues = column.getFacetedUniqueValues()
+  return Array.from(facetedValues.keys()).sort()
+})
+
+const paymentStatuses = [
+  { value: 'unpaid', label: '🔴 Не оплачено' },
+  { value: 'partially_paid', label: '🟡 Частично' },
+  { value: 'fully_paid', label: '🟢 Оплачено' }
+]
+
+const bookingStatuses = [
+  { value: 'new', label: '🟡 Новая' },
+  { value: 'completed', label: '🟠 Состоялась' },
+  { value: 'delivered', label: '🟢 Сдана' },
+  { value: 'cancelled', label: '🔴 Отменена' }
+]
+
+// Filters
+const clientFilter = ref('')
+const shootingTypeFilter = ref('')
+const paymentStatusFilter = ref('')
+const statusFilter = ref('')
+
+// Применение фильтров к таблице
+function applyFilters() {
+  const filters: ColumnFiltersState = []
+
+  if (clientFilter.value) {
+    filters.push({ id: 'client_name', value: clientFilter.value })
+  }
+  if (shootingTypeFilter.value) {
+    filters.push({ id: 'shooting_type_name', value: shootingTypeFilter.value })
+  }
+  if (paymentStatusFilter.value) {
+    filters.push({ id: 'payment_status', value: paymentStatusFilter.value })
+  }
+  if (statusFilter.value) {
+    filters.push({ id: 'status', value: statusFilter.value })
+  }
+
+  columnFilters.value = filters
+}
+
+// Сброс фильтров
+function resetFilters() {
+  clientFilter.value = ''
+  shootingTypeFilter.value = ''
+  paymentStatusFilter.value = ''
+  statusFilter.value = ''
+  columnFilters.value = []
+}
+
+// Смена месяца
+function handleMonthChange(event: Event) {
+  const target = event.target as HTMLSelectElement
+  bookingsStore.setCurrentMonth(target.value)
+}
+
+// Actions
+function handleAddBooking() {
+  showAddModal.value = true
+}
+
+function handleEdit() {
+  if (selectedBooking.value) {
+    showEditModal.value = true
+  }
+}
+
+function handleAddPayment() {
+  if (selectedBooking.value) {
+    showPaymentModal.value = true
+  }
+}
+
+function handleDelete() {
+  if (selectedBooking.value) {
+    showDeleteModal.value = true
+  }
+}
+
+function closeModal() {
+  showAddModal.value = false
+  showEditModal.value = false
+  showPaymentModal.value = false
+  showDeleteModal.value = false
+  // Сброс выделения после закрытия модального окна
+  rowSelection.value = {}
+}
+
+function toggleFilters() {
+  showFilters.value = !showFilters.value
+}
+
+// Открытие календаря при клике на весь input
+function openMonthPicker() {
+  if (monthInput.value) {
+    monthInput.value.showPicker?.()
+  }
+}
 </script>
 
 <template>
   <div class="bookings-calendar">
-    <h2>📅 Записи на съёмку</h2>
-    <p class="info">Календарь (таблица записей за текущий месяц)</p>
+    <!-- Toolbar с заголовком и кнопками -->
+    <div class="header-with-action">
+      <div>
+        <h2 class="section-header">Записи на съёмку</h2>
+      </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Дата съёмки</th>
-          <th>Клиент</th>
-          <th>Телефон</th>
-          <th>Тип съёмки</th>
-          <th>Кол-во</th>
-          <th>Сумма</th>
-          <th>Оплачено</th>
-          <th>Статус оплаты</th>
-          <th>Статус записи</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="booking in bookingsStore.bookings" :key="booking.id">
-          <td>{{ booking.shooting_date }}</td>
-          <td>{{ booking.client_name }}</td>
-          <td>{{ booking.phone }}</td>
-          <td>{{ booking.shooting_type_name }}</td>
-          <td>{{ booking.quantity }}</td>
-          <td class="amount">{{ parseFloat(booking.total_amount).toFixed(2) }} ₽</td>
-          <td class="amount-small">{{ parseFloat(booking.paid_amount).toFixed(2) }} ₽</td>
-          <td>{{ getPaymentStatusText(booking.payment_status) }}</td>
-          <td>
-            <span class="status-badge" :style="{ backgroundColor: getStatusColor(booking.status) }">
-              {{ getStatusText(booking.status) }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Кнопки действий -->
+      <div class="action-buttons">
+        <button
+          class="glass-button"
+          @click="handleAddBooking"
+          title="Добавить запись"
+        >
+          <svg-icon type="mdi" :path="mdilPlus"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow"
+          @click="handleEdit"
+          title="Редактировать"
+        >
+          <svg-icon type="mdi" :path="mdilPencil"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow"
+          @click="handleAddPayment"
+          title="Добавить оплату"
+        >
+          <svg-icon type="mdi" :path="mdilCreditCard"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow"
+          @click="handleDelete"
+          title="Удалить"
+        >
+          <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          @click="toggleFilters"
+          title="Показать/скрыть фильтры"
+        >
+          <svg-icon type="mdi" :path="mdilMagnify"></svg-icon>
+        </button>
+      </div>
+    </div>
 
-    <div v-if="bookingsStore.bookings.length === 0" class="empty">
+    <!-- Панель фильтров -->
+    <div v-if="showFilters" class="filters-panel">
+      <!-- Селектор месяца -->
+      <div class="filter-group">
+        <label class="filter-label">Месяц:</label>
+        <input
+          ref="monthInput"
+          type="month"
+          class="filter-select"
+          :value="bookingsStore.currentMonth"
+          @change="handleMonthChange"
+          @click="openMonthPicker"
+        />
+      </div>
+
+      <!-- Фильтр по клиенту -->
+      <div class="filter-group">
+        <label class="filter-label">Клиент:</label>
+        <select class="filter-select" v-model="clientFilter" @change="applyFilters">
+          <option value="">Все</option>
+          <option v-for="client in uniqueClients" :key="client" :value="client">
+            {{ client }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Фильтр по типу съёмки -->
+      <div class="filter-group">
+        <label class="filter-label">Тип съёмки:</label>
+        <select class="filter-select" v-model="shootingTypeFilter" @change="applyFilters">
+          <option value="">Все</option>
+          <option v-for="type in uniqueShootingTypes" :key="type" :value="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Фильтр по статусу оплаты -->
+      <div class="filter-group">
+        <label class="filter-label">Оплата:</label>
+        <select class="filter-select" v-model="paymentStatusFilter" @change="applyFilters">
+          <option value="">Все</option>
+          <option v-for="status in paymentStatuses" :key="status.value" :value="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Фильтр по статусу записи -->
+      <div class="filter-group">
+        <label class="filter-label">Статус:</label>
+        <select class="filter-select" v-model="statusFilter" @change="applyFilters">
+          <option value="">Все</option>
+          <option v-for="status in bookingStatuses" :key="status.value" :value="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Кнопка сброса фильтров -->
+      <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
+        <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+      </button>
+    </div>
+
+    <!-- Таблица -->
+    <div v-if="bookingsStore.bookings.length > 0" class="table-container">
+      <table class="accounting-table tanstack-table">
+        <thead>
+          <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+            <th v-for="header in headerGroup.headers" :key="header.id">
+              <FlexRender
+                v-if="!header.isPlaceholder"
+                :render="header.column.columnDef.header"
+                :props="header.getContext()"
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="row in table.getRowModel().rows"
+            :key="row.id"
+            @click="row.toggleSelected()"
+            :class="{ selected: row.getIsSelected() }"
+          >
+            <td v-for="cell in row.getVisibleCells()" :key="cell.id">
+              <!-- Status badge -->
+              <template v-if="cell.column.id === 'status'">
+                <span
+                  class="status-badge"
+                  :style="{ backgroundColor: (cell.getValue() as any).color }"
+                >
+                  {{ (cell.getValue() as any).text }}
+                </span>
+              </template>
+
+              <!-- Amount cells with special styling -->
+              <template v-else-if="cell.column.id === 'total_amount'">
+                <span class="amount-income">
+                  <FlexRender
+                    :render="cell.column.columnDef.cell"
+                    :props="cell.getContext()"
+                  />
+                </span>
+              </template>
+
+              <!-- Default cell -->
+              <template v-else>
+                <FlexRender
+                  :render="cell.column.columnDef.cell"
+                  :props="cell.getContext()"
+                />
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div v-else class="empty-state">
       <p>📭 Нет записей за текущий месяц</p>
     </div>
+
+    <!-- Модальные окна -->
+    <AddBookingModal :isVisible="showAddModal" @close="closeModal" />
+    <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
+    <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
+    <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
   </div>
 </template>
-
-<style scoped>
-.bookings-calendar h2 {
-  margin: 0 0 10px 0;
-}
-
-.info {
-  margin: 0 0 20px 0;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-thead {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 14px;
-}
-
-th {
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-}
-
-td {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.amount {
-  font-weight: 600;
-  color: #4ade80;
-}
-
-.amount-small {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #000;
-  display: inline-block;
-}
-
-tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.empty p {
-  font-size: 18px;
-}
-</style>

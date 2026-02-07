@@ -1,0 +1,30 @@
+<script setup lang="ts">
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdilCheck, mdilCancel } from '@mdi/light-js'
+
+const props = defineProps<{
+  isVisible: boolean
+  message: string
+  title?: string
+}>()
+const emit = defineEmits(['confirm', 'cancel'])
+</script>
+
+<template>
+  <Teleport to="body">
+    <div v-if="isVisible" class="modal-overlay" @click.self="emit('cancel')">
+      <div class="modal-glass">
+        <h2>{{ title || 'Подтверждение' }}</h2>
+        <p style="text-align: center; margin: 20px 0; color: #333;">{{ message }}</p>
+        <div class="modal-actions">
+          <button class="glass-button" @click="emit('confirm')">
+            <svg-icon type="mdi" :path="mdilCheck" />
+          </button>
+          <button class="glass-button" @click="emit('cancel')">
+            <svg-icon type="mdi" :path="mdilCancel" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>

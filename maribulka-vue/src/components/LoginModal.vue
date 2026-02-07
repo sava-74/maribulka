@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { useAuthStore } from '../stores/auth'
+import AlertModal from './AlertModal.vue'
 
 const props = defineProps<{ isVisible: boolean }>()
 const emit = defineEmits(['close'])
@@ -10,6 +11,10 @@ const rememberMe = ref(false) // Новая переменная для гало
 const auth = useAuthStore()
 const password = ref('')
 const login = ref('admin') // Логин по умолчанию
+
+const showAlert = ref(false)
+const alertMessage = ref('')
+const alertTitle = ref('Ошибка')
 
 const handleLogin = async () => {
   try {
@@ -25,17 +30,22 @@ const handleLogin = async () => {
       password.value = '';
       emit('close');
     } else {
-      alert('Ошибка доступа: Неверный пароль');
+      alertTitle.value = 'Ошибка доступа'
+      alertMessage.value = 'Неверный пароль'
+      showAlert.value = true
     }
   } catch (error) {
-    alert('Сервер базы данных не отвечает');
+    alertTitle.value = 'Ошибка'
+    alertMessage.value = 'Сервер базы данных не отвечает'
+    showAlert.value = true
   }
 }
 </script>
 
 <template>
-  <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-    <div class="modal-glass">
+  <Teleport to="body">
+    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+      <div class="modal-glass">
       <h2>Вход в систему</h2>
       
       <div class="input-group">
@@ -55,6 +65,8 @@ const handleLogin = async () => {
           <svg-icon type="mdi" :path="mdilCancel" />
         </button>
       </div>
+      </div>
     </div>
-  </div>
+    <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
+  </Teleport>
 </template>

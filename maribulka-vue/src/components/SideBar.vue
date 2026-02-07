@@ -3,12 +3,19 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilMenu, mdilImage, mdilCurrencyRub, mdilSettings } from '@mdi/light-js'
 import { useAuthStore } from '../stores/auth'
+import { useNavigationStore } from '../stores/navigation'
 
 const isExpanded = ref(false)
 const auth = useAuthStore()
+const nav = useNavigationStore()
 
 const toggleSidebar = () => {
   isExpanded.value = !isExpanded.value
+}
+
+const navigateTo = (page: 'home' | 'portfolio' | 'accounting' | 'settings') => {
+  nav.navigateTo(page)
+  isExpanded.value = false
 }
 
 const handleClickOutside = () => {
@@ -42,7 +49,7 @@ onUnmounted(() => {
     <div class="nav-links">
       <!-- Портфолио -->
       <div class="nav-item">
-        <button class="glass-button">
+        <button class="glass-button" @click="navigateTo('portfolio')">
           <svg-icon type="mdi" :path="mdilImage" ></svg-icon>
           <span class="nav-text">Портфолио</span>
         </button>
@@ -51,13 +58,13 @@ onUnmounted(() => {
       <!-- Админ-секция -->
       <div v-if="auth.isAdmin" class="admin-section">
         <div class="nav-item">
-          <button class="glass-button">
+          <button class="glass-button" @click="navigateTo('accounting')">
             <svg-icon type="mdi" :path="mdilCurrencyRub" ></svg-icon>
             <span class="nav-text">Бухгалтерия</span>
           </button>
         </div>
         <div class="nav-item">
-          <button class="glass-button">
+          <button class="glass-button" @click="navigateTo('settings')">
             <svg-icon type="mdi" :path="mdilSettings" ></svg-icon>
             <span class="nav-text">Настройки</span>
           </button>

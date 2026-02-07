@@ -1,19 +1,19 @@
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgb(0 0 0 / 10%);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 9999;
 }
 
 .modal-glass {
-  background: rgba(255, 255, 255, 0.15);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(60px);
+  backdrop-filter: blur(60px);
   border: 2px solid var(--neon-green);
   border-radius: 15px;
   padding: 30px;
@@ -68,4 +68,153 @@
   font-size: 0.9rem;
   color: #333;
   cursor: pointer;
+}
+
+/* Широкое модальное окно для форм */
+.modal-wide {
+  width: 600px;
+  max-width: 90vw;
+}
+
+/* Узкие поля для чисел */
+.input-field-narrow {
+  flex: 0 0 auto;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+/* Поле телефона */
+.input-field-phone {
+  flex: 0 0 auto;
+  min-width: 160px;
+  max-width: 160px;
+}
+
+/* Поле акции - чуть шире */
+.input-field-promotion {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* Строка с полями формы */
+.input-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Поле ввода в строке */
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Лейбл поля */
+.input-label {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Стили для select в модальном окне */
+.modal-input select,
+select.modal-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234ade80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 35px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Информация об оплате */
+.payment-info {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.payment-info p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.payment-info .remaining-amount {
+  font-weight: 600;
+  color: #f87171;
+}
+
+/* Информация для удаления */
+.delete-info {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.delete-info p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.delete-warning {
+  color: #f87171;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Информация о ценах (расчётная) */
+.price-info {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.price-label {
+  font-weight: 500;
+}
+
+.price-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.price-value.discount-value {
+  color: #f87171;
+}
+
+.price-row.total {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.price-value.total-value {
+  font-size: 18px;
+  color: #333;
 }

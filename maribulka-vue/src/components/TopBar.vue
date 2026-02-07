@@ -1,17 +1,26 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilLogin, mdilLogout } from '@mdi/light-js'
 import { useAuthStore } from '../stores/auth'
+import ConfirmModal from './ConfirmModal.vue'
 
 const auth = useAuthStore()
 const emit = defineEmits(['open-login'])
 
+const showConfirm = ref(false)
+
 const handleAction = () => {
   if (auth.isAdmin) {
-    if (confirm('Выйти из системы?')) auth.logout()
+    showConfirm.value = true
   } else {
     emit('open-login')
   }
+}
+
+const handleLogout = () => {
+  auth.logout()
+  showConfirm.value = false
 }
 </script>
 
@@ -26,5 +35,12 @@ const handleAction = () => {
     <button class="glass-button" @click="handleAction">
       <svg-icon type="mdi" :path="auth.isAdmin ? mdilLogout : mdilLogin" />
     </button>
+    <ConfirmModal
+      :isVisible="showConfirm"
+      message="Выйти из системы?"
+      title="Подтверждение"
+      @confirm="handleLogout"
+      @cancel="showConfirm = false"
+    />
   </header>
 </template>

@@ -1,11 +1,11 @@
 .content {
   /* Отступ сверху: 60px (высота Топ-бара) + 10px (margin) + 10px (запас) = 80px */
-  margin-top: 80px;
+  margin-top: 75px;
   
   /* Отступ слева: 58px (ширина Сайд-бара) + 10px (margin) + 10px (запас) = 78px */
-  margin-left: 78px;
+  margin-left: 70px;
   
-  padding: 20px;
+  padding-right: 20px;
   /*transition: margin-left 0.3s ease; /* Плавный сдвиг контента при раскрытии меню */
   /*box-sizing: border-box;
   color: #333;*/

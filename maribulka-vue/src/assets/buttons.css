@@ -37,11 +37,53 @@
     transition: transform 0.05s ease; /* Быстрый возврат */
 }
 
+.glass-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* 6. Кнопка расширяется вместе с сайдбаром */
 .side-bar.expanded .glass-button {
     width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
     /*justify-content: flex-start;*/
     padding-left: 8px;
+}
+
+/* Кнопка с текстом - фиксированная ширина 150px */
+.glass-button-text {
+    width: 150px;
+    height: 40px;
+    min-width: 150px;
+    border-radius: 8px;
+    border: 1px solid var(--neon-green);
+    background: rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    color: #333;
+    padding: 0 12px;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.glass-button-text:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.glass-button-text:active {
+    transform: translate(0, 0);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: #ffffff;
+    filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green));
+    transition: transform 0.05s ease;
 }
 
 /* Иконки внутри кнопок (SVG из библиотеки MDIL) */
@@ -51,5 +93,5 @@
   fill: #333 !important; /* Убедись, что иконка не белая на светлом фоне */
   display: block;
   flex-shrink: 0;
-  
+
 }

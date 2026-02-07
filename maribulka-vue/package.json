@@ -11,6 +11,7 @@
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
     "@mdi/light-js": "^0.2.63",
+    "@tanstack/vue-table": "^8.21.3",
     "pinia": "^2.3.0",
     "vue": "^3.5.24"
   },
