@@ -13,12 +13,14 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus, mdilPencil, mdilCreditCard, mdilDelete, mdilMagnify, mdilRefresh } from '@mdi/light-js'
+import { mdilPlus, mdilPencil, mdilCreditCard, mdilDelete, mdilMagnify, mdilRefresh, mdilClipboardCheck, mdilEye } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import AddBookingModal from './AddBookingModal.vue'
 import EditBookingModal from './EditBookingModal.vue'
 import AddPaymentModal from './AddPaymentModal.vue'
 import DeleteConfirmModal from './DeleteConfirmModal.vue'
+import DeliverBookingModal from './DeliverBookingModal.vue'
+import ViewBookingModal from './ViewBookingModal.vue'
 import '../../assets/tables.css'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
@@ -42,6 +44,8 @@ const showAddModal = ref(false)
 const showEditModal = ref(false)
 const showPaymentModal = ref(false)
 const showDeleteModal = ref(false)
+const showDeliverModal = ref(false)
+const showViewModal = ref(false)
 
 onMounted(() => {
   // Сброс фильтров и установка текущего месяца при входе на вкладку
@@ -75,7 +79,7 @@ function getStatusText(status: string) {
   switch (status) {
     case 'new': return '🟡 Новая'
     case 'completed': return '🟠 Состоялась'
-    case 'delivered': return '🟢 Сдана'
+    case 'delivered': return '🟢 Проведено'
     case 'cancelled': return '🔴 Отменена'
     default: return status
   }
@@ -92,6 +96,16 @@ function getPaymentStatusText(status: string) {
 
 // Column definitions (БЕЗ checkbox и "Действия")
 const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: 'id',
+    header: 'ID заказа',
+    cell: ({ row }) => {
+      const id = row.original.id
+      const createdAt = row.original.created_at || ''
+      const year = createdAt.slice(0, 4)
+      return `МБ-${id}.${year}`
+    }
+  },
   {
     accessorKey: 'booking_date',
     header: 'Дата создания',
@@ -210,6 +224,21 @@ const selectedBooking = computed(() => {
   return bookingsStore.bookings[index]
 })
 
+// Computed: проверка что заказ проведён
+const isDelivered = computed(() => {
+  return selectedBooking.value?.status === 'delivered'
+})
+
+// Computed: проверка что можно выдать (дата съёмки прошла и не проведено)
+const canDeliver = computed(() => {
+  if (!selectedBooking.value) return false
+  if (isDelivered.value) return false
+  const shootingDate = new Date(selectedBooking.value.shooting_date)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return shootingDate <= today
+})
+
 // Computed: уникальные значения для фильтров
 const uniqueClients = computed(() => {
   const column = table.getColumn('client_name')
@@ -302,11 +331,25 @@ function handleDelete() {
   }
 }
 
+function handleDeliver() {
+  if (selectedBooking.value) {
+    showDeliverModal.value = true
+  }
+}
+
+function handleView() {
+  if (selectedBooking.value) {
+    showViewModal.value = true
+  }
+}
+
 function closeModal() {
   showAddModal.value = false
   showEditModal.value = false
   showPaymentModal.value = false
   showDeleteModal.value = false
+  showDeliverModal.value = false
+  showViewModal.value = false
   // Сброс выделения после закрытия модального окна
   rowSelection.value = {}
 }
@@ -342,7 +385,7 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow"
+          :disabled="!hasSelectedRow || isDelivered"
           @click="handleEdit"
           title="Редактировать"
         >
@@ -350,7 +393,7 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow"
+          :disabled="!hasSelectedRow || isDelivered"
           @click="handleAddPayment"
           title="Добавить оплату"
         >
@@ -358,11 +401,27 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow"
+          :disabled="!hasSelectedRow || isDelivered"
           @click="handleDelete"
           title="Удалить"
         >
           <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow || !canDeliver"
+          @click="handleDeliver"
+          title="Выдать съёмку"
+        >
+          <svg-icon type="mdi" :path="mdilClipboardCheck"></svg-icon>
+        </button>
+        <button
+          class="glass-button"
+          :disabled="!hasSelectedRow"
+          @click="handleView"
+          title="Посмотреть заказ"
+        >
+          <svg-icon type="mdi" :path="mdilEye"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -504,5 +563,7 @@ function openMonthPicker() {
     <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
+    <DeliverBookingModal :isVisible="showDeliverModal" :booking="selectedBooking" @close="closeModal" />
+    <ViewBookingModal :isVisible="showViewModal" :booking="selectedBooking" @close="closeModal" />
   </div>
 </template>

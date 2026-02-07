@@ -12,7 +12,8 @@
  *
  * Специальные действия:
  * POST /api/bookings.php?action=complete&id=1 - отметить "Съёмка состоялась"
- * POST /api/bookings.php?action=deliver&id=1 - отметить "Проект сдан"
+ * POST /api/bookings.php?action=deliver&id=1 - провести заказ (выдать съёмку)
+ * POST /api/bookings.php?action=quick_payment&id=1 - быстрая оплата остатка
  * POST /api/bookings.php?action=cancel&id=1 - отменить съёмку
  * POST /api/bookings.php?action=payment&id=1 - добавить оплату
  */
@@ -365,20 +366,53 @@ function handleSpecialAction($db, $action, $id) {
             break;
 
         case 'deliver':
-            // Отметить "Проект сдан"
-            $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
+            // Провести заказ (выдать съёмку)
+            $stmt = $db->prepare("SELECT total_amount, paid_amount, shooting_date FROM bookings WHERE id = ?");
             $stmt->execute([$id]);
             $booking = $stmt->fetch();
 
-            if ($booking['status'] !== 'completed') {
+            // Проверка что дата съёмки прошла
+            $today = date('Y-m-d');
+            if ($booking['shooting_date'] > $today) {
                 http_response_code(403);
-                echo json_encode(['error' => 'Сначала отметьте "Съёмка состоялась"']);
+                echo json_encode(['error' => 'Нельзя провести заказ до даты съёмки']);
                 exit;
             }
 
-            $stmt = $db->prepare("UPDATE bookings SET status = 'delivered' WHERE id = ?");
+            // Проверка что оплата 100%
+            if ($booking['paid_amount'] < $booking['total_amount']) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Заказ не полностью оплачен']);
+                exit;
+            }
+
+            $stmt = $db->prepare("UPDATE bookings SET status = 'delivered', processed_at = NOW() WHERE id = ?");
             $stmt->execute([$id]);
-            echo json_encode(['success' => true, 'message' => 'Проект отмечен как сданный']);
+            echo json_encode(['success' => true, 'message' => 'Заказ проведён']);
+            break;
+
+        case 'quick_payment':
+            // Быстрая оплата остатка
+            $stmt = $db->prepare("SELECT client_id, total_amount, paid_amount FROM bookings WHERE id = ?");
+            $stmt->execute([$id]);
+            $booking = $stmt->fetch();
+
+            $remaining = $booking['total_amount'] - $booking['paid_amount'];
+
+            if ($remaining <= 0) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Заказ уже полностью оплачен']);
+                exit;
+            }
+
+            addPayment($db, $id, $booking['client_id'], $remaining, $booking['total_amount']);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Остаток оплачен',
+                'paid' => $booking['total_amount'],
+                'total' => $booking['total_amount']
+            ]);
             break;
 
         case 'cancel':

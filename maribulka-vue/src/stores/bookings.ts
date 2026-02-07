@@ -146,6 +146,17 @@ export const useBookingsStore = defineStore('bookings', () => {
     return result
   }
 
+  async function quickPayment(id: number) {
+    const response = await fetch(`${API_URL}/bookings.php?action=quick_payment&id=${id}`, {
+      method: 'POST'
+    })
+    const result = await response.json()
+    if (result.success) {
+      await fetchBookings()
+    }
+    return result
+  }
+
   function setCurrentMonth(month: string) {
     currentMonth.value = month
     fetchBookings(month)
@@ -171,6 +182,7 @@ export const useBookingsStore = defineStore('bookings', () => {
     markAsDelivered,
     cancelBooking,
     addPayment,
+    quickPayment,
     setCurrentMonth
   }
 })
