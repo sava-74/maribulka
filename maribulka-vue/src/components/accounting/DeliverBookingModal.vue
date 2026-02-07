@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheckCircle, mdilCurrencyRub, mdilCancel } from '@mdi/light-js'
+import { mdilCheck, mdilCurrencyRub, mdilCancel } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
 
@@ -114,11 +114,11 @@ const handleDeliver = async () => {
           <!-- Кнопка "Провести" - активна только если оплачено полностью -->
           <button
             class="glass-button"
-            :disabled="orderInfo && !orderInfo.isPaidFull"
+            :disabled="!orderInfo || !orderInfo.isPaidFull"
             @click="handleDeliver"
             title="Провести заказ"
           >
-            <svg-icon type="mdi" :path="mdilCheckCircle" />
+            <svg-icon type="mdi" :path="mdilCheck" />
           </button>
 
           <button class="glass-button" @click="emit('close')">
