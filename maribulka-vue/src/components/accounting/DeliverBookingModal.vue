@@ -111,10 +111,9 @@ const handleDeliver = async () => {
             <svg-icon type="mdi" :path="mdilCurrencyRub" />
           </button>
 
-          <!-- Кнопка "Провести" - активна только если оплачено полностью -->
+          <!-- Кнопка "Провести" - всегда активна -->
           <button
             class="glass-button"
-            :disabled="!orderInfo || !orderInfo.isPaidFull"
             @click="handleDeliver"
             title="Провести заказ"
           >

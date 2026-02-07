@@ -367,7 +367,7 @@ function handleSpecialAction($db, $action, $id) {
 
         case 'deliver':
             // Провести заказ (выдать съёмку)
-            $stmt = $db->prepare("SELECT total_amount, paid_amount, shooting_date FROM bookings WHERE id = ?");
+            $stmt = $db->prepare("SELECT shooting_date FROM bookings WHERE id = ?");
             $stmt->execute([$id]);
             $booking = $stmt->fetch();
 
@@ -376,13 +376,6 @@ function handleSpecialAction($db, $action, $id) {
             if ($booking['shooting_date'] > $today) {
                 http_response_code(403);
                 echo json_encode(['error' => 'Нельзя провести заказ до даты съёмки']);
-                exit;
-            }
-
-            // Проверка что оплата 100%
-            if ($booking['paid_amount'] < $booking['total_amount']) {
-                http_response_code(403);
-                echo json_encode(['error' => 'Заказ не полностью оплачен']);
                 exit;
             }
 
