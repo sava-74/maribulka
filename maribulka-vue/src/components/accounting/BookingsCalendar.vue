@@ -167,13 +167,7 @@ const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'status',
     header: 'Статус записи',
-    cell: ({ row }) => {
-      const status = row.getValue('status') as string
-      return {
-        text: getStatusText(status),
-        color: getStatusColor(status)
-      }
-    }
+    cell: ({ getValue }) => getStatusText(getValue() as string)
   }
 ]
 
