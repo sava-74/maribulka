@@ -6,6 +6,7 @@ import ExpensesTable from './ExpensesTable.vue'
 import Reports from './Reports.vue'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
+import '../../assets/responsive.css'
 
 // Текущая активная вкладка
 const activeTab = ref('bookings')

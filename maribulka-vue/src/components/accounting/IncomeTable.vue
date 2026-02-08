@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useFinanceStore } from '../../stores/finance'
 import '../../assets/tables.css'
 import '../../assets/layout.css'
+import '../../assets/responsive.css'
 
 const financeStore = useFinanceStore()
 

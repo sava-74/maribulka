@@ -5,6 +5,7 @@ import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import AlertModal from '../AlertModal.vue'
+import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -203,7 +204,7 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field input-field-phone">
             <label class="input-label">Телефон: *</label>
-            <input v-model="phone" type="text" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
+            <input v-model="phone" type="tel" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
           </div>
         </div>
 

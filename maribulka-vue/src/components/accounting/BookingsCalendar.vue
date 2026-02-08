@@ -28,6 +28,7 @@ import '../../assets/tables.css'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
 import '../../assets/modal.css'
+import '../../assets/responsive.css'
 
 const bookingsStore = useBookingsStore()
 

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCheck } from '@mdi/light-js'
 import { mdiPrinterOutline } from '@mdi/js'
+import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean

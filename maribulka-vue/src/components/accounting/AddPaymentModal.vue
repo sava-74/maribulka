@@ -4,6 +4,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
+import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
