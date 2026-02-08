@@ -1,8 +1,8 @@
 # 📁 Структура проекта
 
-## Текущая структура (актуальная):
+## Текущая структура (актуальная)
 
-```
+```bash
 maribulka/
 ├── .github/
 │   └── workflows/
@@ -58,9 +58,9 @@ maribulka/
 
 ---
 
-## Структура на сервере Beget:
+## Структура на сервере Beget
 
-```
+```bash
 /home/s/sava7424/
 └── maribulka.rf/
     ├── maribulka-vue/
@@ -85,19 +85,22 @@ maribulka/
 
 ---
 
-## Что где находится:
+## Что где находится
 
 ### Разработка (локально)
+
 - **Исходный код:** `maribulka-vue/src/`
 - **Разработка:** `npm run dev` → http://localhost:5173
 - **Сборка:** `npm run build` → создаёт `maribulka-vue/dist/`
 
 ### Backend (PHP)
+
 - **Локально:** `api/login.php`
 - **На сервере:** `maribulka.rf/maribulka-vue/dist/api/login.php`
 - **База данных:** MySQL 8.0 (`sava7424_mari`)
 
 ### Продакшн (Beget)
+
 - **Сайт:** http://марибулька.рф
 - **DocumentRoot:** `/home/s/sava7424/maribulka.rf/maribulka-vue/dist/`
 - **PHP:** 8.4
@@ -105,9 +108,9 @@ maribulka/
 
 ---
 
-## Что НЕ хранится в Git:
+## Что НЕ хранится в Git
 
-```
+```bash
 # В .gitignore
 node_modules/          # NPM пакеты (npm install восстановит)
 dist/                  # Собранные файлы (npm run build создаст)
@@ -118,17 +121,20 @@ dist/                  # Собранные файлы (npm run build созда
 
 ---
 
-## Что происходит при деплое:
+## Что происходит при деплое
 
-### Ручной деплой (deploy.ps1):
-```
+### Ручной деплой (deploy.ps1)
+
+```bash
 1. npm run build                    → создаёт dist/
 2. rsync dist/ → сервер             → загружает фронтенд
 3. rsync api/ → сервер/dist/api/    → загружает backend
 ```
 
-### Автодеплой (GitHub Actions):
-```
+### Автодеплой (GitHub Actions)
+
+```bash
+
 1. git push
 2. GitHub Actions:
    ├─ npm ci                        → установка зависимостей
@@ -143,9 +149,10 @@ dist/                  # Собранные файлы (npm run build созда
 
 ---
 
-## Технологический стек:
+## Технологический стек
 
 ### Frontend
+
 - **Framework:** Vue 3.5.24
 - **Language:** TypeScript 5.9.3
 - **Build:** Vite 7.2.4
@@ -153,11 +160,13 @@ dist/                  # Собранные файлы (npm run build созда
 - **Icons:** @jamescoyle/vue-icon + @mdi/light-js
 
 ### Backend
+
 - **Language:** PHP 8.4
 - **Database:** MySQL 8.0
 - **API:** REST JSON
 
 ### DevOps
+
 - **Version Control:** Git + GitHub
 - **CI/CD:** GitHub Actions
 - **Hosting:** Beget shared hosting
@@ -165,16 +174,18 @@ dist/                  # Собранные файлы (npm run build созда
 - **Deploy:** rsync over SSH
 
 ### Design
+
 - **Style:** Glassmorphism
 - **Colors:** Neon green (#39FF14), Neon blue (#00F3FF)
 - **Layout:** Responsive SPA
 
 ---
 
-## История изменений структуры:
+## История изменений структуры
 
-### Было (Node.js backend):
-```
+### Было (Node.js backend)
+
+```bash
 maribulka/
 ├── server.js           ❌ Node.js + Express
 ├── package.json        ❌ Node.js зависимости
@@ -182,8 +193,9 @@ maribulka/
 └── maribulka-vue/
 ```
 
-### Стало (PHP backend):
-```
+### Стало (PHP backend)
+
+```bash
 maribulka/
 ├── api/                ✅ PHP backend
 │   └── login.php
@@ -197,10 +209,10 @@ maribulka/
 
 ---
 
-## Файлы конфигурации:
+## Файлы конфигурации
 
 | Файл | Назначение |
-|------|-----------|
+| ------ | ----------- |
 | `.htaccess` | Apache rewrite правила для SPA |
 | `vite.config.ts` | Vite сборщик Vue |
 | `tsconfig.json` | TypeScript конфигурация |
@@ -210,14 +222,16 @@ maribulka/
 
 ---
 
-## Полезные пути:
+## Полезные пути
 
-### SSH подключение:
+### SSH подключение
+
 ```bash
 ssh -i ~/.ssh/beget_maribulka sava7424@sava7424.beget.tech
 ```
 
-### Директории на сервере:
+### Директории на сервере
+
 ```bash
 # Продакшн
 cd /home/s/sava7424/maribulka.rf/maribulka-vue/dist
@@ -227,7 +241,8 @@ cd /home/s/sava7424/maribulka.rf
 tail -f *.error.log
 ```
 
-### Локальные команды:
+### Локальные команды
+
 ```bash
 # Разработка
 cd maribulka-vue && npm run dev

@@ -33,7 +33,7 @@ const bookingsStore = useBookingsStore()
 
 // Row selection state
 const rowSelection = ref<RowSelectionState>({})
-const sorting = ref<SortingState>([])
+const sorting = ref<SortingState>([{ id: 'id', desc: true }])
 const columnFilters = ref<ColumnFiltersState>([])
 
 // Видимость панели фильтров (по умолчанию скрыты)
@@ -67,6 +67,16 @@ function formatDate(dateString: string) {
   if (!datePart) return ''
   const [year, month, day] = datePart.split('-')
   return `${day}.${month}.${year}`
+}
+
+// Форматирование даты и времени в DD.MM.YYYY HH:mm
+function formatDateTime(dateString: string) {
+  if (!dateString) return ''
+  const [datePart, timePart] = dateString.split(' ')
+  if (!datePart) return ''
+  const [year, month, day] = datePart.split('-')
+  const time = timePart?.substring(0, 5) || ''
+  return time ? `${day}.${month}.${year} ${time}` : `${day}.${month}.${year}`
 }
 
 // Helper functions
@@ -112,7 +122,7 @@ const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'shooting_date',
     header: 'Дата съёмки',
-    cell: ({ getValue }) => formatDate(getValue() as string)
+    cell: ({ getValue }) => formatDateTime(getValue() as string)
   },
   {
     accessorKey: 'delivery_date',

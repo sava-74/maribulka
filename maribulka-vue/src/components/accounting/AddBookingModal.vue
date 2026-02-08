@@ -14,12 +14,14 @@ const referencesStore = useReferencesStore()
 
 // Form fields
 const shootingDate = ref('')
+const shootingTime = ref('10:00')
 const processingDays = ref(10)
 const clientName = ref('')
 const phone = ref('')
 const shootingTypeId = ref('')
 const quantity = ref(1)
 const promotionId = ref('')
+const notes = ref('')
 
 // Alert modal
 const showAlert = ref(false)
@@ -155,26 +157,32 @@ const handleSubmit = async () => {
     }
   }
 
+  // Объединяем дату и время
+  const shootingDateTime = `${shootingDate.value} ${shootingTime.value}:00`
+
   const data = {
-    shooting_date: shootingDate.value,
+    shooting_date: shootingDateTime,
     processing_days: processingDays.value,
     client_id: clientId,
     phone: phone.value,
     shooting_type_id: parseInt(shootingTypeId.value),
     quantity: quantity.value,
-    promotion_id: promotionId.value ? parseInt(promotionId.value) : null
+    promotion_id: promotionId.value ? parseInt(promotionId.value) : null,
+    notes: notes.value || null
   }
 
   const result = await bookingsStore.createBooking(data)
   if (result.success) {
     // Reset form
     shootingDate.value = ''
+    shootingTime.value = '10:00'
     processingDays.value = 10
     clientName.value = ''
     phone.value = ''
     shootingTypeId.value = ''
     quantity.value = 1
     promotionId.value = ''
+    notes.value = ''
     emit('close')
   } else {
     alertTitle.value = 'Ошибка'
@@ -196,6 +204,10 @@ const handleSubmit = async () => {
           <div class="input-field">
             <label class="input-label">Дата съёмки: *</label>
             <input v-model="shootingDate" type="date" class="modal-input" required />
+          </div>
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Время: *</label>
+            <input v-model="shootingTime" type="time" class="modal-input" required />
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Дней:</label>
@@ -267,6 +279,12 @@ const handleSubmit = async () => {
             <span class="price-value total-value">{{ Math.round(totalAmount) }} ₽</span>
           </div>
         </div>
+
+        <!-- Примечания -->
+        <div class="notes-field">
+          <label class="input-label">Примечания:</label>
+          <textarea v-model="notes" class="modal-textarea" rows="2" placeholder="Дополнительная информация о заказе"></textarea>
+        </div>
       </div>
 
       <div class="modal-actions">
@@ -282,3 +300,59 @@ const handleSubmit = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
+
+<style scoped>
+/* Компактные отступы */
+.input-group {
+  gap: 2px;
+}
+
+.input-row {
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.input-label {
+  font-size: 13px;
+  margin-bottom: 1px;
+}
+
+.modal-input {
+  padding: 2px 4px;
+  font-size: 13px;
+}
+
+.price-info {
+  margin-top: 2px;
+  padding: 2px;
+}
+
+.price-row {
+  padding: 1px 0;
+  font-size: 13px;
+}
+
+/* Примечания */
+.notes-field {
+  margin-top: 2px;
+  width: 100%;
+}
+
+.modal-textarea {
+  width: 100%;
+  padding: 4px;
+  font-size: 13px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+  resize: vertical;
+  min-height: 40px;
+}
+
+.modal-textarea:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(255, 255, 255, 1);
+}
+</style>

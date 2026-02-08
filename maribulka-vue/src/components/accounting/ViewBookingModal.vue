@@ -27,23 +27,22 @@ const orderInfo = computed(() => {
   const year = createdAt.slice(0, 4)
   const orderId = `МБ-${props.booking.id}.${year}`
 
-  // Форматирование дат
+  // Форматирование дат (парсим строку напрямую без учета часового пояса)
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '—'
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const [datePart] = dateStr.split(' ')
+    if (!datePart) return '—'
+    const [year, month, day] = datePart.split('-')
+    return `${day}.${month}.${year}`
   }
 
   const formatDateTime = (dateStr: string) => {
     if (!dateStr) return '—'
-    const date = new Date(dateStr)
-    return date.toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+    const [datePart, timePart] = dateStr.split(' ')
+    if (!datePart) return '—'
+    const [year, month, day] = datePart.split('-')
+    const time = timePart?.substring(0, 5) || '00:00'
+    return `${day}.${month}.${year} ${time}`
   }
 
   // Определение статуса
@@ -76,14 +75,15 @@ const orderInfo = computed(() => {
     hasPromotion: !!props.booking.promotion_id,
     promotion: props.booking.promotion_name,
     bookingDate: formatDate(props.booking.booking_date),
-    shootingDate: formatDate(props.booking.shooting_date),
+    shootingDate: formatDateTime(props.booking.shooting_date),
     deliveryDate: formatDate(props.booking.delivery_date),
     processedAt: formatDateTime(props.booking.processed_at),
     basePrice: Math.round(basePrice),
     discount,
     total: Math.round(total),
     paid: Math.round(paid),
-    remaining: Math.round(total - paid)
+    remaining: Math.round(total - paid),
+    notes: props.booking.notes || ''
   }
 })
 </script>
@@ -189,6 +189,15 @@ const orderInfo = computed(() => {
               <span class="info-value remaining">{{ orderInfo.remaining }} ₽</span>
             </div>
           </div>
+
+          <!-- Примечания -->
+          <div v-if="orderInfo.notes" class="notes-section">
+            <div class="divider"></div>
+            <div class="info-section">
+              <h3>Примечания</h3>
+              <div class="notes-text">{{ orderInfo.notes }}</div>
+            </div>
+          </div>
         </div>
 
         <div class="modal-actions">
@@ -280,6 +289,15 @@ const orderInfo = computed(() => {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
   margin: 2px 0;
+}
+
+.notes-text {
+  padding: 4px;
+  font-size: 13px;
+  color: #374151;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
 /* Scrollbar styling */

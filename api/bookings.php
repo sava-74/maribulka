@@ -209,8 +209,8 @@ function handlePost($db) {
             booking_date, shooting_date, processing_days, delivery_date,
             client_id, phone, shooting_type_id, quantity, promotion_id,
             base_price, discount, final_price, total_amount,
-            paid_amount, payment_status, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            paid_amount, payment_status, status, notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $booking_date = date('Y-m-d');
@@ -233,7 +233,8 @@ function handlePost($db) {
         $total_amount,
         $paid_amount,
         $payment_status,
-        'new'
+        'new',
+        $data['notes'] ?? null
     ]);
 
     $booking_id = $db->lastInsertId();
@@ -312,7 +313,7 @@ function handlePut($db) {
     // Обновляем запись
     $fields = ['shooting_date', 'processing_days', 'delivery_date', 'phone',
                'shooting_type_id', 'quantity', 'promotion_id',
-               'base_price', 'discount', 'final_price', 'total_amount'];
+               'base_price', 'discount', 'final_price', 'total_amount', 'notes'];
 
     $updates = [];
     $values = [];
