@@ -500,3 +500,13 @@ select.modal-input {
   padding: 1px 0;
   font-size: 13px;
 }
+
+/* Ссылка телефона в модалках */
+.modal-glass a[href^="tel:"] {
+  color: #1e40af;
+  text-decoration: none;
+}
+
+.modal-glass a[href^="tel:"]:hover {
+  text-decoration: underline;
+}

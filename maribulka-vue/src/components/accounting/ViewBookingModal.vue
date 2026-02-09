@@ -48,13 +48,13 @@ const orderInfo = computed(() => {
 
   // Определение статуса
   const statusMap: Record<string, string> = {
-    'new': 'Новая',
-    'completed': 'Завершена',
-    'delivered': 'Проведено',
+    'new': 'Новая съёмка',
+    'completed': 'Съёмка состоялась',
+    'delivered': 'Заказ выдан',
     'cancelled': 'Отменена',
     'cancelled_client': 'Отменил клиент',
     'cancelled_photographer': 'Отменил фотограф',
-    'failed': 'Не состоялась'
+    'failed': 'Съёмка не состоялась'
   }
   const statusText = statusMap[props.booking.status] || props.booking.status
 
@@ -125,7 +125,7 @@ const orderInfo = computed(() => {
             </div>
             <div class="info-row">
               <span class="info-label">Телефон:</span>
-              <span class="info-value">{{ orderInfo.phone }}</span>
+              <span class="info-value"><a :href="`tel:${orderInfo.phone}`">{{ orderInfo.phone }}</a></span>
             </div>
             <div class="info-row">
               <span class="info-label">Тип съёмки:</span>

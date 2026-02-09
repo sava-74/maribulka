@@ -122,15 +122,15 @@ const calendarEvents = computed(() => {
     const endDateTime = new Date(shootingDateTime.getTime() + (durationMinutes + INTERVAL_MINUTES) * 60 * 1000)
 
     // Определяем цвет по статусу
-    let backgroundColor = '#FFD700' // new - жёлтый
-    let textColor = '#000'
+    let backgroundColor = '#4682B4' // new - темно-голубой (steel blue)
+    let textColor = '#FFF'
     if (booking.status === 'completed') {
       backgroundColor = '#FFA500' // оранжевый
       textColor = '#000'
     }
     if (booking.status === 'delivered') {
-      backgroundColor = '#39FF14' // зелёный
-      textColor = '#000'
+      backgroundColor = '#2E8B57' // темно-зелёный (sea green)
+      textColor = '#FFF'
     }
 
     events.push({
@@ -160,7 +160,7 @@ function renderEventContent(arg: any) {
   // В режиме дня - расширенная информация
   const booking = arg.event.extendedProps.booking
   const phone = booking.phone || ''
-  const phoneLink = phone ? `<a href="tel:${phone}" class="event-phone-link" onclick="event.stopPropagation()">${phone}</a>` : ''
+  const phoneLink = phone ? `<a href="tel:${phone}" class="event-phone-link event-phone-${booking.status}" onclick="event.stopPropagation()">${phone}</a>` : ''
   const total = booking.total_amount ? `${Number(booking.total_amount).toLocaleString()} ₽` : ''
   const payText = getPaymentStatusText(booking.payment_status)
   const typeName = booking.shooting_type_name || ''

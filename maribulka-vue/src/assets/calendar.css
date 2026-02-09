@@ -258,5 +258,57 @@
     top: 6px;
     right: 6px;
   }
+
+  /* Тулбар в две строки: дата на первой, кнопки на второй */
+  .fc-toolbar {
+    flex-wrap: wrap !important;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  /* Центральный chunk (с датой) на всю ширину */
+  .fc-toolbar-chunk:nth-child(2) {
+    width: 100% !important;
+    order: -1;
+    flex: 0 0 100%;
+  }
+
+  /* Заголовок */
+  .fc-toolbar-title {
+    font-size: 16px !important;
+    text-align: center;
+  }
+
+  /* Левый и правый chunk остаются на второй строке */
+  .fc-toolbar-chunk:nth-child(1),
+  .fc-toolbar-chunk:nth-child(3) {
+    flex: 1 1 auto;
+  }
+}
+
+/* Ссылка телефона в событиях календаря - инверсные цвета */
+.calendar-container a[href^="tel:"] {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: calc(1em + 2px);
+}
+
+.calendar-container a[href^="tel:"]:hover {
+  text-decoration: underline;
+}
+
+/* Голубой фон (new) → циан телефон */
+.calendar-container .event-phone-new {
+  color: #00FFFF !important;
+}
+
+/* Оранжевый фон (completed) → темно-синий телефон */
+.calendar-container .event-phone-completed {
+  color: #1e40af !important;
+}
+
+/* Темно-зелёный фон (delivered) → циан телефон */
+.calendar-container .event-phone-delivered {
+  color: #00FFFF !important;
 }
 

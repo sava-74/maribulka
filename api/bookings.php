@@ -374,6 +374,18 @@ function handleSpecialAction($db, $action, $id) {
     switch ($action) {
         case 'complete':
             // Отметить "Съёмка состоялась"
+            // Проверка что дата съёмки прошла
+            $stmt = $db->prepare("SELECT DATE(shooting_date) as shooting_date FROM bookings WHERE id = ?");
+            $stmt->execute([$id]);
+            $booking = $stmt->fetch();
+
+            $today = date('Y-m-d');
+            if ($booking['shooting_date'] > $today) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Нельзя отметить съёмку состоявшейся до даты съёмки']);
+                exit;
+            }
+
             $stmt = $db->prepare("UPDATE bookings SET status = 'completed' WHERE id = ?");
             $stmt->execute([$id]);
             echo json_encode(['success' => true, 'message' => 'Съёмка отмечена как состоявшаяся']);
@@ -381,15 +393,14 @@ function handleSpecialAction($db, $action, $id) {
 
         case 'deliver':
             // Провести заказ (выдать съёмку)
-            $stmt = $db->prepare("SELECT shooting_date FROM bookings WHERE id = ?");
+            // Проверка что съёмка состоялась
+            $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
             $stmt->execute([$id]);
             $booking = $stmt->fetch();
 
-            // Проверка что дата съёмки прошла
-            $today = date('Y-m-d');
-            if ($booking['shooting_date'] > $today) {
+            if ($booking['status'] !== 'completed') {
                 http_response_code(403);
-                echo json_encode(['error' => 'Нельзя провести заказ до даты съёмки']);
+                echo json_encode(['error' => 'Нельзя провести заказ. Сначала отметьте съёмку как состоявшуюся']);
                 exit;
             }
 

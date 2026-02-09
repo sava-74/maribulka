@@ -83,9 +83,9 @@ function formatDateTime(dateString: string) {
 // Helper functions
 function getStatusText(status: string) {
   switch (status) {
-    case 'new': return '🟡 Новая'
+    case 'new': return '🔵 Новый'
     case 'completed': return '🟠 Состоялась'
-    case 'delivered': return '🟢 Проведено'
+    case 'delivered': return '🟢 Выдан'
     case 'cancelled': return '🔴 Отменена'
     case 'cancelled_client': return '⚪ Отмена-К'
     case 'cancelled_photographer': return '⚪ Отмена-Ф'
@@ -275,9 +275,9 @@ const paymentStatuses = [
 ]
 
 const bookingStatuses = [
-  { value: 'new', label: '🟡 Новая' },
-  { value: 'completed', label: '🟠 Завершена' },
-  { value: 'delivered', label: '🟢 Проведено' },
+  { value: 'new', label: '🔵 Новый' },
+  { value: 'completed', label: '🟠 Состоялась' },
+  { value: 'delivered', label: '🟢 Выдан' },
   { value: 'cancelled_client', label: '⚪ Отменил клиент' },
   { value: 'cancelled_photographer', label: '⚪ Отменил фотограф' },
   { value: 'failed', label: '🔴 Не состоялась' }

@@ -156,3 +156,13 @@
   font-size: 18px;
   margin: 0 0 20px 0;
 }
+
+/* Ссылка телефона в таблице */
+.accounting-table a[href^="tel:"] {
+  color: #1e40af;
+  text-decoration: none;
+}
+
+.accounting-table a[href^="tel:"]:hover {
+  text-decoration: underline;
+}
