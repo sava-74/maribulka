@@ -252,7 +252,7 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass modal-wide">
+      <div class="modal-glass modal-compact modal-wide">
       <h2>Редактировать запись</h2>
 
       <div class="input-group">
@@ -362,59 +362,3 @@ const handleSubmit = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
-
-<style scoped>
-/* Компактные отступы */
-.input-group {
-  gap: 2px;
-}
-
-.input-row {
-  gap: 2px;
-  margin-bottom: 2px;
-}
-
-.input-label {
-  font-size: 13px;
-  margin-bottom: 1px;
-}
-
-.modal-input {
-  padding: 2px 4px;
-  font-size: 13px;
-}
-
-.price-info {
-  margin-top: 2px;
-  padding: 2px;
-}
-
-.price-row {
-  padding: 1px 0;
-  font-size: 13px;
-}
-
-/* Примечания */
-.notes-field {
-  margin-top: 2px;
-  width: 100%;
-}
-
-.modal-textarea {
-  width: 100%;
-  padding: 4px;
-  font-size: 13px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #000;
-  resize: vertical;
-  min-height: 40px;
-}
-
-.modal-textarea:focus {
-  outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 1);
-}
-</style>

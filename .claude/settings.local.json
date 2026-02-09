@@ -15,7 +15,10 @@
       "Bash(python -m json.tool:*)",
       "Bash(powershell.exe:*)",
       "Bash(taskkill:*)",
-      "Bash(start /B php:*)"
+      "Bash(start /B php:*)",
+      "Bash(npm search:*)",
+      "Bash(claude mcp remove:*)",
+      "Bash(claude mcp add:*)"
     ]
   }
 }

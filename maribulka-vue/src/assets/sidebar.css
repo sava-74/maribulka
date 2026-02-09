@@ -35,12 +35,6 @@
   opacity: 1;
 }
 
-/* Растягиваем кнопки в раскрытом сайдбаре */
-.side-bar.expanded .nav-item .glass-button {
-  opacity: 1;
-    visibility: visible;
-}
-
 .nav-text {
     margin-left: 12px; /* Расстояние от иконки до текста */
     opacity: 0;

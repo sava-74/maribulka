@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -32,6 +32,9 @@ const referencesStore = useReferencesStore()
 
 // Ref для доступа к API календаря
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
+
+// Отслеживание ширины экрана для мини-календаря
+const windowWidth = ref(window.innerWidth)
 
 // Модальные окна
 const showAddModal = ref(false)
@@ -74,10 +77,23 @@ function getPaymentStatusText(status: string) {
   }
 }
 
+// Обработчик resize для обновления ширины
+function handleResize() {
+  windowWidth.value = window.innerWidth
+}
+
 onMounted(async () => {
   const currentMonth = new Date().toISOString().slice(0, 7)
   bookingsStore.setCurrentMonth(currentMonth)
   await referencesStore.fetchShootingTypes()
+
+  // Добавляем слушатель resize
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  // Удаляем слушатель при размонтировании
+  window.removeEventListener('resize', handleResize)
 })
 
 // Преобразование записей в формат событий FullCalendar
@@ -161,36 +177,49 @@ function renderEventContent(arg: any) {
 }
 
 // Опции календаря
-const calendarOptions = computed(() => ({
-  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
-  locale: ruLocale,
-  headerToolbar: {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridMonth,timeGridDay'
-  },
-  buttonText: {
-    today: 'Сегодня',
-    month: 'Месяц',
-    day: 'День'
-  },
-  slotMinTime: '08:00:00',
-  slotMaxTime: '23:00:00',
-  slotDuration: '00:30:00',
-  allDaySlot: false,
-  height: 'auto',
-  dayMaxEvents: 2,
-  moreLinkText: 'ещё',
-  events: calendarEvents.value,
-  eventContent: renderEventContent,
-  dateClick: handleDateClick,
-  eventClick: handleEventClick,
-  datesSet: handleDatesSet,
-  // Мобильная адаптация
-  handleWindowResize: true,
-  windowResizeDelay: 100
-}))
+const calendarOptions = computed(() => {
+  // Определяем ширину экрана для адаптации (используем reactive переменную)
+  const isMiniCalendar = windowWidth.value <= 420
+
+  const options: any = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    locale: ruLocale,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridDay'
+    },
+    buttonText: {
+      today: windowWidth.value <= 480 ? 'С' : 'Сегодня',
+      month: windowWidth.value <= 480 ? 'М' : 'Месяц',
+      day: windowWidth.value <= 480 ? 'Д' : 'День'
+    },
+    slotMinTime: '08:00:00',
+    slotMaxTime: '23:00:00',
+    slotDuration: '00:30:00',
+    allDaySlot: false,
+    dayMaxEvents: isMiniCalendar ? false : 2,
+    moreLinkText: 'ещё',
+    events: calendarEvents.value,
+    eventContent: renderEventContent,
+    dateClick: handleDateClick,
+    eventClick: handleEventClick,
+    datesSet: handleDatesSet,
+    // Мобильная адаптация
+    handleWindowResize: true,
+    windowResizeDelay: 100
+  }
+
+  // Высота календаря
+  if (isMiniCalendar) {
+    options.height = 500  // Фиксированная высота 500px для <=420px
+  } else {
+    options.height = 'auto'  // Auto для больших экранов
+  }
+
+  return options
+})
 
 // Клик по дате - переход в режим дня
 function handleDateClick(info: any) {

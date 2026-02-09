@@ -39,6 +39,7 @@ dist.zip
 .DS_Store
 Thumbs.db
 Desktop.ini
+nul
 
 # Logs
 logs/

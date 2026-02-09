@@ -248,30 +248,15 @@
     height: 28px !important;
   }
 
-  .calendar-container .fc-button {
-    width: 55px !important;
-    min-width: 55px !important;
-    height: 32px !important;
-    padding: 0 4px !important;
-    font-size: 10px !important;
-  }
-
-  .calendar-container .fc-prev-button,
-  .calendar-container .fc-next-button {
-    width: 32px !important;
-    min-width: 32px !important;
-  }
-
-  .calendar-container .calendar-table-button,
-  .calendar-container .calendar-add-button {
-    top: 6px;
-  }
-
+  /* Позиция кнопок таблица/добавить на маленьком экране */
   .calendar-container .calendar-table-button {
+    top: 6px;
     left: 6px;
   }
 
   .calendar-container .calendar-add-button {
+    top: 6px;
     right: 6px;
   }
 }
+
