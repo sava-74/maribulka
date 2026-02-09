@@ -54,3 +54,60 @@
   opacity: 1;
     /*visibility: visible;*/
 }
+
+/* ========== SIDEBAR MOBILE (<=768px) ========== */
+@media (max-width: 768px) {
+  /* Collapsed: прозрачный, только гамбургер виден */
+  .side-bar {
+    width: 45px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 1001;
+    top: 12px;
+    left: 5px;
+    bottom: auto;
+    padding: 0;
+    overflow: visible;
+  }
+
+  /* Скрываем навигацию когда sidebar свёрнут */
+  .side-bar .nav-links {
+    display: none;
+  }
+
+  /* Expanded: полноценное меню-overlay */
+  .side-bar.expanded {
+    width: 220px;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(57, 255, 20, 0.3);
+    box-shadow: 10px 0 20px rgba(0, 0, 0, 0.1);
+    padding: 10px 8px;
+    overflow: hidden;
+    z-index: 10001;
+  }
+
+  /* Показываем навигацию при раскрытии */
+  .side-bar.expanded .nav-links {
+    display: block;
+  }
+
+  /* Затемнённый фон за sidebar */
+  .side-bar.expanded::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
+}

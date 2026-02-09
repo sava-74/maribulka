@@ -12,6 +12,9 @@ import '../../assets/responsive.css'
 // Текущая активная вкладка
 const activeTab = ref('bookings')
 
+// Показать/скрыть таблицу записей
+const showTable = ref(false)
+
 // Переключение вкладок
 function switchTab(tab: string) {
   activeTab.value = tab
@@ -55,8 +58,9 @@ function switchTab(tab: string) {
     <!-- Контент вкладок -->
     <div class="tab-content">
       <template v-if="activeTab === 'bookings'">
-        <BookingsFullCalendar />
-        <div style="margin-top: 30px;">
+        <h2 class="section-header">Запись на съёмку</h2>
+        <BookingsFullCalendar :showTable="showTable" @toggle-table="showTable = !showTable" />
+        <div v-if="showTable" style="margin-top: 30px;">
           <BookingsCalendar />
         </div>
       </template>

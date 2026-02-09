@@ -4,6 +4,7 @@ import { mdilEye, mdilDelete } from '@mdi/light-js'
 import { mdiFolderPlayOutline, mdiCameraOutline, mdiCameraOffOutline, mdiFileEditOutline, mdiCashMultiple } from '@mdi/js'
 import { computed } from 'vue'
 import '../../assets/modal.css'
+import '../../assets/buttons.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -46,19 +47,16 @@ function handleAction(action: string) {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="booking-actions-overlay" @click.self="$emit('close')">
-      <div
-        class="booking-actions-modal"
-        :style="{ left: position.x + 'px', top: position.y + 'px' }"
-      >
-        <div class="booking-actions-header">
-          <span class="booking-title">{{ booking?.client_name }}</span>
-          <span class="booking-type">{{ booking?.shooting_type_name }}</span>
+    <div v-if="isVisible" class="modal-overlay" @click.self="$emit('close')">
+      <div class="modal-glass actions-modal">
+        <div class="actions-header">
+          <span class="actions-title">{{ booking?.client_name }}</span>
+          <span class="actions-type">{{ booking?.shooting_type_name }}</span>
         </div>
 
-        <div class="booking-actions-buttons">
+        <div class="actions-buttons">
           <button
-            class="action-btn"
+            class="glass-button-text"
             @click="handleAction('view')"
             title="Просмотр"
           >
@@ -67,7 +65,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn"
+            class="glass-button-text"
             :disabled="isDelivered || booking?.status === 'completed'"
             @click="handleAction('edit')"
             title="Редактировать"
@@ -77,7 +75,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn"
+            class="glass-button-text"
             :disabled="isDelivered || booking?.payment_status === 'fully_paid'"
             @click="handleAction('payment')"
             title="Оплата"
@@ -87,7 +85,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn"
+            class="glass-button-text"
             :disabled="!canMarkCompleted"
             @click="handleAction('complete')"
             title="Съёмка состоялась"
@@ -97,7 +95,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn"
+            class="glass-button-text"
             :disabled="isDelivered || booking?.status === 'completed'"
             @click="handleAction('cancel')"
             title="Отменить"
@@ -107,7 +105,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn"
+            class="glass-button-text"
             :disabled="!canDeliver"
             @click="handleAction('deliver')"
             title="Провести"
@@ -117,7 +115,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="action-btn danger"
+            class="glass-button-text action-danger"
             :disabled="isDelivered || booking?.status === 'completed'"
             @click="handleAction('delete')"
             title="Удалить"
@@ -132,81 +130,65 @@ function handleAction(action: string) {
 </template>
 
 <style scoped>
-.booking-actions-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.3);
+.actions-modal {
+  width: auto;
+  min-width: 200px;
+  padding: 16px;
+  gap: 12px;
 }
 
-.booking-actions-modal {
-  position: absolute;
-  background: rgba(30, 30, 40, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px;
-  min-width: 180px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  z-index: 1001;
-}
-
-.booking-actions-header {
+.actions-header {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(57, 255, 20, 0.3);
 }
 
-.booking-title {
+.actions-title {
   font-weight: 600;
-  color: #fff;
+  color: #333;
   font-size: 14px;
 }
 
-.booking-type {
+.actions-type {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.5);
 }
 
-.booking-actions-buttons {
+.actions-buttons {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
-.action-btn {
-  display: flex;
-  align-items: center;
+.actions-buttons .glass-button-text {
+  width: 100%;
+  min-width: unset;
+  justify-content: flex-start;
   gap: 10px;
-  padding: 8px 12px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  cursor: pointer;
-  transition: all 0.2s;
   font-size: 13px;
-  text-align: left;
 }
 
-.action-btn:hover:not(:disabled) {
-  background: rgba(57, 255, 20, 0.15);
-  color: #39FF14;
-}
-
-.action-btn:disabled {
+.actions-buttons .glass-button-text:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
-.action-btn.danger:hover:not(:disabled) {
-  background: rgba(255, 68, 68, 0.15);
-  color: #ff4444;
+.actions-buttons .glass-button-text svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: #333 !important;
+  flex-shrink: 0;
+}
+
+.action-danger {
+  border-color: #f87171 !important;
+}
+
+.action-danger:hover {
+  border-color: #ff4444 !important;
+  box-shadow: 4px 4px 8px rgba(255, 68, 68, 0.2) !important;
 }
 </style>

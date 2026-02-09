@@ -124,6 +124,18 @@
   pointer-events: auto;
 }
 
+/* Отступ для кнопки таблицы перед навигацией */
+.calendar-container .fc-toolbar-chunk:first-child {
+  margin-left: 48px !important;
+}
+
+/* Кнопка таблицы */
+.calendar-container .calendar-table-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
 /* Кнопка добавления в режиме дня */
 .calendar-container .calendar-add-button {
   position: absolute;
@@ -132,26 +144,134 @@
 }
 
 
-/* Мобильная адаптация календаря */
+/* ========== CALENDAR MOBILE (<=768px) ========== */
 @media (max-width: 768px) {
   .calendar-container {
     padding: 8px;
+    padding-top: 56px;
   }
 
   .calendar-container .fc-toolbar {
-    flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap !important;
+    gap: 6px;
+    justify-content: center !important;
   }
 
   .calendar-container .fc-toolbar-title {
     font-size: 1.1em !important;
+    width: 100%;
+    text-align: center;
+    order: -1;
   }
 
   .calendar-container .fc-daygrid-day-number {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .calendar-container .fc-event {
+    font-size: 9px;
+  }
+
+  /* Убираем отступ тулбара под кнопку таблицы */
+  .calendar-container .fc-toolbar-chunk:first-child {
+    margin-left: 0 !important;
+  }
+
+  /* Кнопки: привязка к углам */
+  .calendar-container .calendar-table-button {
+    top: 8px;
+    left: 8px;
+  }
+
+  .calendar-container .calendar-add-button {
+    top: 8px;
+    right: 8px;
+  }
+
+  /* Компактные ячейки */
+  .calendar-container .fc-daygrid-day-frame {
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+  }
+
+  /* Компактные слоты в режиме дня */
+  .calendar-container .fc-timegrid-slot {
+    height: 35px !important;
+  }
+
+  /* Компактные события в режиме дня */
+  .event-day-detail {
     font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .event-day-title {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 4px;
+    padding-top: 52px;
+  }
+
+  .calendar-container .fc-toolbar-title {
+    font-size: 0.9em !important;
+  }
+
+  .calendar-container .fc-daygrid-day-frame {
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+  }
+
+  .calendar-container .fc-daygrid-day-number {
+    font-size: 11px;
+  }
+
+  .calendar-container .fc-event {
+    font-size: 8px;
+    padding: 1px 2px;
+  }
+
+  .event-day-detail {
+    font-size: 8px;
+  }
+
+  .event-day-title {
+    font-size: 9px;
+  }
+
+  .calendar-container .fc-timegrid-slot {
+    height: 28px !important;
+  }
+
+  .calendar-container .fc-button {
+    width: 55px !important;
+    min-width: 55px !important;
+    height: 32px !important;
+    padding: 0 4px !important;
+    font-size: 10px !important;
+  }
+
+  .calendar-container .fc-prev-button,
+  .calendar-container .fc-next-button {
+    width: 32px !important;
+    min-width: 32px !important;
+  }
+
+  .calendar-container .calendar-table-button,
+  .calendar-container .calendar-add-button {
+    top: 6px;
+  }
+
+  .calendar-container .calendar-table-button {
+    left: 6px;
+  }
+
+  .calendar-container .calendar-add-button {
+    right: 6px;
   }
 }

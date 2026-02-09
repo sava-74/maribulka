@@ -43,6 +43,12 @@
     pointer-events: none;
 }
 
+/* Активная кнопка-иконка */
+.glass-button.active {
+    background: rgba(57, 255, 20, 0.3);
+    border-color: var(--neon-green);
+}
+
 /* 6. Кнопка расширяется вместе с сайдбаром */
 .side-bar.expanded .glass-button {
     width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
@@ -84,6 +90,12 @@
     border-color: #ffffff;
     filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green));
     transition: transform 0.05s ease;
+}
+
+/* Активная вкладка */
+.glass-button-text.active {
+    background: rgba(57, 255, 20, 0.3);
+    border-color: var(--neon-green);
 }
 
 /* Иконки внутри кнопок (SVG из библиотеки MDIL) */
@@ -163,8 +175,17 @@
   padding: 0 !important;
 }
 
-/* Мобильные кнопки календаря */
+/* ========== BUTTONS MOBILE (<=768px) ========== */
 @media (max-width: 768px) {
+  /* Отключаем hover-эффект подъёма на тач-устройствах */
+  .glass-button:hover,
+  .glass-button-text:hover,
+  .calendar-container .fc-button:hover {
+    transform: none !important;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* Мобильные кнопки календаря */
   .calendar-container .fc-button {
     height: 36px !important;
     padding: 0 10px !important;

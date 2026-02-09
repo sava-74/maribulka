@@ -23,6 +23,7 @@ const shootingTypeId = ref('')
 const quantity = ref(1)
 const promotionId = ref('')
 const notes = ref('')
+const paymentAmount = ref(0)
 
 // Alert modal
 const showAlert = ref(false)
@@ -100,6 +101,11 @@ watch(selectedClient, (client) => {
   }
 })
 
+// Оплата по умолчанию = 100% суммы
+watch(totalAmount, (val) => {
+  paymentAmount.value = Math.round(val)
+})
+
 // Подставляем дату из календаря при открытии
 watch(() => props.isVisible, (visible) => {
   if (visible && props.defaultDate) {
@@ -168,7 +174,11 @@ const freeTimeSlots = computed(() => {
   const nowMinutes = now.getHours() * 60 + now.getMinutes()
 
   return allTimeSlots.value.filter(slot => {
-    const [hh, mm] = slot.split(':').map(Number)
+    const parts = slot.split(':').map(Number)
+    const hh = parts[0]
+    const mm = parts[1]
+    if (hh === undefined || mm === undefined) return false
+
     const candidateStart = hh * 60 + mm
     const candidateEnd = candidateStart + blockLen
 
@@ -191,7 +201,10 @@ const freeTimeSlots = computed(() => {
 // При смене даты/типа — выбрать первый свободный слот
 watch([() => shootingDate.value, () => shootingTypeId.value, freeTimeSlots], () => {
   if (freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
-    shootingTime.value = freeTimeSlots.value[0]
+    const firstSlot = freeTimeSlots.value[0]
+    if (firstSlot) {
+      shootingTime.value = firstSlot
+    }
   }
 })
 
@@ -264,7 +277,8 @@ const handleSubmit = async () => {
     shooting_type_id: parseInt(shootingTypeId.value),
     quantity: quantity.value,
     promotion_id: promotionId.value ? parseInt(promotionId.value) : null,
-    notes: notes.value || null
+    notes: notes.value || null,
+    payment_amount: paymentAmount.value > 0 ? paymentAmount.value : null
   }
 
   const result = await bookingsStore.createBooking(data)
@@ -279,6 +293,7 @@ const handleSubmit = async () => {
     quantity.value = 1
     promotionId.value = ''
     notes.value = ''
+    paymentAmount.value = 0
     emit('close')
   } else {
     alertTitle.value = 'Ошибка'
@@ -295,46 +310,7 @@ const handleSubmit = async () => {
       <h2>Добавить запись на съёмку</h2>
 
       <div class="input-group">
-        <!-- Строка 1: Даты -->
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Дата съёмки: *</label>
-            <input v-model="shootingDate" type="date" class="modal-input" :min="todayStr" required />
-          </div>
-          <div class="input-field input-field-narrow">
-            <label class="input-label">Время: *</label>
-            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
-              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
-              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
-              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
-            </select>
-          </div>
-          <div class="input-field input-field-narrow">
-            <label class="input-label">Дней:</label>
-            <input v-model.number="processingDays" type="number" class="modal-input" min="1" max="99" />
-          </div>
-          <div class="input-field">
-            <label class="input-label">Дата выдачи:</label>
-            <input :value="deliveryDate" type="date" class="modal-input" readonly />
-          </div>
-        </div>
-
-        <!-- Строка 2: Клиент и телефон -->
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Клиент: *</label>
-            <input v-model="clientName" type="text" class="modal-input" list="clients-list" placeholder="Выберите или введите имя" required />
-            <datalist id="clients-list">
-              <option v-for="client in referencesStore.clients" :key="client.id" :value="client.name"></option>
-            </datalist>
-          </div>
-          <div class="input-field input-field-phone">
-            <label class="input-label">Телефон: *</label>
-            <input v-model="phone" type="tel" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
-          </div>
-        </div>
-
-        <!-- Строка 3: Тип съёмки, количество, акция -->
+        <!-- Строка 1: Тип съёмки, количество, акция -->
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Тип съёмки: *</label>
@@ -360,7 +336,46 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <!-- Информация о ценах (readonly, расчётная) -->
+        <!-- Строка 2: Даты -->
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Дата съёмки: *</label>
+            <input v-model="shootingDate" type="date" class="modal-input" :min="todayStr" required />
+          </div>
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Время: *</label>
+            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
+              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
+              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
+              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
+          </div>
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Дней:</label>
+            <input v-model.number="processingDays" type="number" class="modal-input" min="1" max="99" />
+          </div>
+          <div class="input-field">
+            <label class="input-label">Дата выдачи:</label>
+            <input :value="deliveryDate" type="date" class="modal-input" readonly />
+          </div>
+        </div>
+
+        <!-- Строка 3: Клиент и телефон -->
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Клиент: *</label>
+            <input v-model="clientName" type="text" class="modal-input" list="clients-list" placeholder="Выберите или введите имя" required />
+            <datalist id="clients-list">
+              <option v-for="client in referencesStore.clients" :key="client.id" :value="client.name"></option>
+            </datalist>
+          </div>
+          <div class="input-field input-field-phone">
+            <label class="input-label">Телефон: *</label>
+            <input v-model="phone" type="tel" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
+          </div>
+        </div>
+
+        <!-- Информация о ценах + оплата -->
         <div class="price-info">
           <div class="price-row">
             <span class="price-label">Базовая цена:</span>
@@ -370,13 +385,19 @@ const handleSubmit = async () => {
             <span class="price-label">Скидка ({{ discountPercent }}%):</span>
             <span class="price-value discount-value">-{{ Math.round(discount) }} ₽</span>
           </div>
-          <div class="price-row">
+          <div class="price-row" v-if="quantity > 1">
             <span class="price-label">Цена за 1 съёмку:</span>
             <span class="price-value">{{ Math.round(finalPrice) }} ₽</span>
           </div>
           <div class="price-row total">
             <span class="price-label">Итого (×{{ quantity }}):</span>
             <span class="price-value total-value">{{ Math.round(totalAmount) }} ₽</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Оплата:</span>
+            <span class="price-value">
+              <input v-model.number="paymentAmount" type="number" class="modal-input payment-input" min="0" :max="Math.round(totalAmount)" /> ₽
+            </span>
           </div>
         </div>
 
@@ -454,5 +475,11 @@ const handleSubmit = async () => {
   outline: none;
   border-color: rgba(59, 130, 246, 0.5);
   background: rgba(255, 255, 255, 1);
+}
+
+.payment-input {
+  width: 80px;
+  display: inline-block;
+  text-align: right;
 }
 </style>

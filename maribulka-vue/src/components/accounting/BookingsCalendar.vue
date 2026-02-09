@@ -407,10 +407,6 @@ function openMonthPicker() {
   <div class="bookings-calendar">
     <!-- Toolbar с заголовком и кнопками -->
     <div class="header-with-action">
-      <div>
-        <h2 class="section-header">Записи на съёмку</h2>
-      </div>
-
       <!-- Кнопки действий -->
       <div class="action-buttons">
         <button

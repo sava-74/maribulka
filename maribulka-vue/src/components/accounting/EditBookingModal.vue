@@ -26,6 +26,7 @@ const shootingTypeId = ref('')
 const quantity = ref(1)
 const promotionId = ref('')
 const notes = ref('')
+const paidAmount = ref(0)
 
 // Alert modal
 const showAlert = ref(false)
@@ -57,6 +58,7 @@ watch(() => props.booking, (newBooking) => {
     quantity.value = newBooking.quantity || 1
     promotionId.value = newBooking.promotion_id || ''
     notes.value = newBooking.notes || ''
+    paidAmount.value = newBooking.paid_amount ? parseFloat(newBooking.paid_amount) : 0
   }
 }, { immediate: true })
 
@@ -155,7 +157,11 @@ const freeTimeSlots = computed(() => {
   const blockLen = newBookingBlock.value
 
   return allTimeSlots.value.filter(slot => {
-    const [hh, mm] = slot.split(':').map(Number)
+    const parts = slot.split(':').map(Number)
+    const hh = parts[0]
+    const mm = parts[1]
+    if (hh === undefined || mm === undefined) return false
+
     const candidateStart = hh * 60 + mm
     const candidateEnd = candidateStart + blockLen
     if (candidateEnd > 23 * 60) return false
@@ -172,7 +178,10 @@ watch([() => shootingTypeId.value, freeTimeSlots], () => {
     alertTitle.value = 'Внимание'
     alertMessage.value = 'Выбранное время не подходит для нового типа съёмки. Выберите другое время.'
     showAlert.value = true
-    shootingTime.value = freeTimeSlots.value[0]
+    const firstSlot = freeTimeSlots.value[0]
+    if (firstSlot) {
+      shootingTime.value = firstSlot
+    }
   }
 })
 
@@ -247,43 +256,7 @@ const handleSubmit = async () => {
       <h2>Редактировать запись</h2>
 
       <div class="input-group">
-        <!-- Строка 1: Даты -->
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Дата съёмки: *</label>
-            <input v-model="shootingDate" type="date" class="modal-input" required />
-          </div>
-          <div class="input-field input-field-narrow">
-            <label class="input-label">Время: *</label>
-            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
-              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
-              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
-              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
-            </select>
-          </div>
-          <div class="input-field input-field-narrow">
-            <label class="input-label">Дней:</label>
-            <input v-model.number="processingDays" type="number" class="modal-input" min="1" max="99" />
-          </div>
-          <div class="input-field">
-            <label class="input-label">Дата выдачи:</label>
-            <input :value="deliveryDate" type="date" class="modal-input" readonly />
-          </div>
-        </div>
-
-        <!-- Строка 2: Клиент (readonly) и телефон -->
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Клиент:</label>
-            <input :value="booking?.client_name" type="text" class="modal-input" readonly />
-          </div>
-          <div class="input-field input-field-phone">
-            <label class="input-label">Телефон: *</label>
-            <input v-model="phone" type="tel" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
-          </div>
-        </div>
-
-        <!-- Строка 3: Тип съёмки, количество, акция -->
+        <!-- Строка 1: Тип съёмки, количество, акция -->
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Тип съёмки: *</label>
@@ -309,7 +282,43 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <!-- Информация о ценах (readonly, расчётная) -->
+        <!-- Строка 2: Даты -->
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Дата съёмки: *</label>
+            <input v-model="shootingDate" type="date" class="modal-input" required />
+          </div>
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Время: *</label>
+            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
+              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
+              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
+              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
+          </div>
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Дней:</label>
+            <input v-model.number="processingDays" type="number" class="modal-input" min="1" max="99" />
+          </div>
+          <div class="input-field">
+            <label class="input-label">Дата выдачи:</label>
+            <input :value="deliveryDate" type="date" class="modal-input" readonly />
+          </div>
+        </div>
+
+        <!-- Строка 3: Клиент (readonly) и телефон -->
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Клиент:</label>
+            <input :value="booking?.client_name" type="text" class="modal-input" readonly />
+          </div>
+          <div class="input-field input-field-phone">
+            <label class="input-label">Телефон: *</label>
+            <input v-model="phone" type="tel" class="modal-input" placeholder="+7(888)888-88-88" maxlength="16" @input="formatPhone" required />
+          </div>
+        </div>
+
+        <!-- Информация о ценах + оплата -->
         <div class="price-info">
           <div class="price-row">
             <span class="price-label">Базовая цена:</span>
@@ -319,13 +328,17 @@ const handleSubmit = async () => {
             <span class="price-label">Скидка ({{ discountPercent }}%):</span>
             <span class="price-value discount-value">-{{ Math.round(discount) }} ₽</span>
           </div>
-          <div class="price-row">
+          <div class="price-row" v-if="quantity > 1">
             <span class="price-label">Цена за 1 съёмку:</span>
             <span class="price-value">{{ Math.round(finalPrice) }} ₽</span>
           </div>
           <div class="price-row total">
             <span class="price-label">Итого (×{{ quantity }}):</span>
             <span class="price-value total-value">{{ Math.round(totalAmount) }} ₽</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Оплачено:</span>
+            <span class="price-value">{{ Math.round(paidAmount) }} ₽</span>
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import ruLocale from '@fullcalendar/core/locales/ru'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilPlus } from '@mdi/light-js'
+import { mdiFileTableBoxOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import AddBookingModal from './AddBookingModal.vue'
@@ -22,6 +23,9 @@ import '../../assets/buttons.css'
 import '../../assets/layout.css'
 import '../../assets/modal.css'
 import '../../assets/calendar.css'
+
+const props = defineProps<{ showTable: boolean }>()
+const emit = defineEmits(['toggle-table'])
 
 const bookingsStore = useBookingsStore()
 const referencesStore = useReferencesStore()
@@ -323,6 +327,15 @@ function closeActionsModal() {
     <!-- FullCalendar -->
     <div class="calendar-container">
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
+      <!-- Кнопка таблицы -->
+      <button
+        class="glass-button calendar-table-button"
+        :class="{ active: props.showTable }"
+        @click="emit('toggle-table')"
+        title="Показать/скрыть таблицу"
+      >
+        <svg-icon type="mdi" :path="mdiFileTableBoxOutline"></svg-icon>
+      </button>
       <!-- Кнопка добавления - только в режиме дня -->
       <button
         v-if="canAddBooking"

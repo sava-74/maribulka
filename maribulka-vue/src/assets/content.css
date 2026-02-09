@@ -1,18 +1,52 @@
 .content {
   /* Отступ сверху: 60px (высота Топ-бара) + 10px (margin) + 10px (запас) = 80px */
   margin-top: 75px;
-  
+
   /* Отступ слева: 58px (ширина Сайд-бара) + 10px (margin) + 10px (запас) = 78px */
   margin-left: 70px;
-  
+
   padding-right: 20px;
-  /*transition: margin-left 0.3s ease; /* Плавный сдвиг контента при раскрытии меню */
-  /*box-sizing: border-box;
-  color: #333;*/
 }
 
-/* Когда Сайд-бар (который находится ПЕРЕД контентом) получает класс .expanded */
-/*.side-bar.expanded + .content {
-  /* 200px (ширина бара) + 10px (margin) + 10px (запас) = 220px */
-  /*margin-left: 220px;
-}*/
+/* Маска под TopBar — скрывает прокручиваемый контент под полупрозрачным хедером */
+.content::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: #ffffff;
+  z-index: 999;
+}
+
+@media (prefers-color-scheme: dark) {
+  .content::before {
+    background: #242424;
+  }
+}
+
+/* ========== CONTENT MOBILE (<=768px) ========== */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 10px;
+    margin-top: 60px;
+    padding-right: 10px;
+  }
+
+  .content::before {
+    height: 62px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    margin-left: 5px;
+    margin-top: 54px;
+    padding-right: 5px;
+  }
+
+  .content::before {
+    height: 55px;
+  }
+}
