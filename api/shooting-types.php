@@ -58,13 +58,14 @@ try {
             }
 
             $stmt = $db->prepare("
-                INSERT INTO shooting_types (name, base_price, description, is_active)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO shooting_types (name, base_price, duration_minutes, description, is_active)
+                VALUES (?, ?, ?, ?, ?)
             ");
 
             $stmt->execute([
                 $data['name'],
                 $data['base_price'],
+                $data['duration_minutes'] ?? 30,
                 $data['description'] ?? null,
                 $data['is_active'] ?? 1
             ]);
@@ -88,13 +89,14 @@ try {
 
             $stmt = $db->prepare("
                 UPDATE shooting_types
-                SET name = ?, base_price = ?, description = ?, is_active = ?
+                SET name = ?, base_price = ?, duration_minutes = ?, description = ?, is_active = ?
                 WHERE id = ?
             ");
 
             $stmt->execute([
                 $data['name'],
                 $data['base_price'],
+                $data['duration_minutes'] ?? 30,
                 $data['description'] ?? null,
                 $data['is_active'] ?? 1,
                 $data['id']

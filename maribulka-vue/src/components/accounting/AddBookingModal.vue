@@ -7,7 +7,7 @@ import { useReferencesStore } from '../../stores/references'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/responsive.css'
 
-const props = defineProps<{ isVisible: boolean }>()
+const props = defineProps<{ isVisible: boolean, defaultDate?: string }>()
 const emit = defineEmits(['close'])
 
 const bookingsStore = useBookingsStore()
@@ -97,6 +97,68 @@ const selectedClient = computed(() => {
 watch(selectedClient, (client) => {
   if (client && client.phone) {
     phone.value = client.phone
+  }
+})
+
+// Подставляем дату из календаря при открытии
+watch(() => props.isVisible, (visible) => {
+  if (visible && props.defaultDate) {
+    shootingDate.value = props.defaultDate
+  }
+})
+
+// Все временные слоты с 08:00 до 22:00 (шаг 30 мин)
+const allTimeSlots = computed(() => {
+  const slots: string[] = []
+  for (let h = 8; h <= 22; h++) {
+    slots.push(`${String(h).padStart(2, '0')}:00`)
+    if (h < 22) slots.push(`${String(h).padStart(2, '0')}:30`)
+  }
+  return slots
+})
+
+// Занятые слоты на выбранную дату
+const busySlots = computed(() => {
+  if (!shootingDate.value) return new Set<string>()
+  const busy = new Set<string>()
+
+  for (const booking of bookingsStore.bookings) {
+    if (booking.status === 'cancelled' || booking.status === 'cancelled_client' ||
+        booking.status === 'cancelled_photographer' || booking.status === 'failed') {
+      continue
+    }
+
+    const bDate = new Date(booking.shooting_date)
+    const bDateStr = `${bDate.getFullYear()}-${String(bDate.getMonth() + 1).padStart(2, '0')}-${String(bDate.getDate()).padStart(2, '0')}`
+    if (bDateStr !== shootingDate.value) continue
+
+    // Находим тип съёмки для duration
+    const shootingType = referencesStore.shootingTypes.find(
+      (t: any) => t.id === booking.shooting_type_id
+    )
+    const duration = shootingType?.duration_minutes || 30
+    const totalMinutes = duration + 30 // + интервал
+
+    // Помечаем все занятые 30-мин слоты
+    const startMinutes = bDate.getHours() * 60 + bDate.getMinutes()
+    for (let m = startMinutes; m < startMinutes + totalMinutes; m += 30) {
+      const hh = String(Math.floor(m / 60)).padStart(2, '0')
+      const mm = String(m % 60).padStart(2, '0')
+      busy.add(`${hh}:${mm}`)
+    }
+  }
+  return busy
+})
+
+// Свободные слоты
+const freeTimeSlots = computed(() => {
+  return allTimeSlots.value.filter(slot => !busySlots.value.has(slot))
+})
+
+// При смене даты — выбрать первый свободный слот
+watch([() => shootingDate.value, freeTimeSlots], () => {
+  if (freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
+    shootingTime.value = freeTimeSlots.value[0]
   }
 })
 
@@ -208,7 +270,9 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
-            <input v-model="shootingTime" type="time" class="modal-input" required />
+            <select v-model="shootingTime" class="modal-input" required>
+              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Дней:</label>

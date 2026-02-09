@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import BookingsFullCalendar from './BookingsFullCalendar.vue'
 import BookingsCalendar from './BookingsCalendar.vue'
 import IncomeTable from './IncomeTable.vue'
 import ExpensesTable from './ExpensesTable.vue'
@@ -53,7 +54,12 @@ function switchTab(tab: string) {
 
     <!-- Контент вкладок -->
     <div class="tab-content">
-      <BookingsCalendar v-if="activeTab === 'bookings'" />
+      <template v-if="activeTab === 'bookings'">
+        <BookingsFullCalendar />
+        <div style="margin-top: 30px;">
+          <BookingsCalendar />
+        </div>
+      </template>
       <IncomeTable v-if="activeTab === 'income'" />
       <ExpensesTable v-if="activeTab === 'expenses'" />
       <Reports v-if="activeTab === 'reports'" />
