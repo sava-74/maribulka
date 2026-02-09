@@ -107,7 +107,16 @@ watch(() => props.isVisible, (visible) => {
   }
 })
 
-// Все временные слоты с 08:00 до 22:00 (шаг 30 мин)
+// Сегодняшняя дата (для ограничения min)
+const todayStr = computed(() => {
+  const t = new Date()
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+})
+
+// Выбранная дата — сегодня?
+const isToday = computed(() => shootingDate.value === todayStr.value)
+
+// Все кандидатные слоты с 08:00 до 22:00 (шаг 30 мин)
 const allTimeSlots = computed(() => {
   const slots: string[] = []
   for (let h = 8; h <= 22; h++) {
@@ -117,10 +126,10 @@ const allTimeSlots = computed(() => {
   return slots
 })
 
-// Занятые слоты на выбранную дату
-const busySlots = computed(() => {
-  if (!shootingDate.value) return new Set<string>()
-  const busy = new Set<string>()
+// Занятые блоки на выбранную дату: массив [startMin, endMin]
+const busyBlocks = computed(() => {
+  if (!shootingDate.value) return [] as [number, number][]
+  const blocks: [number, number][] = []
 
   for (const booking of bookingsStore.bookings) {
     if (booking.status === 'cancelled' || booking.status === 'cancelled_client' ||
@@ -132,31 +141,55 @@ const busySlots = computed(() => {
     const bDateStr = `${bDate.getFullYear()}-${String(bDate.getMonth() + 1).padStart(2, '0')}-${String(bDate.getDate()).padStart(2, '0')}`
     if (bDateStr !== shootingDate.value) continue
 
-    // Находим тип съёмки для duration
     const shootingType = referencesStore.shootingTypes.find(
       (t: any) => t.id === booking.shooting_type_id
     )
     const duration = shootingType?.duration_minutes || 30
-    const totalMinutes = duration + 30 // + интервал
-
-    // Помечаем все занятые 30-мин слоты
-    const startMinutes = bDate.getHours() * 60 + bDate.getMinutes()
-    for (let m = startMinutes; m < startMinutes + totalMinutes; m += 30) {
-      const hh = String(Math.floor(m / 60)).padStart(2, '0')
-      const mm = String(m % 60).padStart(2, '0')
-      busy.add(`${hh}:${mm}`)
-    }
+    const startMin = bDate.getHours() * 60 + bDate.getMinutes()
+    const endMin = startMin + duration + 30 // duration + обязательный перерыв
+    blocks.push([startMin, endMin])
   }
-  return busy
+  return blocks
 })
 
-// Свободные слоты
+// Длительность нового бронирования (duration + 30 мин перерыв)
+const newBookingBlock = computed(() => {
+  if (!selectedShootingType.value) return 0
+  return (selectedShootingType.value.duration_minutes || 30) + 30
+})
+
+// Свободные слоты: только те, куда новый блок влезает целиком без пересечений
 const freeTimeSlots = computed(() => {
-  return allTimeSlots.value.filter(slot => !busySlots.value.has(slot))
+  if (!shootingTypeId.value || newBookingBlock.value === 0) return [] as string[]
+
+  const blockLen = newBookingBlock.value
+  // Текущее время в минутах (для фильтрации прошедших слотов на сегодня)
+  const now = new Date()
+  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+
+  return allTimeSlots.value.filter(slot => {
+    const [hh, mm] = slot.split(':').map(Number)
+    const candidateStart = hh * 60 + mm
+    const candidateEnd = candidateStart + blockLen
+
+    // На сегодня — пропускаем слоты раньше текущего времени
+    if (isToday.value && candidateStart <= nowMinutes) return false
+
+    // Проверяем что блок не выходит за рабочий день (до 23:00 = 1380 мин)
+    if (candidateEnd > 23 * 60) return false
+
+    // Проверяем пересечение с каждым занятым блоком
+    for (const [busyStart, busyEnd] of busyBlocks.value) {
+      if (candidateStart < busyEnd && candidateEnd > busyStart) {
+        return false // пересечение
+      }
+    }
+    return true
+  })
 })
 
-// При смене даты — выбрать первый свободный слот
-watch([() => shootingDate.value, freeTimeSlots], () => {
+// При смене даты/типа — выбрать первый свободный слот
+watch([() => shootingDate.value, () => shootingTypeId.value, freeTimeSlots], () => {
   if (freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
     shootingTime.value = freeTimeSlots.value[0]
   }
@@ -266,11 +299,13 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Дата съёмки: *</label>
-            <input v-model="shootingDate" type="date" class="modal-input" required />
+            <input v-model="shootingDate" type="date" class="modal-input" :min="todayStr" required />
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
-            <select v-model="shootingTime" class="modal-input" required>
+            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
+              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
+              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
               <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
             </select>
           </div>

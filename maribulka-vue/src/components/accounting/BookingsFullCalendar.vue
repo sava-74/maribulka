@@ -47,6 +47,15 @@ const selectedDate = ref<string>('')
 
 // Текущий режим просмотра
 const isDayView = ref(false)
+const currentCalendarDate = ref('')
+
+// Текущий день в календаре — не в прошлом?
+const canAddBooking = computed(() => {
+  if (!isDayView.value || !currentCalendarDate.value) return false
+  const today = new Date()
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  return currentCalendarDate.value >= todayStr
+})
 
 // Интервал между съёмками (30 мин)
 const INTERVAL_MINUTES = 30
@@ -183,14 +192,11 @@ const calendarOptions = computed(() => ({
 function handleDateClick(info: any) {
   const calendarApi = calendarRef.value?.getApi()
   if (calendarApi) {
-    // Если уже в режиме дня и кликнули на ту же дату - открыть модалку добавления
-    if (info.view.type === 'timeGridDay') {
-      selectedDate.value = info.dateStr
-      showAddModal.value = true
-    } else {
-      // Переключаемся в режим дня
+    if (info.view.type !== 'timeGridDay') {
+      // Из месяца переключаемся в режим дня
       calendarApi.changeView('timeGridDay', info.dateStr)
     }
+    // В режиме дня клик по пустому месту — ничего не делаем
   }
 }
 
@@ -222,6 +228,14 @@ function handleEventClick(info: any) {
 function handleDatesSet(info: any) {
   // Обновляем режим просмотра
   isDayView.value = info.view.type === 'timeGridDay'
+
+  // Сохраняем текущую дату календаря (для проверки canAddBooking)
+  if (isDayView.value) {
+    const d = info.start
+    currentCalendarDate.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  } else {
+    currentCalendarDate.value = ''
+  }
 
   // Берём середину видимого диапазона, чтобы корректно определить месяц
   const start = info.start.getTime()
@@ -311,7 +325,7 @@ function closeActionsModal() {
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
       <!-- Кнопка добавления - только в режиме дня -->
       <button
-        v-if="isDayView"
+        v-if="canAddBooking"
         class="glass-button calendar-add-button"
         @click="handleAddBooking"
         title="Добавить запись"

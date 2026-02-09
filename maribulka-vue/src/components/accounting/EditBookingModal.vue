@@ -105,6 +105,77 @@ const totalAmount = computed(() => {
   return finalPrice.value * quantity.value
 })
 
+// Все кандидатные слоты с 08:00 до 22:00 (шаг 30 мин)
+const allTimeSlots = computed(() => {
+  const slots: string[] = []
+  for (let h = 8; h <= 22; h++) {
+    slots.push(`${String(h).padStart(2, '0')}:00`)
+    if (h < 22) slots.push(`${String(h).padStart(2, '0')}:30`)
+  }
+  return slots
+})
+
+// Занятые блоки на выбранную дату (исключая текущую запись)
+const busyBlocks = computed(() => {
+  if (!shootingDate.value) return [] as [number, number][]
+  const blocks: [number, number][] = []
+
+  for (const booking of bookingsStore.bookings) {
+    // Пропускаем текущую редактируемую запись
+    if (booking.id === bookingId.value) continue
+    if (booking.status === 'cancelled' || booking.status === 'cancelled_client' ||
+        booking.status === 'cancelled_photographer' || booking.status === 'failed') {
+      continue
+    }
+
+    const bDate = new Date(booking.shooting_date)
+    const bDateStr = `${bDate.getFullYear()}-${String(bDate.getMonth() + 1).padStart(2, '0')}-${String(bDate.getDate()).padStart(2, '0')}`
+    if (bDateStr !== shootingDate.value) continue
+
+    const shootingType = referencesStore.shootingTypes.find(
+      (t: any) => t.id === booking.shooting_type_id
+    )
+    const duration = shootingType?.duration_minutes || 30
+    const startMin = bDate.getHours() * 60 + bDate.getMinutes()
+    const endMin = startMin + duration + 30
+    blocks.push([startMin, endMin])
+  }
+  return blocks
+})
+
+// Длительность блока для выбранного типа съёмки
+const newBookingBlock = computed(() => {
+  if (!selectedShootingType.value) return 0
+  return (selectedShootingType.value.duration_minutes || 30) + 30
+})
+
+// Свободные слоты
+const freeTimeSlots = computed(() => {
+  if (!shootingTypeId.value || newBookingBlock.value === 0) return [] as string[]
+  const blockLen = newBookingBlock.value
+
+  return allTimeSlots.value.filter(slot => {
+    const [hh, mm] = slot.split(':').map(Number)
+    const candidateStart = hh * 60 + mm
+    const candidateEnd = candidateStart + blockLen
+    if (candidateEnd > 23 * 60) return false
+    for (const [busyStart, busyEnd] of busyBlocks.value) {
+      if (candidateStart < busyEnd && candidateEnd > busyStart) return false
+    }
+    return true
+  })
+})
+
+// При смене типа съёмки — проверить, что текущий слот ещё свободен
+watch([() => shootingTypeId.value, freeTimeSlots], () => {
+  if (freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
+    alertTitle.value = 'Внимание'
+    alertMessage.value = 'Выбранное время не подходит для нового типа съёмки. Выберите другое время.'
+    showAlert.value = true
+    shootingTime.value = freeTimeSlots.value[0]
+  }
+})
+
 // Маска для телефона
 function formatPhone(event: Event) {
   const input = event.target as HTMLInputElement
@@ -184,7 +255,11 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
-            <input v-model="shootingTime" type="time" class="modal-input" required />
+            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
+              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
+              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
+              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Дней:</label>
