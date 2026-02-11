@@ -92,16 +92,4 @@
   .side-bar.expanded .nav-links {
     display: block;
   }
-
-  /* Затемнённый фон за sidebar */
-  .side-bar.expanded::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: -1;
-  }
 }

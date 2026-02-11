@@ -99,16 +99,20 @@ onUnmounted(() => {
 // Преобразование записей в формат событий FullCalendar
 const calendarEvents = computed(() => {
   const events: any[] = []
+  const datePriorityMap = new Map<string, boolean>() // карта приоритета красного цвета по дате
 
+  // Сначала определяем, есть ли в каждой дате отмененные/не состоявшиеся записи
   for (const booking of bookingsStore.bookings) {
-    // Пропускаем отменённые записи
     if (booking.status === 'cancelled_client' ||
         booking.status === 'cancelled_photographer' ||
         booking.status === 'cancelled' ||
         booking.status === 'failed') {
-      continue
+      const date = booking.shooting_date.split('T')[0]
+      datePriorityMap.set(date, true)
     }
+  }
 
+  for (const booking of bookingsStore.bookings) {
     // Находим тип съёмки для получения duration_minutes
     const shootingType = referencesStore.shootingTypes.find(
       (t: any) => t.id === booking.shooting_type_id
@@ -124,12 +128,27 @@ const calendarEvents = computed(() => {
     // Определяем цвет по статусу
     let backgroundColor = '#4682B4' // new - темно-голубой (steel blue)
     let textColor = '#FFF'
+    
     if (booking.status === 'completed') {
       backgroundColor = '#FFA500' // оранжевый
       textColor = '#000'
     }
     if (booking.status === 'delivered') {
       backgroundColor = '#2E8B57' // темно-зелёный (sea green)
+      textColor = '#FFF'
+    }
+    if (booking.status === 'cancelled_client' ||
+        booking.status === 'cancelled_photographer' ||
+        booking.status === 'cancelled' ||
+        booking.status === 'failed') {
+      backgroundColor = '#DC2626' // красный для отмененных/не состоявшихся
+      textColor = '#FFF'
+    }
+
+    // Проверяем приоритет красного цвета для даты
+    const eventDate = shootingDateTime.toISOString().split('T')[0]
+    if (eventDate && datePriorityMap.has(eventDate)) {
+      backgroundColor = '#DC2626'
       textColor = '#FFF'
     }
 
@@ -179,7 +198,7 @@ function renderEventContent(arg: any) {
 // Опции календаря
 const calendarOptions = computed(() => {
   // Определяем ширину экрана для адаптации (используем reactive переменную)
-  const isMiniCalendar = windowWidth.value <= 420
+  const isMiniCalendar = windowWidth.value <= 768
 
   const options: any = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -191,9 +210,9 @@ const calendarOptions = computed(() => {
       right: 'dayGridMonth,timeGridDay'
     },
     buttonText: {
-      today: windowWidth.value <= 480 ? 'С' : 'Сегодня',
-      month: windowWidth.value <= 480 ? 'М' : 'Месяц',
-      day: windowWidth.value <= 480 ? 'Д' : 'День'
+      today: windowWidth.value <= 768 ? 'С' : 'Сегодня',
+      month: windowWidth.value <= 768 ? 'М' : 'Месяц',
+      day: windowWidth.value <= 768 ? 'Д' : 'День'
     },
     slotMinTime: '08:00:00',
     slotMaxTime: '23:00:00',
@@ -211,9 +230,9 @@ const calendarOptions = computed(() => {
     windowResizeDelay: 100
   }
 
-  // Высота календаря
+  // Высота календаря: зависит от режима и ширины экрана
   if (isMiniCalendar) {
-    options.height = 500  // Фиксированная высота 500px для <=420px
+    options.height = 'auto'  // CSS управляет max-height и overflow
   } else {
     options.height = 'auto'  // Auto для больших экранов
   }

@@ -210,8 +210,8 @@ select.filter-select {
   }
 
   .tabs {
-    gap: 6px;
-    top: 62px;
+    gap: 4px;
+    top: 55px;
     padding: 6px 0;
     overflow-x: auto;
     flex-wrap: nowrap;
@@ -237,9 +237,3 @@ select.filter-select {
   }
 }
 
-@media (max-width: 480px) {
-  .tabs {
-    gap: 4px;
-    top: 55px;
-  }
-}

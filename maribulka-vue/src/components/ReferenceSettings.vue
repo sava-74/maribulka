@@ -106,7 +106,7 @@ onMounted(() => {
 
 .reference-settings h2 {
   margin: 0 0 20px 0;
-  color: #fff;
+  color: #000000;
 }
 
 .sub-tabs {
@@ -120,7 +120,7 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -135,7 +135,7 @@ onMounted(() => {
 
 .table-section h3 {
   margin: 0 0 15px 0;
-  color: #fff;
+  color: #000000;
 }
 
 table {
@@ -158,11 +158,11 @@ th, td {
 
 th {
   font-weight: 600;
-  color: #fff;
+  color: #000000;
 }
 
 td {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(0, 0, 0, 0.9);
 }
 
 tbody tr:hover {

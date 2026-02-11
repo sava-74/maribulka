@@ -1,5 +1,18 @@
 # Проект Maribulka - Система учёта фотосъёмок
 
+## Правила работы
+1. **Изменения:** все изменения в файлах делать только по одобрению пользователя!
+2. **Адаптивность:** только один брейкпоинт ≤768px. Режим ≤480px НЕ существует!
+   - Всё что ≤768px - это мобилка
+   - Стили от старого ≤480px должны быть перенесены в ≤768px (как сделано с календарём)
+
+## Порядок работы
+**Всегда ПЕРЕД вопросами:**
+1. Изучить `DEPLOY_GUIDE.md` и `QUICK_START.md` в проекте
+2. Проверить `.kilocode/memory.md` - там есть ответы
+3. Выполнить анализ через SSH если нужно
+4. Только потом спрашивать пользователя
+
 ## Технологический стек
 - **Frontend:** Vue 3 + TypeScript + Vite (maribulka-vue/)
 - **Backend:** PHP API (api/)
@@ -75,16 +88,16 @@ status (enum: new/completed/delivered/cancelled), cancel_reason, created_at, upd
 - new - стальной синий (#4682B4) + иконка камеры
 - completed - оранжевый (#FFA500) + иконка галочки
 - delivered - морской зеленый (#2E8B57) + иконка доставки
-- cancelled/cancelled_client/cancelled_photographer/failed - серый
+- cancelled/cancelled_client/cancelled_photographer/failed - красный (#DC2626)
 
 ### Мини-календарь (BookingsCalendar.vue)
 - new - синий кружок
 - completed - оранжевый кружок "готово"
 - delivered - зеленый кружок "выдано"
-- failed - серый кружок "ошибка"
-- cancelled - серый кружок "отменено"
-- cancelled_client - серый кружок "отменено клиентом"
-- cancelled_photographer - серый кружок "отменено фотографом"
+- failed - красный кружок "ошибка"
+- cancelled - красный кружок "отменено"
+- cancelled_client - красный кружок "отменено клиентом"
+- cancelled_photographer - красный кружок "отменено фотографом"
 
 ### Заголовки и подписи
 - Фон заголовков: #00FFFF (циан)
@@ -92,14 +105,17 @@ status (enum: new/completed/delivered/cancelled), cancel_reason, created_at, upd
 - Шрифт: calc(1em + 2px), font-weight: 600
 - В мини-календаре и таблицах: тёмно-синий (#1e40af)
 
-## Адаптивность (<=480px)
-- **Календарь:** кнопки переносятся на новую строку
-  - `.fc-toolbar { flex-wrap: wrap }`
-  - `.fc-toolbar-chunk:nth-child(2) { width: 100%; order: -1 }` (дата первой)
+## Адаптивность (≤768px)
+- **Единый брейкпоинт:** всё что ≤768px - это мобилка
+- **Удалить:** @media (max-width: 480px) полностью, его стили перенести в @media (max-width: 768px)
+- **Календарь:** CSS: `.fc-timegrid { max-height: calc(100vh - 120px); overflow-y: auto }`
+- **Модальные окна:**
+  - Проблема: `max-height: 95vh` и `height: 100vh` обрезают контент
+  - Решение: удалить оба, оставить `max-height: 90vh` с `overflow-y: auto`
 - **Sidebar:** сворачивается, overlay для мобильных
-- **TopBar:** уменьшенная высота (50px вместо 46px), уменьшенные отступы
-- **Content:** margin-left: 5px, margin-top зависит от TopBar
-- **Hover эффекты:** отключены для touch устройств (transform: none)
+- **TopBar:** уменьшенная высота (50px), уменьшенные отступы
+- **Content:** margin-left: 5px
+- **Hover эффекты:** отключены для touch устройств
 
 ## Последние изменения (09.02.2026)
 ### Логика статусов бронирований (api/bookings.php)
@@ -123,3 +139,58 @@ status (enum: new/completed/delivered/cancelled), cancel_reason, created_at, upd
 - Стилизованы заголовки и подписи
 - Осталось: настроить hover эффекты для таблиц
 - Осталось: доработать адаптивность для мобильных устройств
+
+---
+
+## Подключение к серверу BeGet
+
+### SSH подключение
+```bash
+ssh -i C:\Users\sava\.ssh\beget_maribulka sava7424@sava7424.beget.tech
+```
+Или команды из любой директории:
+```bash
+ssh -i ~/.ssh/beget_maribulka sava7424@sava7424.beget.tech "команда"
+```
+
+### Документация для анализа
+Всегда смотреть **ПЕРЕД** вопросами пользователя:
+- `DEPLOY_GUIDE.md` - полный гайд по деплою
+- `QUICK_START.md` - шпаргалка по командам
+
+### Быстрые команды для анализа
+```bash
+# Структура проекта на сервере
+ls -la /home/s/sava7424/maribulka.rf/
+
+# База данных
+mysql -u sava7424_mari -p'Zxc456Siti' -e "SELECT COUNT(*) FROM bookings" sava7424_mari
+
+# Логи ошибок
+tail -5 /home/s/sava7424/maribulka.rf/xn--80aac1alfd7a3a5g.xn--p1ai.error.log
+
+# Проверка API файлов
+ls -la /home/s/sava7424/maribulka.rf/maribulka-vue/dist/api/
+
+# Мониторинг сайта
+curl -s -o /dev/null -w "%{http_code}" http://марибулька.рф/
+```
+
+### Данные для подключения
+| Параметр | Значение |
+|----------|----------|
+| **SSH Host** | sava7424.beget.tech |
+| **SSH User** | sava7424 |
+| **SSH Key** | ~/.ssh/beget_maribulka |
+| **DB Host** | localhost |
+| **DB Name** | sava7424_mari |
+| **DB User** | sava7424_mari |
+| **DB Pass** | Zxc456Siti |
+| **Сайт** | http://марибулька.рф |
+
+### Типовые задачи на сервере
+1. Проверить ошибки → `tail -f *.error.log`
+2. Проверить БД → `mysql -u sava7424_mari -p'...'`
+3. Проверить файлы API → `ls -la /home/.../dist/api/`
+4. Сделать бэкап → `cp -r dist dist_backup_$(date +%Y%m%d_%H%M%S)`
+5. Откатить → `cp -r dist_backup_YYYYMM... dist`

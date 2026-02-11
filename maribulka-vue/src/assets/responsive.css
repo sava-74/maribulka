@@ -2,7 +2,7 @@
    RESPONSIVE STYLES FOR MOBILE DEVICES
    ============================================ */
 
-/* Tablets and Mobile (≤768px) */
+/* Mobile (≤768px) */
 @media (max-width: 768px) {
   /* ========== TABLES ========== */
   .table-container {
@@ -11,14 +11,12 @@
   }
 
   table {
-    /*min-width: 800px;*/ /* Позволяет горизонтальный скролл */
-    
-    font-size: 12px;
+    font-size: 11px;
   }
 
   table th,
   table td {
-    padding: 6px 4px;
+    padding: 4px 2px;
     white-space: nowrap;
   }
 
@@ -26,9 +24,8 @@
   .modal-glass {
     width: 95vw !important;
     max-width: 95vw !important;
-    max-height: 95vh;
+    max-height: 90vh;
     overflow-y: auto;
-    margin: auto;
   }
 
   .modal-wide {
@@ -58,7 +55,7 @@
 
   .accounting-actions {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
   }
 
@@ -72,58 +69,6 @@
   }
 
   /* ========== GENERAL ========== */
-  h2 {
-    font-size: 18px;
-  }
-
-  h3 {
-    font-size: 16px;
-  }
-
-  .modal-input,
-  .modal-textarea {
-    font-size: 14px !important;
-    padding: 8px !important;
-  }
-
-  /* ========== PRICE INFO ========== */
-  .price-info {
-    font-size: 12px;
-  }
-
-  .price-row {
-    padding: 3px 0;
-  }
-}
-
-/* Small Mobile (≤480px) */
-@media (max-width: 480px) {
-  /* ========== MODALS ========== */
-  .modal-glass {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0 !important;
-    margin: 0;
-  }
-
-  /* ========== TABLES ========== */
-  table {
-    font-size: 11px;
-  }
-
-  table th,
-  table td {
-    padding: 4px 2px;
-  }
-
-  /* ========== BUTTONS ========== */
-  .accounting-actions {
-    gap: 6px;
-  }
-
-  /* ========== TEXT ========== */
   h2 {
     font-size: 16px;
   }
@@ -139,13 +84,25 @@
   .modal-input,
   .modal-textarea {
     font-size: 13px !important;
+    padding: 8px !important;
   }
+
+  /* ========== PRICE INFO ========== */
+  .price-info {
+    font-size: 12px;
+  }
+
+  .price-row {
+    padding: 3px 0;
+  }
+
 }
 
 /* Landscape orientation on mobile */
 @media (max-width: 768px) and (orientation: landscape) {
   .modal-glass {
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
   }
 }
+

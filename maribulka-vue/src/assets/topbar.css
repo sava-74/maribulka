@@ -37,11 +37,13 @@
 }
 
 /* ========== TOPBAR MOBILE (<=768px) ========== */
+
 @media (max-width: 768px) {
   .top-bar {
     margin: 5px;
-    height: 50px;
-    padding: 0 10px;
+    height: 46px;
+    /*padding:  10px;*/
+    border-radius: 6px;
     padding-left: 55px;
   }
 
@@ -49,20 +51,9 @@
     width: 35px !important;
     height: 35px !important;
   }
-}
-
-@media (max-width: 480px) {
-  .top-bar {
-    margin: 3px;
-    height: 46px;
-    border-radius: 6px;
-  }
-
-  .site-name {
-    display: none;
-  }
 
   .logo-area {
     gap: 8px;
   }
 }
+

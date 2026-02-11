@@ -12,6 +12,14 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-height: 680px;
+}
+
+/* Скролл только у контента календаря  */
+.calendar-container .fc-timegrid {
+  max-height: 625px !important;
+  /*max-height: calc(100vh - 120px) !important;*/
+  overflow-y: auto !important;
 }
 
 /* FullCalendar базовые стили */
@@ -21,7 +29,7 @@
 
 
 .calendar-container .fc-toolbar-title {
-  font-size: 1.3em !important;
+  /*font-size: 1.3em !important;*/
   font-weight: 600;
 }
 
@@ -147,88 +155,23 @@
 /* ========== CALENDAR MOBILE (<=768px) ========== */
 @media (max-width: 768px) {
   .calendar-container {
-    padding: 8px;
-    padding-top: 56px;
-  }
-
-  .calendar-container .fc-toolbar {
-    flex-wrap: wrap !important;
-    gap: 6px;
-    justify-content: center !important;
-  }
-
-  .calendar-container .fc-toolbar-title {
-    font-size: 1.1em !important;
-    width: 100%;
-    text-align: center;
-    order: -1;
-  }
-
-  .calendar-container .fc-daygrid-day-number {
-    font-size: 13px;
-  }
-
-  .calendar-container .fc-event {
-    font-size: 9px;
-  }
-
-  /* Убираем отступ тулбара под кнопку таблицы */
-  .calendar-container .fc-toolbar-chunk:first-child {
-    margin-left: 0 !important;
-  }
-
-  /* Кнопки: привязка к углам */
-  .calendar-container .calendar-table-button {
-    top: 8px;
-    left: 8px;
-  }
-
-  .calendar-container .calendar-add-button {
-    top: 8px;
-    right: 8px;
-  }
-
-  /* Компактные ячейки */
-  .calendar-container .fc-daygrid-day-frame {
-    height: 70px !important;
-    min-height: 70px !important;
-    max-height: 70px !important;
-  }
-
-  /* Компактные слоты в режиме дня */
-  .calendar-container .fc-timegrid-slot {
-    height: 35px !important;
-  }
-
-  /* Компактные события в режиме дня */
-  .event-day-detail {
-    font-size: 10px;
-    line-height: 1.2;
-  }
-
-  .event-day-title {
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 480px) {
-  .calendar-container {
     padding: 4px;
     padding-top: 52px;
+    max-height: 500px;
   }
 
-  .calendar-container .fc-toolbar-title {
-    font-size: 0.9em !important;
+  .calendar-container .fc-timegrid {
+    max-height: 400px !important;
   }
 
   .calendar-container .fc-daygrid-day-frame {
-    height: 50px !important;
-    min-height: 50px !important;
-    max-height: 50px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
   }
 
   .calendar-container .fc-daygrid-day-number {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .calendar-container .fc-event {
@@ -236,16 +179,53 @@
     padding: 1px 2px;
   }
 
+  .calendar-container .fc-timegrid-slot {
+    height: 24px !important;
+  }
+
+  .calendar-container .fc-timegrid-slot-label {
+    font-size: 10px;
+  }
+
+  .calendar-container .fc-col-header-cell-cushion {
+    font-size: 10px;
+  }
+
+  /* Скрыть текст событий и показать цветные точки */
+  .calendar-container .fc-daygrid-event {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    padding: 0 !important;
+    min-height: 8px !important;
+    height: 8px !important;
+  }
+  
+  .calendar-container .fc-daygrid-event .fc-event-title {
+    display: none !important;
+  }
+  
+  .calendar-container .fc-daygrid-event .fc-event-main {
+    display: none !important;
+  }
+  
+  /* Делаем событие квадратной точкой */
+  .calendar-container .fc-daygrid-event {
+    border-radius: 50% !important;
+    width: 8px !important;
+    height: 8px !important;
+    margin: 0 auto !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
   .event-day-detail {
     font-size: 8px;
   }
 
   .event-day-title {
     font-size: 9px;
-  }
-
-  .calendar-container .fc-timegrid-slot {
-    height: 28px !important;
   }
 
   /* Позиция кнопок таблица/добавить на маленьком экране */
