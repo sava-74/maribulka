@@ -194,3 +194,147 @@ curl -s -o /dev/null -w "%{http_code}" http://марибулька.рф/
 3. Проверить файлы API → `ls -la /home/.../dist/api/`
 4. Сделать бэкап → `cp -r dist dist_backup_$(date +%Y%m%d_%H%M%S)`
 5. Откатить → `cp -r dist_backup_YYYYMM... dist`
+
+---
+
+## MCP Memory Server
+
+### Установка (11.02.2026)
+MCP Memory Server установлен для сохранения контекста между сессиями.
+
+**Команды для установки:**
+```bash
+# Создание директории
+mkdir "C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server"
+
+# Инициализация проекта
+cd "C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server"
+npm init -y
+
+# Установка зависимостей
+npm install @modelcontextprotocol/sdk zod
+npm install --save-dev @types/node typescript
+
+# Создание файлов:
+# - package.json
+# - tsconfig.json
+# - src/index.ts (см. ниже)
+
+# Сборка
+npm run build
+```
+
+**Конфигурация MCP Settings:**
+Файл: `C:\Users\sava\AppData\Roaming\Code\User\globalStorage\kilocode.kilo-code\settings\mcp_settings.json`
+```json
+{
+  "mcpServers": {
+    "memory": {
+      "command": "node",
+      "args": ["C:\\Users\\sava\\AppData\\Roaming\\Kilo-Code\\MCP\\memory-server\\build\\index.js"],
+      "env": {},
+      "disabled": false,
+      "alwaysAllow": [],
+      "disabledTools": []
+    }
+  }
+}
+```
+
+### Доступные инструменты
+
+#### add_memory_note
+Добавить заметку в память.
+
+**Параметры:**
+- `title` (string) - Заголовок заметки (обязательный)
+- `content` (string) - Содержание заметки (обязательный)
+- `category` (string) - Категория заметки (опциональный)
+
+**Пример:**
+```typescript
+mcp--memory--add_memory_note({
+  title: "Новая задача",
+  content: "Сделать что-то важное",
+  category: "tasks"
+})
+```
+
+#### get_memory_notes
+Получить все заметки из памяти.
+
+**Параметры:**
+- `category` (string) - Фильтр по категории (опциональный)
+
+**Пример:**
+```typescript
+mcp--memory--get_memory_notes({ category: "tasks" })
+```
+
+#### delete_memory_note
+Удалить заметку из памяти.
+
+**Параметры:**
+- `id` (number) - ID заметки для удаления
+
+**Пример:**
+```typescript
+mcp--memory--delete_memory_note({ id: 1234567890 })
+```
+
+#### update_memory_note
+Обновить заметку в памяти.
+
+**Параметры:**
+- `id` (number) - ID заметки для обновления (обязательный)
+- `title` (string) - Новый заголовок (опциональный)
+- `content` (string) - Новое содержание (опциональный)
+- `category` (string) - Новая категория (опциональный)
+
+**Пример:**
+```typescript
+mcp--memory--update_memory_note({
+  id: 1234567890,
+  title: "Обновленная задача",
+  content: "Новое содержание"
+})
+```
+
+#### add_context
+Добавить контекстную информацию.
+
+**Параметры:**
+- `key` (string) - Ключ контекста (обязательный)
+- `value` (string) - Значение контекста (обязательный)
+
+**Пример:**
+```typescript
+mcp--memory--add_context({
+  key: "current_task",
+  value: "Работа над календарем"
+})
+```
+
+#### get_context
+Получить контекстную информацию.
+
+**Параметры:**
+- `key` (string) - Ключ контекста (опциональный)
+
+**Пример:**
+```typescript
+mcp--memory--get_context({ key: "current_task" })
+```
+
+### Файлы сервера
+- [`package.json`](C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server\package.json) - Конфигурация проекта
+- [`tsconfig.json`](C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server\tsconfig.json) - Настройки TypeScript
+- [`src/index.ts`](C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server\src\index.ts) - Основной код сервера
+- [`build/index.js`](C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server\build\index.js) - Скомпилированный код
+- [`memory.json`](C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server\src\index.ts:15) - Файл хранения данных (автоматически создается)
+
+### Обновление сервера
+```bash
+cd "C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server"
+npm run build
+```
