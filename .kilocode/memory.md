@@ -338,3 +338,163 @@ mcp--memory--get_context({ key: "current_task" })
 cd "C:\Users\sava\AppData\Roaming\Kilo-Code\MCP\memory-server"
 npm run build
 ```
+
+---
+
+## CSS файлы проекта (12.02.2026)
+
+### Статус использования CSS переменных
+
+| Файл | Статус | Жёстко заданные цвета |
+|------|--------|----------------------|
+| theme.css | ✅ Определяет переменные | 0 |
+| buttons.css | ✅ Полностью через переменные | 0 |
+| calendar.css | ⚠️ Частично | 5 цветов |
+| tables.css | ⚠️ Частично | 11 цветов |
+| layout.css | ⚠️ Частично | 6 цветов |
+| modal.css | ⚠️ Частично | 14 цветов |
+| responsive.css | - | 0 |
+| sidebar.css | ✅ Полностью через переменные | 0 |
+| topbar.css | ✅ Полностью через переменные | 0 |
+
+### Основные CSS переменные из theme.css
+
+- `--generalColor`: #39FF14 (неоновый зелёный)
+- `--neon-blue`: #00F3FF
+- `--glass-bg`: rgba(255, 255, 255, 0.4)
+- `--generalTextColor`: #333
+- `--glass-shadowButton`: 4px 4px 8px rgba(0, 0, 0, 0.2)
+- `--glass-bgButton`: rgba(255, 255, 255, 0.4)
+- `--glass-bgButtonActive`: rgba(57, 255, 20, 0.3)
+- `--glass-shadowPanel`: 10px 10px 10px rgba(0, 0, 0, 0.2)
+- `--panelRadius`: 12px
+- `--calendar-bg`: rgba(252, 250, 250, 0.8)
+- `--calendar-colorDayGrid`: rgba(57, 255, 20, 0.1)
+- `--calendar-colorToday`: rgba(28, 20, 255, 0.15)
+- `--calendar-colorMetka`: rgb(35, 138, 26)
+
+### Проблемы с жёстко заданными цветами
+
+**calendar.css:**
+- #1a73e8, #666, black, #00FFFF, #1e40af
+
+**tables.css:**
+- #000, #4ade80, #f87171, #dc2626, #9ca3af, #1e40af
+- ⚠️ rgb(0, 0, 0) - ОСТАЛСЯ (рамки ячеек) - решено использовать #000
+
+**layout.css:**
+- #fff, #333, #4ade80, #f87171
+
+**modal.css:**
+- #333, #dc2626, #f87171, #059669, #d97706, #6b7280
+
+---
+
+## Стили таблиц (12.02.2026) - ЗАВЕРШЕНО
+
+### Сформировавшийся шаблон таблиц
+
+**CSS классы:**
+1. `.table-general` - подложка (фон, рамка, скругление, тень)
+2. `.table-scroll-container` - контейнер прокрутки (рамка, overflow)
+3. `.accounting-table` - сама таблица (без внешней рамки)
+4. `.accounting-table thead` - заголовки (серый фон, липкое позиционирование)
+5. `.accounting-table th, td` - ячейки (внутренние рамки, padding)
+
+**Для применения на других таблицах:**
+1. Обернуть таблицу в `<div class="table-general">`
+2. Внутри добавить `<div class="table-scroll-container">`
+3. Внутри разместить `<table class="accounting-table">`
+
+### Изменения в tables.css
+
+**.table-general:**
+```css
+.table-general {
+  background: var(--glass-bg);
+  border: 1px solid #000; /* Пользователь изменил на чёрный */
+  border-radius: var(--panelRadius);
+  box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+}
+```
+
+**.table-scroll-container:**
+```css
+.table-scroll-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 350px);
+  border: 1px solid #000; /* Рамка вокруг таблицы */
+}
+```
+
+**.accounting-table thead:**
+```css
+.accounting-table thead {
+  background: #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 12px 8px;
+}
+```
+
+**.accounting-table th, td:**
+```css
+.accounting-table th,
+.accounting-table td {
+  border-bottom: 1px solid rgb(0, 0, 0);
+  border-right: 1px solid rgb(0, 0, 0);
+  font-size: 14px;
+  padding: 12px 8px;
+}
+```
+
+---
+
+## TODO: CSS переменные (12.02.2026)
+
+### Приоритет 1: Решить вопрос со стилями таблицы
+- [x] Проверить почему таблица в Accounting.vue не отображается
+- [x] Проверить v-if="showTable" в Accounting.vue
+- [x] Проверить стили .table-container - ИСПРАВЛЕНА ПОДЛОЖКА (12.02.2026)
+  - Убрана дублирующая подложка из Accounting.vue
+  - В BookingsCalendar.vue добавлен класс `table-general` к `bookings-calendar`
+  - В BookingsCalendar.vue заменён `table-container` на `table-scroll-container`
+  - В tables.css добавлены стили:
+    - `.table-scroll-container` - прокрутка по X и Y
+    - `.table-general` - подложка (одна, без дублирования)
+    - `.bookings-calendar` - padding
+
+### Приоритет 2: Внедрение CSS переменных
+**calendar.css:**
+- [ ] #1a73e8 → создать переменную
+- [ ] #666 → создать переменную
+- [ ] black → создать переменную
+- [ ] #00FFFF → создать переменную
+- [ ] #1e40af → создать переменную
+
+**tables.css:**
+- [ ] rgb(0, 0, 0) → создать переменную
+- [ ] #000 → создать переменную
+- [ ] #4ade80 → создать переменную
+- [ ] #f87171 → создать переменную
+- [ ] #dc2626 → создать переменную
+- [ ] #9ca3af → создать переменную
+- [ ] #1e40af → создать переменную
+
+**layout.css:**
+- [ ] #fff → создать переменную
+- [ ] #333 → создать переменную
+- [ ] #4ade80 → создать переменную
+- [ ] #f87171 → создать переменную
+
+**modal.css:**
+- [ ] #333 → создать переменную
+- [ ] #dc2626 → создать переменную
+- [ ] #f87171 → создать переменную
+- [ ] #059669 → создать переменную
+- [ ] #d97706 → создать переменную
+- [ ] #6b7280 → создать переменную

@@ -404,7 +404,7 @@ function openMonthPicker() {
 </script>
 
 <template>
-  <div class="bookings-calendar">
+  <div class="bookings-calendar table-general">
     <!-- Toolbar с заголовком и кнопками -->
     <div class="header-with-action">
       <!-- Кнопки действий -->
@@ -548,7 +548,7 @@ function openMonthPicker() {
     </div>
 
     <!-- Таблица -->
-    <div v-if="bookingsStore.bookings.length > 0" class="table-container">
+    <div v-if="bookingsStore.bookings.length > 0" class="table-scroll-container">
       <table class="accounting-table tanstack-table">
         <thead>
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">

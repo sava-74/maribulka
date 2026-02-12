@@ -65,7 +65,7 @@ function switchTab(tab: string) {
         
         <!-- Таблица -->
         
-          <div v-if="showTable" class="table-container" style="margin-top: 20px;">
+          <div v-if="showTable" style="margin-top: 20px;">
             <BookingsCalendar />
           </div>
         
