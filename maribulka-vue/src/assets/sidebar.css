@@ -57,7 +57,7 @@
     position: fixed;
     top: 11px !important;
     left: 21px !important;
-    width: 1px;
+    width: 32px;
     bottom: 10px;
     background: transparent;
     border: 1px solid transparent;
@@ -74,11 +74,7 @@
 
   /* Скрываем навигацию когда sidebar свёрнут */
   .side-bar .nav-links {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    pointer-events: none;
-    transition: opacity 0.3s ease, max-height 0.3s ease;
+    display: none;
   }
 
   /* Expanded: полноценное меню-overlay */
@@ -101,9 +97,6 @@
 
   /* Показываем навигацию при раскрытии */
   .side-bar.expanded .nav-links {
-    opacity: 1;
-    max-height: 500px;
-    overflow: hidden;
-    transition: opacity 0.2s ease 0.3s, max-height 0.3s ease 0.3s;
+    display: block;
   }
 }
