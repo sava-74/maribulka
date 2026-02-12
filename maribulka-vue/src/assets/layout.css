@@ -12,13 +12,34 @@
 .tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
   flex-wrap: wrap;
   position: sticky;
   top: 80px;
   z-index: 50;
-  padding: 8px 0;
-  background: linear-gradient(to bottom, #f9f9f9 70%, transparent);
+  /*background: linear-gradient(to bottom, #f9f9f9 70%, transparent);*/
+}
+
+/* Обёртка навигации Accounting - как table-general */
+.accounting-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-top: 7px;
+  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  display: flex;
+  justify-content: center;
+  overflow-x: visible;
+}
+
+/* Отступ контента от навигации */
+.accounting-nav + .tab-content {
+  margin-top: 20px;
 }
 
 /* Контент вкладок */
@@ -212,7 +233,7 @@ select.filter-select {
   .tabs {
     gap: 4px;
     top: 55px;
-    padding: 6px 0;
+    padding: 8px 10px;
     overflow-x: auto;
     flex-wrap: nowrap;
   }
@@ -234,6 +255,11 @@ select.filter-select {
   .filter-group {
     width: 100%;
     min-width: unset;
+  }
+
+  .accounting-nav {
+    margin-top: 70px;
+    padding: 0;
   }
 }
 

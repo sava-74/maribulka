@@ -41,10 +41,10 @@
 
 @media (max-width: 768px) {
   .top-bar {
-    margin: 5px;
+    margin: 5px 13px;
     height: 46px;
     /*padding:  10px;*/
-    border-radius: var(--panelRadiusSmall);
+    border-radius: var(--panelRadius);
     padding-left: 44px;
     padding-bottom: 1px;
     box-shadow: var(--glass-shadowPanel);

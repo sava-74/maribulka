@@ -24,41 +24,42 @@ function switchTab(tab: string) {
 <template>
   <div class="accounting">
     <!-- Навигация (вкладки) -->
-    <nav class="tabs">
-      <button
-        class="glass-button-text"
-        @click="switchTab('bookings')"
-        :class="{ active: activeTab === 'bookings' }"
-      >
-        Запись
-      </button>
-      <button
-        class="glass-button-text"
-        @click="switchTab('income')"
-        :class="{ active: activeTab === 'income' }"
-      >
-        Приход
-      </button>
-      <button
-        class="glass-button-text"
-        @click="switchTab('expenses')"
-        :class="{ active: activeTab === 'expenses' }"
-      >
-        Расход
-      </button>
-      <button
-        class="glass-button-text"
-        @click="switchTab('reports')"
-        :class="{ active: activeTab === 'reports' }"
-      >
-        Отчёты
-      </button>
-    </nav>
+    <div class="accounting-nav">
+      <nav class="tabs">
+        <button
+          class="glass-button-text"
+          @click="switchTab('bookings')"
+          :class="{ active: activeTab === 'bookings' }"
+        >
+          Запись
+        </button>
+        <button
+          class="glass-button-text"
+          @click="switchTab('income')"
+          :class="{ active: activeTab === 'income' }"
+        >
+          Приход
+        </button>
+        <button
+          class="glass-button-text"
+          @click="switchTab('expenses')"
+          :class="{ active: activeTab === 'expenses' }"
+        >
+          Расход
+        </button>
+        <button
+          class="glass-button-text"
+          @click="switchTab('reports')"
+          :class="{ active: activeTab === 'reports' }"
+        >
+          Отчёты
+        </button>
+      </nav>
+    </div>
 
     <!-- Контент вкладок -->
     <div class="tab-content">
       <template v-if="activeTab === 'bookings'">
-        <h2 class="section-header">Запись на съёмку</h2>
         <!-- Календарь class="calendar-container" -->
         
           <BookingsFullCalendar :showTable="showTable" @toggle-table="showTable = !showTable" />

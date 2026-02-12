@@ -55,10 +55,8 @@
   /* Collapsed: прозрачный, только гамбургер виден */
   .side-bar {
     position: fixed;
-    top: 12px;
-    left: 5px;
     top: 11px !important;
-    left: 11px !important;
+    left: 19px !important;
     width: 45px;
     background: transparent;
     border: none;
@@ -81,8 +79,8 @@
   .side-bar.expanded {
     position: fixed;
     top: 4px !important;
-    left: 2px !important;
-    width: 220px;
+    left: 13px !important;
+    width: 110px;
     bottom: 10px;
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
@@ -91,6 +89,7 @@
     box-shadow: var(--glass-shadowPanel);
     padding: 7px 8px;
     overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10001;
   }
 
