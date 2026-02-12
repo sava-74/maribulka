@@ -22,7 +22,7 @@
   overflow-x: auto;
   overflow-y: auto;
   max-height: calc(100vh - 350px);
-  border: 1px solid black;
+  border: 1px solid var(--generalTabBorderColor);
 }
 
 /* Подложка для таблицы (bookings-calendar) */
@@ -45,12 +45,12 @@
   }*/
 
  .table-containerTab {
-  max-height: calc(100vh - 400px);
-  overflow-y: auto !important;
-  overflow-x: auto !important;
-  position: relative;
-  border: 1px solid rgb(0, 0, 0); 
-  }
+   max-height: calc(100vh - 400px);
+   overflow-y: auto !important;
+   overflow-x: auto !important;
+   position: relative;
+   border: 1px solid var(--generalTabBorderColor);
+ }
 
 .accounting-table {
   width: 100%;
@@ -59,7 +59,7 @@
 }
 
 .accounting-table thead {
-  background: #f0f0f0;
+  background: var(--tableHeaderBg);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -68,9 +68,9 @@
 
 .accounting-table th,
 .accounting-table td {
-  /*padding: 2px;*/
-  border-bottom: 1px solid rgb(0, 0, 0);
-  border-right: 1px solid rgb(0, 0, 0);
+  color: var(--generalTextColor);
+  border-bottom: 1px solid var(--generalTabBorderColor);
+  border-right: 1px solid var(--generalTabBorderColor);
   font-size: 14px;
   padding: 12px 8px;
 }
@@ -113,13 +113,13 @@
 }
 
 .accounting-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--tableHoverBg);
 }
 
 /* Выбранная строка */
 .accounting-table tbody tr.selected {
-  background: rgba(74, 222, 128, 0.2);
-  border-left: 3px solid #4ade80;
+  background: var(--tableSelectedBg);
+  border-left: 3px solid var(--tableSelectedBorder);
 }
 
 .accounting-table tbody tr.selected:hover {
@@ -137,22 +137,22 @@
 
 /* Строка "Отменена" - серый текст */
 .accounting-table tbody tr.cancelled-booking {
-  color: #9ca3af !important;
+  color: var(--statusCancelledColor) !important;
 }
 
 .accounting-table tbody tr.cancelled-booking td {
-  color: #9ca3af !important;
+  color: var(--statusCancelledColor) !important;
 }
 
 /* Суммы */
 .amount-income {
   font-weight: 600;
-  color: #4ade80;
+  color: var(--incomeColor);
 }
 
 .amount-expense {
   font-weight: 600;
-  color: #f87171;
+  color: var(--expenseColor);
 }
 
 .amount-small {
@@ -205,7 +205,7 @@
 
 /* Ссылка телефона в таблице */
 .accounting-table a[href^="tel:"] {
-  color: #1e40af;
+  color: var(--linkColor);
   text-decoration: none;
 }
 

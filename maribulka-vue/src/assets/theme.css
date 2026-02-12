@@ -41,7 +41,16 @@
   --svg-sizeButtonSmall: 20px; /* размер иконок SVG для мобилки */
   --panelRadiusSmall: 8px; /* радиус скругления панелей для мобилки */
 
-
+  /* Таблицы */
+  --generalTabBorderColor: #000; /* рамка контейнера и ячеек */
+  --tableHeaderBg: #f0f0f0; /* фон заголовка */
+  --tableHoverBg: rgba(255, 255, 255, 0.1); /* hover эффект */
+  --tableSelectedBorder: #4ade80; /* рамка выбранной строки */
+  --tableSelectedBg: rgba(74, 222, 128, 0.2); /* фон выбранной строки */
+  --incomeColor: #4ade80; /* доход (зелёный) */
+  --expenseColor: #f87171; /* расход (красный) */
+  --statusCancelledColor: #9ca3af; /* статус отменено */
+  --linkColor: #1e40af; /* ссылки телефона */
 
 }
   
