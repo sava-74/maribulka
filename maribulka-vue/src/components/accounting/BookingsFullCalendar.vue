@@ -378,7 +378,7 @@ function closeActionsModal() {
       <!-- Кнопка таблицы -->
       <button
         class="glass-button calendar-table-button"
-        :class="{ active: props.showTable }"
+        :class="{ active: showTable }"
         @click="emit('toggle-table')"
         title="Показать/скрыть таблицу"
       >

@@ -3,15 +3,16 @@
   top: 0; left: 0; right: 0;
   height: 60px;
   background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--neon-green);
-  border-radius: 8px;
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
   margin: 10px; /* Отступ от краев экрана */
+  box-shadow: var(--glass-shadowPanel);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
+  padding: 0 5px;
   z-index: 1000;
   box-sizing: border-box;
 }
@@ -26,13 +27,13 @@
   width: 40px !important;
   height: 40px !important;
   border-radius: 50%;
-  border: 1px solid var(--neon-green);
+  border: 1px solid var(--generalColor);
   object-fit: cover;
 }
 
 .site-name {
   font-weight: bold;
-  color: #333;
+  color: var(--generalTextColor);
   font-size: 1.1rem;
 }
 
@@ -43,8 +44,10 @@
     margin: 5px;
     height: 46px;
     /*padding:  10px;*/
-    border-radius: 6px;
-    padding-left: 55px;
+    border-radius: var(--panelRadiusSmall);
+    padding-left: 44px;
+    padding-bottom: 1px;
+    box-shadow: var(--glass-shadowPanel);
   }
 
   .owner-photo {

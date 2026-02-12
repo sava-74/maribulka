@@ -59,10 +59,16 @@ function switchTab(tab: string) {
     <div class="tab-content">
       <template v-if="activeTab === 'bookings'">
         <h2 class="section-header">Запись на съёмку</h2>
-        <BookingsFullCalendar :showTable="showTable" @toggle-table="showTable = !showTable" />
-        <div v-if="showTable" style="margin-top: 30px;">
-          <BookingsCalendar />
-        </div>
+        <!-- Календарь class="calendar-container" -->
+        
+          <BookingsFullCalendar :showTable="showTable" @toggle-table="showTable = !showTable" />
+        
+        <!-- Таблица -->
+        
+          <div v-if="showTable" class="table-container" style="margin-top: 20px;">
+            <BookingsCalendar />
+          </div>
+        
       </template>
       <IncomeTable v-if="activeTab === 'income'" />
       <ExpensesTable v-if="activeTab === 'expenses'" />

@@ -3,7 +3,7 @@
   margin-top: 75px;
 
   /* Отступ слева: 58px (ширина Сайд-бара) + 10px (margin) + 10px (запас) = 78px */
-  margin-left: 70px;
+  margin-left: 75px;
 
   padding-right: 20px;
 }
@@ -20,7 +20,7 @@
   z-index: 999;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {   /* Темная тема: маска под TopBar становится темной, чтобы не выделяться на фоне остального контента */
   .content::before {
     background: #242424;
   }

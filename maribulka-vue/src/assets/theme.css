@@ -1,5 +1,47 @@
 :root {
-  --neon-green: #39FF14;
+  --generalColor: #39FF14;
   --neon-blue: #00F3FF;
   --glass-bg: rgba(255, 255, 255, 0.4);
+  --generalTextColor: #333;
+
+  --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
+  --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */
+  /*--test-shadow: 4px 4px 8px rgba(43, 4, 235, 0.666); /* для тестов */
+  --glass-bgButton: rgba(255, 255, 255, 0.4); /*задний фон кнопки*/
+  --glass-bgButtonActive: rgba(57, 255, 20, 0.3); /*задний фон активной кнопки*/
+  --glass-textButtonColor: #333; /* цвет текста на кнопках*/
+  --glass-borderButttonColorFlash: #ffffff; /* цвет границы при флеше */
+  --glass-borderbuttonAlertColor: #ff0000; /* цвет границы для кнопки с алертом */
+  --svg-colorButton: #333; /* цвет иконок SVG */
+  --svg-sizeButton: 24px; /* размер иконок SVG */
+  --text-colorAlert: #ff0000; /* цвет текста для алерта */
+
+  --glass-widthButton: 40px;/* ширина кнопки */
+  --glass-heightButton: 40px;/* высота кнопки */
+  --glass-widthButtonText: 150px;/* ширина кнопки с текстом */
+  --glass-heightButtonText: 40px;/* высота кнопки с текстом */
+  --glass-widthButtonCalendar: 80px;/* ширина кнопки с текстом */
+  --glass-heightButtonCalendar: 40px;/* высота кнопки с текстом */
+  --glass-borderRadiusButton: 8px;/* радиус скругления кнопки */
+  --glass-bgFilter: blur(12px); /* размытие фона для эффекта стекла */
+
+  /*панели*/
+  --glass-shadowPanel: 10px 10px 10px rgba(0, 0, 0, 0.2); /* чёрная тень для сайдбара */
+  --panelRadius: 12px; /* радиус скругления панелей */
+  /*каленарь*/
+  --calendar-bg: rgba(252, 250, 250, 0.8); /* фон для календаря */
+  --calendar-colorDayGrid: rgba(57, 255, 20, 0.1); /* цвет фона в ячейках дней */
+  --calendar-colorToday: rgba(28, 20, 255, 0.15); /* цвет фона для текущего дня */
+  --calendar-colorMetka: rgb(35, 138, 26); /* цвет "ещё" для  события */
+
+
+  /* Мобильные размеры */
+  --glass-widthButtonSmall: 32px;/* ширина кнопки под мобилку*/
+  --glass-heightButtonSmall: 32px;/* высота кнопки под мобилку*/
+  --svg-sizeButtonSmall: 20px; /* размер иконок SVG для мобилки */
+  --panelRadiusSmall: 8px; /* радиус скругления панелей для мобилки */
+
+
+
 }
+  

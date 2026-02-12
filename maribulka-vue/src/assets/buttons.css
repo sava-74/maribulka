@@ -2,40 +2,40 @@
 
 /* Базовое состояние кнопки - "висит в воздухе" */
 .glass-button {
-    width: 40px; /* Фиксированный размер в сложенном виде */
-    height: 40px;
-    min-width: 40px;
-    border-radius: 8px;
-    border: 1px solid var(--neon-green);
-    background: rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    width: var(--glass-widthButton); /* Фиксированный размер в сложенном виде */
+    height: var(--glass-heightButton);
+    min-width: var(--glass-widthButton);
+    border-radius: var(--glass-borderRadiusButton);
+    border: 1px solid var(--generalColor);
+    background: var(--glass-bgButton);
+    -webkit-backdrop-filter: var(--glass-bgFilter);
+    backdrop-filter: var(--glass-bgFilter);
     display: flex;
     align-items: center;
     justify-content: flex-start;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    color: #333;
+    box-shadow: var(--glass-shadowButton);  
+    color: var(--glass-textButtonColor);
     padding: 0;
     padding-left: 8px;
     white-space: nowrap;
-    border-radius: 8px;
+    
 }
 
 .glass-button:hover {
     /* Приподнимаем кнопку по диагонали вверх-влево */
     transform: translate(-4px, -4px); 
     /* Делаем тень глубже и мягче, чтобы усилить эффект подъема */
-    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--glass-shadowButtonUp);
     /* Контур остается зеленым (не меняем border-color) */
 }
 
 .glass-button:active {
     transform: translate(0, 0); /* Вернули в исходную точку */
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); /* Тень вернулась в норму */
-    border-color: #ffffff; /* Вспышка контура (белый или очень ярко-зеленый) */
-    filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green)); /* Усиливаем эффект свечения */
+    box-shadow: var(--glass-shadowButton); /* Тень вернулась в норму */
+    border-color: var(--glass-borderButttonColorFlash); /* Вспышка контура (белый или очень ярко-зеленый) */
+    filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor)); /* Усиливаем эффект свечения */
     transition: transform 0.05s ease; /* Быстрый возврат */
 }
 
@@ -47,8 +47,8 @@
 
 /* Активная кнопка-иконка */
 .glass-button.active {
-    background: rgba(57, 255, 20, 0.3);
-    border-color: var(--neon-green);
+    background: var(--glass-bgButtonActive);
+    border-color: var(--generalColor);
 }
 
 /* Кнопки в сайдбаре */
@@ -67,21 +67,21 @@
 
 /* Кнопка с текстом - фиксированная ширина 150px */
 .glass-button-text {
-    width: 150px;
-    height: 40px;
-    min-width: 150px;
-    border-radius: 8px;
-    border: 1px solid var(--neon-green);
-    background: rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    width: var(--glass-widthButtonText);
+    height: var(--glass-heightButtonText);
+    min-width: var(--glass-widthButtonText);
+    border-radius: var(--glass-borderRadiusButton);
+    border: 1px solid var(--generalColor);
+    background: var(--glass-bgButton);
+    -webkit-backdrop-filter: var(--glass-bgFilter);
+    backdrop-filter: var(--glass-bgFilter);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    color: #333;
+    box-shadow: var(--glass-shadowButton);
+    color: var(--glass-textButtonColor);
     padding: 0 12px;
     white-space: nowrap;
     font-size: 14px;
@@ -90,28 +90,28 @@
 
 .glass-button-text:hover {
     transform: translate(-4px, -4px);
-    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--glass-shadowButtonUp);
 }
 
 .glass-button-text:active {
     transform: translate(0, 0);
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    border-color: #ffffff;
-    filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green));
+    box-shadow: var(--glass-shadowButton);
+    border-color: var(--glass-borderButttonColorFlash);
+    filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor));
     transition: transform 0.05s ease;
 }
 
 /* Активная вкладка */
 .glass-button-text.active {
-    background: rgba(57, 255, 20, 0.3);
-    border-color: var(--neon-green);
+    background: var(--glass-bgButtonActive);
+    border-color: var(--generalColor);
 }
 
 /* Иконки внутри кнопок (SVG из библиотеки MDIL) */
 .glass-button svg {
-  width: 24px !important;
-  height: 24px !important;
-  fill: #333 !important; /* Убедись, что иконка не белая на светлом фоне */
+  width: var(--svg-sizeButton) !important;
+  height: var(--svg-sizeButton) !important;
+  fill: var(--svg-colorButton) !important; /* Убедись, что иконка не белая на светлом фоне */
   display: block;
   flex-shrink: 0;
 }
@@ -130,6 +130,7 @@
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
+  justify-content: center !important ;
 }
 
 .calendar-container .fc-button-group {
@@ -138,21 +139,21 @@
 }
 
 .calendar-container .fc-button {
-  width: 80px !important;
-  height: 40px !important;
-  min-width: 80px !important;
-  border-radius: 8px !important;
-  border: 1px solid var(--neon-green) !important;
-  background: rgba(255, 255, 255, 0.4) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  backdrop-filter: blur(12px) !important;
+  width: var(--glass-widthButtonCalendar) !important;
+  height: var(--glass-heightButtonCalendar) !important;
+  min-width: var(--glass-widthButtonCalendar) !important;
+  border-radius: var(--glass-borderRadiusButton) !important;
+  border: 1px solid var(--generalColor) !important;
+  background: var(--glass-bgButton) !important;
+  -webkit-backdrop-filter: var(--glass-bgFilter) !important;
+  backdrop-filter: var(--glass-bgFilter) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease !important;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2) !important;
-  color: #333 !important;
+  box-shadow: var(--glass-shadowButton) !important;
+  color: var(--glass-textButtonColor) !important;
   padding: 0 12px !important;
   white-space: nowrap !important;
   font-size: 14px !important;
@@ -162,27 +163,27 @@
 
 .calendar-container .fc-button:hover {
   transform: translate(-4px, -4px) !important;
-  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: var(--glass-shadowButtonUp) !important;
 }
 
 .calendar-container .fc-button:active {
   transform: translate(0, 0) !important;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2) !important;
-  border-color: #ffffff !important;
-  filter: brightness(1.5) drop-shadow(0 0 5px var(--neon-green)) !important;
+  box-shadow: var(--glass-shadowButton) !important;
+  border-color: var(--glass-borderButttonColorFlash) !important;
+  filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor)) !important;
   transition: transform 0.05s ease !important;
 }
 
 .calendar-container .fc-button-active {
-  background: rgba(57, 255, 20, 0.3) !important;
-  border-color: var(--neon-green) !important;
+  background: var(--glass-bgButtonActive) !important;
+  border-color: var(--generalColor) !important;
 }
 
 /* Кнопки навигации < > (40x40) */
 .calendar-container .fc-prev-button,
 .calendar-container .fc-next-button {
-  width: 40px !important;
-  min-width: 40px !important;
+  width: var(--glass-widthButton) !important;
+  min-width: var(--glass-widthButton) !important;
   padding: 0 !important;
 }
 
@@ -211,36 +212,38 @@
 .actions-buttons .glass-button-text svg {
   width: 20px !important;
   height: 20px !important;
-  fill: #333 !important;
+  fill: var(--svg-colorButton) !important;
   flex-shrink: 0;
 }
 
 /* Опасная кнопка (удаление, отмена) */
 .action-danger {
-  border-color: #f87171 !important;
+  border-color: var(--glass-borderbuttonAlertColor) !important;
+  color: var(--text-colorAlert) !important;
 }
 
 .action-danger:hover {
-  border-color: #ff4444 !important;
-  box-shadow: 4px 4px 8px rgba(255, 68, 68, 0.2) !important;
+  border-color: var(--glass-borderbuttonAlertColor) !important;
+  box-shadow: var(--glass-shadowButtonUp) !important;
+  color: var(--text-colorAlert) !important;
 }
 
 /* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=768px) ========== */
 @media (max-width: 768px) {
   /* Базовые кнопки - увеличенная область клика для тач-устройств */
   .glass-button {
-    width: 5px !important;
-    height: 5px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
+    width: var(--glass-widthButtonSmall) !important;
+    height: var(--glass-heightButtonSmall) !important;
+    min-width: var(--glass-widthButtonSmall) !important;
+    min-height: var(--glass-heightButtonSmall) !important;
     padding: 5px !important;
     font-size: 10px;
   }
 
   .glass-button svg,
   button svg {
-    width: 20px !important;
-    height: 20px !important;
+    width: var(--svg-sizeButtonSmall) !important;
+    height: var(--svg-sizeButtonSmall) !important;
   }
 
   /* Отключаем hover-эффект подъёма на тач-устройствах */
@@ -248,7 +251,7 @@
   .glass-button-text:hover,
   .calendar-container .fc-button:hover {
     transform: none !important;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: var(--glass-shadowButtonUp) !important;
   }
 
   /* Кнопки в вкладках (tabs) - компактные */
@@ -263,11 +266,11 @@
 
   
 
-  /* Кнопки календаря FullCalendar (уменьшенные с 80px до 55px для экономии места) */
+  /* Кнопки календаря FullCalendar (уменьшенные с 80px до 32px для экономии места) */
   .calendar-container .fc-button {
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 32px !important;
+    width: var(--glass-widthButtonSmall) !important;
+    min-width: var(--glass-widthButtonSmall) !important;
+    height: var(--glass-heightButtonSmall) !important;
     padding: 0 4px !important;
     font-size: 10px !important;
   }
@@ -275,8 +278,8 @@
   /* Кнопки навигации < > (32x32 вместо 40x40) */
   .calendar-container .fc-prev-button,
   .calendar-container .fc-next-button {
-    width: 32px !important;
-    min-width: 32px !important;
+    width: var(--glass-widthButtonSmall) !important;
+    min-width: var(--glass-widthButtonSmall) !important;
   }
 }
 

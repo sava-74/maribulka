@@ -28,7 +28,7 @@ const navStore = useNavigationStore()
       <!-- Главная страница (приветствие) -->
       <div v-if="navStore.currentPage === 'home'" class="welcome">
         <h1>Добро пожаловать в Maribulka</h1>
-        <p>Система бухгалтерского учёта для фотографа</p>
+        <p>Портал фотографа</p>
         <p v-if="!authStore.isAuthenticated">Войдите чтобы начать работу →</p>
       </div>
 
