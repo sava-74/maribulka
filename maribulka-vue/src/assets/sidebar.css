@@ -16,7 +16,7 @@
     flex-direction: column;
     padding: 10px 8px;
     margin-top: 6px;
-    z-index: 99;
+    z-index: 101;
     overflow: hidden;
 }
 
@@ -57,7 +57,7 @@
     position: fixed;
     top: 11px !important;
     left: 21px !important;
-    width: 32px;
+    width: 0px;
     bottom: 10px;
     background: transparent;
     border: 1px solid transparent;
