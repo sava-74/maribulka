@@ -377,14 +377,19 @@ A: Да, при обновлении можно указать только те
 id, booking_date, shooting_date, processing_days, delivery_date, client_id, phone,
 shooting_type_id, quantity, promotion_id, base_price, discount, final_price, total_amount,
 paid_amount, payment_status (enum: unpaid/partially_paid/fully_paid),
-status (enum: new/completed/delivered/cancelled), cancel_reason, created_at, updated_at
+status (enum: new/completed/delivered/cancelled/cancelled_client/cancelled_photographer/failed),
+cancel_reason, notes, created_at, updated_at, processed_at
 ```
-**Дополнительное поле:** `processed_at` DATETIME - дата/время обработки заказа
+**Поля:**
+- `processed_at` DATETIME - дата/время обработки заказа
+- `notes` TEXT - заметки к заказу
+- `status` включает дополнительные статусы: cancelled_client, cancelled_photographer, failed
 
 ## UI/UX Конвенции
 - Замена browser alert/confirm на кастомные модальные окна (AlertModal, ConfirmModal)
 - Использование Material Design Icons Light (см. icons.md)
-- Формат ID бронирований: `фото-{id}.{year}` где year из created_at
+- Формат ID бронирований: `МБ{id}{magicNumber}{year}` где magicNumber = день * месяц, year = последние 2 цифры года из created_at
+  - Пример: МБ1312526 (id=13, день=13, месяц=1, magicNumber=13*1=13, год=26)
 - Стили кнопок: glass-button (40x40 пикселей), glass-button-text (150x40 с текстом)
 - Модальные окна: стили из modal.css (modal-overlay, modal-glass), кнопки из buttons.css
 
@@ -630,6 +635,15 @@ curl -s -o /dev/null -w "%{http_code}" http://марибулька.рф/
 - **Важно:** 
   - Десктопная версия и мобильный режим дня сохранили полную цветовую схему статусов.
   - Исправлена детекция дат (используется локальное время `YYYY-MM-DD` вместо UTC), что обеспечило точность срабатывания алертов.
+
+**Последнее обновление:** 13.02.2026
+
+### Унификация формата ID заказа (13.02.2026)
+- **Проблема:** В модалках ViewBookingModal, DeliverBookingModal, CancelBookingModal использовался старый формат `МБ-{id}.{year}`
+- **Решение:** Обновлен формат ID во всех трех модалках на новый: `МБ{id}{magicNumber}{year}`
+- **Формула:** magicNumber = день * месяц из created_at
+- **Реализация:** Все модалки теперь используют единый алгоритм расчета ID
+- **Файлы:** ViewBookingModal.vue, DeliverBookingModal.vue, CancelBookingModal.vue (строки 26-36)
 
 **Последнее обновление:** 13.02.2026
 
