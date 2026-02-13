@@ -163,12 +163,23 @@ async function handlePayment() {
     const result = await response.json()
 
     if (result.success) {
+      // Обновляем данные в таблице (чтобы получить новый paid_amount)
+      await financeStore.fetchIncome(financeStore.currentMonth)
+
       // Обновляем список платежей
       await financeStore.fetchIncomeByBooking(props.income.booking_id)
       payments.value = financeStore.incomeByBooking
 
-      // Обновляем данные в таблице
-      await financeStore.fetchIncome(financeStore.currentMonth)
+      // Пересчитываем остаток долга для поля ввода
+      const updatedIncome = financeStore.income.find(i => i.booking_id === props.income.booking_id)
+      if (updatedIncome) {
+        const total = parseFloat(updatedIncome.total_amount) || 0
+        const paid = parseFloat(updatedIncome.paid_amount) || 0
+        paymentAmount.value = Math.round(total - paid).toString()
+
+        // Обновляем props.income для orderInfo
+        Object.assign(props.income, updatedIncome)
+      }
 
       // Закрываем модалку подтверждения
       showConfirmModal.value = false
