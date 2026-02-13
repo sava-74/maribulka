@@ -84,7 +84,19 @@
   .modal-input,
   .modal-textarea {
     font-size: 13px !important;
-    padding: 8px !important;
+   /*padding: 8px !important;?*/
+  }
+
+  .modal-glass.modal-compact .modal-input {
+    padding: 2px 4px;
+    font-size: 13px;
+    bottom: 164px;
+    margin-right: 8px;
+  }
+
+
+  .payment-input {
+    bottom: 85px !important;
   }
 
   /* ========== PRICE INFO ========== */

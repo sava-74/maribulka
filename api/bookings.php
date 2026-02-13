@@ -40,6 +40,15 @@ try {
         exit;
     }
 
+    // GET action для получения следующего ID
+    if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_next_id') {
+        $stmt = $db->query("SELECT MAX(id) as max_id FROM bookings");
+        $result = $stmt->fetch();
+        $nextId = ($result['max_id'] ?? 0) + 1;
+        echo json_encode(['next_id' => $nextId]);
+        exit;
+    }
+
     switch ($method) {
         case 'GET':
             handleGet($db);
@@ -206,11 +215,11 @@ function handlePost($db) {
     // Создаём запись
     $stmt = $db->prepare("
         INSERT INTO bookings (
-            booking_date, shooting_date, processing_days, delivery_date,
+            order_number, booking_date, shooting_date, processing_days, delivery_date,
             client_id, phone, shooting_type_id, quantity, promotion_id,
             base_price, discount, final_price, total_amount,
             paid_amount, payment_status, status, notes
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $booking_date = date('Y-m-d');
@@ -218,6 +227,7 @@ function handlePost($db) {
     $payment_status = 'unpaid';
 
     $stmt->execute([
+        $data['order_number'] ?? '',
         $booking_date,
         $data['shooting_date'],
         $processing_days,

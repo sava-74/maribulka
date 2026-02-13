@@ -255,6 +255,11 @@ const handleSubmit = async () => {
       <div class="modal-glass modal-compact modal-wide">
       <h2>Редактировать запись</h2>
 
+      <div v-if="booking?.order_number" class="order-number-preview">
+        <label class="input-label">Номер заказа:</label>
+        <strong>{{ booking.order_number }}</strong>
+      </div>
+
       <div class="input-group">
         <!-- Строка 1: Тип съёмки, количество, акция -->
         <div class="input-row">

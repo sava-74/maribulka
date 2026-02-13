@@ -114,21 +114,9 @@ function getPaymentStatusText(status: string) {
 // Column definitions (БЕЗ checkbox и "Действия")
 const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'id',
+    accessorKey: 'order_number',
     header: 'ID заказа',
-    cell: ({ row }) => {
-      const id = row.original.id
-      const createdAt = row.original.created_at || ''
-      if (!createdAt) return `МБ-${id}`
-      
-      const date = new Date(createdAt)
-      const day = date.getDate()
-      const month = date.getMonth() + 1
-      const year = date.getFullYear().toString().slice(-2)
-      const magicNumber = day * month
-      
-      return `МБ${id}${magicNumber}${year}`
-    }
+    cell: ({ getValue }) => getValue() || '—'
   },
   {
     accessorKey: 'booking_date',

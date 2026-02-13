@@ -23,18 +23,8 @@ const orderInfo = computed(() => {
   const basePrice = parseFloat(props.booking.base_price) || 0
   const discount = props.booking.promo_discount_percent || 0
 
-  // Формируем ID заказа: МБ{id}{magicNumber}{year}
-  const createdAt = props.booking.created_at || ''
-  let orderId = `МБ-${props.booking.id}`
-
-  if (createdAt) {
-    const date = new Date(createdAt)
-    const day = date.getDate()
-    const month = date.getMonth() + 1
-    const year = date.getFullYear().toString().slice(-2)
-    const magicNumber = day * month
-    orderId = `МБ${props.booking.id}${magicNumber}${year}`
-  }
+  // ID заказа из БД
+  const orderId = props.booking.order_number || `МБ-${props.booking.id}`
 
   // Форматирование дат (парсим строку напрямую без учета часового пояса)
   const formatDate = (dateStr: string) => {

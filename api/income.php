@@ -173,11 +173,13 @@ try {
                 b.delivery_date,
                 b.processed_at,
                 b.id as booking_id,
-                b.created_at as booking_created_at
+                b.created_at as booking_created_at,
+                p.discount_percent as promo_discount_percent
             FROM income i
             LEFT JOIN clients c ON i.client_id = c.id
             LEFT JOIN bookings b ON i.booking_id = b.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
             WHERE DATE_FORMAT(i.date, '%Y-%m') = ?
             ORDER BY i.date DESC
         ");

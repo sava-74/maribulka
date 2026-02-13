@@ -26,18 +26,8 @@ const orderInfo = computed(() => {
   const remaining = total - paid
   const isPaidFull = remaining <= 0
 
-  // Формируем ID заказа: МБ{id}{magicNumber}{year}
-  const createdAt = props.booking.created_at || ''
-  let orderId = `МБ-${props.booking.id}`
-
-  if (createdAt) {
-    const date = new Date(createdAt)
-    const day = date.getDate()
-    const month = date.getMonth() + 1
-    const year = date.getFullYear().toString().slice(-2)
-    const magicNumber = day * month
-    orderId = `МБ${props.booking.id}${magicNumber}${year}`
-  }
+  // ID заказа из БД
+  const orderId = props.booking.order_number || `МБ-${props.booking.id}`
 
   return {
     orderId,

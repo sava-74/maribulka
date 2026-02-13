@@ -217,3 +217,17 @@
 .accounting-table a[href^="tel:"]:hover {
   text-decoration: underline;
 }
+
+/* Блок "Всего за месяц" после таблицы */
+.table-total {
+  margin-top: 16px;
+  padding: 12px;
+  text-align: right;
+  color: var(--tableTextColor);
+  font-size: 14px;
+}
+
+.table-total strong {
+  font-size: 16px;
+  font-weight: 600;
+}

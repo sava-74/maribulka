@@ -162,6 +162,12 @@ export const useBookingsStore = defineStore('bookings', () => {
     fetchBookings(month)
   }
 
+  async function getNextId(): Promise<number> {
+    const response = await fetch(`${API_URL}/bookings.php?action=get_next_id`)
+    const data = await response.json()
+    return data.next_id
+  }
+
   return {
     // State
     bookings,
@@ -183,6 +189,7 @@ export const useBookingsStore = defineStore('bookings', () => {
     cancelBooking,
     addPayment,
     quickPayment,
-    setCurrentMonth
+    setCurrentMonth,
+    getNextId
   }
 })

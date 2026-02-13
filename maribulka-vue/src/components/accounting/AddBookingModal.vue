@@ -24,13 +24,14 @@ const quantity = ref(1)
 const promotionId = ref('')
 const notes = ref('')
 const paymentAmount = ref(0)
+const generatedOrderNumber = ref('')
 
 // Alert modal
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
 
-// Load reference data on mount
+// Load reference data on mount and generate order number
 onMounted(async () => {
   if (referencesStore.shootingTypes.length === 0) {
     await referencesStore.fetchShootingTypes()
@@ -41,6 +42,16 @@ onMounted(async () => {
   if (referencesStore.clients.length === 0) {
     await referencesStore.fetchClients()
   }
+
+  // Генерируем order_number
+  const nextId = await bookingsStore.getNextId()
+  const today = new Date()
+  const day = today.getDate()
+  const month = today.getMonth() + 1
+  const year = today.getFullYear().toString().slice(-2)
+  const magicNumber = day * month
+
+  generatedOrderNumber.value = `МБ${nextId}${magicNumber}${year}`
 })
 
 // Computed: Автоматический расчёт даты выдачи
@@ -270,6 +281,7 @@ const handleSubmit = async () => {
   const shootingDateTime = `${shootingDate.value} ${shootingTime.value}:00`
 
   const data = {
+    order_number: generatedOrderNumber.value,
     shooting_date: shootingDateTime,
     processing_days: processingDays.value,
     client_id: clientId,
@@ -308,6 +320,12 @@ const handleSubmit = async () => {
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass modal-compact modal-wide">
       <h2>Добавить запись на съёмку</h2>
+
+      <!-- Номер заказа -->
+      <div v-if="generatedOrderNumber" class="order-number-preview">
+        <label class="input-label">Номер заказа:</label>
+        <strong>{{ generatedOrderNumber }}</strong>
+      </div>
 
       <div class="input-group">
         <!-- Строка 1: Тип съёмки, количество, акция -->
