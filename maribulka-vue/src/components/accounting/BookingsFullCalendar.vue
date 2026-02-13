@@ -107,7 +107,8 @@ const calendarEvents = computed(() => {
         booking.status === 'cancelled_photographer' ||
         booking.status === 'cancelled' ||
         booking.status === 'failed') {
-      const date = booking.shooting_date.split('T')[0]
+      const d = new Date(booking.shooting_date)
+      const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       datePriorityMap.set(date, true)
     }
   }
@@ -146,8 +147,16 @@ const calendarEvents = computed(() => {
     }
 
     // Проверяем приоритет красного цвета для даты
-    const eventDate = shootingDateTime.toISOString().split('T')[0]
-    if (eventDate && datePriorityMap.has(eventDate)) {
+    const d = shootingDateTime
+    const eventDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    
+    if (windowWidth.value <= 768 && !isDayView.value) {
+      // МОБИЛЬНАЯ ВЕРСИЯ (только режим месяца): серый или красный алерт
+      const hasAlert = eventDate && datePriorityMap.has(eventDate)
+      backgroundColor = hasAlert ? 'var(--text-colorAlert)' : 'var(--statusCancelledColor)'
+      textColor = 'transparent'
+    } else if (eventDate && datePriorityMap.has(eventDate)) {
+      // ДЕСКТОП или РЕЖИМ ДНЯ: приоритет красного при наличии алертов
       backgroundColor = '#DC2626'
       textColor = '#FFF'
     }
