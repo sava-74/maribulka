@@ -58,6 +58,7 @@
 .modal-actions {
   display: flex;
   gap: 10px;
+  justify-content: space-between;
 }
 
 .remember-label {

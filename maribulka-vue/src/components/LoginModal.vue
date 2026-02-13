@@ -31,7 +31,7 @@ const handleLogin = async () => {
       emit('close');
     } else {
       alertTitle.value = 'Ошибка доступа'
-      alertMessage.value = 'Неверный пароль'
+      alertMessage.value = 'Неверный логин или пароль'
       showAlert.value = true
     }
   } catch (error) {
@@ -58,12 +58,12 @@ const handleLogin = async () => {
       </div>
 
       <div class="modal-actions">
-        <button class="glass-button" @click="handleLogin">
-          <svg-icon type="mdi" :path="mdilCheck" />
-        </button>
         <button class="glass-button" @click="emit('close')">
           <svg-icon type="mdi" :path="mdilCancel" />
         </button>
+        <button class="glass-button" @click="handleLogin">
+          <svg-icon type="mdi" :path="mdilCheck" />
+        </button>        
       </div>
       </div>
     </div>
