@@ -58,9 +58,11 @@ const handleLogin = async () => {
       </div>
 
       <div class="modal-actions">
+        <!-- Кнопка "Войти" -->
         <button class="glass-button" @click="emit('close')">
           <svg-icon type="mdi" :path="mdilCancel" />
         </button>
+        <!-- Кнопка "Войти" -->
         <button class="glass-button" @click="handleLogin">
           <svg-icon type="mdi" :path="mdilCheck" />
         </button>        

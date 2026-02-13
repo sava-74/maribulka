@@ -202,9 +202,11 @@ const orderInfo = computed(() => {
         </div>
 
         <div class="modal-actions">
+          <!-- Кнопка "Печать" -->
           <button class="glass-button" @click="handlePrint" title="Печать">
             <svg-icon type="mdi" :path="mdiPrinterOutline" />
           </button>
+          <!-- Кнопка "Закрыть" -->
           <button class="glass-button" @click="emit('close')">
             <svg-icon type="mdi" :path="mdilCheck" />
           </button>

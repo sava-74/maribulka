@@ -88,11 +88,11 @@ const handleConfirm = async () => {
         </div>
 
         <div class="modal-actions">
-          <button class="glass-button" @click="handleConfirm">
-            <svg-icon type="mdi" :path="mdilCheck" />
-          </button>
           <button class="glass-button" @click="emit('close')">
             <svg-icon type="mdi" :path="mdilCancel" />
+          </button>
+          <button class="glass-button" @click="handleConfirm">
+            <svg-icon type="mdi" :path="mdilCheck" />
           </button>
         </div>
       </div>

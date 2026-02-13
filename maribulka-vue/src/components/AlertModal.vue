@@ -17,6 +17,7 @@ const emit = defineEmits(['close'])
         <h2>{{ title || 'Сообщение' }}</h2>
         <p style="text-align: center; margin: 20px 0; color: #333;">{{ message }}</p>
         <div class="modal-actions">
+          <!-- Кнопка "OK" -->
           <button class="glass-button" @click="emit('close')">
             <svg-icon type="mdi" :path="mdilCheck" />
           </button>

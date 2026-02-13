@@ -102,6 +102,10 @@ const handleDeliver = async () => {
         </div>
 
         <div class="modal-actions">
+          <!-- Кнопка "Закрыть" -->
+          <button class="glass-button" @click="emit('close')">
+            <svg-icon type="mdi" :path="mdilCancel" />
+          </button>          
           <!-- Кнопка "Оплата" - показываем только если не оплачено полностью -->
           <button
             v-if="orderInfo && !orderInfo.isPaidFull"
@@ -120,10 +124,6 @@ const handleDeliver = async () => {
             title="Провести заказ"
           >
             <svg-icon type="mdi" :path="mdilCheck" />
-          </button>
-
-          <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCancel" />
           </button>
         </div>
       </div>

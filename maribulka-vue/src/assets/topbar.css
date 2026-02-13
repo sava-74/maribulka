@@ -43,6 +43,7 @@
   .top-bar {
     margin: 5px 13px;
     height: 46px;
+    min-width: 255px ;
     /*padding:  10px;*/
     border-radius: var(--panelRadius);
     padding-left: 44px;
