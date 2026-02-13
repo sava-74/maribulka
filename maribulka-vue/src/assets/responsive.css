@@ -16,7 +16,7 @@
 
   table th,
   table td {
-    padding: 0 !important;
+    padding: 0 3px !important;
     white-space: nowrap;
   }
 

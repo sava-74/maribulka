@@ -119,8 +119,15 @@ const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const id = row.original.id
       const createdAt = row.original.created_at || ''
-      const year = createdAt.slice(0, 4)
-      return `МБ-${id}.${year}`
+      if (!createdAt) return `МБ-${id}`
+      
+      const date = new Date(createdAt)
+      const day = date.getDate()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear().toString().slice(-2)
+      const magicNumber = day * month
+      
+      return `МБ${id}${magicNumber}${year}`
     }
   },
   {
@@ -159,7 +166,7 @@ const columns: ColumnDef<any>[] = [
     header: 'Стоимость',
     cell: ({ getValue }) => {
       const value = getValue()
-      return value ? `${Math.round(parseFloat(value as string))} ₽` : '—'
+      return value ? `${Math.round(parseFloat(value as string))}` : '—'
     }
   },
   {
@@ -173,8 +180,8 @@ const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'total_amount',
-    header: 'Сумма',
-    cell: ({ getValue }) => `${Math.round(parseFloat(getValue() as string))} ₽`
+    header: 'Сумма ₽',
+    cell: ({ getValue }) => `${Math.round(parseFloat(getValue() as string))}`
   },
   {
     accessorKey: 'payment_status',
