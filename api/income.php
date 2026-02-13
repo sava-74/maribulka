@@ -58,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Обновляем статус оплаты заказа
         updatePaymentStatus($db, $bookingId);
 
-        echo json_encode(['success' => true, 'id' => $db->lastInsertId()]);
+        $lastId = $db->lastInsertId();
+        echo json_encode(['success' => true, 'id' => (int)$lastId]);
         exit;
     } catch (PDOException $e) {
         http_response_code(500);
