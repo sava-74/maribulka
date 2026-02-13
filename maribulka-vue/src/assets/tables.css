@@ -61,6 +61,7 @@
 .accounting-table thead {
   background: var(--tableHeaderBg);
   position: sticky;
+  height: 30px;
   top: 0;
   z-index: 10;
   padding: 12px 8px;
@@ -72,11 +73,14 @@
   border-bottom: 1px solid var(--generalTabBorderColor);
   border-right: 1px solid var(--generalTabBorderColor);
   font-size: 14px;
-  padding: 12px 8px;
+  padding: 4px 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .accounting-table thead th {
-  border-bottom: none;
+  border-bottom: 2px solid var(--generalTabBorderColor);
 }
 
 .accounting-table th {
@@ -92,17 +96,17 @@
 }
 
 /* Центрирование для столбцов с датами и количеством */
-.accounting-table tbody td:nth-child(1), /* Дата создания */
-.accounting-table tbody td:nth-child(2), /* Дата съёмки */
-.accounting-table tbody td:nth-child(3), /* Дата выдачи */
-.accounting-table tbody td:nth-child(7)  /* Кол-во */ {
+.accounting-table tbody td:nth-child(2), /* Дата создания */
+.accounting-table tbody td:nth-child(3), /* Дата съёмки */
+.accounting-table tbody td:nth-child(4), /* Дата выдачи */
+.accounting-table tbody td:nth-child(8), /* Кол-во */
+.accounting-table tbody td:nth-child(9)  /* Стоимость */ {
   text-align: center;
 }
 
 /* Выравнивание по правому краю для числовых столбцов (суммы) */
-.accounting-table tbody td:nth-child(8),  /* Стоимость */
-.accounting-table tbody td:nth-child(9),  /* Скидка */
-.accounting-table tbody td:nth-child(10)  /* Сумма */ {
+.accounting-table tbody td:nth-child(10), /* Скидка */
+.accounting-table tbody td:nth-child(11)  /* Сумма */ {
   text-align: right;
   padding-right: 10px;
 }

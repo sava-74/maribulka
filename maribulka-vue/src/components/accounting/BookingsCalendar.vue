@@ -66,18 +66,26 @@ function formatDate(dateString: string) {
   // Убираем время если есть (2026-02-01T12:30:00 -> 2026-02-01)
   const datePart = dateString.split('T')[0]?.split(' ')[0]
   if (!datePart) return ''
-  const [year, month, day] = datePart.split('-')
-  return `${day}.${month}.${year}`
+  const parts = datePart.split('-')
+  const year = parts[0] || ''
+  const month = parts[1] || ''
+  const day = parts[2] || ''
+  const shortYear = year.slice(-2)
+  return `${day}.${month}.${shortYear}`
 }
 
-// Форматирование даты и времени в DD.MM.YYYY HH:mm
+// Форматирование даты и времени в DD.MM.YY HH:mm
 function formatDateTime(dateString: string) {
   if (!dateString) return ''
   const [datePart, timePart] = dateString.split(' ')
   if (!datePart) return ''
-  const [year, month, day] = datePart.split('-')
+  const parts = datePart.split('-')
+  const year = parts[0] || ''
+  const month = parts[1] || ''
+  const day = parts[2] || ''
+  const shortYear = year.slice(-2)
   const time = timePart?.substring(0, 5) || ''
-  return time ? `${day}.${month}.${year} ${time}` : `${day}.${month}.${year}`
+  return time ? `${day}.${month}.${shortYear} ${time}` : `${day}.${month}.${shortYear}`
 }
 
 // Helper functions
