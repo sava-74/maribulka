@@ -6,6 +6,7 @@ const API_URL = '/api'
 
 export const useFinanceStore = defineStore('finance', () => {
   const income = ref<any[]>([])
+  const incomeByBooking = ref<any[]>([])
   const expenses = ref<any[]>([])
   const loadingIncome = ref(false)
   const loadingExpenses = ref(false)
@@ -49,7 +50,8 @@ export const useFinanceStore = defineStore('finance', () => {
 
   async function fetchIncomeByBooking(bookingId: number) {
     const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`)
-    return await response.json()
+    incomeByBooking.value = await response.json()
+    return incomeByBooking.value
   }
 
   // ========================================
@@ -105,6 +107,17 @@ export const useFinanceStore = defineStore('finance', () => {
     return result
   }
 
+  async function deleteIncome(id: number) {
+    const response = await fetch(`${API_URL}/income.php?id=${id}`, {
+      method: 'DELETE'
+    })
+    const result = await response.json()
+    if (result.success) {
+      await fetchIncome()
+    }
+    return result
+  }
+
   function setCurrentMonth(month: string) {
     currentMonth.value = month
     fetchIncome(month)
@@ -114,6 +127,7 @@ export const useFinanceStore = defineStore('finance', () => {
   return {
     // State
     income,
+    incomeByBooking,
     expenses,
     loadingIncome,
     loadingExpenses,
@@ -132,6 +146,7 @@ export const useFinanceStore = defineStore('finance', () => {
     createExpense,
     updateExpense,
     deleteExpense,
+    deleteIncome,
     setCurrentMonth
   }
 })

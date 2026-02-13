@@ -267,11 +267,30 @@ select.modal-input {
   margin: 12px 0;
 }
 
-/* Поле оплаты */
+/* Поле оплаты (компактное, без стрелок) */
 .payment-input {
-  width: 80px;
-  display: inline-block;
-  text-align: right;
+    position: absolute;
+    width: 45px;
+    right: 34px;
+    bottom: 94px;
+    padding: 2px 3px 0 0;
+    border: 1px solid var(--generalColor);
+    border-radius: var(--glass-borderRadiusButton);
+    font-size: 14px;
+    text-align: right;
+    margin-right: 4px;
+}
+
+/* Убрать стрелки у input[type="number"] */
+.payment-input::-webkit-outer-spin-button,
+.payment-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.payment-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* ========== ACTIONS MODAL (BookingActionsModal) ========== */
@@ -490,6 +509,8 @@ select.modal-input {
 .modal-glass.modal-compact .modal-input {
   padding: 2px 4px;
   font-size: 13px;
+  bottom: 172px;
+  margin-right: 8px;
 }
 
 .modal-glass.modal-compact .price-info {
