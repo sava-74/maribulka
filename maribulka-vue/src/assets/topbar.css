@@ -7,7 +7,7 @@
   backdrop-filter: var(--glass-bgFilter);
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
-  margin: 10px; /* Отступ от краев экрана */
+  margin: 10px 21px 10px 10px; /* Отступ от краев экрана */
   box-shadow: var(--glass-shadowPanel);
   display: flex;
   align-items: center;

@@ -15,9 +15,13 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
-  background: #ffffff;
-  z-index: 999;
+  height: 210px;
+  /*background: #ffffff;*/
+  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%);
+  mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%);
+  z-index: 99;
 }
 
 @media (prefers-color-scheme: dark) {   /* Темная тема: маска под TopBar становится темной, чтобы не выделяться на фоне остального контента */
@@ -35,6 +39,6 @@
   }
 
   .content::before {
-    height: 55px;
+    height: 160px;
   }
 }

@@ -22,7 +22,7 @@
 /* Обёртка навигации Accounting - как table-general */
 .accounting-nav {
   position: sticky;
-  top: 0;
+  top: 86px;
   z-index: 100;
   margin-top: 7px;
   padding: 16px;
@@ -260,6 +260,7 @@ select.filter-select {
   .accounting-nav {
     margin-top: 70px;
     padding: 0;
+    top: 70px !important;
   }
 }
 
