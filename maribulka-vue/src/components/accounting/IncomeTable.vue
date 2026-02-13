@@ -183,6 +183,14 @@ const hasSelectedRow = computed(() => {
   return Object.keys(rowSelection.value).length === 1
 })
 
+// Проверка: можно ли удалить выбранный платёж
+const canDeleteSelected = computed(() => {
+  if (!selectedIncome.value) return false
+  const status = selectedIncome.value.booking_status
+  // Нельзя удалить если заказ "Состоялась" или "Выдано"
+  return status !== 'completed' && status !== 'delivered'
+})
+
 // Computed: уникальные значения для фильтров
 const uniqueClients = computed(() => {
   const column = table.getColumn('client_name')
@@ -276,7 +284,7 @@ function refreshData() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow"
+          :disabled="!hasSelectedRow || !canDeleteSelected"
           @click="handleDelete"
           title="Удалить"
         >
