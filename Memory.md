@@ -543,10 +543,19 @@ server: {
 
 ### Подключение к серверу BeGet
 
-**SSH подключение:**
+**⚠️ КРИТИЧНО: ВСЕГДА использовать Unix-стиль путь к ключу!**
+
+**SSH подключение (ТОЛЬКО так!):**
 ```bash
-ssh -i C:\Users\sava\.ssh\beget_maribulka sava7424@sava7424.beget.tech
+ssh -i ~/.ssh/beget_maribulka sava7424@sava7424.beget.tech
 ```
+
+**SCP команды (ТОЛЬКО так!):**
+```bash
+scp -i ~/.ssh/beget_maribulka -r файлы/* sава7424@sava7424.beget.tech:/путь/
+```
+
+**НЕ ИСПОЛЬЗОВАТЬ:** `C:\Users\sava\.ssh\beget_maribulka` - это НЕ работает в Git Bash!
 
 **Быстрые команды для анализа:**
 ```bash
