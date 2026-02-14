@@ -662,3 +662,153 @@ curl -s -o /dev/null -w "%{http_code}" http://марибулька.рф/
 - Исправлена проблема, когда столбец «Сумма» не окрашивался в красный цвет при статусе «Не состоялась».
 - Класс `.amount-income` в `tables.css` теперь использует `color: inherit`, чтобы наследовать цвет текста от родительской строки (например, `.failed-booking`).
 - В `theme.css` подтверждены основные переменные: `--generalColor` (#39FF14), `--incomeColor` (#4ade80), `--expenseColor` (#f87171).
+
+---
+
+## Изменения 14.02.2026
+
+### 1. Мобильная адаптация модальных окон (≤768px)
+**Файл:** `modal.css` (строки 550-588)
+
+**Проблема:** На мобильных устройствах большие модалки обрезались сверху/снизу, маленькие были прижаты к верху.
+
+**Решение:**
+- **Большие модалки** (AddBookingModal, EditBookingModal, ViewBookingModal):
+  - `.modal-overlay`: `display: block` + `overflow-y: auto` вместо `flex`
+  - `.modal-glass`: отступы `margin: 20px 15px`, `max-width: calc(100vw - 30px)`
+  - Возможность прокрутки всего содержимого
+
+- **Маленькие модалки** (AlertModal, ConfirmModal, LoginModal):
+  - Новый класс `.modal-small`
+  - Центрирование: `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);`
+  - Всегда по центру экрана независимо от прокрутки
+
+**Файлы изменены:**
+- `modal.css` - добавлена секция mobile adaptation
+- `AlertModal.vue` - добавлен класс `modal-small` (line 16)
+- `ConfirmModal.vue` - добавлен класс `modal-small` (line 16)
+- `LoginModal.vue` - добавлен класс `modal-small` (line 48)
+
+---
+
+### 2. Календарь - финансовая информация в режиме дня
+**Файл:** `BookingsFullCalendar.vue` (строки 198-211)
+
+**Задача:** Показывать информацию об оплате во второй строке записи в режиме дня.
+
+**Логика:**
+- **Не оплачено** (`unpaid`): показываем только `, долг {сумма} ₽`
+- **Частично оплачено** (`partially_paid`): `, оплачено {сумма} ₽, долг {остаток} ₽`
+- **Полностью оплачено** (`fully_paid`): ничего не добавляем
+
+**Реализация:**
+```javascript
+const totalAmount = Number(booking.total_amount) || 0
+const paidAmount = Number(booking.paid_amount) || 0
+const remaining = totalAmount - paidAmount
+let financeDetails = ''
+
+if (booking.payment_status === 'unpaid') {
+  financeDetails = `, долг ${Math.round(remaining)} ₽`
+} else if (booking.payment_status === 'partially_paid') {
+  financeDetails = `, оплачено ${Math.round(paidAmount)} ₽, долг ${Math.round(remaining)} ₽`
+}
+```
+
+---
+
+### 3. AddBookingModal - поле оплаты по умолчанию и позиционирование
+**Файлы:** `AddBookingModal.vue`, `modal.css`
+
+**Проблемы:**
+1. Поле оплаты по умолчанию равнялось итоговой сумме (должно быть 0)
+2. Поле использовало `position: absolute`, что ломало вёрстку на разных экранах
+
+**Решения:**
+1. **Значение по умолчанию:**
+   - Удален `watch` который ставил `paymentAmount = totalAmount` (строки 115-118)
+   - Теперь `paymentAmount` по умолчанию = 0 (line 25)
+
+2. **Позиционирование:**
+   - Создан новый класс `.payment-input-inline` в `modal.css` (строки 284-293)
+   - Убран `position: absolute`, теперь inline элемент с фиксированной шириной 60px
+   - `AddBookingModal.vue` line 417: заменён класс на `payment-input-inline`
+
+---
+
+### 4. Проект переименован "FotoMari" → "Марибулька"
+**Файлы:** `index.html`, `camera.svg`, `theme.css`
+
+**Изменения:**
+1. **index.html:**
+   - `<html lang="ru">` (было "en")
+   - `<title>Марибулька</title>` (было "Maribulka Vue")
+   - `<link rel="icon" href="/camera.svg">` (было "/vite.svg")
+   - Description обновлён на "FotoMari - система управления фотостудией"
+
+2. **camera.svg:**
+   - Создан новый SVG файл с иконкой камеры
+   - Использует `fill="currentColor"` вместо жёсткого цвета
+   - Цвет задаётся через CSS переменную
+
+3. **theme.css:**
+   - Добавлен стиль: `link[rel="icon"] { color: var(--generalColor); }`
+   - Favicon теперь окрашен в генеральный цвет проекта (#39FF14)
+
+---
+
+### 5. Убрана лишняя прокрутка в content
+**Файл:** `layout.css`
+
+**Проблема:** Даже когда контент влезал на экран (таблица скрыта, только календарь), была возможность прокрутить вверх на ~половину экрана.
+
+**Решение:**
+- Убран `min-height: 100vh` из `.accounting`
+- Добавлен `min-height: 400px` для предотвращения полного схлопывания
+- Теперь контейнер занимает только нужную высоту
+
+---
+
+### 6. Мобильный календарь - исправлены цвета точек в режиме дня
+**Файл:** `BookingsFullCalendar.vue` (строки 153-159)
+
+**Проблема:** В мобильном режиме дня все записи становились красными если хоть одна запись была красной.
+
+**Решение:**
+- Приоритет красного цвета применяется ТОЛЬКО к режиму месяца на мобилке
+- Условие: `if (windowWidth.value <= 768 && !isDayView.value)`
+- В режиме дня (и на десктопе, и на мобилке) каждая запись окрашена по своему статусу
+- Добавлен комментарий для ясности логики
+
+**Код:**
+```javascript
+if (windowWidth.value <= 768 && !isDayView.value) {
+  // МОБИЛЬНАЯ ВЕРСИЯ (только режим месяца): серый или красный алерт
+  const hasAlert = eventDate && datePriorityMap.has(eventDate)
+  backgroundColor = hasAlert ? 'var(--text-colorAlert)' : 'var(--statusCancelledColor)'
+  textColor = 'transparent'
+}
+// В режиме дня (мобилка и десктоп) каждая запись окрашена по своему статусу - НЕ применяем приоритет красного
+```
+
+---
+
+## План на завтра (14.02.2026)
+
+1. **Изменить фильтры** (детали уточнить)
+
+2. **Справочники - сделать редактируемыми:**
+   - Клиенты (clients)
+   - Типы съёмок (shooting_types)
+   - Акции (promotions)
+   - Интерфейс редактирования как в таблице "Приход" (с кнопками управления, сортировкой, фильтрацией)
+
+---
+
+## ВАЖНОЕ ПРАВИЛО ДЛЯ CLAUDE
+**ЗАПИСЫВАТЬ ВСЁ В:**
+1. ✅ `D:\GitHub\maribulka\Memory.md` - ЭТОТ файл (главный файл памяти проекта)
+2. ✅ MCP Memory (авто память через инструменты `mcp__memory__*`)
+3. ❌ **НЕ** в `C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\MEMORY.md`
+
+Это правило было нарушено более 10 раз за сегодня - исправлено!

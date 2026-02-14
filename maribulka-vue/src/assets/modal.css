@@ -21,15 +21,22 @@
   box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  color: #333;
+  gap: 2px;
+  color: var(--generalTextColor);
 }
 
 .modal-glass h2 {
   margin: 0;
   text-align: center;
   font-size: 1.2rem;
-  color: #333;
+  color: var(--generalTextColor);
+}
+
+/* Сообщение в маленьких модалках (AlertModal, ConfirmModal) */
+.modal-message {
+  text-align: center;
+  margin: 20px;
+  color: var(--generalTextColor);
 }
 
 .input-group {
@@ -345,16 +352,16 @@ select.modal-input {
 
 .cancel-info,
 .delivery-info {
-  margin: 20px 0;
-  padding: 15px;
+  margin: 2px 0;
+  padding: 2px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .cancel-info p,
 .delivery-info p {
-  margin: 8px 0;
+  margin: 2px 0;
   font-size: 14px;
 }
 
@@ -366,7 +373,7 @@ select.modal-input {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 10px;
+  margin: 5px 10px 20px 10px;
 }
 
 .radio-label {
@@ -375,7 +382,7 @@ select.modal-input {
   gap: 8px;
   cursor: pointer;
   font-size: 14px;
-  padding: 8px;
+  padding: 0px;
   border-radius: 6px;
   transition: background-color 0.2s;
 }
@@ -573,7 +580,9 @@ select.modal-input {
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0;
-    max-width: calc(100vw - 30px);
+    width: max-content;
+    max-width: calc(80vw - 30px) !important;
+    padding: 10px 10px !important;
   }
 
   /* Большие модалки (view-modal) - уменьшаем padding */

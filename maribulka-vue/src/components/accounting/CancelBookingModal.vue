@@ -60,7 +60,7 @@ const handleConfirm = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="modal-glass modal-small">
         <h2>Отменить запись</h2>
 
         <div v-if="bookingInfo" class="cancel-info">

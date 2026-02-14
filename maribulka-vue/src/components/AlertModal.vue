@@ -15,7 +15,7 @@ const emit = defineEmits(['close'])
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass modal-small">
         <h2>{{ title || 'Сообщение' }}</h2>
-        <p style="text-align: center; margin: 20px 0; color: #333;">{{ message }}</p>
+        <p class="modal-message">{{ message }}</p>
         <div class="modal-actions">
           <!-- Кнопка "OK" -->
           <button class="glass-button" @click="emit('close')">
