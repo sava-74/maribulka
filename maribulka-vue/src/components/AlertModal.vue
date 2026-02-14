@@ -13,7 +13,7 @@ const emit = defineEmits(['close'])
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass modal-small">
+      <div class="modal-glass">
         <h2>{{ title || 'Сообщение' }}</h2>
         <p class="modal-message">{{ message }}</p>
         <div class="modal-actions">

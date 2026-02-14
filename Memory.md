@@ -793,6 +793,38 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 ---
 
+### 7. Исправление модалок - убраны inline стили, уменьшены отступы
+**Файлы:** `AlertModal.vue`, `ConfirmModal.vue`, `CancelBookingModal.vue`, `modal.css`
+
+**Проблемы:**
+1. Inline стили в AlertModal и ConfirmModal (нарушение правил проекта)
+2. Большие отступы в CancelBookingModal (20px margin, 15px padding)
+3. Использовался жёсткий цвет `#333` вместо переменной
+
+**Решения:**
+1. **Убраны inline стили:**
+   - В AlertModal и ConfirmModal заменено `style="text-align: center; margin: 20px 0; color: #333"` на класс `.modal-message`
+   - Создан класс `.modal-message` в modal.css с использованием `var(--generalTextColor)`
+
+2. **Уменьшены отступы в CancelBookingModal:**
+   - `.cancel-info, .delivery-info`: `margin: 20px 0` → `margin: 2px 0`, `padding: 15px` → `padding: 2px`
+   - `.cancel-info p, .delivery-info p`: `margin: 8px 0` → `margin: 2px 0`
+   - Заменён `color: #333` на `color: var(--generalTextColor)`
+
+3. **Класс modal-small временно отключен:**
+   - Стиль `.modal-small` оставлен в modal.css (строки 569-577) для будущего использования
+   - Убран класс из всех модалок: AlertModal, ConfirmModal, LoginModal, CancelBookingModal
+   - **Причина:** Требуется дополнительное тестирование перед применением
+
+**Файлы изменены:**
+- `modal.css` - добавлен класс `.modal-message`, исправлены отступы в `.cancel-info`
+- `AlertModal.vue` - убран inline стиль, убран класс `modal-small`
+- `ConfirmModal.vue` - убран inline стиль, убран класс `modal-small`
+- `LoginModal.vue` - убран класс `modal-small`
+- `CancelBookingModal.vue` - убран класс `modal-small`
+
+---
+
 ## План на завтра (14.02.2026)
 
 1. **Изменить фильтры** (детали уточнить)
