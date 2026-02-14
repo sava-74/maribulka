@@ -19,6 +19,7 @@ import { useReferencesStore } from '../../stores/references'
 import ViewPromotionModal from './ViewPromotionModal.vue'
 import AddPromotionModal from './AddPromotionModal.vue'
 import EditPromotionModal from './EditPromotionModal.vue'
+import PromotionsTimeline from './PromotionsTimeline.vue'
 import ConfirmModal from '../ConfirmModal.vue'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/tables.css'
@@ -348,6 +349,9 @@ function refreshData() {
     <div v-else class="empty-state">
       <p>📭 Нет акций в базе</p>
     </div>
+
+    <!-- Timeline визуализация акций -->
+    <PromotionsTimeline :promotions="referencesStore.promotions" />
 
     <!-- Модалки -->
     <AddPromotionModal

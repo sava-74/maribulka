@@ -230,3 +230,107 @@
   font-size: 16px;
   font-weight: 600;
 }
+
+/* Timeline визуализация акций */
+.timeline-container {
+  margin-top: 32px;
+  padding: 20px;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  box-shadow: var(--glass-shadowPanel);
+}
+
+.timeline-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tableTextColor);
+  text-align: center;
+}
+
+.timeline {
+  position: relative;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Шкала месяцев */
+.timeline-months {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border: 1px solid var(--generalTabBorderColor);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.timeline-month {
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tableTextColor);
+  border-right: 1px solid var(--generalTabBorderColor);
+}
+
+.timeline-month:last-child {
+  border-right: none;
+}
+
+/* Текущий месяц */
+.timeline-month.current {
+  background: rgba(70, 130, 180, 0.2);
+  font-weight: 700;
+  color: #4682B4;
+}
+
+/* Блоки акций */
+.timeline-promotions {
+  position: relative;
+  width: 100%;
+  min-height: 60px;
+  margin-top: 12px;
+}
+
+.timeline-promotion {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.timeline-promotion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+.promotion-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Пустое состояние */
+.timeline-empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--textMutedLightColor);
+  font-size: 14px;
+  font-style: italic;
+}
