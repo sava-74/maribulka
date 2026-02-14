@@ -27,6 +27,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     switch ($method) {
         case 'GET':
+            // Проверка связей с заказами
+            if (isset($_GET['check_relations']) && isset($_GET['id'])) {
+                $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE promotion_id = ?");
+                $stmt->execute([$_GET['id']]);
+                $result = $stmt->fetch();
+                echo json_encode($result['count'] > 0);
+                break;
+            }
+
             if (isset($_GET['id'])) {
                 // Получить одну акцию
                 $stmt = $db->prepare("SELECT * FROM promotions WHERE id = ?");

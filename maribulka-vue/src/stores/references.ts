@@ -58,6 +58,11 @@ export const useReferencesStore = defineStore('references', () => {
     return result
   }
 
+  async function checkShootingTypeRelations(id: number) {
+    const response = await fetch(`${API_URL}/shooting-types.php?check_relations=1&id=${id}`)
+    return await response.json()
+  }
+
   async function deleteShootingType(id: number) {
     const response = await fetch(`${API_URL}/shooting-types.php?id=${id}`, {
       method: 'DELETE'
@@ -108,6 +113,11 @@ export const useReferencesStore = defineStore('references', () => {
       await fetchPromotions()
     }
     return result
+  }
+
+  async function checkPromotionRelations(id: number) {
+    const response = await fetch(`${API_URL}/promotions.php?check_relations=1&id=${id}`)
+    return await response.json()
   }
 
   async function deletePromotion(id: number) {
@@ -197,11 +207,13 @@ export const useReferencesStore = defineStore('references', () => {
     createShootingType,
     updateShootingType,
     deleteShootingType,
+    checkShootingTypeRelations,
 
     fetchPromotions,
     createPromotion,
     updatePromotion,
     deletePromotion,
+    checkPromotionRelations,
 
     fetchClients,
     searchClients,

@@ -489,6 +489,14 @@ cancel_reason, notes, created_at, updated_at, processed_at
   - Валидация удаления: проверка связей с bookings через API endpoint check_relations
   - Логика удаления: если клиент участвует в заказах → AlertModal с запретом; иначе → ConfirmModal
   - Задеплоено на BeGet (api/clients.php с endpoint check_relations)
+  - Маска телефона: функция formatPhone форматирует в +7(XXX)XXX-XX-XX
+  - Отступ кнопок: margin-top: 20px для .modal-actions
+
+**ПРАВИЛО УДАЛЕНИЯ для всех справочников:**
+- API endpoint `check_relations` возвращает boolean (true если есть связи)
+- Если есть связи с bookings → показать AlertModal "Удалить нельзя"
+- Если нет связей → показать ConfirmModal с подтверждением
+- В ConfirmModal показывать название элемента (ФИО/название)
 - Осталось: настроить hover эффекты для таблиц
 - Осталось: доработать адаптивность для мобильных устройств
 

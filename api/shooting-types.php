@@ -27,6 +27,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     switch ($method) {
         case 'GET':
+            // Проверка связей с заказами
+            if (isset($_GET['check_relations']) && isset($_GET['id'])) {
+                $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE shooting_type_id = ?");
+                $stmt->execute([$_GET['id']]);
+                $result = $stmt->fetch();
+                echo json_encode($result['count'] > 0);
+                break;
+            }
+
             if (isset($_GET['id'])) {
                 // Получить один тип съёмки
                 $stmt = $db->prepare("SELECT * FROM shooting_types WHERE id = ?");
