@@ -485,23 +485,61 @@ cancel_reason, notes, created_at, updated_at, processed_at
 
 ---
 
-## Подключение к серверу BeGet
+## ⭐ КРИТИЧНО: СЕРВЕР И ДЕПЛОЙ ⭐
 
-### SSH подключение
+### НЕТ ЛОКАЛЬНОГО PHP СЕРВЕРА!
+
+**ВАЖНО:** У проекта НЕТ локального PHP сервера! Все API запросы идут на удалённый сервер BeGet через Vite proxy.
+
+### Структура серверов
+
+**Локальная разработка:**
+- `npm run dev` → http://localhost:5173
+- Vite dev server с proxy на BeGet (см. vite.config.ts)
+- Frontend работает локально
+- **API запросы проксируются на** http://xn--80aac1alfd7a3a5g.xn--p1ai
+
+**Продакшн:**
+- http://марибулька.рф (http://xn--80aac1alfd7a3a5g.xn--p1ai)
+- Сервер: BeGet shared hosting
+- SSH: sava7424@sava7424.beget.tech
+- Путь на сервере: /home/s/sava7424/maribulka.rf/maribulka-vue/dist/
+
+### Vite Proxy (vite.config.ts)
+```typescript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://xn--80aac1alfd7a3a5g.xn--p1ai',
+      changeOrigin: true,
+      secure: false
+    }
+  }
+}
+```
+
+### Деплой на BeGet
+
+**Порядок действий:**
+1. **ВСЕГДА** коммитить изменения: `git add . && git commit -m "..."`
+2. **ВСЕГДА** пушить в GitHub: `git push`
+3. **ТОЛЬКО ПОТОМ** запускать деплой: `.\deploy.ps1` (Windows) или `./deploy.sh` (Linux/Mac)
+
+**Скрипт деплоя делает:**
+1. Собирает Vue проект (npm run build)
+2. Загружает dist/ на сервер через scp
+3. Загружает api/ на сервер в dist/api/
+
+**Важно:** После изменений в `api/` файлах (например, api/clients.php), ОБЯЗАТЕЛЬНО задеплоить на сервер, иначе изменения не будут работать локально (т.к. Vite проксирует на старую версию API на BeGet).
+
+### Подключение к серверу BeGet
+
+**SSH подключение:**
 ```bash
 ssh -i C:\Users\sava\.ssh\beget_maribulka sava7424@sava7424.beget.tech
 ```
-Или команды из любой директории:
-```bash
-ssh -i ~/.ssh/beget_maribulka sava7424@sava7424.beget.tech "команда"
-```
 
-### Документация для анализа
-Всегда смотреть **ПЕРЕД** вопросами пользователя:
-- `DEPLOY_GUIDE.md` - полный гайд по деплою
-- `QUICK_START.md` - шпаргалка по командам
-
-### Быстрые команды для анализа
+**Быстрые команды для анализа:**
 ```bash
 # Структура проекта на сервере
 ls -la /home/s/sava7424/maribulka.rf/
@@ -525,11 +563,16 @@ curl -s -o /dev/null -w "%{http_code}" http://марибулька.рф/
 | **SSH Host** | sava7424.beget.tech |
 | **SSH User** | sava7424 |
 | **SSH Key** | ~/.ssh/beget_maribulka |
-| **DB Host** | localhost |
+| **DB Host** | localhost (НА СЕРВЕРЕ!) |
 | **DB Name** | sava7424_mari |
 | **DB User** | sava7424_mari |
 | **DB Pass** | Zxc456Siti |
 | **Сайт** | http://марибулька.рф |
+
+### Документация для анализа
+Всегда смотреть **ПЕРЕД** вопросами пользователя:
+- `DEPLOY_GUIDE.md` - полный гайд по деплою
+- `QUICK_START.md` - шпаргалка по командам
 
 ---
 
