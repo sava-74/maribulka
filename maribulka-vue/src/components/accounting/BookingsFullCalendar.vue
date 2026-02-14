@@ -149,17 +149,14 @@ const calendarEvents = computed(() => {
     // Проверяем приоритет красного цвета для даты
     const d = shootingDateTime
     const eventDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-    
+
     if (windowWidth.value <= 768 && !isDayView.value) {
       // МОБИЛЬНАЯ ВЕРСИЯ (только режим месяца): серый или красный алерт
       const hasAlert = eventDate && datePriorityMap.has(eventDate)
       backgroundColor = hasAlert ? 'var(--text-colorAlert)' : 'var(--statusCancelledColor)'
       textColor = 'transparent'
-    } else if (eventDate && datePriorityMap.has(eventDate)) {
-      // ДЕСКТОП или РЕЖИМ ДНЯ: приоритет красного при наличии алертов
-      backgroundColor = '#DC2626'
-      textColor = '#FFF'
     }
+    // В режиме дня (мобилка и десктоп) каждая запись окрашена по своему статусу - НЕ применяем приоритет красного
 
     events.push({
       id: String(booking.id),
@@ -195,9 +192,24 @@ function renderEventContent(arg: any) {
   const promo = booking.promotion_name ? `, ${booking.promotion_name} -${booking.discount_percent || booking.promo_discount_percent || 0}%` : ''
   const notes = booking.notes || ''
 
+  // Финансы: показываем оплачено/долг в зависимости от статуса
+  const totalAmount = Number(booking.total_amount) || 0
+  const paidAmount = Number(booking.paid_amount) || 0
+  const remaining = totalAmount - paidAmount
+  let financeDetails = ''
+
+  if (booking.payment_status === 'unpaid') {
+    // Не оплачено - показываем только долг
+    financeDetails = `, долг ${Math.round(remaining)} ₽`
+  } else if (booking.payment_status === 'partially_paid') {
+    // Частично - показываем оплачено и долг
+    financeDetails = `, оплачено ${Math.round(paidAmount)} ₽, долг ${Math.round(remaining)} ₽`
+  }
+  // Если fully_paid - ничего не добавляем
+
   let html = `<div class="event-day-detail">`
   html += `<div class="event-day-row"><b>${booking.client_name || ''}</b>, ${phoneLink}</div>`
-  html += `<div class="event-day-row">${typeName}, ${total}, ${payText}${promo}</div>`
+  html += `<div class="event-day-row">${typeName}, ${total}, ${payText}${financeDetails}${promo}</div>`
   if (notes) html += `<div class="event-day-row event-day-notes">${notes}</div>`
   html += `</div>`
 

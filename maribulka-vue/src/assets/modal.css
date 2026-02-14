@@ -267,7 +267,7 @@ select.modal-input {
   margin: 12px 0;
 }
 
-/* Поле оплаты (компактное, без стрелок) */
+/* Поле оплаты для ViewIncomeModal (абсолютное позиционирование) */
 .payment-input {
     position: absolute;
     width: 45px;
@@ -281,14 +281,28 @@ select.modal-input {
     margin-right: 4px;
 }
 
-/* Убрать стрелки у input[type="number"] */
+/* Поле оплаты inline для AddBookingModal (перед символом ₽) */
+.payment-input-inline {
+    width: 60px;
+    padding: 2px 4px;
+    border: 1px solid var(--generalColor);
+    border-radius: var(--glass-borderRadiusButton);
+    font-size: 14px;
+    text-align: right;
+    margin-right: 4px;
+}
+
+/* Убрать стрелки у input[type="number"] для обоих классов */
 .payment-input::-webkit-outer-spin-button,
-.payment-input::-webkit-inner-spin-button {
+.payment-input::-webkit-inner-spin-button,
+.payment-input-inline::-webkit-outer-spin-button,
+.payment-input-inline::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.payment-input[type="number"] {
+.payment-input[type="number"],
+.payment-input-inline[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -531,4 +545,35 @@ select.modal-input {
 
 .modal-glass a[href^="tel:"]:hover {
   text-decoration: underline;
+}
+
+/* ========== МОБИЛЬНАЯ АДАПТАЦИЯ МОДАЛОК (≤768px) ========== */
+@media (max-width: 768px) {
+  .modal-overlay {
+    /* Убираем flex центрирование - разрешаем прокрутку */
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+  }
+
+  .modal-glass {
+    /* Убираем центрирование, добавляем отступы сверху и снизу */
+    margin: 20px auto;
+    max-width: calc(100vw - 20px);
+    /* Минимальная высота чтобы можно было прокрутить */
+    min-height: auto;
+  }
+
+  /* Большие модалки (view-modal) - уменьшаем padding */
+  .modal-glass.view-modal {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  /* Компактные модалки */
+  .modal-glass.modal-compact {
+    padding: 15px;
+    margin: 20px auto;
+  }
 }

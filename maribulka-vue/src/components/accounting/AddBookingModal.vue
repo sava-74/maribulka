@@ -112,10 +112,7 @@ watch(selectedClient, (client) => {
   }
 })
 
-// Оплата по умолчанию = 100% суммы
-watch(totalAmount, (val) => {
-  paymentAmount.value = Math.round(val)
-})
+// Оплата по умолчанию = 0 (пользователь вводит сам)
 
 // Подставляем дату из календаря при открытии
 watch(() => props.isVisible, (visible) => {
@@ -414,7 +411,7 @@ const handleSubmit = async () => {
           <div class="price-row">
             <span class="price-label">Оплата:</span>
             <span class="price-value">
-              <input v-model.number="paymentAmount" type="number" class="modal-input payment-input" min="0" :max="Math.round(totalAmount)" /> ₽
+              <input v-model.number="paymentAmount" type="number" class="payment-input-inline" min="0" :max="Math.round(totalAmount)" /> ₽
             </span>
           </div>
         </div>
