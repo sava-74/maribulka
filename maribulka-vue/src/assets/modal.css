@@ -558,22 +558,31 @@ select.modal-input {
   }
 
   .modal-glass {
-    /* Убираем центрирование, добавляем отступы сверху и снизу */
-    margin: 20px auto;
-    max-width: calc(100vw - 20px);
+    /* Отступы со всех сторон: 20px сверху/снизу, 15px слева/справа */
+    margin: 20px 15px;
+    max-width: calc(100vw - 30px); /* 100vw минус 15px*2 */
+    width: auto;
     /* Минимальная высота чтобы можно было прокрутить */
     min-height: auto;
   }
 
+  /* Маленькие модалки (AlertModal, ConfirmModal) - центрируем по вертикали */
+  .modal-glass.modal-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    max-width: calc(100vw - 30px);
+  }
+
   /* Большие модалки (view-modal) - уменьшаем padding */
   .modal-glass.view-modal {
-    padding: 20px;
-    margin: 20px auto;
+    padding: 15px;
   }
 
   /* Компактные модалки */
   .modal-glass.modal-compact {
-    padding: 15px;
-    margin: 20px auto;
+    padding: 12px;
   }
 }

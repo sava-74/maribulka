@@ -45,7 +45,7 @@ const handleLogin = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="modal-glass modal-small">
       <h2>Вход в систему</h2>
       
       <div class="input-group">
