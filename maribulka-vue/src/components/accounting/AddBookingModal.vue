@@ -424,11 +424,13 @@ const handleSubmit = async () => {
       </div>
 
       <div class="modal-actions">
-        <button class="glass-button" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdilCheck" />
-        </button>
+        <!-- Кнопка "Отмена" -->
         <button class="glass-button" @click="emit('close')">
           <svg-icon type="mdi" :path="mdilCancel" />
+        </button>
+        <!-- Кнопка "OK" -->
+        <button class="glass-button" @click="handleSubmit">
+          <svg-icon type="mdi" :path="mdilCheck" />
         </button>
       </div>
     </div>
