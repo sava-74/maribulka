@@ -17,6 +17,7 @@ const name = ref('')
 const discountPercent = ref('')
 const startDate = ref('')
 const endDate = ref('')
+const isUnlimited = ref(false)
 
 // Alert modal
 const showAlert = ref(false)
@@ -30,6 +31,7 @@ watch(() => props.isVisible, (newValue) => {
     discountPercent.value = ''
     startDate.value = ''
     endDate.value = ''
+    isUnlimited.value = false
   }
 })
 
@@ -57,18 +59,31 @@ const handleSubmit = async () => {
     return
   }
 
+  // Проверка: если не бессрочно, то либо обе даты заполнены, либо обе пустые
+  if (!isUnlimited.value) {
+    const hasStartDate = !!startDate.value
+    const hasEndDate = !!endDate.value
+
+    if (hasStartDate !== hasEndDate) {
+      alertTitle.value = 'Ошибка'
+      alertMessage.value = 'Укажите обе даты (начало и окончание) или оставьте обе пустыми'
+      showAlert.value = true
+      return
+    }
+  }
+
   const result = await referencesStore.createPromotion({
     name: name.value.trim(),
     discount_percent: discount,
-    start_date: startDate.value || null,
-    end_date: endDate.value || null
+    start_date: isUnlimited.value ? null : (startDate.value || null),
+    end_date: isUnlimited.value ? null : (endDate.value || null)
   })
 
   if (result.success) {
     emit('close')
   } else {
-    alertTitle.value = 'Ошибка'
-    alertMessage.value = result.error || 'Не удалось создать акцию'
+    alertTitle.value = result.error === 'Пересечение периодов' ? 'Пересечение периодов' : 'Ошибка'
+    alertMessage.value = result.message || result.error || 'Не удалось создать акцию'
     showAlert.value = true
   }
 }
@@ -106,11 +121,23 @@ const handleSubmit = async () => {
           </div>
 
           <div class="input-field">
+            <label class="input-label">
+              <input
+                type="checkbox"
+                v-model="isUnlimited"
+                style="margin-right: 8px;"
+              />
+              Бессрочно
+            </label>
+          </div>
+
+          <div class="input-field">
             <label class="input-label">Дата начала:</label>
             <input
               type="date"
               class="modal-input"
               v-model="startDate"
+              :disabled="isUnlimited"
             />
           </div>
 
@@ -120,6 +147,7 @@ const handleSubmit = async () => {
               type="date"
               class="modal-input"
               v-model="endDate"
+              :disabled="isUnlimited"
             />
           </div>
         </div>

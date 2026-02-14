@@ -66,6 +66,32 @@ try {
                 exit;
             }
 
+            $start_date = $data['start_date'] ?? null;
+            $end_date = $data['end_date'] ?? null;
+
+            // Проверка пересечений диапазонов (только для срочных акций)
+            if ($start_date && $end_date) {
+                $stmt = $db->prepare("
+                    SELECT id, name, start_date, end_date
+                    FROM promotions
+                    WHERE is_active = 1
+                    AND start_date IS NOT NULL
+                    AND end_date IS NOT NULL
+                    AND (? <= end_date AND ? >= start_date)
+                ");
+                $stmt->execute([$start_date, $end_date]);
+                $conflict = $stmt->fetch();
+
+                if ($conflict) {
+                    http_response_code(409);
+                    echo json_encode([
+                        'error' => 'Пересечение периодов',
+                        'message' => "Период пересекается с акцией «{$conflict['name']}» ({$conflict['start_date']} - {$conflict['end_date']})"
+                    ]);
+                    exit;
+                }
+            }
+
             $stmt = $db->prepare("
                 INSERT INTO promotions (name, discount_percent, start_date, end_date, is_active)
                 VALUES (?, ?, ?, ?, ?)
@@ -74,8 +100,8 @@ try {
             $stmt->execute([
                 $data['name'],
                 $data['discount_percent'],
-                $data['start_date'] ?? null,
-                $data['end_date'] ?? null,
+                $start_date,
+                $end_date,
                 $data['is_active'] ?? 1
             ]);
 
@@ -96,6 +122,33 @@ try {
                 exit;
             }
 
+            $start_date = $data['start_date'] ?? null;
+            $end_date = $data['end_date'] ?? null;
+
+            // Проверка пересечений диапазонов (только для срочных акций)
+            if ($start_date && $end_date) {
+                $stmt = $db->prepare("
+                    SELECT id, name, start_date, end_date
+                    FROM promotions
+                    WHERE is_active = 1
+                    AND id != ?
+                    AND start_date IS NOT NULL
+                    AND end_date IS NOT NULL
+                    AND (? <= end_date AND ? >= start_date)
+                ");
+                $stmt->execute([$data['id'], $start_date, $end_date]);
+                $conflict = $stmt->fetch();
+
+                if ($conflict) {
+                    http_response_code(409);
+                    echo json_encode([
+                        'error' => 'Пересечение периодов',
+                        'message' => "Период пересекается с акцией «{$conflict['name']}» ({$conflict['start_date']} - {$conflict['end_date']})"
+                    ]);
+                    exit;
+                }
+            }
+
             $stmt = $db->prepare("
                 UPDATE promotions
                 SET name = ?, discount_percent = ?, start_date = ?, end_date = ?, is_active = ?
@@ -105,8 +158,8 @@ try {
             $stmt->execute([
                 $data['name'],
                 $data['discount_percent'],
-                $data['start_date'] ?? null,
-                $data['end_date'] ?? null,
+                $start_date,
+                $end_date,
                 $data['is_active'] ?? 1,
                 $data['id']
             ]);

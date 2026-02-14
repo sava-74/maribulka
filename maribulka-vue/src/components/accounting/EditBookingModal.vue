@@ -107,6 +107,23 @@ const totalAmount = computed(() => {
   return finalPrice.value * quantity.value
 })
 
+// Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
+const availablePromotions = computed(() => {
+  const today = new Date().toISOString().split('T')[0] as string
+
+  return referencesStore.promotions.filter(promo => {
+    // Бессрочные акции всегда доступны
+    if (!promo.start_date && !promo.end_date) return true
+
+    // Срочные акции доступны только если сегодня в диапазоне
+    if (promo.start_date && promo.end_date) {
+      return today >= promo.start_date && today <= promo.end_date
+    }
+
+    return false
+  })
+})
+
 // Все кандидатные слоты с 08:00 до 22:00 (шаг 30 мин)
 const allTimeSlots = computed(() => {
   const slots: string[] = []
@@ -280,7 +297,7 @@ const handleSubmit = async () => {
             <label class="input-label">Акция:</label>
             <select v-model="promotionId" class="modal-input">
               <option value="">Без акции</option>
-              <option v-for="promo in referencesStore.promotions" :key="promo.id" :value="promo.id">
+              <option v-for="promo in availablePromotions" :key="promo.id" :value="promo.id">
                 {{ promo.name }} (-{{ promo.discount_percent }}%)
               </option>
             </select>

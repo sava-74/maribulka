@@ -114,12 +114,53 @@ watch(selectedClient, (client) => {
 
 // Оплата по умолчанию = 0 (пользователь вводит сам)
 
+// Функция поиска активной акции для даты
+function getActivePromotionForDate(date: string): number | null {
+  if (!date) return null
+
+  const activePromotions = referencesStore.promotions.filter(promo => {
+    // Игнорируем бессрочные акции в автовыборе
+    if (!promo.start_date || !promo.end_date) return false
+
+    // Проверяем попадание даты в диапазон
+    return date >= promo.start_date && date <= promo.end_date
+  })
+
+  // Возвращаем первую найденную (не должно быть больше одной по валидации)
+  return activePromotions.length > 0 ? activePromotions[0].id : null
+}
+
+// Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
+const availablePromotions = computed(() => {
+  const today = new Date().toISOString().split('T')[0] as string
+
+  return referencesStore.promotions.filter(promo => {
+    // Бессрочные акции всегда доступны
+    if (!promo.start_date && !promo.end_date) return true
+
+    // Срочные акции доступны только если сегодня в диапазоне
+    if (promo.start_date && promo.end_date) {
+      return today >= promo.start_date && today <= promo.end_date
+    }
+
+    return false
+  })
+})
+
 // Подставляем дату из календаря при открытии
 watch(() => props.isVisible, (visible) => {
   if (visible && props.defaultDate) {
     shootingDate.value = props.defaultDate
   }
 })
+
+// Автовыбор акции при изменении даты съёмки
+watch(() => shootingDate.value, (newDate) => {
+  if (newDate) {
+    const activePromotionId = getActivePromotionForDate(newDate)
+    promotionId.value = activePromotionId ? activePromotionId.toString() : ''
+  }
+}, { immediate: true })
 
 // Сегодняшняя дата (для ограничения min)
 const todayStr = computed(() => {
@@ -344,7 +385,7 @@ const handleSubmit = async () => {
             <label class="input-label">Акция:</label>
             <select v-model="promotionId" class="modal-input">
               <option value="">Без акции</option>
-              <option v-for="promo in referencesStore.promotions" :key="promo.id" :value="promo.id">
+              <option v-for="promo in availablePromotions" :key="promo.id" :value="promo.id">
                 {{ promo.name }} (-{{ promo.discount_percent }}%)
               </option>
             </select>
