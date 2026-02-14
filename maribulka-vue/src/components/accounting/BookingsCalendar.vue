@@ -34,7 +34,7 @@ const bookingsStore = useBookingsStore()
 
 // Row selection state
 const rowSelection = ref<RowSelectionState>({})
-const sorting = ref<SortingState>([{ id: 'id', desc: true }])
+const sorting = ref<SortingState>([{ id: 'order_number', desc: true }])
 const columnFilters = ref<ColumnFiltersState>([])
 
 // Видимость панели фильтров (по умолчанию скрыты)
