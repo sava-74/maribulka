@@ -58,4 +58,8 @@
   --tableTextColor: #000; /* основной текст в таблицах */
   --textMutedLightColor: rgba(255, 255, 255, 0.7); /* светлый приглушенный текст */
 }
-  
+
+/* Favicon цвет через CSS переменную */
+link[rel="icon"] {
+  color: var(--generalColor);
+}

@@ -3,7 +3,7 @@
 /* Основной контейнер бухгалтерии */
 .accounting {
   width: 100%;
-  min-height: 100vh;
+  min-height: 400px;
   padding-top: 5px;
   padding-left: 5px;
 }
