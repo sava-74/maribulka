@@ -34,6 +34,36 @@ watch(() => props.isVisible, (newValue) => {
   }
 })
 
+// Маска для телефона
+function formatPhone(event: Event) {
+  const input = event.target as HTMLInputElement
+  let value = input.value.replace(/\D/g, '') // Убираем все кроме цифр
+
+  if (value.length > 0 && value[0] !== '7') {
+    value = '7' + value
+  }
+
+  if (value.length > 11) {
+    value = value.substring(0, 11)
+  }
+
+  let formatted = '+7'
+  if (value.length > 1) {
+    formatted += '(' + value.substring(1, 4)
+  }
+  if (value.length >= 5) {
+    formatted += ')' + value.substring(4, 7)
+  }
+  if (value.length >= 8) {
+    formatted += '-' + value.substring(7, 9)
+  }
+  if (value.length >= 10) {
+    formatted += '-' + value.substring(9, 11)
+  }
+
+  phone.value = formatted
+}
+
 const handleSubmit = async () => {
   // Валидация
   if (!name.value.trim()) {
@@ -91,8 +121,9 @@ const handleSubmit = async () => {
               type="tel"
               class="modal-input"
               v-model="phone"
-              placeholder="+7 (999) 123-45-67"
-              maxlength="20"
+              placeholder="+7(888)888-88-88"
+              maxlength="16"
+              @input="formatPhone"
             />
           </div>
 
