@@ -825,15 +825,200 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 ---
 
+## Эталоны структуры таблиц и вкладок (14.02.2026) ⭐
+
+### СТРУКТУРА ВКЛАДОК (эталон: Accounting.vue)
+
+**HTML структура:**
+```vue
+<div class="accounting">
+  <!-- Навигация (вкладки) -->
+  <div class="accounting-nav">
+    <nav class="tabs">
+      <button
+        class="glass-button-text"
+        @click="switchTab('tab1')"
+        :class="{ active: activeTab === 'tab1' }"
+      >
+        Название вкладки 1
+      </button>
+    </nav>
+  </div>
+
+  <!-- Контент вкладок -->
+  <div class="tab-content">
+    <ComponentTab1 v-if="activeTab === 'tab1'" />
+  </div>
+</div>
+```
+
+**Правила:**
+- Класс кнопки: `glass-button-text`
+- Активная вкладка: `:class="{ active: activeTab === 'название' }`
+- Обёртка: `.accounting` → `.accounting-nav` → `.tabs`
+- Контент: `.tab-content`
+
+---
+
+### СТРУКТУРА ТАБЛИЦ (эталон: IncomeTable.vue) ⭐⭐⭐
+
+**КРИТИЧНО: БЕЗ ЧЕКБОКСОВ!**
+
+**Column definitions:**
+```typescript
+// Column definitions (БЕЗ checkbox)
+const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: 'id',
+    header: 'ID'
+  },
+  {
+    accessorKey: 'name',
+    header: 'Название'
+  }
+]
+```
+
+**Table instance:**
+```typescript
+const table = useVueTable({
+  get data() { return store.data },
+  columns,
+  state: {
+    get sorting() { return sorting.value },
+    get rowSelection() { return rowSelection.value },
+    get columnFilters() { return columnFilters.value }
+  },
+  enableRowSelection: true,
+  enableMultiRowSelection: false, // Только одна строка
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getFacetedUniqueValues: getFacetedUniqueValues()
+})
+```
+
+**Кнопки управления:**
+- Добавить (mdilPlus) - если нужно
+- Просмотр (mdilEye) - :disabled="!hasSingleSelection"
+- Редактировать (mdiFileEditOutline) - :disabled="!hasSingleSelection"
+- Удалить (mdilDelete) - :disabled="!hasSelectedRow"
+- Фильтры (mdilMagnify) - переключает showFilters
+- Обновить (mdilRefresh) - вызывает refreshData
+
+**Выбор строк:**
+```typescript
+const selectedItems = computed(() =>
+  table.getFilteredSelectedRowModel().rows.map(row => row.original)
+)
+const selectedItem = computed(() =>
+  selectedItems.value.length === 1 ? selectedItems.value[0] : null
+)
+const hasSelectedRow = computed(() =>
+  Object.keys(rowSelection.value).length > 0
+)
+const hasSingleSelection = computed(() =>
+  Object.keys(rowSelection.value).length === 1
+)
+```
+
+---
+
+### Sidebar - структура меню (14.02.2026)
+
+**Кнопки:**
+1. **Меню** (mdilMenu) - всегда
+2. **Портфолио** (mdilImage) - все
+3. **Бухгалтерия** (mdilCurrencyRub) - админ → Accounting.vue
+4. **Справочники** (mdiFileCabinet) - админ → Settings.vue
+5. **Настройки** (mdilSettings) - админ → ReferenceSettings.vue
+
+**ВАЖНО:**
+- Справочники (`'references'`) → References.vue (Клиенты, Типы съёмок, Акции)
+- Настройки (`'settings'`) → Settings.vue (будущее)
+
+---
+
+### СТИЛИ МОДАЛОК (эталон: AddBookingModal.vue) ⭐⭐⭐
+
+**КРИТИЧНО: ИСПОЛЬЗОВАТЬ ТОЛЬКО СУЩЕСТВУЮЩИЕ КЛАССЫ!**
+
+**HTML структура модалки:**
+```vue
+<Teleport to="body">
+  <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+    <div class="modal-glass">
+      <h2>Заголовок модалки</h2>
+
+      <!-- Поля ввода -->
+      <div class="input-group">
+        <div class="input-field">
+          <label class="input-label">Название поля: <span class="required">*</span></label>
+          <input type="text" class="modal-input" v-model="value" placeholder="Подсказка" />
+        </div>
+
+        <div class="input-field">
+          <label class="input-label">Другое поле:</label>
+          <textarea class="modal-input" v-model="notes" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="modal-actions">
+        <button class="glass-button" @click="emit('close')">
+          <svg-icon type="mdi" :path="mdilCancel" />
+        </button>
+        <button class="glass-button" @click="handleSubmit">
+          <svg-icon type="mdi" :path="mdilCheck" />
+        </button>
+      </div>
+    </div>
+  </div>
+  <AlertModal :isVisible="showAlert" ... />
+</Teleport>
+```
+
+**Обязательные CSS классы (из modal.css):**
+
+**Структура:**
+- `.modal-overlay` - фон модалки
+- `.modal-glass` - само окно модалки
+- `.input-group` - группа всех полей ввода
+- `.input-field` - одно поле ввода
+- `.input-row` - строка с несколькими полями (если в ряд)
+- `.modal-actions` - блок с кнопками
+
+**Элементы формы:**
+- `.input-label` - подпись поля
+- `.modal-input` - поле ввода (input, textarea, select)
+- `.required` - звёздочка обязательного поля
+
+**Кнопки:**
+- `.glass-button` - кнопка с иконкой (40x40px)
+
+**ЗАПРЕЩЕНО использовать:**
+- ❌ `.form-group` - НЕТ ТАКОГО КЛАССА
+- ❌ `.form-label` - НЕТ ТАКОГО КЛАССА
+- ❌ `.form-input` - НЕТ ТАКОГО КЛАССА
+- ❌ Любые самопридуманные классы
+
+**Модалки просмотра (ViewModal):**
+```vue
+<div class="delivery-info">
+  <p><strong>Поле:</strong> {{ value }}</p>
+</div>
+```
+
+---
+
 ## План на завтра (14.02.2026)
 
 1. **Изменить фильтры** (детали уточнить)
 
 2. **Справочники - сделать редактируемыми:**
-   - Клиенты (clients)
+   - ✅ Клиенты (clients) - ГОТОВО
    - Типы съёмок (shooting_types)
    - Акции (promotions)
-   - Интерфейс редактирования как в таблице "Приход" (с кнопками управления, сортировкой, фильтрацией)
 
 ---
 

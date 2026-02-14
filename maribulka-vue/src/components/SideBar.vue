@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilMenu, mdilImage, mdilCurrencyRub, mdilSettings } from '@mdi/light-js'
+import { mdiFileCabinet } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import { useNavigationStore } from '../stores/navigation'
 
@@ -13,7 +14,7 @@ const toggleSidebar = () => {
   isExpanded.value = !isExpanded.value
 }
 
-const navigateTo = (page: 'home' | 'portfolio' | 'accounting' | 'settings') => {
+const navigateTo = (page: 'home' | 'portfolio' | 'accounting' | 'settings' | 'references') => {
   nav.navigateTo(page)
   isExpanded.value = false
 }
@@ -61,6 +62,12 @@ onUnmounted(() => {
           <button class="glass-button" @click="navigateTo('accounting')">
             <svg-icon type="mdi" :path="mdilCurrencyRub" ></svg-icon>
             <span class="nav-text">Бухгалтерия</span>
+          </button>
+        </div>
+        <div class="nav-item">
+          <button class="glass-button" @click="navigateTo('references')">
+            <svg-icon type="mdi" :path="mdiFileCabinet" ></svg-icon>
+            <span class="nav-text">Справочники</span>
           </button>
         </div>
         <div class="nav-item">

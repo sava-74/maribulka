@@ -6,7 +6,8 @@ import TopBar from './components/TopBar.vue'
 import SideBar from './components/SideBar.vue'
 import LoginModal from './components/LoginModal.vue'
 import Accounting from './components/accounting/Accounting.vue'
-import ReferenceSettings from './components/ReferenceSettings.vue'
+import References from './components/accounting/References.vue'
+import Settings from './components/accounting/Settings.vue'
 
 // Глобальные стили
 import './assets/modal.css'
@@ -42,7 +43,10 @@ const navStore = useNavigationStore()
       <Accounting v-else-if="navStore.currentPage === 'accounting' && authStore.isAdmin" />
 
       <!-- Справочники (только для админа) -->
-      <ReferenceSettings v-else-if="navStore.currentPage === 'settings' && authStore.isAdmin" />
+      <References v-else-if="navStore.currentPage === 'references' && authStore.isAdmin" />
+
+      <!-- Настройки (только для админа) -->
+      <Settings v-else-if="navStore.currentPage === 'settings' && authStore.isAdmin" />
 
       <!-- Если нет доступа -->
       <div v-else class="no-access">

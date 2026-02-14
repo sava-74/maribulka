@@ -1,15 +1,22 @@
 /* Стили ТОЛЬКО для таблиц */
 
 .table-general {
-  margin-top: 30px;
+  position: relative;
+  /*margin-top: 30px;*/
   padding: 20px;
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   box-shadow: var(--glass-shadowPanel);
   /*overflow: hidden;*/
-  position: relative;
+  
+  
+  
+  
+  
+  
 }
 
 /* Контейнер таблицы с прокруткой */
@@ -30,15 +37,7 @@
   padding: 16px;
 }
 
-/* Стили подложки для таблицы */
-.table-general {
-  background: var(--glass-bg);
-  border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  box-shadow: var(--glass-shadowPanel);
-  -webkit-backdrop-filter: var(--glass-bgFilter);
-  backdrop-filter: var(--glass-bgFilter);
-}
+
 /*
 .bookings-calendar {
   width: 100%;

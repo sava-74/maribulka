@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type PageType = 'home' | 'portfolio' | 'accounting' | 'settings'
+export type PageType = 'home' | 'portfolio' | 'accounting' | 'settings' | 'references'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const currentPage = ref<PageType>('home')
