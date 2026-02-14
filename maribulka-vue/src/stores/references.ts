@@ -167,6 +167,11 @@ export const useReferencesStore = defineStore('references', () => {
     return result
   }
 
+  async function checkClientRelations(id: number) {
+    const response = await fetch(`${API_URL}/clients.php?check_relations=1&id=${id}`)
+    return await response.json()
+  }
+
   async function deleteClient(id: number) {
     const response = await fetch(`${API_URL}/clients.php?id=${id}`, {
       method: 'DELETE'
@@ -202,6 +207,7 @@ export const useReferencesStore = defineStore('references', () => {
     searchClients,
     createClient,
     updateClient,
-    deleteClient
+    deleteClient,
+    checkClientRelations
   }
 })

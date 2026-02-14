@@ -28,7 +28,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     switch ($method) {
         case 'GET':
-            if (isset($_GET['id'])) {
+            if (isset($_GET['check_relations'])) {
+                // Проверить связи клиента с документами
+                $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE client_id = ?");
+                $stmt->execute([$_GET['id']]);
+                $result = $stmt->fetch();
+
+                echo json_encode($result['count'] > 0);
+                exit;
+            } elseif (isset($_GET['id'])) {
                 // Получить одного клиента
                 $stmt = $db->prepare("SELECT * FROM clients WHERE id = ?");
                 $stmt->execute([$_GET['id']]);
@@ -136,24 +144,10 @@ try {
             break;
 
         case 'DELETE':
-            // Удалить клиента
+            // Удалить клиента (проверка связей происходит на фронтенде через check_relations)
             if (!isset($_GET['id'])) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Не указан ID']);
-                exit;
-            }
-
-            // Проверяем, есть ли у клиента записи
-            $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE client_id = ?");
-            $stmt->execute([$_GET['id']]);
-            $result = $stmt->fetch();
-
-            if ($result['count'] > 0) {
-                http_response_code(409);
-                echo json_encode([
-                    'error' => 'Невозможно удалить клиента',
-                    'message' => "У клиента есть {$result['count']} записей. Удаление запрещено."
-                ]);
                 exit;
             }
 

@@ -173,27 +173,32 @@ function handleEdit() {
   showEditModal.value = true
 }
 
-function handleDelete() {
-  if (!hasSelectedRow.value) return
-  showDeleteModal.value = true
+async function handleDelete() {
+  if (!hasSelectedRow.value || !selectedClient.value) return
+
+  const client = selectedClient.value
+  const hasRelations = await referencesStore.checkClientRelations(client.id)
+
+  console.log('ID клиента:', client.id, 'Ответ API:', hasRelations, 'Тип:', typeof hasRelations)
+
+  if (hasRelations) {
+    alertTitle.value = 'Удаление невозможно'
+    alertMessage.value = `Клиента "${client.name}" удалить нельзя. С этим клиентом связаны другие документы.`
+    showAlert.value = true
+  } else {
+    showDeleteModal.value = true
+  }
 }
 
 async function confirmDelete() {
-  if (!hasSelectedRow.value) return
+  if (!hasSelectedRow.value || !selectedClient.value) return
 
-  for (const client of selectedClients.value) {
-    const result = await referencesStore.deleteClient(client.id)
-    if (!result.success) {
-      alertTitle.value = 'Ошибка удаления'
-      alertMessage.value = result.error || result.message || 'Не удалось удалить клиента'
-      showAlert.value = true
-      showDeleteModal.value = false
-      return
-    }
+  const result = await referencesStore.deleteClient(selectedClient.value.id)
+
+  if (result.success) {
+    rowSelection.value = {}
+    showDeleteModal.value = false
   }
-
-  rowSelection.value = {}
-  showDeleteModal.value = false
 }
 
 function toggleFilters() {
@@ -355,7 +360,7 @@ function refreshData() {
 
     <ConfirmModal
       :is-visible="showDeleteModal"
-      :message="`Вы уверены, что хотите удалить выбранных клиентов (${selectedClients.length})?`"
+      :message="`Вы хотите удалить клиента &quot;${selectedClient?.name}&quot;?`"
       title="Подтверждение удаления"
       @confirm="confirmDelete"
       @cancel="showDeleteModal = false"
