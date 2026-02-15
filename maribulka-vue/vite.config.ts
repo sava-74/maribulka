@@ -14,7 +14,7 @@ export default defineConfig({
         secure: false,
         cookieDomainRewrite: 'localhost',
         configure: (proxy, _options) => {
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
+          proxy.on('proxyReq', (_proxyReq, req, _res) => {
             // Логируем метод запроса для отладки
             console.log('Proxy API request:', req.method, req.url)
           })
