@@ -1,0 +1,144 @@
+/* Стили для домашней страницы */
+
+.home-container {
+  padding-top: 20px;
+}
+
+/* Блок действующей акции */
+.promotion-banner {
+  position: relative;
+  background-color: #FFD700; /* Жёлтый фон */
+  border-radius: var(--panelRadius);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  box-shadow: var(--glass-shadowPanel);
+  overflow: hidden; /* Без скроллинга */
+  z-index: 110 !important; /* Поверх всего */
+}
+
+.promotion-text {
+  color: #DC143C; /* Красный текст */
+  font-size: clamp(16px, 4vw, 32px); /* Уменьшается если не влезает */
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  white-space: nowrap; /* Не переносить текст */
+}
+
+/* Блок фото студии */
+.studio-photos {
+  margin-bottom: 20px;
+}
+
+.photos-grid {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  background: var(--glass-bg);
+  border-radius: var(--panelRadius);
+  overflow: hidden;
+}
+
+.photo-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+  min-height: 50px;
+}
+
+.photo-item:first-child img {
+  border-radius: var(--panelRadius) 0 0 var(--panelRadius);
+}
+
+.photo-item:last-child img {
+  border-radius: 0 var(--panelRadius) var(--panelRadius) 0;
+}
+
+.photo-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.photo-add-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 100;
+}
+
+/* Блок описания студии */
+.studio-description {
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  padding: 30px;
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  box-shadow: var(--glass-shadowPanel);
+}
+
+.studio-description h2 {
+  color: var(--generalTextColor);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+}
+
+.description-content {
+  color: var(--generalTextColor);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.description-content p {
+  margin: 0;
+}
+
+/* Модалка загрузки фото */
+.photo-preview {
+  width: 100%;
+  max-height: 400px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--panelRadius);
+  overflow: hidden;
+}
+
+.photo-preview img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.file-input-wrapper {
+  margin-bottom: 10px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-wrapper label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-hint {
+  color: var(--generalTextColor);
+  font-size: 12px;
+  opacity: 0.7;
+  margin: 0;
+  text-align: center;
+}

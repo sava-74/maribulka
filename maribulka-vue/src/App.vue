@@ -8,10 +8,12 @@ import LoginModal from './components/LoginModal.vue'
 import Accounting from './components/accounting/Accounting.vue'
 import References from './components/accounting/References.vue'
 import Settings from './components/accounting/Settings.vue'
+import Home from './views/Home.vue'
 
 // Глобальные стили
 import './assets/modal.css'
 import './assets/content.css'
+import './assets/home.css'
 
 const isModalOpen = ref(false)
 const authStore = useAuthStore()
@@ -26,12 +28,8 @@ const navStore = useNavigationStore()
     <SideBar />
 
     <main class="content">
-      <!-- Главная страница (приветствие) -->
-      <div v-if="navStore.currentPage === 'home'" class="welcome">
-        <h1>Добро пожаловать в Maribulka</h1>
-        <p>Портал фотографа</p>
-        <p v-if="!authStore.isAuthenticated">Войдите чтобы начать работу →</p>
-      </div>
+      <!-- Главная страница -->
+      <Home v-if="navStore.currentPage === 'home'" />
 
       <!-- Портфолио -->
       <div v-else-if="navStore.currentPage === 'portfolio'" class="page-portfolio">

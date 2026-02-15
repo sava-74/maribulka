@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilMenu, mdilImage, mdilCurrencyRub, mdilSettings } from '@mdi/light-js'
-import { mdiFileCabinet } from '@mdi/js'
+import { mdiFileCabinet, mdiHomeOutline } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import { useNavigationStore } from '../stores/navigation'
 
@@ -48,6 +48,14 @@ onUnmounted(() => {
     </div>
 
     <div class="nav-links">
+      <!-- Домой -->
+      <div class="nav-item">
+        <button class="glass-button" @click="navigateTo('home')">
+          <svg-icon type="mdi" :path="mdiHomeOutline" ></svg-icon>
+          <span class="nav-text">Домой</span>
+        </button>
+      </div>
+
       <!-- Портфолио -->
       <div class="nav-item">
         <button class="glass-button" @click="navigateTo('portfolio')">
