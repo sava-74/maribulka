@@ -47,6 +47,9 @@ const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
 
+// Акция для просмотра из Timeline
+const timelinePromotion = ref<any>(null)
+
 onMounted(() => {
   referencesStore.fetchPromotions()
 })
@@ -216,6 +219,12 @@ function toggleFilters() {
 function refreshData() {
   referencesStore.fetchPromotions()
 }
+
+// Обработка клика по блоку в Timeline
+function handleTimelineClick(promotion: any) {
+  timelinePromotion.value = promotion
+  showViewModal.value = true
+}
 </script>
 
 <template>
@@ -351,7 +360,10 @@ function refreshData() {
     </div>
 
     <!-- Timeline визуализация акций -->
-    <PromotionsTimeline :promotions="referencesStore.promotions" />
+    <PromotionsTimeline
+      :promotions="referencesStore.promotions"
+      @view-promotion="handleTimelineClick"
+    />
 
     <!-- Модалки -->
     <AddPromotionModal
@@ -361,8 +373,8 @@ function refreshData() {
 
     <ViewPromotionModal
       :is-visible="showViewModal"
-      :promotion="selectedPromotion"
-      @close="showViewModal = false; rowSelection = {}"
+      :promotion="selectedPromotion || timelinePromotion"
+      @close="showViewModal = false; rowSelection = {}; timelinePromotion = null"
     />
 
     <EditPromotionModal

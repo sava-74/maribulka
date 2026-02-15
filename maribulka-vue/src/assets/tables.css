@@ -275,17 +275,17 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 5;
 }
 
 .timeline-promotion {
   position: absolute;
   top: 0;
-  height: auto;
+  height: 60%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px;
-  cursor: pointer;
   overflow: hidden;
   box-sizing: border-box;
   pointer-events: auto;
@@ -294,6 +294,11 @@
 .timeline-promotion:hover {
   opacity: 0.8;
   z-index: 10;
+}
+
+/* Курсор-рука для кликабельных блоков */
+.timeline-promotion-clickable {
+  cursor: pointer;
 }
 
 .promotion-label {
@@ -315,6 +320,7 @@
   align-items: flex-end;
   border-bottom: 2px solid var(--tableTextColor);
   position: relative;
+  z-index: 1;
 }
 
 /* Вертикальная черточка в конце (31 декабря) */
@@ -351,6 +357,7 @@
   width: 100%;
   height: auto;
   pointer-events: none;
+  z-index: 3;
 }
 
 .timeline-month-label {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 interface Promotion {
   id: number
@@ -12,6 +12,16 @@ interface Promotion {
 const props = defineProps<{
   promotions: Promotion[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'view-promotion', promotion: any): void
+}>()
+
+// Обработчик клика на блок акции
+function handlePromotionClick(promo: any) {
+  console.log('Нажато на акцию:', promo.name)
+  emit('view-promotion', promo)
+}
 
 const currentYear = new Date().getFullYear()
 
@@ -171,15 +181,14 @@ function formatDate(dateStr: string | null): string {
           <div
             v-for="promo in timedPromotions"
             :key="promo.id"
-            class="timeline-promotion"
+            class="timeline-promotion timeline-promotion-clickable"
             :style="{
               left: promo.left + '%',
               width: promo.width + '%',
               backgroundColor: promo.color
             }"
-            :title="`${promo.name} (${promo.discount_percent}%) — ${formatDate(promo.start_date!)} – ${formatDate(promo.end_date!)} (дни ${promo.startDay}-${promo.endDay})`"
+            @click="handlePromotionClick(promo)"
           >
-            <span class="promotion-label">{{ promo.name }} ({{ promo.discount_percent }}%)</span>
           </div>
         </div>
 
