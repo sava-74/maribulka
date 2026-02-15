@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-const API_URL = 'http://localhost/maribulka/api'
+const API_URL = '/api'
 
 interface StudioPhoto {
   id: number
@@ -29,7 +29,7 @@ export const useHomeStore = defineStore('home', () => {
         const photoArray: string[] = ['', '', '', '']
         data.photos.forEach((photo: StudioPhoto) => {
           if (photo.position >= 0 && photo.position < 4) {
-            photoArray[photo.position] = `${API_URL}${photo.photo_url}`
+            photoArray[photo.position] = photo.photo_url
           }
         })
         photos.value = photoArray

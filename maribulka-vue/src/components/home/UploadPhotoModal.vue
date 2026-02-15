@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilUpload } from '@mdi/light-js'
+import { mdilCheck, mdilUpload, mdilDelete } from '@mdi/light-js'
 import { mdiClose } from '@mdi/js'
 import { useHomeStore } from '../../stores/home'
 import AlertModal from '../AlertModal.vue'
@@ -86,6 +86,24 @@ function resetForm() {
   previewUrl.value = null
 }
 
+// Удаление фото
+async function handleDelete() {
+  uploading.value = true
+
+  const result = await homeStore.deletePhoto(props.position)
+
+  uploading.value = false
+
+  if (result.success) {
+    emit('close')
+    resetForm()
+  } else {
+    alertTitle.value = 'Ошибка удаления'
+    alertMessage.value = result.message || 'Не удалось удалить фото'
+    showAlert.value = true
+  }
+}
+
 // Закрытие модалки
 function handleClose() {
   resetForm()
@@ -116,11 +134,9 @@ function handleClose() {
             >
             <label for="photo-input" class="glass-button-text">
               <svg-icon type="mdi" :path="mdilUpload" />
-              <span>{{ selectedFile ? selectedFile.name : 'Выбрать файл' }}</span>
+              <span>Выбрать файл</span>
             </label>
           </div>
-
-          <p class="file-hint">Форматы: JPG, PNG, WEBP. Максимум 5 МБ</p>
         </div>
 
         <div class="modal-actions">
@@ -131,6 +147,14 @@ function handleClose() {
             title="Загрузить"
           >
             <svg-icon type="mdi" :path="mdilCheck" />
+          </button>
+          <button
+            class="glass-button"
+            @click="handleDelete"
+            :disabled="uploading"
+            title="Удалить фото"
+          >
+            <svg-icon type="mdi" :path="mdilDelete" />
           </button>
           <button
             class="glass-button"
