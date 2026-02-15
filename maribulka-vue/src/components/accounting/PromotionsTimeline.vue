@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 
 interface Promotion {
   id: number
@@ -156,15 +156,6 @@ function getPromotionColor(id: number): string {
     '#A9DFBF'  // Светло-зелёный
   ]
   return colors[id % colors.length] as string
-}
-
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return ''
-  const parts = dateStr.split('-')
-  const day = parts[2] || ''
-  const month = parts[1] || ''
-  const year = parts[0] || ''
-  return `${day}.${month}.${year.slice(2)}`
 }
 </script>
 
