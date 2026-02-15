@@ -152,6 +152,15 @@ export const useHomeStore = defineStore('home', () => {
       })
 
       console.log('Статус ответа:', response.status)
+
+      // Проверяем статус ответа
+      if (response.status === 403) {
+        const data = await response.json()
+        console.log('Ответ 403:', data)
+        error.value = data.message || 'Доступ запрещён'
+        return { success: false, message: data.message || 'Доступ запрещён. Требуется авторизация.' }
+      }
+
       const data = await response.json()
       console.log('Ответ от сервера:', data)
 
