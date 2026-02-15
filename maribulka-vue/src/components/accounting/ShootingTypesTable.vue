@@ -67,7 +67,7 @@ const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'duration_minutes',
-    header: 'Время(мин)',
+    header: 'мин.',
     cell: ({ getValue }) => getValue() || 30
   },
   {

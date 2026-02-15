@@ -12,7 +12,7 @@ const emit = defineEmits(['close'])
 function formatDate(dateStr: string | null) {
   if (!dateStr) return '∞'
   const [year, month, day] = dateStr.split('-')
-  return `${day}.${month}.${year}`
+  return `${day}.${month}.${year!.slice(-2)}`
 }
 
 const promotionInfo = computed(() => {
@@ -21,7 +21,7 @@ const promotionInfo = computed(() => {
   return {
     id: props.promotion.id,
     name: props.promotion.name,
-    discountPercent: props.promotion.discount_percent,
+    discountPercent: Math.round(parseFloat(props.promotion.discount_percent)),
     startDate: formatDate(props.promotion.start_date),
     endDate: formatDate(props.promotion.end_date)
   }

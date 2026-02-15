@@ -55,14 +55,14 @@ onMounted(() => {
 function formatDate(dateStr: string | null) {
   if (!dateStr) return '∞'
   const [year, month, day] = dateStr.split('-')
-  return `${day}.${month}.${year}`
+  return `${day}.${month}.${year!.slice(-2)}`
 }
 
 // Column definitions (БЕЗ checkbox)
 const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'id',
-    header: 'ID'
+    header: '№'
   },
   {
     accessorKey: 'name',
@@ -70,17 +70,17 @@ const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'discount_percent',
-    header: 'Скидка %',
-    cell: ({ getValue }) => getValue() + '%'
+    header: '%',
+    cell: ({ getValue }) => Math.round(parseFloat(getValue() as string)) + '%'
   },
   {
     accessorKey: 'start_date',
-    header: 'Дата начала',
+    header: 'Начало',
     cell: ({ getValue }) => formatDate(getValue() as string)
   },
   {
     accessorKey: 'end_date',
-    header: 'Дата окончания',
+    header: 'Конец',
     cell: ({ getValue }) => formatDate(getValue() as string)
   }
 ]

@@ -28,7 +28,7 @@
 .table-scroll-container {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: calc(100vh - 350px);
+  max-height: calc(100vh - 200px);
   border: 1px solid var(--generalTabBorderColor);
 }
 
@@ -44,7 +44,7 @@
   }*/
 
  .table-containerTab {
-   max-height: calc(100vh - 400px);
+   max-height: calc(100vh - 300px);
    overflow-y: auto !important;
    overflow-x: auto !important;
    position: relative;
