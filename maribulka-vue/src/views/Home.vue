@@ -6,18 +6,21 @@ import { useReferencesStore } from '../stores/references'
 import { useAuthStore } from '../stores/auth'
 import { useHomeStore } from '../stores/home'
 import UploadPhotoModal from '../components/home/UploadPhotoModal.vue'
+import EditStudioDescriptionModal from '../components/home/EditStudioDescriptionModal.vue'
 
 const referencesStore = useReferencesStore()
 const authStore = useAuthStore()
 const homeStore = useHomeStore()
 
 const showUploadModal = ref(false)
+const showEditDescriptionModal = ref(false)
 const selectedPosition = ref(0)
 
 // Загружаем данные при монтировании
 onMounted(() => {
   referencesStore.fetchPromotions()
   homeStore.fetchPhotos()
+  homeStore.fetchDescription()
 })
 
 // Находим действующую акцию (текущая дата в диапазоне start_date - end_date)
@@ -86,10 +89,18 @@ function handleAddPhoto(position: number) {
 
     <!-- Блок описания студии -->
     <div class="studio-description">
-      <h2>О студии</h2>
-      <div class="description-content">
-        <p>Описание студии (в разработке)</p>
+      <div class="description-header">
+        <h2>О студии</h2>
+        <button
+          v-if="authStore.isAdmin"
+          class="glass-button"
+          @click="showEditDescriptionModal = true"
+          title="Редактировать описание"
+        >
+          <svg-icon type="mdi" :path="mdilPlus" />
+        </button>
       </div>
+      <div class="description-content" v-html="homeStore.description"></div>
     </div>
 
     <!-- Модалка загрузки фото -->
@@ -97,6 +108,12 @@ function handleAddPhoto(position: number) {
       :is-visible="showUploadModal"
       :position="selectedPosition"
       @close="showUploadModal = false"
+    />
+
+    <!-- Модалка редактирования описания -->
+    <EditStudioDescriptionModal
+      :is-visible="showEditDescriptionModal"
+      @close="showEditDescriptionModal = false"
     />
   </div>
 </template>

@@ -12,6 +12,7 @@ interface StudioPhoto {
 
 export const useHomeStore = defineStore('home', () => {
   const photos = ref<string[]>([])
+  const description = ref<string>('')
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -111,12 +112,69 @@ export const useHomeStore = defineStore('home', () => {
     }
   }
 
+  // Загрузить описание студии
+  async function fetchDescription() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await fetch(`${API_URL}/studio_description.php`)
+      const data = await response.json()
+
+      if (data.success) {
+        description.value = data.data.content || ''
+      } else {
+        error.value = data.message || 'Ошибка загрузки описания'
+      }
+    } catch (err) {
+      error.value = 'Ошибка сети'
+      console.error('Ошибка загрузки описания:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // Обновить описание студии
+  async function updateDescription(content: string): Promise<{ success: boolean; message?: string }> {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await fetch(`${API_URL}/studio_description.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        description.value = content
+        return { success: true }
+      } else {
+        error.value = data.message || 'Ошибка обновления описания'
+        return { success: false, message: data.message }
+      }
+    } catch (err) {
+      error.value = 'Ошибка сети'
+      console.error('Ошибка обновления описания:', err)
+      return { success: false, message: 'Ошибка сети' }
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     photos,
+    description,
     loading,
     error,
     fetchPhotos,
     uploadPhoto,
-    deletePhoto
+    deletePhoto,
+    fetchDescription,
+    updateDescription
   }
 })
