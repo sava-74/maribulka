@@ -52,7 +52,7 @@ const months = [
 // Вспомогательная функция: парсинг даты из строки YYYY-MM-DD без UTC сдвига
 function parseLocalDate(dateStr: string): Date {
   const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day)
+  return new Date(year!, month! - 1, day!)
 }
 
 // Вспомогательная функция: день года (1-365/366)
@@ -62,10 +62,10 @@ function getDayOfYear(dateStr: string): number {
   // Массив кумулятивных дней до начала каждого месяца
   const cumulativeDays = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
 
-  let dayOfYear = cumulativeDays[month - 1]! + day
+  let dayOfYear = cumulativeDays[month! - 1]! + day!
 
   // Если високосный год и месяц после февраля, добавляем 1
-  if (isLeapYear(year) && month > 2) {
+  if (isLeapYear(year!) && month! > 2) {
     dayOfYear += 1
   }
 
