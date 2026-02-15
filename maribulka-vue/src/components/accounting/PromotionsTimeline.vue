@@ -14,7 +14,6 @@ const props = defineProps<{
 }>()
 
 const currentYear = new Date().getFullYear()
-const currentMonth = new Date().getMonth() + 1
 
 // Количество дней в каждом месяце
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -33,18 +32,18 @@ const daysInYear = daysInMonth.reduce((sum, days) => sum + days, 0)
 
 // Вычисляем процентную ширину каждого месяца на основе реальных дней
 const months = [
-  { short: 'Янв', full: 'Январь', num: 1, days: daysInMonth[0] },
-  { short: 'Фев', full: 'Февраль', num: 2, days: daysInMonth[1] },
-  { short: 'Мар', full: 'Март', num: 3, days: daysInMonth[2] },
-  { short: 'Апр', full: 'Апрель', num: 4, days: daysInMonth[3] },
-  { short: 'Май', full: 'Май', num: 5, days: daysInMonth[4] },
-  { short: 'Июн', full: 'Июнь', num: 6, days: daysInMonth[5] },
-  { short: 'Июл', full: 'Июль', num: 7, days: daysInMonth[6] },
-  { short: 'Авг', full: 'Август', num: 8, days: daysInMonth[7] },
-  { short: 'Сен', full: 'Сентябрь', num: 9, days: daysInMonth[8] },
-  { short: 'Окт', full: 'Октябрь', num: 10, days: daysInMonth[9] },
-  { short: 'Ноя', full: 'Ноябрь', num: 11, days: daysInMonth[10] },
-  { short: 'Дек', full: 'Декабрь', num: 12, days: daysInMonth[11] }
+  { short: 'Янв', full: 'Январь', num: 1, days: daysInMonth[0]! },
+  { short: 'Фев', full: 'Февраль', num: 2, days: daysInMonth[1]! },
+  { short: 'Мар', full: 'Март', num: 3, days: daysInMonth[2]! },
+  { short: 'Апр', full: 'Апрель', num: 4, days: daysInMonth[3]! },
+  { short: 'Май', full: 'Май', num: 5, days: daysInMonth[4]! },
+  { short: 'Июн', full: 'Июнь', num: 6, days: daysInMonth[5]! },
+  { short: 'Июл', full: 'Июль', num: 7, days: daysInMonth[6]! },
+  { short: 'Авг', full: 'Август', num: 8, days: daysInMonth[7]! },
+  { short: 'Сен', full: 'Сентябрь', num: 9, days: daysInMonth[8]! },
+  { short: 'Окт', full: 'Октябрь', num: 10, days: daysInMonth[9]! },
+  { short: 'Ноя', full: 'Ноябрь', num: 11, days: daysInMonth[10]! },
+  { short: 'Дек', full: 'Декабрь', num: 12, days: daysInMonth[11]! }
 ].map(month => ({
   ...month,
   width: (month.days / daysInYear) * 100
@@ -63,7 +62,7 @@ function getDayOfYear(dateStr: string): number {
   // Массив кумулятивных дней до начала каждого месяца
   const cumulativeDays = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
 
-  let dayOfYear = cumulativeDays[month - 1] + day
+  let dayOfYear = cumulativeDays[month - 1]! + day
 
   // Если високосный год и месяц после февраля, добавляем 1
   if (isLeapYear(year) && month > 2) {
