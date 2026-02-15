@@ -10,8 +10,15 @@
     width: 100%;
   }
 
+  .accounting-table th, .accounting-table td {
+    font-size: 10px !important;
+    /*padding: 4px 2px !important;
+    white-space: nowrap;
+    overflow: hidden;*/
+  }
+
   table {
-    font-size: 11px;
+    font-size: 8px;
   }
 
   table th,

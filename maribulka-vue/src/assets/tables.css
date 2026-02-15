@@ -71,8 +71,8 @@
   color: var(--generalTextColor);
   border-bottom: 1px solid var(--generalTabBorderColor);
   border-right: 1px solid var(--generalTabBorderColor);
-  font-size: 14px;
-  padding: 4px;
+  font-size: 12px; /* Уменьшаем размер шрифта было 14 */
+  /*padding: 4px;*/
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -251,8 +251,8 @@
   position: relative;
   width: 100%;
   /*margin-bottom: 12px;*/
-  overflow-x: visible;
-  overflow-y: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* Шкала дней (минимум 365px, максимум 100% ширины) */

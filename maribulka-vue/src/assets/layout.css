@@ -238,6 +238,10 @@ select.filter-select {
     flex-wrap: nowrap;
   }
 
+  .table-general {
+    padding: 10px 5px 10px 5px !important;
+  }
+
   .header-with-action {
     flex-wrap: wrap;
   }
