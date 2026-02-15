@@ -77,7 +77,8 @@ elseif ($method === 'POST') {
         }
 
         // Создание директории для фото если не существует
-        $uploadDir = __DIR__ . '/uploads/studio/';
+        // Путь к медиа вне dist (чтобы не терялись при деплое)
+        $uploadDir = dirname(__DIR__, 3) . '/media/home/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
@@ -97,8 +98,80 @@ elseif ($method === 'POST') {
             exit();
         }
 
+        // Оптимизация и сжатие изображения
+        $imageOptimized = false;
+        $mime = mime_content_type($filePath);
+
+        // Создаём изображение из загруженного файла
+        switch ($mime) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                $sourceImage = @imagecreatefromjpeg($filePath);
+                break;
+            case 'image/png':
+                $sourceImage = @imagecreatefrompng($filePath);
+                break;
+            case 'image/webp':
+                $sourceImage = @imagecreatefromwebp($filePath);
+                break;
+            default:
+                $sourceImage = false;
+        }
+
+        if ($sourceImage !== false) {
+            // Получаем размеры оригинала
+            $originalWidth = imagesx($sourceImage);
+            $originalHeight = imagesy($sourceImage);
+
+            // Максимальные размеры для студийных фото (достаточно для веба)
+            $maxWidth = 1920;
+            $maxHeight = 1080;
+
+            // Вычисляем новые размеры с сохранением пропорций
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight, 1);
+            $newWidth = (int)($originalWidth * $ratio);
+            $newHeight = (int)($originalHeight * $ratio);
+
+            // Создаём новое изображение
+            $optimizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+            // Для PNG сохраняем прозрачность
+            if ($mime === 'image/png') {
+                imagealphablending($optimizedImage, false);
+                imagesavealpha($optimizedImage, true);
+                $transparent = imagecolorallocatealpha($optimizedImage, 255, 255, 255, 127);
+                imagefilledrectangle($optimizedImage, 0, 0, $newWidth, $newHeight, $transparent);
+            }
+
+            // Ресемплинг (качественное масштабирование)
+            imagecopyresampled(
+                $optimizedImage, $sourceImage,
+                0, 0, 0, 0,
+                $newWidth, $newHeight,
+                $originalWidth, $originalHeight
+            );
+
+            // Сохраняем оптимизированное изображение
+            switch ($mime) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    $imageOptimized = imagejpeg($optimizedImage, $filePath, 85); // Качество 85%
+                    break;
+                case 'image/png':
+                    $imageOptimized = imagepng($optimizedImage, $filePath, 6); // Компрессия 6 (0-9)
+                    break;
+                case 'image/webp':
+                    $imageOptimized = imagewebp($optimizedImage, $filePath, 85); // Качество 85%
+                    break;
+            }
+
+            // Освобождаем память
+            imagedestroy($sourceImage);
+            imagedestroy($optimizedImage);
+        }
+
         // URL для доступа к фото
-        $photoUrl = '/api/uploads/studio/' . $fileName;
+        $photoUrl = '/media/home/' . $fileName;
 
         // Удаление старого фото на этой позиции (если есть)
         $stmt = $pdo->prepare("SELECT id, photo_url FROM studio_photos WHERE position = ?");
@@ -107,7 +180,7 @@ elseif ($method === 'POST') {
 
         if ($oldPhoto) {
             // Удаляем старый файл
-            $oldFilePath = __DIR__ . str_replace('/api', '', $oldPhoto['photo_url']);
+            $oldFilePath = dirname(__DIR__, 3) . str_replace('/media', '/media', $oldPhoto['photo_url']);
             if (file_exists($oldFilePath)) {
                 unlink($oldFilePath);
             }
@@ -166,7 +239,7 @@ elseif ($method === 'DELETE') {
         }
 
         // Удаляем файл
-        $filePath = __DIR__ . str_replace('/api', '', $photo['photo_url']);
+        $filePath = dirname(__DIR__, 3) . str_replace('/media', '/media', $photo['photo_url']);
         if (file_exists($filePath)) {
             unlink($filePath);
         }

@@ -5,10 +5,15 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
 
-  // Прокси для API запросов в development режиме
+  // Прокси для API запросов и медиа-файлов в development режиме
   server: {
     proxy: {
       '/api': {
+        target: 'http://xn--80aac1alfd7a3a5g.xn--p1ai',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/media': {
         target: 'http://xn--80aac1alfd7a3a5g.xn--p1ai',
         changeOrigin: true,
         secure: false,

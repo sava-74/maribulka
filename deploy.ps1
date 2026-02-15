@@ -79,7 +79,13 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Проверка деплоя
+# 6. Создание симлинка для media
+Write-Host "🔗 Создание симлинка для media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
+Write-Host "✅ Симлинк создан" -ForegroundColor Green
+Write-Host ""
+
+# 7. Проверка деплоя
 Write-Host "🔍 Проверка деплоя..." -ForegroundColor Yellow
 try {
     $response = Invoke-WebRequest -Uri "http://xn--80aac1alfd7a3a5g.xn--p1ai/" -UseBasicParsing
@@ -91,7 +97,7 @@ try {
 }
 Write-Host ""
 
-# 7. Финальная информация
+# 8. Финальная информация
 Write-Host "==========================================" -ForegroundColor Blue
 Write-Host "✨ Деплой успешно завершен!" -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Blue

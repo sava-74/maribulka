@@ -6,15 +6,20 @@
 
 /* Блок действующей акции */
 .promotion-banner {
-  position: relative;
+  position: sticky;
+  top: 87px; /* Высота шапки */
+  z-index: 100;
+  margin-top: -8px;
+  padding: 16px;
   background-color: #FFD700; /* Жёлтый фон */
+  border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
   box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  text-align: center;
   overflow: hidden; /* Без скроллинга */
-  z-index: 110 !important; /* Поверх всего */
+  margin-bottom: 20px;
 }
 
 .promotion-text {
@@ -141,4 +146,13 @@
   opacity: 0.7;
   margin: 0;
   text-align: center;
+}
+
+
+@media (max-width: 768px) {
+
+  .promotion-banner {
+    top: 69px;
+    padding: 8px;
+  }
 }
