@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'database.php';
 
+$pdo = Database::getInstance()->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 
 // GET - получить описание студии
