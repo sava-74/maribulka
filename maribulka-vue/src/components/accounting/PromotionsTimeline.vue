@@ -13,48 +13,120 @@ const props = defineProps<{
   promotions: Promotion[]
 }>()
 
-const months = [
-  { short: 'Янв', full: 'Январь', num: 1 },
-  { short: 'Фев', full: 'Февраль', num: 2 },
-  { short: 'Мар', full: 'Март', num: 3 },
-  { short: 'Апр', full: 'Апрель', num: 4 },
-  { short: 'Май', full: 'Май', num: 5 },
-  { short: 'Июн', full: 'Июнь', num: 6 },
-  { short: 'Июл', full: 'Июль', num: 7 },
-  { short: 'Авг', full: 'Август', num: 8 },
-  { short: 'Сен', full: 'Сентябрь', num: 9 },
-  { short: 'Окт', full: 'Октябрь', num: 10 },
-  { short: 'Ноя', full: 'Ноябрь', num: 11 },
-  { short: 'Дек', full: 'Декабрь', num: 12 }
-]
-
 const currentYear = new Date().getFullYear()
 const currentMonth = new Date().getMonth() + 1
 
-// Фильтруем только акции с датами (не бессрочные)
+// Количество дней в каждом месяце
+const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+// Проверка високосного года
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
+}
+
+// Корректируем февраль для високосного года
+if (isLeapYear(currentYear)) {
+  daysInMonth[1] = 29
+}
+
+const daysInYear = daysInMonth.reduce((sum, days) => sum + days, 0)
+
+// Вычисляем процентную ширину каждого месяца на основе реальных дней
+const months = [
+  { short: 'Янв', full: 'Январь', num: 1, days: daysInMonth[0] },
+  { short: 'Фев', full: 'Февраль', num: 2, days: daysInMonth[1] },
+  { short: 'Мар', full: 'Март', num: 3, days: daysInMonth[2] },
+  { short: 'Апр', full: 'Апрель', num: 4, days: daysInMonth[3] },
+  { short: 'Май', full: 'Май', num: 5, days: daysInMonth[4] },
+  { short: 'Июн', full: 'Июнь', num: 6, days: daysInMonth[5] },
+  { short: 'Июл', full: 'Июль', num: 7, days: daysInMonth[6] },
+  { short: 'Авг', full: 'Август', num: 8, days: daysInMonth[7] },
+  { short: 'Сен', full: 'Сентябрь', num: 9, days: daysInMonth[8] },
+  { short: 'Окт', full: 'Октябрь', num: 10, days: daysInMonth[9] },
+  { short: 'Ноя', full: 'Ноябрь', num: 11, days: daysInMonth[10] },
+  { short: 'Дек', full: 'Декабрь', num: 12, days: daysInMonth[11] }
+].map(month => ({
+  ...month,
+  width: (month.days / daysInYear) * 100
+}))
+
+// Вспомогательная функция: парсинг даты из строки YYYY-MM-DD без UTC сдвига
+function parseLocalDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+// Вспомогательная функция: день года (1-365/366)
+function getDayOfYear(dateStr: string): number {
+  const [year, month, day] = dateStr.split('-').map(Number)
+
+  // Массив кумулятивных дней до начала каждого месяца
+  const cumulativeDays = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+
+  let dayOfYear = cumulativeDays[month - 1] + day
+
+  // Если високосный год и месяц после февраля, добавляем 1
+  if (isLeapYear(year) && month > 2) {
+    dayOfYear += 1
+  }
+
+  return dayOfYear
+}
+
+// Проверяет, является ли день первым числом месяца
+function isFirstOfMonth(dayOfYear: number): boolean {
+  // Кумулятивные дни (день 1=1 янв, 32=1 фев, 60=1 мар, ...)
+  const firstDays = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+
+  // Корректировка для високосного года (после февраля добавляем +1)
+  if (isLeapYear(currentYear)) {
+    return firstDays.slice(0, 2).includes(dayOfYear) ||
+           firstDays.slice(2).map(d => d + 1).includes(dayOfYear)
+  }
+
+  return firstDays.includes(dayOfYear)
+}
+
+// Фильтруем только акции с датами (не бессрочные) и только текущего года
 const timedPromotions = computed(() => {
   return props.promotions
-    .filter(p => p.start_date && p.end_date)
+    .filter(p => {
+      if (!p.start_date || !p.end_date) return false
+      const startYear = parseLocalDate(p.start_date).getFullYear()
+      const endYear = parseLocalDate(p.end_date).getFullYear()
+      // Берём только акции текущего года
+      return startYear === currentYear || endYear === currentYear
+    })
     .map(p => {
-      const start = new Date(p.start_date!)
-      const end = new Date(p.end_date!)
+      const startYear = parseLocalDate(p.start_date!).getFullYear()
+      const endYear = parseLocalDate(p.end_date!).getFullYear()
 
-      // Вычисляем позицию и ширину блока (в процентах от года)
-      const startMonth = start.getMonth() + 1
-      const endMonth = end.getMonth() + 1
+      // Если акция начинается в прошлом году, обрезаем начало
+      let actualStartDate = p.start_date!
+      if (startYear < currentYear) {
+        actualStartDate = `${currentYear}-01-01`
+      }
 
-      // Левая граница (процент от начала года)
-      const left = ((startMonth - 1) / 12) * 100
+      // Если акция заканчивается в следующем году, обрезаем конец
+      let actualEndDate = p.end_date!
+      if (endYear > currentYear) {
+        actualEndDate = `${currentYear}-12-31`
+      }
 
-      // Ширина блока
-      const width = ((endMonth - startMonth + 1) / 12) * 100
+      // Вычисляем порядковый день начала и конца акции (с учётом обрезки)
+      const startDay = getDayOfYear(actualStartDate)
+      const endDay = getDayOfYear(actualEndDate)
+
+      // Позиция в процентах (пропорционально растягивается)
+      const left = ((startDay - 1) / daysInYear) * 100  // день 1 = 0%
+      const width = ((endDay - startDay + 1) / daysInYear) * 100  // ширина в %
 
       return {
         ...p,
+        startDay,
+        endDay,
         left,
         width,
-        startMonth,
-        endMonth,
         color: getPromotionColor(p.id)
       }
     })
@@ -91,34 +163,47 @@ function formatDate(dateStr: string | null): string {
   <div class="timeline-container">
     <h3 class="timeline-title">График акций {{ currentYear }}</h3>
 
-    <!-- Временная шкала с месяцами -->
+    <!-- Временная шкала: 365px = 365 дней -->
     <div class="timeline">
-      <!-- Месяцы -->
-      <div class="timeline-months">
-        <div
-          v-for="month in months"
-          :key="month.num"
-          class="timeline-month"
-          :class="{ current: month.num === currentMonth }"
-        >
-          {{ month.short }}
+      <!-- Шкала с делениями и блоками акций -->
+      <div class="timeline-scale">
+        <!-- Блоки акций внутри шкалы -->
+        <div class="timeline-promotions">
+          <div
+            v-for="promo in timedPromotions"
+            :key="promo.id"
+            class="timeline-promotion"
+            :style="{
+              left: promo.left + '%',
+              width: promo.width + '%',
+              backgroundColor: promo.color
+            }"
+            :title="`${promo.name} (${promo.discount_percent}%) — ${formatDate(promo.start_date!)} – ${formatDate(promo.end_date!)} (дни ${promo.startDay}-${promo.endDay})`"
+          >
+            <span class="promotion-label">{{ promo.name }} ({{ promo.discount_percent }}%)</span>
+          </div>
         </div>
-      </div>
 
-      <!-- Блоки акций -->
-      <div class="timeline-promotions">
-        <div
-          v-for="promo in timedPromotions"
-          :key="promo.id"
-          class="timeline-promotion"
-          :style="{
-            left: promo.left + '%',
-            width: promo.width + '%',
-            backgroundColor: promo.color
-          }"
-          :title="`${promo.name} (${promo.discount_percent}%) — ${formatDate(promo.start_date!)} – ${formatDate(promo.end_date!)}`"
-        >
-          <span class="promotion-label">{{ promo.name }} ({{ promo.discount_percent }}%)</span>
+        <!-- Подписи месяцев -->
+        <div class="timeline-months">
+          <div
+            v-for="month in months"
+            :key="month.num"
+            class="timeline-month-label"
+            :style="{ width: month.width + '%' }"
+          >
+            {{ month.short }}
+          </div>
+        </div>
+
+        <!-- Черточки -->
+        <div class="timeline-ticks">
+          <div
+            v-for="day in daysInYear"
+            :key="day"
+            class="timeline-tick"
+            :class="{ 'first-of-month': isFirstOfMonth(day) }"
+          ></div>
         </div>
       </div>
     </div>

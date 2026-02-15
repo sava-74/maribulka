@@ -304,8 +304,8 @@ function refreshData() {
     </div>
 
     <!-- Таблица -->
-    <div v-if="referencesStore.promotions.length > 0" class="table-scroll-container">
-      <table class="accounting-table">
+    <div v-if="referencesStore.promotions.length > 0" class="table-containerTab">
+      <table class="accounting-table promotions-table">
         <thead>
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <th

@@ -11,12 +11,12 @@
   backdrop-filter: var(--glass-bgFilter);
   box-shadow: var(--glass-shadowPanel);
   /*overflow: hidden;*/
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 }
 
 /* Контейнер таблицы с прокруткой */
@@ -233,97 +233,136 @@
 
 /* Timeline визуализация акций */
 .timeline-container {
-  margin-top: 32px;
-  padding: 20px;
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-bgFilter);
-  backdrop-filter: var(--glass-bgFilter);
-  border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  box-shadow: var(--glass-shadowPanel);
+  /*margin-top: 32px;*/
+  padding: 5px 0 0 0;
+  width: 100%;
 }
 
 .timeline-title {
-  margin: 0 0 20px 0;
+  margin: 0 0 5px 0;
   font-size: 16px;
   font-weight: 600;
   color: var(--tableTextColor);
   text-align: center;
 }
 
+/* Контейнер с горизонтальной прокруткой */
 .timeline {
   position: relative;
   width: 100%;
-  margin-bottom: 12px;
+  /*margin-bottom: 12px;*/
+  overflow-x: visible;
+  overflow-y: visible;
 }
 
-/* Шкала месяцев */
-.timeline-months {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  border: 1px solid var(--generalTabBorderColor);
-  border-radius: 6px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.timeline-month {
-  padding: 8px 4px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--tableTextColor);
-  border-right: 1px solid var(--generalTabBorderColor);
-}
-
-.timeline-month:last-child {
-  border-right: none;
-}
-
-/* Текущий месяц */
-.timeline-month.current {
-  background: rgba(70, 130, 180, 0.2);
-  font-weight: 700;
-  color: #4682B4;
-}
-
-/* Блоки акций */
-.timeline-promotions {
+/* Шкала дней (минимум 365px, максимум 100% ширины) */
+.timeline-scale {
   position: relative;
+  min-width: 365px;
   width: 100%;
-  min-height: 60px;
-  margin-top: 12px;
+  height: 40px;
+  border: 1px solid var(--glass-bg);
+  border-radius: 6px;
+  background: var(--glass-bg);
+  box-sizing: border-box;
+}
+
+/* Блоки акций внутри шкалы */
+.timeline-promotions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .timeline-promotion {
   position: absolute;
   top: 0;
-  height: 50px;
-  border-radius: 6px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 12px;
+  padding: 2px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  box-sizing: border-box;
+  pointer-events: auto;
 }
 
 .timeline-promotion:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0.8;
   z-index: 10;
 }
 
 .promotion-label {
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 600;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+/* Контейнер черточек */
+.timeline-ticks {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: flex-end;
+  border-bottom: 2px solid var(--tableTextColor);
+  position: relative;
+}
+
+/* Вертикальная черточка в конце (31 декабря) */
+.timeline-ticks::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  height: 15px;
+  background: var(--tableTextColor);
+}
+
+/* Черточка (минимум 1px, растягивается пропорционально) */
+.timeline-tick {
+  flex: 1 1 0;
+  min-width: 1px;
+  height: 10px;
+  background: var(--glass-bg);
+}
+
+/* Черточка для 1 числа каждого месяца (длиннее на 5px) */
+.timeline-tick.first-of-month {
+  height: 15px;
+  background: var(--tableTextColor);
+}
+
+/* Подписи месяцев ВНУТРИ шкалы между черточками */
+.timeline-months {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.timeline-month-label {
+  font-size: 10px;
+  color: var(--tableTextColor);
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Пустое состояние */
@@ -333,4 +372,11 @@
   color: var(--textMutedLightColor);
   font-size: 14px;
   font-style: italic;
+}
+
+/* Специфичные стили для таблицы "Акции" */
+.promotions-table.accounting-table tbody td:nth-child(1), /* ID */
+.promotions-table.accounting-table tbody td:nth-child(4), /* Дата начала */
+.promotions-table.accounting-table tbody td:nth-child(5) /* Дата окончания */ {
+  text-align: center;
 }
