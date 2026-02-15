@@ -28,7 +28,7 @@ const handleLogout = () => {
   <header class="top-bar">
     <div class="logo-area">
       <img src="/img/owner.jpg" alt="Марибулька" class="owner-photo">
-      <span class="site-name">Марибулька</span>
+      <span class="site-name">Фотостудия Марии</span>
     </div>
 
     <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->

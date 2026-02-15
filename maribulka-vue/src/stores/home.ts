@@ -142,6 +142,7 @@ export const useHomeStore = defineStore('home', () => {
     try {
       const response = await fetch(`${API_URL}/studio_description.php`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },

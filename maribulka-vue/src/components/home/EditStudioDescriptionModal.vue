@@ -21,7 +21,6 @@ const homeStore = useHomeStore()
 const content = ref<string>('')
 const showAlert = ref(false)
 const alertMessage = ref('')
-const alertType = ref<'success' | 'error'>('success')
 
 // Настройки редактора Quill
 const editorOptions = {
@@ -47,8 +46,9 @@ watch(() => props.isVisible, (visible) => {
 })
 
 async function handleSave() {
-  if (!content.value.trim()) {
-    alertType.value = 'error'
+  // Проверяем что есть контент (убираем HTML теги для проверки)
+  const textOnly = content.value.replace(/<[^>]*>/g, '').trim()
+  if (!textOnly) {
     alertMessage.value = 'Описание не может быть пустым'
     showAlert.value = true
     return
@@ -57,14 +57,13 @@ async function handleSave() {
   const result = await homeStore.updateDescription(content.value)
 
   if (result.success) {
-    alertType.value = 'success'
     alertMessage.value = 'Описание успешно обновлено'
     showAlert.value = true
     setTimeout(() => {
+      showAlert.value = false
       emit('close')
     }, 1500)
   } else {
-    alertType.value = 'error'
     alertMessage.value = result.message || 'Ошибка при сохранении'
     showAlert.value = true
   }
@@ -89,7 +88,7 @@ function handleClose() {
         <div class="editor-container">
           <QuillEditor
             v-model:content="content"
-            content-type="html"
+            contentType="html"
             :options="editorOptions"
           />
         </div>
@@ -110,7 +109,6 @@ function handleClose() {
     <AlertModal
       :is-visible="showAlert"
       :message="alertMessage"
-      :type="alertType"
       @close="showAlert = false"
     />
   </div>
