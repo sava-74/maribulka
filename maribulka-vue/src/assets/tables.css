@@ -380,3 +380,15 @@
 .promotions-table.accounting-table tbody td:nth-child(5) /* Дата окончания */ {
   text-align: center;
 }
+
+/* Мобильная адаптация (≤768px) */
+@media (max-width: 768px) {
+  /* Ограничение ширины текстовых колонок */
+  .accounting-table tbody td:nth-child(4) /* Примечание в ClientsTable */ {
+    max-width: 100px;
+  }
+
+  .accounting-table tbody td:nth-child(5) /* Описание в ShootingTypesTable */ {
+    max-width: 100px;
+  }
+}
