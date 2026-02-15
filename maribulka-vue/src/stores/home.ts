@@ -139,6 +139,8 @@ export const useHomeStore = defineStore('home', () => {
     loading.value = true
     error.value = null
 
+    console.log('Отправка описания:', content.substring(0, 100))
+
     try {
       const response = await fetch(`${API_URL}/studio_description.php`, {
         method: 'POST',
@@ -149,7 +151,9 @@ export const useHomeStore = defineStore('home', () => {
         body: JSON.stringify({ content })
       })
 
+      console.log('Статус ответа:', response.status)
       const data = await response.json()
+      console.log('Ответ от сервера:', data)
 
       if (data.success) {
         description.value = content
