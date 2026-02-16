@@ -81,7 +81,18 @@ Write-Host ""
 
 # 6. Настройка media (Создание "железного" симлинка с абсолютным путём)
 Write-Host "🔗 Настройка media (Absolute path symlink)..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "rm -f /home/s/sava7424/maribulka.rf/public_html/media && ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && echo 'Симлинк с абсолютным путем создан'"
+# ssh -i $SSH_KEY $SSH_HOST "
+$sshCommand = "
+    # 1. Удаляем старый симлинк (чтобы не было ошибок или дублей)
+    rm -f /home/s/sava7424/maribulka.rf/public_html/media && \
+    
+    # 2. Создаем новый симлинк:
+    # ИСТОЧНИК (где лежат файлы): /home/s/sava7424/maribulka.rf/media
+    # ССЫЛКА (где сайт их ищет): /home/s/sava7424/maribulka.rf/public_html/media
+    ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
+"
+ssh -i $SSH_KEY $SSH_HOST $sshCommand
+
 Write-Host "✅ Медиа настроено" -ForegroundColor Green
 Write-Host ""
 
