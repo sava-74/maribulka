@@ -54,11 +54,10 @@ ssh -i "$SSH_KEY" "$SSH_HOST" "cd /home/s/sava7424/maribulka.rf/maribulka-vue &&
 echo -e "${GREEN}✅ Бэкап создан${NC}"
 echo ""
 
-# 4. Загрузка dist на сервер (БЕЗ --delete чтобы не удалить симлинк media!)
+# 4. Загрузка dist на сервер
 echo -e "${YELLOW}📤 Загрузка фронтенда (dist)...${NC}"
-rsync -avz \
+rsync -avz --delete \
     --exclude 'api' \
-    --exclude 'media' \
     -e "ssh -i $SSH_KEY" \
     "$LOCAL_BUILD_PATH/" \
     "$SSH_HOST:$REMOTE_PATH/"
@@ -78,13 +77,7 @@ else
 fi
 echo ""
 
-# 6. Создание симлинка для media (ВСЕГДА пересоздаём)
-echo -e "${YELLOW}🔗 Создание симлинка media...${NC}"
-ssh -i "$SSH_KEY" "$SSH_HOST" "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
-echo -e "${GREEN}✅ Симлинк создан${NC}"
-echo ""
-
-# 7. Проверка деплоя
+# 6. Проверка деплоя
 echo -e "${YELLOW}🔍 Проверка деплоя...${NC}"
 RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "http://xn--80aac1alfd7a3a5g.xn--p1ai/")
 if [ "$RESPONSE" == "200" ]; then
