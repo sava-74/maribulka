@@ -79,17 +79,17 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Настройка media (Создание "железного" симлинка с абсолютным путём)
+# 6. Настройка media (Создание "железного" симлинка с абсолютным путём) #ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
 Write-Host "🔗 Настройка media (Absolute path symlink)..." -ForegroundColor Yellow
-# ssh -i $SSH_KEY $SSH_HOST "
-$sshCommand = "
+ssh -i $SSH_KEY $SSH_HOST "
+    
     # 1. Удаляем старый симлинк (чтобы не было ошибок или дублей)
     rm -f /home/s/sava7424/maribulka.rf/public_html/media && \
     
     # 2. Создаем новый симлинк:
     # ИСТОЧНИК (где лежат файлы): /home/s/sava7424/maribulka.rf/media
     # ССЫЛКА (где сайт их ищет): /home/s/sava7424/maribulka.rf/public_html/media
-    #ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
+    
 "
 ssh -i $SSH_KEY $SSH_HOST $sshCommand
 
