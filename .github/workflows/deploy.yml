@@ -64,12 +64,11 @@ jobs:
 
       - name: 🔗 Create media symlink
         run: |
-          # Создаём симлинк public_html/media -> ../media
-          ssh -i ~/.ssh/beget_key sava7424@sava7424.beget.tech \
-            "cd /home/s/sava7424/maribulka.rf && \
-             rm -rf public_html/media && \
-             ln -s ../media public_html/media && \
-             echo 'Symlink created: public_html/media -> ../media'"
+          # Создаём "железный" симлинк с абсолютными путями
+          ssh -i ~/.ssh/beget_key -o StrictHostKeyChecking=no sava7424@sava7424.beget.tech \
+            "rm -f /home/s/sava7424/maribulka.rf/public_html/media && \
+             ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
+             echo '✅ Symlink (Absolute Path) created successfully'"
 
       - name: ✅ Verify deployment
         run: |
