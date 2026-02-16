@@ -703,3 +703,9 @@ select.modal-input {
   max-width: 200px;
   max-height: 300px;
 }
+
+/* Попап ссылки - центрируем */
+.editor-container .ql-tooltip {
+  left: 50% !important;
+  transform: translateX(-50%);
+}
