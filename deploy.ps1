@@ -48,11 +48,10 @@ Write-Host ""
 
 # 4. Загрузка dist на сервер
 Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor Yellow
-# Используем Git Bash rsync, если доступен (БЕЗ --delete чтобы не удалить симлинк media!)
+# Используем Git Bash rsync, если доступен
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
-    & "C:\Program Files\Git\usr\bin\rsync.exe" -avz `
+    & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
         --exclude 'api' `
-        --exclude 'media' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
         "${SSH_HOST}:${REMOTE_PATH}/"
@@ -80,8 +79,8 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Создание симлинка для media (ВСЕГДА пересоздаём)
-Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
+# 6. Создание симлинка для media
+Write-Host "🔗 Создание симлинка для media..." -ForegroundColor Yellow
 ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
 Write-Host "✅ Симлинк создан" -ForegroundColor Green
 Write-Host ""
@@ -89,13 +88,12 @@ Write-Host ""
 # 7. Проверка деплоя
 Write-Host "🔍 Проверка деплоя..." -ForegroundColor Yellow
 try {
-    $response = Invoke-WebRequest -Uri "https://xn--80aac1alfd7a3a5g.xn--p1ai/" -UseBasicParsing -MaximumRedirection 5
+    $response = Invoke-WebRequest -Uri "http://xn--80aac1alfd7a3a5g.xn--p1ai/" -UseBasicParsing
     if ($response.StatusCode -eq 200) {
         Write-Host "✅ Сайт доступен (HTTP $($response.StatusCode))" -ForegroundColor Green
     }
 } catch {
-    Write-Host "⚠️  Проверка не удалась: $($_.Exception.Message)" -ForegroundColor Yellow
-    Write-Host "Это может быть нормально, если сайт перенаправляет на HTTPS" -ForegroundColor Gray
+    Write-Host "❌ Сайт недоступен" -ForegroundColor Red
 }
 Write-Host ""
 
