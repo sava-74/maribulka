@@ -58,6 +58,7 @@ echo ""
 echo -e "${YELLOW}📤 Загрузка фронтенда (dist)...${NC}"
 rsync -avz --delete \
     --exclude 'api' \
+    --exclude 'media' \
     -e "ssh -i $SSH_KEY" \
     "$LOCAL_BUILD_PATH/" \
     "$SSH_HOST:$REMOTE_PATH/"
