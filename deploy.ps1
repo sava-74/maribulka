@@ -48,11 +48,11 @@ Write-Host ""
 
 # 4. Загрузка dist на сервер
 Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor Yellow
-# Используем Git Bash rsync, если доступен
+# Используем Git Bash rsync, если доступен (БЕЗ --delete чтобы не удалить симлинк media!)
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
-    & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
-        --keep-dirlinks `
+    & "C:\Program Files\Git\usr\bin\rsync.exe" -avz `
         --exclude 'api' `
+        --exclude 'media' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
         "${SSH_HOST}:${REMOTE_PATH}/"
