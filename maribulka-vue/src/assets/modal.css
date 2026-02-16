@@ -640,7 +640,7 @@ select.modal-input {
 
   /* Редактор описания студии - на всю высоту экрана */
   .modal-glass.modal-large {
-    margin: 4px;
+    margin: 5px;
     width: 600px;
     min-width: 600px;
     height: calc(100vh - 10px);
