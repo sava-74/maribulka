@@ -52,6 +52,7 @@ Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
     & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
         --exclude 'api' `
+        --exclude 'media' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
         "${SSH_HOST}:${REMOTE_PATH}/"
