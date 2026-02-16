@@ -47,9 +47,9 @@ Write-Host "✅ Бэкап создан" -ForegroundColor Green
 Write-Host ""
 
 # 4. Создание симлинка для media (ДО загрузки!)
-Write-Host "🔗 Проверка симлинка media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && if [ ! -L media ]; then rm -rf media && ln -s ../../media media && echo 'Симлинк создан'; else echo 'Симлинк уже существует'; fi"
-Write-Host "✅ Симлинк готов" -ForegroundColor Green
+Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && ln -s ../../media media && echo 'Симлинк создан'"
+Write-Host "✅ Симлинк создан" -ForegroundColor Green
 Write-Host ""
 
 # 5. Загрузка dist на сервер

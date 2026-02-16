@@ -170,6 +170,9 @@ elseif ($method === 'POST') {
             imagedestroy($optimizedImage);
         }
 
+        // Устанавливаем правильные права доступа (644) для веб-сервера
+        chmod($filePath, 0644);
+
         // URL для доступа к фото
         $photoUrl = '/media/home/' . $fileName;
 
