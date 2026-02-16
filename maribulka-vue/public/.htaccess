@@ -7,6 +7,9 @@ RewriteRule ^api/login$ /api/login.php [L,QSA]
 # API обрабатывается напрямую
 RewriteRule ^api/ - [L]
 
+# Media обрабатывается напрямую (для симлинка)
+RewriteRule ^media/ - [L]
+
 # Статические файлы обрабатываются напрямую
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d

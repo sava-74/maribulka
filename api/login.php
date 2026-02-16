@@ -39,10 +39,25 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        echo json_encode(['success' => true]);
+        // Создаём сессию
+        session_start();
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'login' => $user['login'],
+            'role' => $user['role']
+        ];
+
+        echo json_encode([
+            'success' => true,
+            'user' => [
+                'id' => $user['id'],
+                'login' => $user['login'],
+                'role' => $user['role']
+            ]
+        ]);
     } else {
         http_response_code(401);
-        echo json_encode(['success' => false]);
+        echo json_encode(['success' => false, 'message' => 'Неверный логин или пароль']);
     }
 } catch (PDOException $e) {
     http_response_code(500);
