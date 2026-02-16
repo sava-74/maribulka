@@ -52,7 +52,6 @@ Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
     & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
         --exclude 'api' `
-        --exclude 'media' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
         "${SSH_HOST}:${REMOTE_PATH}/"
@@ -80,10 +79,10 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Копирование media файлов (nginx на BeGet не поддерживает симлинки)
-Write-Host "📁 Копирование media файлов..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && mkdir -p media/home && cp -r ../../media/home/* media/home/ 2>/dev/null && echo 'Media файлы скопированы' || echo 'Media директория пуста или не найдена'"
-Write-Host "✅ Media готовы" -ForegroundColor Green
+# 6. Создание симлинка для media (public_html -> dist, поэтому симлинк в public_html)
+Write-Host "🔗 Создание симлинка для media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd /home/s/sava7424/maribulka.rf && rm -rf public_html/media && ln -s ../media public_html/media && echo 'Симлинк создан: public_html/media -> ../media'"
+Write-Host "✅ Симлинк готов" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя
