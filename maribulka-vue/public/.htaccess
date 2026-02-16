@@ -1,4 +1,4 @@
-Options +FollowSymLinks
+Options +SymLinksIfOwnerMatch
 RewriteEngine On
 RewriteBase /
 
@@ -18,3 +18,4 @@ RewriteRule ^ - [L]
 
 # Все остальное на index.html (SPA)
 RewriteRule . /index.html [L]
+  

@@ -77,10 +77,10 @@ else
 fi
 echo ""
 
-# 6. Создание симлинка для media (public_html -> dist, поэтому симлинк в public_html)
-echo -e "${YELLOW}🔗 Создание симлинка для media...${NC}"
-ssh -i "$SSH_KEY" "$SSH_HOST" "cd /home/s/sava7424/maribulka.rf && rm -rf public_html/media && ln -s ../media public_html/media && echo 'Симлинк создан: public_html/media -> ../media'"
-echo -e "${GREEN}✅ Симлинк готов${NC}"
+# 6. Настройка media (Создание "железного" симлинка с абсолютным путём)
+echo -e "${YELLOW}🔗 Настройка media (Absolute path symlink)...${NC}"
+ssh -i "$SSH_KEY" "$SSH_HOST" "rm -f /home/s/sava7424/maribulka.rf/public_html/media && ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && echo 'Симлинк с абсолютным путем создан'"
+echo -e "${GREEN}✅ Медиа настроено${NC}"
 echo ""
 
 # 7. Проверка деплоя

@@ -79,10 +79,10 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Создание симлинка для media (public_html -> dist, поэтому симлинк в public_html)
-Write-Host "🔗 Создание симлинка для media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd /home/s/sava7424/maribulka.rf && rm -rf public_html/media && ln -s ../media public_html/media && echo 'Симлинк создан: public_html/media -> ../media'"
-Write-Host "✅ Симлинк готов" -ForegroundColor Green
+# 6. Настройка media (Создание "железного" симлинка с абсолютным путём)
+Write-Host "🔗 Настройка media (Absolute path symlink)..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "rm -f /home/s/sava7424/maribulka.rf/public_html/media && ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && echo 'Симлинк с абсолютным путем создан'"
+Write-Host "✅ Медиа настроено" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя
