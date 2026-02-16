@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useHomeStore } from '../../stores/home'
 import AlertModal from '../AlertModal.vue'
+import type Quill from 'quill'
 
 interface Props {
   isVisible: boolean
@@ -21,6 +22,7 @@ const homeStore = useHomeStore()
 const content = ref<string>('')
 const showAlert = ref(false)
 const alertMessage = ref('')
+const quillRef = ref<InstanceType<typeof QuillEditor> | null>(null)
 
 // Настройки редактора Quill
 const editorOptions = {
@@ -30,7 +32,8 @@ const editorOptions = {
       ['bold', 'italic', 'underline', 'strike'],
       [{ list: 'ordered' }, { list: 'bullet' }],
       [{ align: [] }],
-      ['link'],
+      [{ color: [] }, { background: [] }],
+      ['link', 'image'],
       ['clean']
     ]
   },
@@ -38,10 +41,81 @@ const editorOptions = {
   theme: 'snow'
 }
 
-// Загружаем текущее описание при открытии модалки
+// Обработчик загрузки изображений
+function setupImageHandler() {
+  if (!quillRef.value) return
+
+  const quill = quillRef.value.getQuill() as Quill
+  const toolbar = quill.getModule('toolbar')
+
+  toolbar.addHandler('image', () => {
+    const input = document.createElement('input')
+    input.setAttribute('type', 'file')
+    input.setAttribute('accept', 'image/*')
+
+    input.onchange = async () => {
+      const file = input.files?.[0]
+      if (!file) return
+
+      // Создаём canvas для ресайза
+      const img = new Image()
+      const reader = new FileReader()
+
+      reader.onload = (e) => {
+        img.src = e.target?.result as string
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return
+
+          // Ограничение: ширина 200px, высота 300px (сохраняем пропорции)
+          let width = img.width
+          let height = img.height
+          const maxWidth = 200
+          const maxHeight = 300
+
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width
+            width = maxWidth
+          }
+
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height
+            height = maxHeight
+          }
+
+          canvas.width = width
+          canvas.height = height
+          ctx.drawImage(img, 0, 0, width, height)
+
+          // Конвертируем в base64
+          const resizedImage = canvas.toDataURL('image/jpeg', 0.9)
+
+          // Вставляем в редактор
+          const range = quill.getSelection()
+          if (range) {
+            quill.insertEmbed(range.index, 'image', resizedImage)
+            quill.setSelection(range.index + 1, 0)
+          }
+        }
+      }
+
+      reader.readAsDataURL(file)
+    }
+
+    input.click()
+  })
+}
+
+// Загружаем текущее описание и настраиваем обработчик изображений
 watch(() => props.isVisible, (visible) => {
   if (visible) {
     content.value = homeStore.description
+    // Даём время QuillEditor отрендериться
+    setTimeout(() => {
+      setupImageHandler()
+    }, 100)
   }
 })
 
@@ -87,6 +161,7 @@ function handleClose() {
       <div class="modal-body">
         <div class="editor-container">
           <QuillEditor
+            ref="quillRef"
             v-model:content="content"
             contentType="html"
             :options="editorOptions"
