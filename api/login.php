@@ -52,16 +52,9 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // Создаём сессию с правильными параметрами для CORS
-        session_set_cookie_params([
-            'lifetime' => 0,
-            'path' => '/',
-            'domain' => '',
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'None'
-        ]);
-        session_start();
+        // Создаём сессию
+        require_once 'session.php';
+        initSession();
         $_SESSION['user'] = [
             'id' => $user['id'],
             'login' => $user['login'],
