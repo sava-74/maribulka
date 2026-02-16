@@ -44,10 +44,40 @@ const activePromotion = computed(() => {
   })
 })
 
+// Модифицируем HTML описания: добавляем target="_blank" ко всем ссылкам
+const descriptionHtml = computed(() => {
+  const html = homeStore.description
+  // Заменяем все <a> теги, добавляя target="_blank" и rel="noopener noreferrer"
+  return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ')
+})
+
 // Обработчик добавления фото
 function handleAddPhoto(position: number) {
   selectedPosition.value = position
   showUploadModal.value = true
+}
+
+// Обработчик кликов по ссылкам в описании
+function handleDescriptionClick(event: MouseEvent) {
+  let target = event.target as HTMLElement
+
+  // Ищем ссылку (может быть обёрнута в span или другие элементы)
+  while (target && target.tagName !== 'A' && target !== event.currentTarget) {
+    target = target.parentElement as HTMLElement
+  }
+
+  // Если нашли ссылку
+  if (target && target.tagName === 'A') {
+    const link = target as HTMLAnchorElement
+
+    // Для ЛЮБОЙ ссылки останавливаем обработку и открываем в новой вкладке
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (link.href) {
+      window.open(link.href, '_blank', 'noopener,noreferrer')
+    }
+  }
 }
 </script>
 
@@ -100,7 +130,7 @@ function handleAddPhoto(position: number) {
           <svg-icon type="mdi" :path="mdilPlus" />
         </button>
       </div>
-      <div class="description-content" v-html="homeStore.description"></div>
+      <div class="description-content" v-html="descriptionHtml" @click="handleDescriptionClick"></div>
     </div>
 
     <!-- Модалка загрузки фото -->

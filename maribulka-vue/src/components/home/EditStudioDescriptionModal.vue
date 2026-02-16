@@ -128,7 +128,18 @@ async function handleSave() {
     return
   }
 
-  const result = await homeStore.updateDescription(content.value)
+  // Исправляем ссылки: добавляем https:// если нет протокола
+  let fixedContent = content.value
+  fixedContent = fixedContent.replace(/<a\s+([^>]*?)href="([^"]+)"([^>]*)>/gi, (match, before, href, after) => {
+    // Если ссылка не начинается с http:// или https:// или mailto:
+    if (!/^(https?:\/\/|mailto:)/i.test(href)) {
+      // Добавляем https://
+      return `<a ${before}href="https://${href}"${after}>`
+    }
+    return match
+  })
+
+  const result = await homeStore.updateDescription(fixedContent)
 
   if (result.success) {
     alertMessage.value = 'Описание успешно обновлено'
