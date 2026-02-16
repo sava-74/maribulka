@@ -51,8 +51,8 @@ Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor
 # Используем Git Bash rsync, если доступен
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
     & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
+        --keep-dirlinks `
         --exclude 'api' `
-        --exclude 'media' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
         "${SSH_HOST}:${REMOTE_PATH}/"
@@ -80,10 +80,10 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Создание симлинка для media (ПОСЛЕ загрузки!)
-Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && ln -s ../../media media && echo 'Симлинк создан'"
-Write-Host "✅ Симлинк создан" -ForegroundColor Green
+# 6. Создание/проверка симлинка для media
+Write-Host "🔗 Проверка симлинка media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && if [ ! -L media ]; then rm -rf media && ln -s ../../media media && echo 'Симлинк создан'; else echo 'Симлинк уже существует'; fi"
+Write-Host "✅ Симлинк готов" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя
