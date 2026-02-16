@@ -56,11 +56,22 @@ jobs:
 
       - name: 🚀 Deploy to Beget
         run: |
-          # Синхронизируем dist на сервер
+          # Синхронизируем dist на сервер (исключая media)
           rsync -avz --delete \
+            --exclude 'media' \
             -e "ssh -i ~/.ssh/beget_key -o StrictHostKeyChecking=no" \
             maribulka-vue/dist/ \
             sava7424@sava7424.beget.tech:/home/s/sava7424/maribulka.rf/maribulka-vue/dist/
+
+      - name: 📁 Copy media files
+        run: |
+          # Копируем media файлы из постоянной директории (nginx не поддерживает симлинки)
+          ssh -i ~/.ssh/beget_key sava7424@sava7424.beget.tech \
+            "cd /home/s/sava7424/maribulka.rf/maribulka-vue/dist && \
+             rm -rf media && \
+             mkdir -p media/home && \
+             cp -r ../../media/home/* media/home/ 2>/dev/null && \
+             echo 'Media files copied' || echo 'Media directory empty or not found'"
 
       - name: ✅ Verify deployment
         run: |
