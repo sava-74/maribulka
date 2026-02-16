@@ -46,13 +46,7 @@ ssh -i $SSH_KEY $SSH_HOST "cd /home/s/sava7424/maribulka.rf/maribulka-vue && cp 
 Write-Host "✅ Бэкап создан" -ForegroundColor Green
 Write-Host ""
 
-# 4. Создание симлинка для media (ДО загрузки!)
-Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && ln -s ../../media media && echo 'Симлинк создан'"
-Write-Host "✅ Симлинк создан" -ForegroundColor Green
-Write-Host ""
-
-# 5. Загрузка dist на сервер
+# 4. Загрузка dist на сервер
 Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor Yellow
 # Используем Git Bash rsync, если доступен
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
@@ -69,7 +63,7 @@ if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyCo
 Write-Host "✅ Фронтенд загружен" -ForegroundColor Green
 Write-Host ""
 
-# 6. Загрузка API на сервер
+# 5. Загрузка API на сервер
 Write-Host "📤 Загрузка API (PHP)..." -ForegroundColor Yellow
 if (Test-Path $LOCAL_API_PATH) {
     if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
@@ -84,6 +78,12 @@ if (Test-Path $LOCAL_API_PATH) {
 } else {
     Write-Host "⚠️  Папка api не найдена, пропускаем" -ForegroundColor Yellow
 }
+Write-Host ""
+
+# 6. Создание симлинка для media (ПОСЛЕ загрузки!)
+Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && ln -s ../../media media && echo 'Симлинк создан'"
+Write-Host "✅ Симлинк создан" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя
