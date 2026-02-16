@@ -173,6 +173,15 @@ elseif ($method === 'POST') {
         // Устанавливаем правильные права доступа (644) для веб-сервера
         chmod($filePath, 0644);
 
+        // ВАЖНО: Копируем файл в dist/media/home/ (nginx не поддерживает симлинки)
+        $distMediaDir = dirname(__DIR__) . '/media/home/';
+        if (!is_dir($distMediaDir)) {
+            mkdir($distMediaDir, 0755, true);
+        }
+        $distFilePath = $distMediaDir . $fileName;
+        copy($filePath, $distFilePath);
+        chmod($distFilePath, 0644);
+
         // URL для доступа к фото
         $photoUrl = '/media/home/' . $fileName;
 
@@ -182,10 +191,14 @@ elseif ($method === 'POST') {
         $oldPhoto = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($oldPhoto) {
-            // Удаляем старый файл
+            // Удаляем старый файл из обеих директорий
             $oldFilePath = dirname(__DIR__, 3) . str_replace('/media', '/media', $oldPhoto['photo_url']);
             if (file_exists($oldFilePath)) {
                 unlink($oldFilePath);
+            }
+            $oldDistFilePath = dirname(__DIR__) . str_replace('/media', '/media', $oldPhoto['photo_url']);
+            if (file_exists($oldDistFilePath)) {
+                unlink($oldDistFilePath);
             }
             // Обновляем запись
             $stmt = $pdo->prepare("UPDATE studio_photos SET photo_url = ?, created_at = NOW() WHERE position = ?");
@@ -241,10 +254,14 @@ elseif ($method === 'DELETE') {
             exit();
         }
 
-        // Удаляем файл
+        // Удаляем файл из обеих директорий
         $filePath = dirname(__DIR__, 3) . str_replace('/media', '/media', $photo['photo_url']);
         if (file_exists($filePath)) {
             unlink($filePath);
+        }
+        $distFilePath = dirname(__DIR__) . str_replace('/media', '/media', $photo['photo_url']);
+        if (file_exists($distFilePath)) {
+            unlink($distFilePath);
         }
 
         // Удаляем запись из БД

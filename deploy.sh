@@ -58,7 +58,6 @@ echo ""
 echo -e "${YELLOW}📤 Загрузка фронтенда (dist)...${NC}"
 rsync -avz --delete \
     --exclude 'api' \
-    --exclude 'media' \
     -e "ssh -i $SSH_KEY" \
     "$LOCAL_BUILD_PATH/" \
     "$SSH_HOST:$REMOTE_PATH/"
@@ -78,10 +77,10 @@ else
 fi
 echo ""
 
-# 6. Копирование media файлов (nginx на BeGet не поддерживает симлинки)
-echo -e "${YELLOW}📁 Копирование media файлов...${NC}"
-ssh -i "$SSH_KEY" "$SSH_HOST" "cd $REMOTE_PATH && rm -rf media && mkdir -p media/home && cp -r ../../media/home/* media/home/ 2>/dev/null && echo 'Media файлы скопированы' || echo 'Media директория пуста или не найдена'"
-echo -e "${GREEN}✅ Media готовы${NC}"
+# 6. Создание симлинка для media (public_html -> dist, поэтому симлинк в public_html)
+echo -e "${YELLOW}🔗 Создание симлинка для media...${NC}"
+ssh -i "$SSH_KEY" "$SSH_HOST" "cd /home/s/sava7424/maribulka.rf && rm -rf public_html/media && ln -s ../media public_html/media && echo 'Симлинк создан: public_html/media -> ../media'"
+echo -e "${GREEN}✅ Симлинк готов${NC}"
 echo ""
 
 # 7. Проверка деплоя
