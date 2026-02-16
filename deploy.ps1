@@ -89,7 +89,7 @@ $sshCommand = "
     # 2. Создаем новый симлинк:
     # ИСТОЧНИК (где лежат файлы): /home/s/sava7424/maribulka.rf/media
     # ССЫЛКА (где сайт их ищет): /home/s/sava7424/maribulka.rf/public_html/media
-    ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
+    #ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
 "
 ssh -i $SSH_KEY $SSH_HOST $sshCommand
 

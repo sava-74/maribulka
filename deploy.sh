@@ -79,7 +79,11 @@ echo ""
 
 # 6. Настройка media (Создание "железного" симлинка с абсолютным путём)
 echo -e "${YELLOW}🔗 Настройка media (Absolute path symlink)...${NC}"
-ssh -i "$SSH_KEY" "$SSH_HOST" "rm -f /home/s/sava7424/maribulka.rf/public_html/media && ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && echo 'Симлинк с абсолютным путем создан'"
+ssh -i "$SSH_KEY" "$SSH_HOST" "
+    rm -f /home/s/sava7424/maribulka.rf/public_html/media && \ 
+    # ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
+    echo 'Симлинк с абсолютным путем создан'
+    "
 echo -e "${GREEN}✅ Медиа настроено${NC}"
 echo ""
 
