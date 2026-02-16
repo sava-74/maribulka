@@ -80,10 +80,10 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Создание/проверка симлинка для media
-Write-Host "🔗 Проверка симлинка media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && if [ ! -L media ]; then rm -rf media && ln -s ../../media media && echo 'Симлинк создан'; else echo 'Симлинк уже существует'; fi"
-Write-Host "✅ Симлинк готов" -ForegroundColor Green
+# 6. Создание симлинка для media (ВСЕГДА пересоздаём)
+Write-Host "🔗 Создание симлинка media..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
+Write-Host "✅ Симлинк создан" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя

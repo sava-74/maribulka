@@ -78,10 +78,10 @@ else
 fi
 echo ""
 
-# 6. Создание/проверка симлинка для media
-echo -e "${YELLOW}🔗 Проверка симлинка media...${NC}"
-ssh -i "$SSH_KEY" "$SSH_HOST" "cd $REMOTE_PATH && if [ ! -L media ]; then rm -rf media && ln -s ../../media media && echo 'Симлинк создан'; else echo 'Симлинк уже существует'; fi"
-echo -e "${GREEN}✅ Симлинк готов${NC}"
+# 6. Создание симлинка для media (ВСЕГДА пересоздаём)
+echo -e "${YELLOW}🔗 Создание симлинка media...${NC}"
+ssh -i "$SSH_KEY" "$SSH_HOST" "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
+echo -e "${GREEN}✅ Симлинк создан${NC}"
 echo ""
 
 # 7. Проверка деплоя
