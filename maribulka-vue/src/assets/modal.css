@@ -630,15 +630,21 @@ select.modal-input {
     padding: 12px;
   }
 
+  /* Редактор описания студии - overlay на всю ширину */
+  .modal-overlay:has(.modal-glass.modal-large) {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
   /* Редактор описания студии - на всю высоту экрана */
   .modal-glass.modal-large {
     margin: 0;
-    width: 100vw;
+    width: 600px;
     min-width: 600px;
-    max-width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
+    height: calc(100vh - 10px);
+    /*max-height: calc(100vh - 10px);*/
     overflow-y: auto;
     padding: 15px;
   }
@@ -705,7 +711,7 @@ select.modal-input {
 .editor-container .ql-container {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0 0 8px 8px;
-  min-height: 300px;
+  min-height: 625px;
   font-size: 16px;
   background: rgba(255, 255, 255, 1);
 }
