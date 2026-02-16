@@ -77,7 +77,13 @@ else
 fi
 echo ""
 
-# 6. Проверка деплоя
+# 6. Копирование media файлов (nginx на BeGet не поддерживает симлинки)
+echo -e "${YELLOW}📁 Копирование media файлов...${NC}"
+ssh -i "$SSH_KEY" "$SSH_HOST" "cd $REMOTE_PATH && rm -rf media && mkdir -p media/home && cp -r ../../media/home/* media/home/ 2>/dev/null && echo 'Media файлы скопированы' || echo 'Media директория пуста или не найдена'"
+echo -e "${GREEN}✅ Media готовы${NC}"
+echo ""
+
+# 7. Проверка деплоя
 echo -e "${YELLOW}🔍 Проверка деплоя...${NC}"
 RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "http://xn--80aac1alfd7a3a5g.xn--p1ai/")
 if [ "$RESPONSE" == "200" ]; then

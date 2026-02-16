@@ -79,10 +79,10 @@ if (Test-Path $LOCAL_API_PATH) {
 }
 Write-Host ""
 
-# 6. Создание симлинка для media
-Write-Host "🔗 Создание симлинка для media..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -f media && ln -s ../../media media && echo 'Симлинк media создан'"
-Write-Host "✅ Симлинк создан" -ForegroundColor Green
+# 6. Копирование media файлов (nginx на BeGet не поддерживает симлинки)
+Write-Host "📁 Копирование media файлов..." -ForegroundColor Yellow
+ssh -i $SSH_KEY $SSH_HOST "cd $REMOTE_PATH && rm -rf media && mkdir -p media/home && cp -r ../../media/home/* media/home/ 2>/dev/null && echo 'Media файлы скопированы' || echo 'Media директория пуста или не найдена'"
+Write-Host "✅ Media готовы" -ForegroundColor Green
 Write-Host ""
 
 # 7. Проверка деплоя
