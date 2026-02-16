@@ -630,55 +630,17 @@ select.modal-input {
     padding: 12px;
   }
 
-  /* Редактор описания студии - адаптация */
+  /* Редактор описания студии - на всю высоту экрана */
   .modal-glass.modal-large {
-    margin: 10px;
-    max-width: calc(100vw - 20px);
+    margin: 0;
+    width: 100vw;
+    min-width: 600px;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    overflow-y: auto;
     padding: 15px;
-  }
-
-  .modal-glass.modal-large .modal-header {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-  }
-
-  .modal-glass.modal-large .modal-header h2 {
-    font-size: 16px;
-  }
-
-  .modal-glass.modal-large .modal-body {
-    margin-bottom: 15px;
-  }
-
-  .modal-glass.modal-large .modal-footer {
-    padding-top: 10px;
-    gap: 8px;
-  }
-
-  /* Quill тулбар - компактный */
-  .editor-container .ql-toolbar {
-    padding: 4px;
-  }
-
-  .editor-container .ql-toolbar button {
-    width: 24px !important;
-    height: 24px !important;
-    padding: 2px !important;
-  }
-
-  .editor-container .ql-toolbar .ql-picker {
-    font-size: 12px;
-  }
-
-  /* Quill редактор - уменьшаем высоту */
-  .editor-container .ql-container {
-    min-height: 200px;
-    font-size: 14px;
-  }
-
-  .editor-container .ql-editor {
-    min-height: 200px;
-    padding: 8px;
   }
 
   /* Попап ссылки - адаптируем */
@@ -688,10 +650,6 @@ select.modal-input {
     transform: none !important;
     width: auto !important;
     max-width: calc(100vw - 60px) !important;
-  }
-
-  .editor-container .ql-tooltip input {
-    font-size: 14px;
   }
 }
 
