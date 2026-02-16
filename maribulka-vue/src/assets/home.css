@@ -151,6 +151,26 @@
   color: #5a9fd4;
 }
 
+/* Quill форматирование */
+.description-content .ql-align-center {
+  text-align: center;
+}
+
+.description-content .ql-align-right {
+  text-align: right;
+}
+
+.description-content .ql-align-justify {
+  text-align: justify;
+}
+
+.description-content img {
+  max-width: 200px;
+  max-height: 300px;
+  display: inline-block;
+  margin: 10px 0;
+}
+
 /* Модалка загрузки фото */
 .photo-preview {
   width: 100%;

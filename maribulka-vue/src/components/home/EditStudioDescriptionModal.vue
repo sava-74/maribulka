@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { QuillEditor } from '@vueup/vue-quill'
@@ -46,7 +46,7 @@ function setupImageHandler() {
   if (!quillRef.value) return
 
   const quill = quillRef.value.getQuill() as Quill
-  const toolbar = quill.getModule('toolbar')
+  const toolbar = quill.getModule('toolbar') as any
 
   toolbar.addHandler('image', () => {
     const input = document.createElement('input')
