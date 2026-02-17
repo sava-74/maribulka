@@ -41,27 +41,30 @@ watch(() => props.isVisible, (newValue) => {
     description.value = ''
     booking_id.value = ''
 
-    // Загружаем список заказов для возврата
+    // Загружаем категории расходов и список заказов для возврата
+    referencesStore.fetchExpenseCategories()
     financeStore.fetchRefundableBookings()
   }
 })
 
-// Автоматическое заполнение суммы при выборе заказа (только для возврата)
+// Автоматическое заполнение суммы и описания при выборе заказа (только для возврата)
 watch(booking_id, (newBookingId) => {
   if (isRefundCategory.value && newBookingId) {
     const booking = financeStore.refundableBookings.find(b => b.id === parseInt(newBookingId))
     if (booking && booking.paid_amount) {
       amount.value = booking.paid_amount.toString()
+      description.value = `${booking.order_number} - ${booking.client_name}`
     }
   }
 })
 
-// Сброс booking_id и amount при смене категории
+// Сброс booking_id, amount и description при смене категории
 watch(category, (newCategory, oldCategory) => {
   if (oldCategory && newCategory !== oldCategory) {
     booking_id.value = ''
     if (isRefundCategory.value) {
       amount.value = ''
+      description.value = ''
     }
   }
 })
@@ -154,7 +157,6 @@ const handleSubmit = async () => {
               placeholder="0.00"
               step="0.01"
               min="0.01"
-              :disabled="isRefundCategory"
             />
           </div>
 
