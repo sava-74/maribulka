@@ -71,7 +71,7 @@ const handleSubmit = async () => {
   const expenseData: any = {
     date: date.value,
     amount: parseFloat(amount.value),
-    category_id: parseInt(category.value),
+    category: parseInt(category.value),
     description: description.value.trim()
   }
 

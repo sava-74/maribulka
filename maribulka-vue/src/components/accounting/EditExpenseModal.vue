@@ -36,7 +36,7 @@ watch(() => props.isVisible, (newValue) => {
     const [datePart] = (props.expense.date || '').split(' ')
     date.value = datePart || ''
     amount.value = props.expense.amount || ''
-    category.value = props.expense.category_id || ''
+    category.value = props.expense.category || ''
     description.value = props.expense.description || ''
     booking_id.value = props.expense.booking_id || ''
   }
@@ -76,7 +76,7 @@ const handleSubmit = async () => {
     id: id.value,
     date: date.value,
     amount: parseFloat(amount.value),
-    category_id: parseInt(category.value),
+    category: parseInt(category.value),
     description: description.value.trim()
   }
 

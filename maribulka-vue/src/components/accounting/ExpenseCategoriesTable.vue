@@ -126,6 +126,12 @@ const hasSingleSelection = computed(() => {
   return Object.keys(rowSelection.value).length === 1
 })
 
+// Проверка: можно ли удалить выбранную категорию (только ID > 6)
+const canDeleteSelected = computed(() => {
+  if (!selectedExpenseCategory.value) return false
+  return selectedExpenseCategory.value.id > 6
+})
+
 // Filters
 const nameFilter = ref('')
 const statusFilter = ref('')
@@ -212,7 +218,7 @@ function refreshData() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSingleSelection"
+          :disabled="!hasSingleSelection || !canDeleteSelected"
           @click="handleEdit"
           title="Редактировать"
         >
@@ -220,7 +226,7 @@ function refreshData() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow"
+          :disabled="!hasSelectedRow || !canDeleteSelected"
           @click="handleDelete"
           title="Удалить"
         >
