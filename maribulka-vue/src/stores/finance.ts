@@ -8,6 +8,7 @@ export const useFinanceStore = defineStore('finance', () => {
   const income = ref<any[]>([])
   const incomeByBooking = ref<any[]>([])
   const expenses = ref<any[]>([])
+  const refundableBookings = ref<any[]>([]) // Заказы доступные для возврата
   const loadingIncome = ref(false)
   const loadingExpenses = ref(false)
   const currentMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM для прихода
@@ -53,6 +54,16 @@ export const useFinanceStore = defineStore('finance', () => {
     const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`)
     incomeByBooking.value = await response.json()
     return incomeByBooking.value
+  }
+
+  // Получить заказы доступные для возврата (статус new/failed + есть оплата)
+  async function fetchRefundableBookings() {
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=refundable`)
+      refundableBookings.value = await response.json()
+    } catch (error) {
+      console.error('Ошибка загрузки заказов для возврата:', error)
+    }
   }
 
   // ========================================
@@ -134,6 +145,7 @@ export const useFinanceStore = defineStore('finance', () => {
     income,
     incomeByBooking,
     expenses,
+    refundableBookings,
     loadingIncome,
     loadingExpenses,
     currentMonth,
@@ -148,6 +160,7 @@ export const useFinanceStore = defineStore('finance', () => {
     // Actions
     fetchIncome,
     fetchIncomeByBooking,
+    fetchRefundableBookings,
     fetchExpenses,
     createExpense,
     updateExpense,

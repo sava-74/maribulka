@@ -49,6 +49,26 @@ try {
         exit;
     }
 
+    // GET action для получения заказов доступных для возврата
+    if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'refundable') {
+        $stmt = $db->query("
+            SELECT
+                b.id,
+                b.order_number,
+                b.paid_amount,
+                c.name as client_name
+            FROM bookings b
+            LEFT JOIN clients c ON b.client_id = c.id
+            WHERE (b.status = 'new' OR b.status = 'failed')
+            AND b.payment_status != 'unpaid'
+            AND b.paid_amount > 0
+            ORDER BY b.shooting_date DESC
+        ");
+        $result = $stmt->fetchAll();
+        echo json_encode($result);
+        exit;
+    }
+
     switch ($method) {
         case 'GET':
             handleGet($db);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCheck, mdilCancel } from '@mdi/light-js'
 import { useFinanceStore } from '../../stores/finance'
@@ -26,6 +26,11 @@ const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
 
+// Проверка: выбрана ли категория "Возврат средств" (ID = 2)
+const isRefundCategory = computed(() => {
+  return parseInt(category.value) === 2
+})
+
 // Сброс формы при открытии
 watch(() => props.isVisible, (newValue) => {
   if (newValue) {
@@ -35,6 +40,29 @@ watch(() => props.isVisible, (newValue) => {
     category.value = ''
     description.value = ''
     booking_id.value = ''
+
+    // Загружаем список заказов для возврата
+    financeStore.fetchRefundableBookings()
+  }
+})
+
+// Автоматическое заполнение суммы при выборе заказа (только для возврата)
+watch(booking_id, (newBookingId) => {
+  if (isRefundCategory.value && newBookingId) {
+    const booking = financeStore.refundableBookings.find(b => b.id === parseInt(newBookingId))
+    if (booking) {
+      amount.value = booking.paid_amount.toString()
+    }
+  }
+})
+
+// Сброс booking_id и amount при смене категории
+watch(category, (newCategory, oldCategory) => {
+  if (oldCategory && newCategory !== oldCategory) {
+    booking_id.value = ''
+    if (isRefundCategory.value) {
+      amount.value = ''
+    }
   }
 })
 
@@ -64,6 +92,14 @@ const handleSubmit = async () => {
   if (!description.value.trim()) {
     alertTitle.value = 'Ошибка'
     alertMessage.value = 'Укажите описание расхода'
+    showAlert.value = true
+    return
+  }
+
+  // Для категории "Возврат средств" - booking_id обязателен
+  if (isRefundCategory.value && !booking_id.value) {
+    alertTitle.value = 'Ошибка'
+    alertMessage.value = 'Для возврата средств необходимо выбрать заказ'
     showAlert.value = true
     return
   }
@@ -118,6 +154,7 @@ const handleSubmit = async () => {
               placeholder="0.00"
               step="0.01"
               min="0.01"
+              :disabled="isRefundCategory"
             />
           </div>
 
@@ -149,15 +186,22 @@ const handleSubmit = async () => {
             ></textarea>
           </div>
 
-          <div class="input-field">
-            <label class="input-label">ID заказа (опционально):</label>
-            <input
-              type="number"
+          <!-- Поле ID заказа - только для категории "Возврат средств" -->
+          <div v-if="isRefundCategory" class="input-field">
+            <label class="input-label">Заказ: <span class="required">*</span></label>
+            <select
               class="modal-input"
               v-model="booking_id"
-              placeholder="Номер заказа"
-              min="1"
-            />
+            >
+              <option value="">Выберите заказ</option>
+              <option
+                v-for="booking in financeStore.refundableBookings"
+                :key="booking.id"
+                :value="booking.id"
+              >
+                {{ booking.order_number }} - {{ booking.client_name }}
+              </option>
+            </select>
           </div>
         </div>
 
