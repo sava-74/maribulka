@@ -4,9 +4,17 @@
 
 ## Расположение памяти
 
-**Актуальный файл памяти:**
+**Актуальный файл памяти для cloude:**
+
 ```
-C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\MEMORY.md
+
+   C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\MEMORY.md
+```
+
+**Актуальный файл памяти для остальных:**
+```
+
+   "D:\GitHub\maribulka\memory"
 ```
 
 Этот файл автоматически загружается в каждой сессии работы с Claude Code.

@@ -1,75 +1,490 @@
 /* Стили для карточек отчётов */
 
+.reports {
+  /* Убираем внешний padding согласно правилу проекта */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: var(--generalTextColor);
+  backdrop-filter: var(--glass-bgFilter);
+}
+
+/* Панель с заголовком и фильтрами - как у панели вкладок */
+.reports-header-panel {
+  position: sticky;
+  top: 86px;
+  z-index: 100;
+  /* Увеличиваем отступ до 20px согласно правилу проекта */
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  overflow-x: visible;
+  font-family: inherit;
+  color: var(--generalTextColor);
+}
+
+/* Фильтры и элементы управления */
+.filter-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-family: inherit;
+  color: inherit;
+  backdrop-filter: var(--glass-bgFilter);
+}
+
+.glass-select, .glass-input {
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  padding: 8px 12px;
+  color: var(--generalTextColor);
+  font-family: inherit;
+  backdrop-filter: var(--glass-bgFilter);
+  min-width: 120px;
+}
+
+.glass-select:focus, .glass-input:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.2);
+  color: var(--generalTextColor);
+}
+
+/* Стили для SVG иконок - убираем тени */
+.icon svg {
+  /* Удалены все тени для иконок */
+}
+
+/* Улучшенные стили для селектов в стиле glass-button-text */
+.glass-select {
+  width: var(--glass-widthButtonText);
+  height: var(--glass-heightButton);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--generalTextColor);
+  backdrop-filter: var(--glass-bgFilter);
+}
+
+.glass-select:hover {
+  /* Убираем эффекты кнопок - панели не должны перемещаться */
+  border-color: var(--neon-blue);
+  box-shadow: var(--glass-shadowPanel); /* Используем тень панели, а не кнопки */
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  margin-bottom: 30px;
+  /* Удален padding: 20px - не нужен согласно указанию */
+  margin-bottom: 20px;
 }
 
 .stat-card {
+  /* Используем те же стили, что и у других панелей проекта */
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  /* Изменен padding с 24px на 5px согласно указанию */
+  padding: 5px;
+  box-shadow: var(--glass-shadowPanel);
+  backdrop-filter: var(--glass-bgFilter);
+  font-family: inherit;
+  color: var(--generalTextColor);
+  /* Добавляем flex для центрирования содержимого */
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  transition: transform 0.2s;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
+  justify-content: center;
 }
 
 .stat-card .icon {
   font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
-.stat-card .content h3 {
+/* Уникальные стили для каждого текстового блока */
+.income-content,
+.expenses-content,
+.profit-content,
+.profitability-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.income-content h3,
+.expenses-content h3,
+.profit-content h3,
+.profitability-content h3 {
   margin: 0 0 8px 0;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--generalTextColor);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-family: inherit;
 }
 
-.stat-card .value {
-  margin: 0;
+.income-content .value,
+.expenses-content .value,
+.profit-content .value,
+.profitability-content .value {
+  margin: 0 0 4px 0;
   font-size: 32px;
   font-weight: 700;
-  color: #fff;
+  color: var(--generalTextColor);
+  font-family: inherit;
 }
 
-.stat-card.income .value {
-  color: #4ade80;
+.income-content .subtitle,
+.expenses-content .subtitle,
+.profit-content .subtitle,
+.profitability-content .subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--generalTextColor);
+  font-family: inherit;
 }
 
-.stat-card.expenses .value {
-  color: #f87171;
+/* Секция аналитики */
+.analytics-section {
+  margin: 20px 0;
+  font-family: inherit;
+  color: var(--generalTextColor);
+  backdrop-filter: var(--glass-bgFilter);
+  /* Добавляем внутренний отступ вместо внешнего */
+  
 }
 
-.stat-card.profit .value {
-  color: #60a5fa;
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
 }
 
-.stat-card.profit .value.negative {
-  color: #f87171;
+.analysis-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  padding: 10px;
+  box-shadow: var(--glass-shadowPanel);
+  backdrop-filter: var(--glass-bgFilter);
+  font-family: inherit;
+  color: var(--generalTextColor);
 }
 
-.stat-card.profitability .value {
-  color: #fbbf24;
+.card-title {
+  margin: 0 0 5px 0;
+  color: var(--generalTextColor);
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  font-family: inherit;
+  /* Удалена тень текста */
 }
 
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.category-name {
+  font-weight: 500;
+  color: var(--generalTextColor);
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+.category-amount {
+  font-weight: 600;
+  color: var(--generalTextColor);
+  text-align: right;
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--expenseColor), #fb923c);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.income {
+  background: linear-gradient(90deg, var(--incomeColor), #22c55e);
+}
+
+/* Карточка сравнения */
+.comparison-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  padding: 24px;
+  box-shadow: var(--glass-shadowPanel);
+  backdrop-filter: var(--glass-bgFilter);
+  text-align: center;
+  font-family: inherit;
+  color: var(--generalTextColor);
+  /* Добавляем внутренний отступ вместо внешнего */
+  margin: 0 20px 40px 20px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.comparison-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.comparison-label {
+  font-size: 14px;
+  color: var(--generalTextColor);
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+.comparison-value {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  color: var(--generalTextColor);
+  /* Удалена тень текста */
+}
+
+.comparison-value.positive {
+  color: var(--incomeColor);
+}
+
+.comparison-value.negative {
+  color: var(--expenseColor);
+}
+
+.comparison-note {
+  margin: 16px 0 0 0;
+  font-size: 12px;
+  color: var(--generalTextColor);
+  font-style: italic;
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+/* Информационный блок */
 .info {
   padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  box-shadow: var(--glass-shadowPanel);
+  backdrop-filter: var(--glass-bgFilter);
+  font-family: inherit;
+  color: var(--generalTextColor);
+  /* Добавляем внутренний отступ вместо внешнего */
+  margin: 0 20px;
 }
 
 .info p {
   margin: 8px 0;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--generalTextColor);
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+.info .warning {
+  color: var(--warningColor);
+  font-weight: 500;
+  /* Удалена тень текста */
+}
+
+.info .positive {
+  color: var(--incomeColor);
+  font-weight: 500;
+  /* Удалена тень текста */
+}
+
+/* Нет данных */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--generalTextColor);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.page-header-large {
+  margin: 0;
+  color: var(--generalTextColor);
+  font-size: 28px;
+  font-weight: 600;
+  font-family: inherit;
+  /* Удалена тень текста */
+}
+
+/* Адаптивность согласно mobile.md */
+@media (max-width: 768px) {
+  .reports {
+    color: var(--generalTextColor);
+    backdrop-filter: var(--glass-bgFilter);
+  }
+  
+  .reports-header-panel {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    top: 55px;
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .glass-select, .glass-input {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .glass-select:hover {
+    /* Адаптация hover эффектов для мобильных */
+    border-color: var(--neon-blue);
+    box-shadow: var(--glass-shadowPanel);
+  }
+  
+  .stats-grid {
+    /* Удален padding: 16px - не нужен согласно указанию */
+    gap: 16px;
+  }
+  
+  .stat-card {
+    /* Адаптация padding для мобильных устройств */
+    padding: 10px;
+    /* Сохраняем центрирование для мобильных */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .stat-card .icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  
+  .income-content,
+  .expenses-content,
+  .profit-content,
+  .profitability-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .income-content .value,
+  .expenses-content .value,
+  .profit-content .value,
+  .profitability-content .value {
+    font-size: 24px;
+  }
+  
+  .analytics-section {
+    padding: 0 16px;
+  }
+  
+  .analysis-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .comparison-card {
+    margin: 0 16px 40px 16px;
+    padding: 16px;
+  }
+  
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .comparison-item {
+    padding: 8px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+  
+  .info {
+    margin: 0 16px;
+    padding: 16px;
+  }
+  
+  .page-header-large {
+    font-size: 24px;
+    text-align: center;
+    color: var(--generalTextColor);
+    /* Удалена тень текста */
+  }
+  
+  .category-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .category-amount {
+    text-align: left;
+  }
 }
