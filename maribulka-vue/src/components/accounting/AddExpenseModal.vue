@@ -50,7 +50,7 @@ watch(() => props.isVisible, (newValue) => {
 watch(booking_id, (newBookingId) => {
   if (isRefundCategory.value && newBookingId) {
     const booking = financeStore.refundableBookings.find(b => b.id === parseInt(newBookingId))
-    if (booking) {
+    if (booking && booking.paid_amount) {
       amount.value = booking.paid_amount.toString()
     }
   }

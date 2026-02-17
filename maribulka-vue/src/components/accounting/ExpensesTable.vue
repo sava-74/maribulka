@@ -15,7 +15,6 @@ import {
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilDelete, mdilMagnify, mdilRefresh, mdilEye, mdilPlus, mdilPencil } from '@mdi/light-js'
 import { useFinanceStore } from '../../stores/finance'
-import { useReferencesStore } from '../../stores/references'
 import ConfirmModal from '../ConfirmModal.vue'
 import ViewExpenseModal from './ViewExpenseModal.vue'
 import AddExpenseModal from './AddExpenseModal.vue'
@@ -27,7 +26,6 @@ import '../../assets/modal.css'
 import '../../assets/responsive.css'
 
 const financeStore = useFinanceStore()
-const referencesStore = useReferencesStore()
 
 // Row selection state
 const rowSelection = ref<RowSelectionState>({})
