@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS `bookings`;
 DROP TABLE IF EXISTS `promotions`;
 DROP TABLE IF EXISTS `shooting_types`;
 DROP TABLE IF EXISTS `clients`;
+DROP TABLE IF EXISTS `studio_photos`;
+DROP TABLE IF EXISTS `studio_description`;
 
 -- ============================================
 -- СПРАВОЧНИК: КЛИЕНТЫ
@@ -210,6 +212,33 @@ INSERT INTO `expenses` (`date`, `amount`, `category`, `description`, `booking_id
 ('2026-01-20', 10000.00, 'refund', 'Возврат аванса клиенту Сидоровой (отмена свадьбы)', 4),
 ('2026-02-01', 2000.00, 'software', 'Подписка Adobe Creative Cloud', NULL),
 ('2026-01-28', 500.00, 'transport', 'Бензин, поездка на съёмку', NULL);
+
+-- ============================================
+-- ТАБЛИЦЫ ДЛЯ ДОМАШНЕЙ СТРАНИЦЫ
+-- ============================================
+
+-- Таблица для фото студии
+CREATE TABLE `studio_photos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `photo_url` VARCHAR(255) NOT NULL COMMENT 'URL фото',
+  `position` INT(11) NOT NULL COMMENT 'Позиция фото (0-3)',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `position` (`position`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Таблица для описания студии
+CREATE TABLE `studio_description` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `content` TEXT NOT NULL COMMENT 'HTML-контент описания студии',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Вставка дефолтного описания студии
+INSERT INTO `studio_description` (`content`) VALUES
+('<p>Добро пожаловать в нашу фотостудию! Здесь вы можете создать незабываемые снимки в уютной атмосфере.</p>');
 
 -- ============================================
 -- ГОТОВО!
