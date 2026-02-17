@@ -18,8 +18,7 @@ const alertTitle = ref('Ошибка')
 
 const handleLogin = async () => {
   try {
-    //const response = await fetch('http://localhost:3001/api/login', {
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/auth.php?action=login', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -27,12 +26,21 @@ const handleLogin = async () => {
     });
 
     if (response.ok) {
-      auth.login(rememberMe.value);
-      password.value = '';
-      emit('close');
+      const data = await response.json()
+      if (data.success) {
+        // Устанавливаем флаг авторизации
+        auth.login(rememberMe.value)
+        password.value = ''
+        emit('close')
+      } else {
+        alertTitle.value = 'Ошибка доступа'
+        alertMessage.value = data.message || 'Неверный логин или пароль'
+        showAlert.value = true
+      }
     } else {
+      const data = await response.json()
       alertTitle.value = 'Ошибка доступа'
-      alertMessage.value = 'Неверный логин или пароль'
+      alertMessage.value = data.message || 'Неверный логин или пароль'
       showAlert.value = true
     }
   } catch (error) {

@@ -18,8 +18,8 @@ const handleAction = () => {
   }
 }
 
-const handleLogout = () => {
-  auth.logout()
+const handleLogout = async () => {
+  await auth.logout()
   showConfirm.value = false
 }
 </script>

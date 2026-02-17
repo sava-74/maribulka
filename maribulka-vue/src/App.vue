@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useNavigationStore } from './stores/navigation'
 import TopBar from './components/TopBar.vue'
@@ -18,6 +18,11 @@ import './assets/home.css'
 const isModalOpen = ref(false)
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
+
+// Проверяем сессию при загрузке приложения
+onMounted(async () => {
+  await authStore.checkSession()
+})
 </script>
 
 <template>
