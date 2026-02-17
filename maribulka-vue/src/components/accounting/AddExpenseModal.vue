@@ -34,7 +34,7 @@ const isRefundCategory = computed(() => {
 // Сброс формы при открытии
 watch(() => props.isVisible, (newValue) => {
   if (newValue) {
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date().toISOString().split('T')[0] || ''
     date.value = today
     amount.value = ''
     category.value = ''
