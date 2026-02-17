@@ -51,7 +51,7 @@
   border: 1px solid var(--generalColor);
   border-radius: 8px;
   padding: 10px;
-  color: #333;
+  color: var(--generalTextColor);
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,7 +74,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--generalTextColor);
   cursor: pointer;
 }
 
@@ -128,7 +128,7 @@
 /* Лейбл поля */
 .input-label {
   font-size: 12px;
-  color: #333;
+  color: var(--generalTextColor);
   font-weight: 500;
 }
 
@@ -160,7 +160,7 @@ select.modal-input {
 .payment-info p {
   margin: 6px 0;
   font-size: 14px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .payment-info .remaining-amount {
@@ -180,7 +180,7 @@ select.modal-input {
 .delete-info p {
   margin: 6px 0;
   font-size: 14px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .delete-warning {
@@ -205,7 +205,7 @@ select.modal-input {
   align-items: center;
   margin: 4px 0;
   font-size: 14px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .price-label {
@@ -214,7 +214,7 @@ select.modal-input {
 
 .price-value {
   font-weight: 600;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .price-value.discount-value {
@@ -229,7 +229,7 @@ select.modal-input {
 
 .price-value.total-value {
   font-size: 18px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 /* ========== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ МОДАЛЬНЫХ ОКОН ========== */
@@ -334,7 +334,7 @@ select.modal-input {
 
 .actions-title {
   font-weight: 600;
-  color: #333;
+  color: var(--generalTextColor);
   font-size: 14px;
 }
 
@@ -429,7 +429,7 @@ select.modal-input {
 
 .order-details {
   margin: 2px 0;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .info-section {
@@ -718,7 +718,7 @@ select.modal-input {
 
 .editor-container .ql-editor {
   min-height: 300px;
-  color: #333;
+  color: var(--generalTextColor);
 }
 
 .editor-container .ql-editor.ql-blank::before {

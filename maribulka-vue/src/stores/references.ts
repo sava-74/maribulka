@@ -17,6 +17,10 @@ export const useReferencesStore = defineStore('references', () => {
   const clients = ref<any[]>([])
   const loadingClients = ref(false)
 
+  // Категории расходов
+  const expenseCategories = ref<any[]>([])
+  const loadingExpenseCategories = ref(false)
+
   // ========================================
   // ТИПЫ СЪЁМОК
   // ========================================
@@ -193,6 +197,63 @@ export const useReferencesStore = defineStore('references', () => {
     return result
   }
 
+  // ========================================
+  // КАТЕГОРИИ РАСХОДОВ
+  // ========================================
+  async function fetchExpenseCategories() {
+    loadingExpenseCategories.value = true
+    try {
+      const response = await fetch(`${API_URL}/expense-categories.php`)
+      expenseCategories.value = await response.json()
+    } catch (error) {
+      console.error('Ошибка загрузки категорий расходов:', error)
+    } finally {
+      loadingExpenseCategories.value = false
+    }
+  }
+
+  async function createExpenseCategory(data: any) {
+    const response = await fetch(`${API_URL}/expense-categories.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    const result = await response.json()
+    if (result.success) {
+      await fetchExpenseCategories()
+    }
+    return result
+  }
+
+  async function updateExpenseCategory(data: any) {
+    const response = await fetch(`${API_URL}/expense-categories.php`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    const result = await response.json()
+    if (result.success) {
+      await fetchExpenseCategories()
+    }
+    return result
+  }
+
+  async function checkExpenseCategoryRelations(id: number) {
+    const response = await fetch(`${API_URL}/expense-categories.php?check_relations=1&id=${id}`)
+    return await response.json()
+  }
+
+  async function deleteExpenseCategory(id: number) {
+    const response = await fetch(`${API_URL}/expense-categories.php?id=${id}`, {
+      method: 'DELETE'
+    })
+    const result = await response.json()
+    if (result.success) {
+      await fetchExpenseCategories()
+    }
+    return result
+  }
+
   return {
     // State
     shootingTypes,
@@ -201,6 +262,8 @@ export const useReferencesStore = defineStore('references', () => {
     loadingPromotions,
     clients,
     loadingClients,
+    expenseCategories,
+    loadingExpenseCategories,
 
     // Actions
     fetchShootingTypes,
@@ -220,6 +283,12 @@ export const useReferencesStore = defineStore('references', () => {
     createClient,
     updateClient,
     deleteClient,
-    checkClientRelations
+    checkClientRelations,
+
+    fetchExpenseCategories,
+    createExpenseCategory,
+    updateExpenseCategory,
+    deleteExpenseCategory,
+    checkExpenseCategoryRelations
   }
 })

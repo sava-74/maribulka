@@ -4,6 +4,7 @@ import { useReferencesStore } from '../../stores/references'
 import ClientsTable from './ClientsTable.vue'
 import ShootingTypesTable from './ShootingTypesTable.vue'
 import PromotionsTable from './PromotionsTable.vue'
+import ExpenseCategoriesTable from './ExpenseCategoriesTable.vue'
 import '../../assets/buttons.css'
 import '../../assets/tables.css'
 import '../../assets/layout.css'
@@ -15,6 +16,7 @@ onMounted(() => {
   referencesStore.fetchShootingTypes()
   referencesStore.fetchPromotions()
   referencesStore.fetchClients()
+  referencesStore.fetchExpenseCategories()
 })
 </script>
 
@@ -44,6 +46,13 @@ onMounted(() => {
         >
           Акции
         </button>
+        <button
+          class="glass-button-text"
+          @click="activeSection = 'expense-categories'"
+          :class="{ active: activeSection === 'expense-categories' }"
+        >
+          Категории расходов
+        </button>
       </nav>
     </div>
 
@@ -62,6 +71,11 @@ onMounted(() => {
       <!-- Акции -->
       <div v-if="activeSection === 'promotions'">
         <PromotionsTable />
+      </div>
+
+      <!-- Категории расходов -->
+      <div v-if="activeSection === 'expense-categories'">
+        <ExpenseCategoriesTable />
       </div>
     </div>
   </div>
