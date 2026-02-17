@@ -10,7 +10,8 @@ export const useFinanceStore = defineStore('finance', () => {
   const expenses = ref<any[]>([])
   const loadingIncome = ref(false)
   const loadingExpenses = ref(false)
-  const currentMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
+  const currentMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM для прихода
+  const currentExpenseMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM для расходов
 
   // ========================================
   // COMPUTED
@@ -60,7 +61,7 @@ export const useFinanceStore = defineStore('finance', () => {
   async function fetchExpenses(month?: string) {
     loadingExpenses.value = true
     try {
-      const queryMonth = month || currentMonth.value
+      const queryMonth = month || currentExpenseMonth.value
       const response = await fetch(`${API_URL}/expenses.php?month=${queryMonth}`)
       expenses.value = await response.json()
     } catch (error) {
@@ -78,7 +79,7 @@ export const useFinanceStore = defineStore('finance', () => {
     })
     const result = await response.json()
     if (result.success) {
-      await fetchExpenses()
+      await fetchExpenses(currentExpenseMonth.value)
     }
     return result
   }
@@ -91,7 +92,7 @@ export const useFinanceStore = defineStore('finance', () => {
     })
     const result = await response.json()
     if (result.success) {
-      await fetchExpenses()
+      await fetchExpenses(currentExpenseMonth.value)
     }
     return result
   }
@@ -102,7 +103,7 @@ export const useFinanceStore = defineStore('finance', () => {
     })
     const result = await response.json()
     if (result.success) {
-      await fetchExpenses()
+      await fetchExpenses(currentExpenseMonth.value)
     }
     return result
   }
@@ -121,6 +122,10 @@ export const useFinanceStore = defineStore('finance', () => {
   function setCurrentMonth(month: string) {
     currentMonth.value = month
     fetchIncome(month)
+  }
+
+  function setCurrentExpenseMonth(month: string) {
+    currentExpenseMonth.value = month
     fetchExpenses(month)
   }
 
@@ -132,6 +137,7 @@ export const useFinanceStore = defineStore('finance', () => {
     loadingIncome,
     loadingExpenses,
     currentMonth,
+    currentExpenseMonth,
 
     // Computed
     totalIncome,
@@ -147,6 +153,7 @@ export const useFinanceStore = defineStore('finance', () => {
     updateExpense,
     deleteExpense,
     deleteIncome,
-    setCurrentMonth
+    setCurrentMonth,
+    setCurrentExpenseMonth
   }
 })

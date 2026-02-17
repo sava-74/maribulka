@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `bookings`;
 DROP TABLE IF EXISTS `promotions`;
 DROP TABLE IF EXISTS `shooting_types`;
 DROP TABLE IF EXISTS `clients`;
+DROP TABLE IF EXISTS `expense_categories`;
 DROP TABLE IF EXISTS `studio_photos`;
 DROP TABLE IF EXISTS `studio_description`;
 
@@ -50,6 +51,17 @@ CREATE TABLE `promotions` (
   `start_date` DATE DEFAULT NULL COMMENT 'Дата начала',
   `end_date` DATE DEFAULT NULL COMMENT 'Дата окончания',
   `is_active` TINYINT(1) DEFAULT 1 COMMENT 'Активна ли акция',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- СПРАВОЧНИК: КАТЕГОРИИ РАСХОДОВ
+-- ============================================
+CREATE TABLE `expense_categories` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL COMMENT 'Название категории',
+  `is_active` TINYINT(1) DEFAULT 1 COMMENT 'Активна ли категория',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -126,7 +138,7 @@ CREATE TABLE `expenses` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `date` DATE NOT NULL COMMENT 'Дата расхода',
   `amount` DECIMAL(10,2) NOT NULL COMMENT 'Сумма',
-  `category` ENUM('materials', 'rent', 'transport', 'software', 'equipment', 'refund', 'other') NOT NULL COMMENT 'Категория расхода',
+  `category` INT(11) NOT NULL COMMENT 'ID категории расхода',
   `description` TEXT NOT NULL COMMENT 'Описание',
   `booking_id` INT(11) DEFAULT NULL COMMENT 'Связь со съёмкой (опционально)',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -136,7 +148,8 @@ CREATE TABLE `expenses` (
   KEY `date` (`date`),
   KEY `category` (`category`),
 
-  CONSTRAINT `fk_expenses_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`)
+  CONSTRAINT `fk_expenses_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`),
+  CONSTRAINT `fk_expense_category` FOREIGN KEY (`category`) REFERENCES `expense_categories` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -159,6 +172,16 @@ INSERT INTO `promotions` (`name`, `discount_percent`, `start_date`, `end_date`) 
 ('Весенняя акция', 20.00, '2026-03-01', '2026-05-31'),
 ('Летняя распродажа', 15.00, '2026-06-01', '2026-08-31'),
 ('Новогодняя акция', 25.00, '2025-12-20', '2026-01-10');
+
+-- Категории расходов
+INSERT INTO `expense_categories` (`name`) VALUES
+('Материалы'),
+('Аренда студии'),
+('Транспорт'),
+('Программное обеспечение'),
+('Оборудование'),
+('Возврат средств'),
+('Прочее');
 
 -- Клиенты
 INSERT INTO `clients` (`name`, `phone`, `total_bookings`, `notes`) VALUES
@@ -207,11 +230,11 @@ INSERT INTO `income` (`date`, `booking_id`, `client_id`, `amount`, `category`, `
 
 -- Расходы
 INSERT INTO `expenses` (`date`, `amount`, `category`, `description`, `booking_id`) VALUES
-('2026-02-01', 1500.00, 'rent', 'Аренда студии на 3 часа', 1),
-('2026-02-03', 800.00, 'materials', 'Реквизит для детской съёмки', 2),
-('2026-01-20', 10000.00, 'refund', 'Возврат аванса клиенту Сидоровой (отмена свадьбы)', 4),
-('2026-02-01', 2000.00, 'software', 'Подписка Adobe Creative Cloud', NULL),
-('2026-01-28', 500.00, 'transport', 'Бензин, поездка на съёмку', NULL);
+('2026-02-01', 1500.00, 2, 'Аренда студии на 3 часа', 1),
+('2026-02-03', 800.00, 1, 'Реквизит для детской съёмки', 2),
+('2026-01-20', 10000.00, 6, 'Возврат аванса клиенту Сидоровой (отмена свадьбы)', 4),
+('2026-02-01', 2000.00, 4, 'Подписка Adobe Creative Cloud', NULL),
+('2026-01-28', 500.00, 3, 'Бензин, поездка на съёмку', NULL);
 
 -- ============================================
 -- ТАБЛИЦЫ ДЛЯ ДОМАШНЕЙ СТРАНИЦЫ
