@@ -74,6 +74,29 @@ curl -X POST http://марибулька.рф/api/login \
 
 ---
 
+## ⚡ Быстрый старт для VSCode
+
+Когда вы открыли проект в VSCode:
+
+1. Откройте integrated terminal: `Ctrl + `` (backtick)
+2. Выполните команду:
+
+```bash
+uvx basic-memory mcp
+```
+
+Если uvx не установлен, сначала выполните:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+$env:Path += ";$env:USERPROFILE\.local\bin"
+uvx basic-memory mcp
+```
+
+Готово! Сервер работает. Ошибки типа "EOF while parsing a value" - это нормально.
+
+---
+
 ## 📁 Важные пути
 
 ### Локально

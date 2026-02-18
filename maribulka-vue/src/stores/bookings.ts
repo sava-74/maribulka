@@ -1,4 +1,4 @@
-// Store для записей на съёмку
+// Store для управления записями
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
@@ -13,28 +13,32 @@ export const useBookingsStore = defineStore('bookings', () => {
   // COMPUTED
   // ========================================
   const bookingsByDate = computed(() => {
-    const byDate: Record<string, any[]> = {}
-    bookings.value.forEach(booking => {
-      const date = booking.shooting_date
-      if (!byDate[date]) {
-        byDate[date] = []
+    // Группировка записей по дате
+    return bookings.value.reduce((acc, booking) => {
+      const date = booking.booking_date
+      if (!acc[date]) {
+        acc[date] = []
       }
-      byDate[date].push(booking)
-    })
-    return byDate
+      acc[date].push(booking)
+      return acc
+    }, {})
   })
 
   // ========================================
-  // ACTIONS
+  // ЗАПИСИ
   // ========================================
   async function fetchBookings(month?: string) {
     loading.value = true
     try {
       const queryMonth = month || currentMonth.value
       const response = await fetch(`${API_URL}/bookings.php?month=${queryMonth}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       bookings.value = await response.json()
     } catch (error) {
       console.error('Ошибка загрузки записей:', error)
+      bookings.value = [] // Установить пустой массив при ошибке
     } finally {
       loading.value = false
     }
@@ -44,6 +48,9 @@ export const useBookingsStore = defineStore('bookings', () => {
     loading.value = true
     try {
       const response = await fetch(`${API_URL}/bookings.php?date=${date}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       return await response.json()
     } catch (error) {
       console.error('Ошибка загрузки записей на дату:', error)
@@ -54,107 +61,195 @@ export const useBookingsStore = defineStore('bookings', () => {
   }
 
   async function getBooking(id: number) {
-    const response = await fetch(`${API_URL}/bookings.php?id=${id}`)
-    return await response.json()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?id=${id}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Ошибка получения записи:', error)
+      return null
+    }
   }
 
   async function createBooking(data: any) {
-    const response = await fetch(`${API_URL}/bookings.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка создания записи:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function updateBooking(data: any) {
-    const response = await fetch(`${API_URL}/bookings.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка обновления записи:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function deleteBooking(id: number) {
-    const response = await fetch(`${API_URL}/bookings.php?id=${id}`, {
-      method: 'DELETE'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?id=${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка удаления записи:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   // ========================================
   // СПЕЦИАЛЬНЫЕ ДЕЙСТВИЯ
   // ========================================
   async function markAsCompleted(id: number) {
-    const response = await fetch(`${API_URL}/bookings.php?action=complete&id=${id}`, {
-      method: 'POST'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=complete&id=${id}`, {
+        method: 'POST'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка отметки выполнения:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function markAsDelivered(id: number) {
-    const response = await fetch(`${API_URL}/bookings.php?action=deliver&id=${id}`, {
-      method: 'POST'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=deliver&id=${id}`, {
+        method: 'POST'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка отметки доставки:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function cancelBooking(id: number, cancelledBy: 'client' | 'photographer') {
-    const response = await fetch(`${API_URL}/bookings.php?action=cancel&id=${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cancelled_by: cancelledBy })
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=cancel&id=${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cancelled_by: cancelledBy })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка отмены записи:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function addPayment(id: number, amount: number) {
-    const response = await fetch(`${API_URL}/bookings.php?action=payment&id=${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount })
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=payment&id=${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка добавления платежа:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function quickPayment(id: number) {
-    const response = await fetch(`${API_URL}/bookings.php?action=quick_payment&id=${id}`, {
-      method: 'POST'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchBookings()
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=quick_payment&id=${id}`, {
+        method: 'POST'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchBookings()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка быстрого платежа:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   function setCurrentMonth(month: string) {
@@ -163,9 +258,17 @@ export const useBookingsStore = defineStore('bookings', () => {
   }
 
   async function getNextId(): Promise<number> {
-    const response = await fetch(`${API_URL}/bookings.php?action=get_next_id`)
-    const data = await response.json()
-    return data.next_id
+    try {
+      const response = await fetch(`${API_URL}/bookings.php?action=get_next_id`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      return data.next_id
+    } catch (error) {
+      console.error('Ошибка получения следующего ID:', error)
+      return -1
+    }
   }
 
   return {

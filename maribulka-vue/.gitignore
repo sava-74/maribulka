@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Rigour Artifacts
+rigour-report.json
+rigour-fix-packet.json
+.rigour/

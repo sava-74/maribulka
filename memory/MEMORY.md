@@ -4,15 +4,21 @@
 
 Основная память разбита на тематические файлы для удобства:
 
-- **[deployment.md](deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
-- **[architecture.md](architecture.md)** - структура проекта, ключевые файлы, БД
-- **[styles.md](styles.md)** - организация CSS, паттерны, переменные
-- **[calendar.md](calendar.md)** - календарь записей, статусы, цвета, слоты
-- **[mobile.md](mobile.md)** - мобильная адаптация, брейкпоинты
-- **[changelog.md](changelog.md)** - история изменений по датам
-- **[patterns.md](patterns.md)** - эталоны кода, таблицы, модалки
-- **[traps.md](traps.md)** - известные ловушки и баги
-- **[expenses-plan.md](expenses-plan.md)** - план работ: Расходы + Категории расходов
+- **[deployment.md](file:///d:/GitHub/maribulka/memory/deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
+- **[architecture.md](file:///d:/GitHub/maribulka/memory/architecture.md)** - структура проекта, ключевые файлы, БД
+- **[styles.md](file:///d:/GitHub/maribulka/memory/styles.md)** - организация CSS, паттерны, переменные
+- **[calendar.md](file:///d:/GitHub/maribulka/memory/calendar.md)** - календарь записей, статусы, цвета, слоты
+- **[mobile.md](file:///d:/GitHub/maribulka/memory/mobile.md)** - мобильная адаптация, брейкпоинты
+- **[changelog.md](file:///d:/GitHub/maribulka/memory/changelog.md)** - история изменений по датам
+- **[patterns.md](file:///d:/GitHub/maribulka/memory/patterns.md)** - эталоны кода, таблицы, модалки
+- **[traps.md](file:///d:/GitHub/maribulka/memory/traps.md)** - известные ловушки и баги
+- **[expenses-plan.md](file:///d:/GitHub/maribulka/memory/expenses-plan.md)** - план работ: Расходы + Категории расходов
+
+---
+
+## ⚠️ Критическое замечание
+
+**Все общение и разработка в рамках проекта Maribulka должно происходить исключительно на русском языке.**
 
 ---
 

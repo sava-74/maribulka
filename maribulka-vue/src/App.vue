@@ -26,7 +26,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="app-container">
+  <div id="app" class="app-container">
     <!-- Событие из топбара -->
     <TopBar @open-login="isModalOpen = true" />
 
@@ -64,6 +64,12 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .welcome,
 .page-portfolio,
 .no-access {

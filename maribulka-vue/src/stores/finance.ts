@@ -42,27 +42,44 @@ export const useFinanceStore = defineStore('finance', () => {
     try {
       const queryMonth = month || currentMonth.value
       const response = await fetch(`${API_URL}/income.php?month=${queryMonth}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       income.value = await response.json()
     } catch (error) {
       console.error('Ошибка загрузки прихода:', error)
+      income.value = [] // Установить пустой массив при ошибке
     } finally {
       loadingIncome.value = false
     }
   }
 
   async function fetchIncomeByBooking(bookingId: number) {
-    const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`)
-    incomeByBooking.value = await response.json()
-    return incomeByBooking.value
+    try {
+      const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      incomeByBooking.value = await response.json()
+      return incomeByBooking.value
+    } catch (error) {
+      console.error('Ошибка загрузки доходов по заказу:', error)
+      incomeByBooking.value = []
+      return []
+    }
   }
 
   // Получить заказы доступные для возврата (статус new/failed + есть оплата)
   async function fetchRefundableBookings() {
     try {
       const response = await fetch(`${API_URL}/bookings.php?action=refundable`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       refundableBookings.value = await response.json()
     } catch (error) {
       console.error('Ошибка загрузки заказов для возврата:', error)
+      refundableBookings.value = []
     }
   }
 
@@ -74,60 +91,104 @@ export const useFinanceStore = defineStore('finance', () => {
     try {
       const queryMonth = month || currentExpenseMonth.value
       const response = await fetch(`${API_URL}/expenses.php?month=${queryMonth}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       expenses.value = await response.json()
     } catch (error) {
       console.error('Ошибка загрузки расходов:', error)
+      expenses.value = [] // Установить пустой массив при ошибке
     } finally {
       loadingExpenses.value = false
     }
   }
 
   async function createExpense(data: any) {
-    const response = await fetch(`${API_URL}/expenses.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchExpenses(currentExpenseMonth.value)
+    try {
+      const response = await fetch(`${API_URL}/expenses.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchExpenses(currentExpenseMonth.value)
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка создания расхода:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function updateExpense(data: any) {
-    const response = await fetch(`${API_URL}/expenses.php`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchExpenses(currentExpenseMonth.value)
+    try {
+      const response = await fetch(`${API_URL}/expenses.php`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchExpenses(currentExpenseMonth.value)
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка обновления расхода:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function deleteExpense(id: number) {
-    const response = await fetch(`${API_URL}/expenses.php?id=${id}`, {
-      method: 'DELETE'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchExpenses(currentExpenseMonth.value)
+    try {
+      const response = await fetch(`${API_URL}/expenses.php?id=${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchExpenses(currentExpenseMonth.value)
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка удаления расхода:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   async function deleteIncome(id: number) {
-    const response = await fetch(`${API_URL}/income.php?id=${id}`, {
-      method: 'DELETE'
-    })
-    const result = await response.json()
-    if (result.success) {
-      await fetchIncome()
+    try {
+      const response = await fetch(`${API_URL}/income.php?id=${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      if (result.success) {
+        await fetchIncome()
+      }
+      return result
+    } catch (error) {
+      console.error('Ошибка удаления дохода:', error)
+      return { success: false, error: error }
     }
-    return result
   }
 
   function setCurrentMonth(month: string) {
