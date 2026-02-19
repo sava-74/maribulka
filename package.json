@@ -1,0 +1,28 @@
+{
+  "name": "maribulka-memento",
+  "displayName": "Maribulka Memento Protocol",
+  "description": "Интеграция Memento Protocol для проекта Maribulka",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./vscode-memento-integration.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "memento.recall",
+        "title": "Memento: Поиск воспоминаний"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  }
+}

@@ -12,7 +12,7 @@ function checkProcesses() {
     
     try {
         // Проверим все процессы, связанные с MCP
-        const result = execSync('wmic process where "CommandLine like \'%@modelcontextprotocol%\' or CommandLine like \'%@upstash/context7-mcp%\' or CommandLine like \'%@playwright/mcp%\' or CommandLine like \'%basic-memory%mcp\'" get Name,ProcessId,CommandLine', { encoding: 'utf8' });
+        const result = execSync('wmic process where "CommandLine like \'%@modelcontextprotocol%\' or CommandLine like \'%@upstash/context7-mcp%\' or CommandLine like \'%@playwright/mcp%\' or CommandLine like \'%memento%\'" get Name,ProcessId,CommandLine', { encoding: 'utf8' });
         
         console.log(result);
         
@@ -20,64 +20,56 @@ function checkProcesses() {
         const lines = result.split('\n').filter(line => line.trim() !== '');
         const actualProcesses = lines.filter(line => !line.includes('Name'));
         
-        console.log(`\n✅ Найдено ${actualProcesses.length} MCP процессов:`);
-        actualProcesses.forEach((proc, index) => {
-            if(proc.trim() !== '') {
-                console.log(`  ${index + 1}. ${proc.trim()}`);
-            }
-        });
+        console.log(`\n📊 Найдено MCP процессов: ${actualProcesses.length}`);
         
-        return actualProcesses.length;
-    } catch (error) {
-        console.log("⚠️ Ошибка при получении списка процессов:", error.message);
-        return 0;
-    }
-}
-
-function checkPorts() {
-    console.log("\n🔌 Проверка сетевых портов (обычно MCP использует различные IPC механизмы):");
-    
-    try {
-        // Проверим сетевые соединения, связанные с node процессами
-        const netstatResult = execSync('netstat -an | findstr :', { encoding: 'utf8' });
-        const mcpConnections = netstatResult.split('\n')
-            .filter(line => 
-                line.toLowerCase().includes('node') || 
-                line.toLowerCase().includes('basic-memory') ||
-                line.includes('@modelcontextprotocol') ||
-                line.includes('@upstash/context7-mcp')
-            );
-        
-        if (mcpConnections.length > 0) {
-            console.log("Найдены сетевые соединения, связанные с MCP процессами:");
-            mcpConnections.forEach(conn => {
-                if(conn.trim() !== '') {
-                    console.log(`  ${conn.trim()}`);
-                }
-            });
+        if (actualProcesses.length > 0) {
+            console.log("✅ MCP серверы активны");
         } else {
-            console.log("⚠️ Не найдено активных сетевых соединений, специфичных для MCP");
-            console.log("  (это нормально, так как MCP может использовать STDIO или другие IPC механизмы)");
+            console.log("⚠️ MCP серверы не найдены");
         }
+        
     } catch (error) {
-        console.log("⚠️ Ошибка при проверке сетевых портов:", error.message);
+        console.log("❌ Ошибка при проверке процессов:", error.message);
     }
 }
 
-function verifyServers() {
-    console.log("\n✅ Сводка по MCP серверам:");
-    console.log("1. sequential-thinking сервер: запущен через npx @modelcontextprotocol/server-sequential-thinking");
-    console.log("2. context7-mcp сервер: запущен через npx @upstash/context7-mcp@latest"); 
-    console.log("3. playwright-mcp сервер: запущен через npx @playwright/mcp@latest");
-    console.log("4. basic-memory сервер: запущен через uvx basic-memory mcp");
+function checkNetworkPorts() {
+    console.log("\n🌐 Проверка сетевых портов:");
     
-    console.log("\n🎯 Все 4 сервера запущены и готовы к использованию!");
-    console.log("💡 Теперь они доступны для всех AI ассистентов и инструментов, поддерживающих протокол Model Context Protocol.");
+    const portsToCheck = [
+        { port: 3000, service: "Development server" },
+        { port: 5173, service: "Vite dev server" }
+    ];
+    
+    portsToCheck.forEach(({ port, service }) => {
+        try {
+            const result = execSync(`netstat -an | findstr :${port}`, { encoding: 'utf8' });
+            if (result.includes(`:${port}`)) {
+                console.log(`✅ ${service} (${port}) - активен`);
+            } else {
+                console.log(`❌ ${service} (${port}) - не активен`);
+            }
+        } catch (error) {
+            console.log(`❌ ${service} (${port}) - ошибка проверки`);
+        }
+    });
 }
 
-// Запускаем проверки
-const count = checkProcesses();
-checkPorts();
-verifyServers();
+function main() {
+    console.log("🚀 Диагностика MCP серверов проекта Maribulka");
+    console.log("============================================");
+    
+    checkProcesses();
+    checkNetworkPorts();
+    
+    console.log("\n📋 Активные MCP серверы:");
+    console.log("1. Sequential-thinking сервер (@modelcontextprotocol/server-sequential-thinking)");
+    console.log("2. Context7-mcp сервер (@upstash/context7-mcp)");
+    console.log("3. Playwright-mcp сервер (@playwright/mcp)");
+    console.log("4. Memento-protocol сервер (долговременная память)");
+    console.log("\n💡 Для запуска всех серверов используйте:");
+    console.log("   Windows: .\\start-all-mcp-servers.ps1");
+    console.log("   Linux/Mac: ./start-all-mcp-servers.sh");
+}
 
-console.log("\n🏁 Проверка завершена. MCP серверы активны и готовы к использованию.");
+main();
