@@ -8,6 +8,7 @@ import './assets/buttons.css'
 import './assets/sidebar.css'
 import './assets/topbar.css'
 import './assets/modal.css'
+import './style.css'
 
 const app = createApp(App)
 

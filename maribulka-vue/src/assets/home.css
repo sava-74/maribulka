@@ -22,14 +22,7 @@
   margin-bottom: 20px;
 }
 
-.promotion-text {
-  color: #DC143C; /* Красный текст */
-  font-size: clamp(16px, 4vw, 32px); /* Уменьшается если не влезает */
-  font-weight: 700;
-  margin: 0;
-  text-transform: uppercase;
-  white-space: nowrap; /* Не переносить текст */
-}
+
 
 /* Блок фото студии */
 .studio-photos {

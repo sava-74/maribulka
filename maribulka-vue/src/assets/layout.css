@@ -262,7 +262,7 @@ select.filter-select {
   }
 
   .accounting-nav {
-    margin-top: 70px;
+    /*margin-top: 70px;*/
     padding: 0;
     top: 70px !important;
   }

@@ -14,6 +14,8 @@ import Home from './views/Home.vue'
 import './assets/modal.css'
 import './assets/content.css'
 import './assets/home.css'
+import './assets/theme.css' 
+import './assets/app.css'
 
 const isModalOpen = ref(false)
 const authStore = useAuthStore()
@@ -64,38 +66,5 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 
-.welcome,
-.page-portfolio,
-.no-access {
-  text-align: center;
-  padding: 60px 20px;
-  color: #fff;
-}
-
-.welcome h1,
-.page-portfolio h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
-.welcome p,
-.page-portfolio p,
-.no-access p {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 10px 0;
-}
-
-.no-access h2 {
-  font-size: 36px;
-  margin-bottom: 16px;
-  color: #f87171;
-}
 </style>

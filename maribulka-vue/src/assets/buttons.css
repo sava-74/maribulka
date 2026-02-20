@@ -12,20 +12,20 @@
     backdrop-filter: var(--glass-bgFilter);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
     box-shadow: var(--glass-shadowButton);  
     color: var(--glass-textButtonColor);
     padding: 0;
-    padding-left: 8px;
+    /*padding-left: 8px;*/
     white-space: nowrap;
     
 }
 
 .glass-button:hover {
     /* Приподнимаем кнопку по диагонали вверх-влево */
-    transform: translate(-4px, -4px); 
+    transform: translate(-2px, -2px); 
     /* Делаем тень глубже и мягче, чтобы усилить эффект подъема */
     box-shadow: var(--glass-shadowButtonUp);
     /* Контур остается зеленым (не меняем border-color) */

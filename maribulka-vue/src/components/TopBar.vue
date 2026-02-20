@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+//import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilLogin, mdilLogout } from '@mdi/light-js'
 import { useAuthStore } from '../stores/auth'
 import ConfirmModal from './ConfirmModal.vue'
+import { useReferencesStore } from '../stores/references'
+
+// Context snippet 1 from d:/GitHub/maribulka/maribulka-vue/src/components/TopBar.vue
 
 const auth = useAuthStore()
 const emit = defineEmits(['open-login'])
+
+const referencesStore = useReferencesStore()
 
 const showConfirm = ref(false)
 
@@ -22,6 +28,35 @@ const handleLogout = async () => {
   await auth.logout()
   showConfirm.value = false
 }
+
+onMounted(() => {
+  referencesStore.fetchPromotions()
+
+})
+
+// Находим действующую акцию (текущая дата в диапазоне start_date - end_date)
+const activePromotion = computed(() => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  return referencesStore.promotions.find(p => {
+    if (!p.start_date || !p.end_date) return false
+
+    const [startYear, startMonth, startDay] = p.start_date.split('-').map(Number)
+    const [endYear, endMonth, endDay] = p.end_date.split('-').map(Number)
+
+    const startDate = new Date(startYear!, startMonth! - 1, startDay!)
+    const endDate = new Date(endYear!, endMonth! - 1, endDay!)
+
+    startDate.setHours(0, 0, 0, 0)
+    endDate.setHours(0, 0, 0, 0)
+
+    return today >= startDate && today <= endDate
+  })
+})
+
+
+
 </script>
 
 <template>
@@ -29,6 +64,9 @@ const handleLogout = async () => {
     <div class="logo-area">
       <img src="/img/owner.jpg" alt="Марибулька" class="owner-photo">
       <span class="site-name">Фотостудия Марии</span>
+      <h1 class="promotion-text">
+        Акция "{{ activePromotion.name }}" {{ Math.round(activePromotion.discount_percent) }}%
+      </h1>
     </div>
 
     <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->

@@ -1,5 +1,6 @@
 :root {
   --generalColor: #39FF14;
+  --bgGeneral: #f0f0f0;
   --neon-blue: #00F3FF;
   --glass-bg: rgba(255, 255, 255, 0.4);
   --generalTextColor: #333;
@@ -13,15 +14,15 @@
   --glass-borderButttonColorFlash: #ffffff; /* цвет границы при флеше */
   --glass-borderbuttonAlertColor: #ff0000; /* цвет границы для кнопки с алертом */
   --svg-colorButton: #333; /* цвет иконок SVG */
-  --svg-sizeButton: 24px; /* размер иконок SVG */
+  --svg-sizeButton: 22px; /* размер иконок SVG */
   --text-colorAlert: #ff0000; /* цвет текста для алерта */
 
-  --glass-widthButton: 40px;/* ширина кнопки */
-  --glass-heightButton: 40px;/* высота кнопки */
+  --glass-widthButton: 30px;/* ширина кнопки */
+  --glass-heightButton: 30px;/* высота кнопки */
   --glass-widthButtonText: 140px;/* ширина кнопки с текстом */
-  --glass-heightButtonText: 40px;/* высота кнопки с текстом */
+  --glass-heightButtonText: 30px;/* высота кнопки с текстом */
   --glass-widthButtonCalendar: 80px;/* ширина кнопки с текстом */
-  --glass-heightButtonCalendar: 40px;/* высота кнопки с текстом */
+  --glass-heightButtonCalendar: 30px;/* высота кнопки с текстом */
   --glass-borderRadiusButton: 8px;/* радиус скругления кнопки */
   --glass-bgFilter: blur(12px); /* размытие фона для эффекта стекла */
 

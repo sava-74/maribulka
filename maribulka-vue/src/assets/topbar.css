@@ -1,13 +1,16 @@
 .top-bar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 60px;
+  height: 40px;
   background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  margin: 10px 21px 10px 10px; /* Отступ от краев экрана */
+  border-bottom-left-radius: var(--panelRadius);
+  border-bottom-right-radius: var(--panelRadius);
+  border-top: none;
+  /*border-radius: var(--panelRadius);*/
+  /*margin: 10px 21px 10px 10px;  Отступ от краев экрана */
   box-shadow: var(--glass-shadowPanel);
   display: flex;
   align-items: center;
@@ -17,24 +20,41 @@
   box-sizing: border-box;
 }
 
-.logo-area {
+.logo-area {  /* область для логотипа и названия сайта*/
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.owner-photo {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50%;
+.owner-photo { /* фотография владельца (аватар) */
+  width: var(--glass-widthButton) !important;
+  height: var(--glass-heightButton) !important;
+  border-bottom-left-radius: var(--panelRadius);
+  border-bottom-right-radius: var(--panelRadius);
   border: 1px solid var(--generalColor);
   object-fit: cover;
 }
 
-.site-name {
+.site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
   font-size: 1.1rem;
+}
+
+.promotion-text {
+    color: #DC143C;
+    font-size: clamp(16px, 2vw, 32px);
+    font-weight: 700;
+    margin-left: 10px !important;
+    margin-block-end: 0px;
+    margin-block-start: 0px;
+    background: #eaf801;
+    background-origin: padding-box;
+    padding: 4px;
+    border-radius: 15px;
+    border: 2px solid;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
 /* ========== TOPBAR MOBILE (<=768px) ========== */
