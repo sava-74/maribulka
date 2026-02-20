@@ -29,8 +29,11 @@
 }
 
 .owner-photo { /* фотография владельца (аватар) */
+  margin-top: 2px;
   width: var(--glass-widthButton) !important;
   height: var(--glass-heightButton) !important;
+  min-width: var(--glass-widthButton) !important;
+  min-height: var(--glass-heightButton) !important;
   border-bottom-left-radius: var(--panelRadius);
   border-bottom-right-radius: var(--panelRadius);
   border: 1px solid var(--generalColor);
@@ -40,7 +43,15 @@
 .site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
-  font-size: clamp(6px, 2vw, 20px);
+  font-size: clamp(8px, 2vw, 20px);
+  /* 1. Убираем пространство под текстом */
+  line-height: 1; /* Или установи равным font-size, например 16px */
+  height: auto;   /* Чтобы высота подстраивалась под текст */
+  padding: 0;     /* На всякий случай сбрасываем внутренние отступы */
+  /* 2. Убираем смещение вправо */
+  text-align: center; /* Выравниваем текст по центру */
+  margin-left: 0;   /* Убираем внешние отступы слева */
+
 }
 
 .promotion-text {
@@ -62,19 +73,9 @@
 /* ========== TOPBAR MOBILE (<=768px) ========== */
 
 @media (max-width: 480px) {
-  /*
-  .top-bar {
-    margin: 5px 13px;
-    height: 46px;
-    min-width: 255px ;
-    /*padding:  10px;
-    border-radius: var(--panelRadius);
-    padding-left: 44px;
-    padding-bottom: 1px;
-    box-shadow: var(--glass-shadowPanel);
-  }*/
-
-  .glass-button {
+ 
+  .side-bar .glass-button,
+  .top-bar .glass-button {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   border-bottom-left-radius: var(--glass-borderRadiusButton) !important;
@@ -83,6 +84,7 @@
 
   .promotion-text {
     margin-left: 0px !important;
+    margin-right: 6px !important;
   }
 
   .owner-photo {

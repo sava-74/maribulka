@@ -119,6 +119,10 @@
     display: block;
   }
 
+  .side-bar.expanded .glass-button {
+   border-radius: var(--glass-borderRadiusButton) !important;  
+  }
+
     .nav-item {
         margin-bottom: 8px;
     }
