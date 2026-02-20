@@ -1,7 +1,7 @@
 /* ========== БАЗОВЫЕ КНОПКИ-ИКОНКИ (40x40) ========== */
 
 /* Базовое состояние кнопки - "висит в воздухе" */
-.glass-button {
+.button, .glass-button {
     width: var(--glass-widthButton); /* Фиксированный размер в сложенном виде */
     height: var(--glass-heightButton);
     min-width: var(--glass-widthButton);
@@ -20,6 +20,40 @@
     padding: 0;
     /*padding-left: 8px;*/
     white-space: nowrap;
+    /*будем убивать родной стиль */
+    appearance: auto;
+   /* font-style: ;
+    font-variant-ligatures: ;
+    font-variant-caps: ;
+    font-variant-numeric: ;
+    font-variant-east-asian: ;
+    font-variant-alternates: ;
+    font-variant-position: ;
+    font-variant-emoji: ;
+    font-weight: ;
+    font-stretch: ;
+    font-size: ;
+    font-family: ;
+    font-optical-sizing: ;
+    font-size-adjust: ;
+    font-kerning: ;
+    font-feature-settings: ;
+    font-variation-settings: ;
+    font-language-override: ;*/
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    text-align: center;
+    /*cursor: default;*/
+    box-sizing: border-box;
+    /*background-color: buttonface;*/
+    margin: 0em 0em 0em 0em;
+    padding-block: 0px;
+    padding-inline: 0px;
     
 }
 
