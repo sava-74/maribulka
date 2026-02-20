@@ -201,6 +201,21 @@ export const useFinanceStore = defineStore('finance', () => {
     fetchExpenses(month)
   }
 
+  // Получить доход по типам съёмок
+  async function fetchIncomeByShootingType(month?: string) {
+    try {
+      const queryMonth = month || currentMonth.value
+      const response = await fetch(`${API_URL}/bookings.php?action=income_by_type&month=${queryMonth}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Ошибка загрузки дохода по типам съёмок:', error)
+      return []
+    }
+  }
+
   return {
     // State
     income,
@@ -228,6 +243,7 @@ export const useFinanceStore = defineStore('finance', () => {
     deleteExpense,
     deleteIncome,
     setCurrentMonth,
-    setCurrentExpenseMonth
+    setCurrentExpenseMonth,
+    fetchIncomeByShootingType
   }
 })

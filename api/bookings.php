@@ -69,6 +69,32 @@ try {
         exit;
     }
 
+    // GET action для получения дохода по типам съёмок
+    if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'income_by_type') {
+        $month = $_GET['month'] ?? null;
+        
+        $whereClause = "b.payment_status = 'fully_paid' AND (b.status = 'delivered' OR b.status = 'completed')";
+        
+        if ($month) {
+            $whereClause .= " AND DATE_FORMAT(b.shooting_date, '%Y-%m') = '" . $month . "'";
+        }
+        
+        $stmt = $db->query("
+            SELECT
+                st.name as shooting_type_name,
+                COUNT(b.id) as count,
+                SUM(b.total_amount) as total
+            FROM bookings b
+            LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            WHERE $whereClause
+            GROUP BY b.shooting_type_id
+            ORDER BY total DESC
+        ");
+        $result = $stmt->fetchAll();
+        echo json_encode($result);
+        exit;
+    }
+
     switch ($method) {
         case 'GET':
             handleGet($db);

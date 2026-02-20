@@ -94,26 +94,28 @@ const expensesByCategory = computed(() => {
     .sort((a, b) => b.amount - a.amount)
 })
 
-// Статистика по источникам дохода
-const incomeBySource = computed(() => {
-  const sources: Record<string, number> = {}
-  
-  filteredData.value.income.forEach(income => {
-    const sourceName = income.source || 'Не указан'
-    const amount = parseFloat(income.amount || '0')
-    sources[sourceName] = (sources[sourceName] || 0) + (isNaN(amount) ? 0 : amount)
-  })
-  
-  return Object.entries(sources)
-    .map(([name, amount]) => ({ name, amount }))
-    .sort((a, b) => b.amount - a.amount)
-})
 
 // ========================================
 // Chart.js для расходов по категориям
 // ========================================
 const expensesChartCanvas = ref<HTMLCanvasElement | null>(null)
 let expensesChartInstance: Chart | null = null
+
+// Доход по типам съёмок из API
+const incomeByShootingType = ref<any[]>([])
+
+interface IncomeByType {
+  name: string
+  count: number
+  total: number
+}
+
+const incomeByShootingTypeTotal = computed(() => {
+  return incomeByShootingType.value.reduce((sum, item) => {
+    const amount = parseFloat(item.total || '0')
+    return sum + (isNaN(amount) ? 0 : amount)
+  }, 0)
+})
 
 // Цвета для диаграммы
 const chartColors = [
@@ -263,6 +265,155 @@ watch(expensesByCategory, () => {
   })
 }, { deep: true })
 
+// ========================================
+// Chart.js для дохода по источникам (типам съёмок)
+// ========================================
+const incomeChartCanvas = ref<HTMLCanvasElement | null>(null)
+let incomeChartInstance: Chart | null = null
+
+const createIncomeChart = async () => {
+  if (!incomeChartCanvas.value) return
+  
+  // Уничтожить существующую диаграмму
+  if (incomeChartInstance) {
+    incomeChartInstance.destroy()
+  }
+  
+  // Загружаем данные
+  const data = await financeStore.fetchIncomeByShootingType(selectedDate.value)
+  incomeByShootingType.value = data
+  
+  if (!data || data.length === 0) return
+  
+  const totalAmount = incomeByShootingTypeTotal.value
+  
+  // Формируем данные для диаграммы
+  const chartData: IncomeByType[] = data.map((item: any) => ({
+    name: item.shooting_type_name || 'Unknown',
+    count: parseInt(item.count || '0'),
+    total: parseFloat(item.total || '0')
+  }))
+  
+  // Цвета для диаграммы
+  const colors = chartColors.slice(0, chartData.length)
+  
+  incomeChartInstance = new Chart(incomeChartCanvas.value, {
+    type: 'bar',
+    data: {
+      labels: chartData.map((item: IncomeByType) => item.name),
+      datasets: [{
+        label: 'Сумма (₽)',
+        data: chartData.map((item: IncomeByType) => item.total),
+        backgroundColor: colors,
+        borderColor: colors,
+        borderWidth: 1,
+        barThickness: 'flex',
+        maxBarThickness: 40,
+        minBarLength: 2,
+        barPercentage: 0.6,
+        categoryPercentage: 1.5
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 0,
+          right: 10,
+          top: 10,
+          bottom: 10
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const rawValue = context.parsed.x
+              const value = rawValue ?? 0
+              const index = context.dataIndex
+              const count = chartData[index]?.count || 0
+              
+              const total = incomeByShootingTypeTotal.value
+              const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
+              return `${count} - ${value.toLocaleString('ru-RU')} ₽ (${percent}%)`
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: totalAmount,
+          grid: {
+            display: false
+          },
+          ticks: {
+            callback: function(value) {
+              if (value >= totalAmount) return ''
+              return Number(value).toLocaleString('ru-RU') + ' ₽'
+            },
+            font: {
+              size: 10
+            }
+          }
+        },
+        y: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            display: false
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'incomeBarLabels',
+      afterDatasetsDraw(chart: any) {
+        const { ctx, chartArea } = chart
+        if (!chartArea) return
+        
+        ctx.save()
+        ctx.font = 'bold 10px sans-serif'
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        
+        chart.getDatasetMeta(0).data.forEach((bar: any, index: number) => {
+          const item = chartData[index]
+          if (!item) return
+          
+          // Формат: {кол-во} {пробел} {пробел} {Сумма}
+          const text = `${item.count}  ${item.total.toLocaleString('ru-RU')} ₽`
+          
+          ctx.fillStyle = '#ffffff'
+          const textWidth = ctx.measureText(text).width
+          const barWidth = bar.width
+          
+          if (textWidth + 10 < barWidth) {
+            ctx.fillText(text, bar.x - textWidth - 5, bar.y)
+          } else {
+            ctx.fillStyle = '#333'
+            ctx.fillText(text, bar.x + barWidth + 5, bar.y)
+          }
+        })
+        ctx.restore()
+      }
+    }]
+  })
+}
+
+// Обновление диаграммы дохода при изменении данных
+watch(selectedDate, () => {
+  nextTick(() => {
+    createIncomeChart()
+  })
+})
+
 // Форматирование даты для отображения
 const formatDateRange = computed(() => {
   const parts = selectedDate.value.split('-')
@@ -296,6 +447,7 @@ onMounted(() => {
   financeStore.fetchExpenses()
   nextTick(() => {
     createExpensesChart()
+    createIncomeChart()
   })
 })
 
@@ -388,29 +540,14 @@ watch([selectedPeriod, selectedDate], () => {
           </div>
         </div>
 
-        <!-- Доход по источникам -->
+        <!-- Доход по источникам (типам съёмок) -->
         <div class="analysis-card">
           <h3 class="card-title">Доход по источникам</h3>
-          <div class="category-list">
-            <div 
-              v-for="source in incomeBySource" 
-              :key="source.name"
-              class="category-item"
-            >
-              <div class="category-header">
-                <span class="category-name">{{ source.name }}</span>
-                <span class="category-amount">{{ source.amount.toLocaleString('ru-RU', { minimumFractionDigits: 2 }) }} ₽</span>
-              </div>
-              <div class="progress-bar">
-                <div 
-                  class="progress-fill income" 
-                  :style="{ width: periodIncomeTotal > 0 ? ((source.amount / periodIncomeTotal) * 100) + '%' : '0%' }"
-                ></div>
-              </div>
-            </div>
-            <div v-if="incomeBySource.length === 0" class="no-data">
-              Нет данных о доходах
-            </div>
+          <div class="chart-container">
+            <canvas ref="incomeChartCanvas"></canvas>
+          </div>
+          <div v-if="incomeByShootingType.length === 0" class="no-data">
+            Нет данных о доходах
           </div>
         </div>
       </div>
