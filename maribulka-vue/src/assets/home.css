@@ -80,6 +80,7 @@
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   box-shadow: var(--glass-shadowPanel);
+  margin-bottom: 10px;
 }
 
 .description-header {

@@ -28,9 +28,8 @@
 /* ========== CONTENT MOBILE (<=768px) ========== */
 @media (max-width: 480px) {
   .content {
-    margin-left: 5px;
-    margin-top: 54px;
-    padding-right: 5px;
+    margin-left: 6px;
+
   }
 
   /*
