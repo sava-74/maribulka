@@ -37,8 +37,8 @@
 
 
   /* Мобильные размеры */
-  --glass-widthButtonSmall: 32px;/* ширина кнопки под мобилку*/
-  --glass-heightButtonSmall: 32px;/* высота кнопки под мобилку*/
+  --glass-widthButtonSmall: 26px;/* ширина кнопки под мобилку*/
+  --glass-heightButtonSmall: 26px;/* высота кнопки под мобилку*/
   --svg-sizeButtonSmall: 20px; /* размер иконок SVG для мобилки */
   --panelRadiusSmall: 8px; /* радиус скругления панелей для мобилки */
 

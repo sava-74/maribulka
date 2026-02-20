@@ -58,9 +58,9 @@
 
 /* Кнопки в сайдбаре */
 .side-bar.expanded .glass-button {
-    width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
-    justify-content: flex-start; /* Выравнивание по левому краю */
-    padding-left: 4px;  /* Отступ от левого края сайдбара */
+    width: 100% !important; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
+    justify-content: flex-start !important; /* Выравнивание по левому краю */
+    padding-left: 3px !important;  /* Отступ от левого края сайдбара */
 }
 
 .side-bar.expanded .nav-item .glass-button {
