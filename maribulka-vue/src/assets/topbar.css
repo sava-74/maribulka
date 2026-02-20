@@ -2,6 +2,7 @@
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 40px;
+  min-width: 266px;
   background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
@@ -11,6 +12,7 @@
   border-top: none;
   /*border-radius: var(--panelRadius);*/
   /*margin: 10px 21px 10px 10px;  Отступ от краев экрана */
+  margin-right: 6px;
   box-shadow: var(--glass-shadowPanel);
   display: flex;
   align-items: center;
@@ -38,13 +40,13 @@
 .site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
-  font-size: 1.1rem;
+  font-size: clamp(6px, 2vw, 20px);
 }
 
 .promotion-text {
-    color: #DC143C;
-    font-size: clamp(16px, 2vw, 32px);
+    font-size: clamp(6px, 2vw, 24px);
     font-weight: 700;
+    color: crimson;
     margin-left: 10px !important;
     margin-block-end: 0px;
     margin-block-start: 0px;
@@ -72,13 +74,23 @@
     box-shadow: var(--glass-shadowPanel);
   }*/
 
+  .glass-button {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: var(--glass-borderRadiusButton) !important;
+  border-bottom-right-radius: var(--glass-borderRadiusButton) !important;
+  }
+
+  .promotion-text {
+    margin-left: 0px !important;
+  }
+
   .owner-photo {
-    width: 35px !important;
-    height: 35px !important;
+    margin-left: 36px;
   }
 
   .logo-area {
-    gap: 8px;
+    gap: 4px;
   }
 }
 

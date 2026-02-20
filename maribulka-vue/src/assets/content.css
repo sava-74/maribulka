@@ -18,12 +18,12 @@
   border-bottom-right-radius: var(--panelRadius);
   z-index: 99;
 }
-
-@media (prefers-color-scheme: dark) {   /* Темная тема: маска под TopBar становится темной, чтобы не выделяться на фоне остального контента */
+/*
+@media (prefers-color-scheme: dark) {   /* Темная тема: маска под TopBar становится темной, чтобы не выделяться на фоне остального контента 
   .content::before {
-    /*background: #242424;*/
+    background: #242424;
   }
-}
+}*/
 
 /* ========== CONTENT MOBILE (<=768px) ========== */
 @media (max-width: 480px) {
