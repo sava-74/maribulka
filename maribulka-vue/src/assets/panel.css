@@ -1,0 +1,283 @@
+/* ============================================
+   УНИВЕРСАЛЬНЫЕ СТИЛИ ДЛЯ ПАНЕЛЕЙ
+   Файл: panel.css
+   ============================================
+   
+   Использование:
+   1. Добавить класс .panel к контейнеру
+   2. Опционально: .panel-compact для уменьшенной версии
+   3. Опционально: .panel-no-shadow для панели без тени
+   
+   Пример:
+   <div class="panel">
+     <div class="panel-header">Заголовок</div>
+     <div class="panel-content">Контент</div>
+   </div>
+   ============================================ */
+
+/* ============================================
+   БАЗОВАЯ ПАНЕЛЬ
+   ============================================ */
+.panel {
+  position: relative;
+  padding: 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--generalColor);
+  border-radius: var(--panelRadius);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
+  backdrop-filter: var(--glass-bgFilter);
+  box-shadow: var(--glass-shadowPanel);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0; /* Позволяет сжиматься внутри flex */
+}
+
+/* Контент панели занимает всю доступную ширину */
+.panel > * {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================
+   ПАНЕЛЬ С ЗАГОЛОВКОМ
+   ============================================ */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--generalTextColor);
+  margin: 0;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ============================================
+   КОНТЕНТ ПАНЕЛИ
+   ============================================ */
+.panel-content {
+  width: 100%;
+  min-height: 0; /* Позволяет сжиматься внутри flex */
+}
+
+/* ============================================
+   МОДИФИКАТОРЫ ПАНЕЛЕЙ
+   ============================================ */
+
+/* Компактная панель (уменьшенные отступы) */
+.panel-compact {
+  padding: 6px;
+  margin-bottom: 4px;
+}
+
+.panel-compact .panel-header {
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+}
+
+.panel-compact .panel-title {
+  font-size: 14px;
+}
+
+/* Панель без тени */
+.panel-no-shadow {
+  box-shadow: none;
+}
+
+/* Панель без границы */
+.panel-no-border {
+  border: none;
+}
+
+/* Панель с прозрачным фоном */
+.panel-transparent {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Активная панель (подсветка) */
+.panel-active {
+  background: var(--glass-bgButtonActive);
+  border-color: var(--generalColor);
+}
+
+/* ============================================
+   СПЕЦИАЛИЗИРОВАННЫЕ ПАНЕЛИ
+   ============================================ */
+
+/* Панель для таблиц */
+.panel-table {
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-table .panel-content {
+  overflow: auto;
+  max-height: calc(100vh - 300px);
+}
+
+/* Панель для форм */
+.panel-form {
+  padding: 15px;
+}
+
+/* !!! Панель для кнопок/инструментов */
+.panel-toolbar {
+  position: sticky;       /* Фиксируем панель при прокрутке */
+  top: 47px;              /* Высота шапки + отступ */
+  display: flex;          /* Горизонтальный флекс для кнопок */
+  gap: 6px;               /* Расстояние между кнопками */
+  align-items: center;    /* Выравнивание по центру по вертикали */
+  padding: 10px 10px;     /* Внутренние отступы */
+  margin-bottom: 6px;     /* Отступ снизу */
+  z-index: 101;           /* Поверх остальных элементов */
+}
+
+/* Панель фильтров */
+.panel-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 6px;
+}
+
+/* ============================================
+   ВНУТРЕННИЕ ЭЛЕМЕНТЫ
+   ============================================ */
+
+/* Группы элементов в панели */
+.panel-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.panel-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Вертикальная группа */
+.panel-group-vertical {
+  flex-direction: column;
+}
+
+/* Сетка в панели */
+.panel-grid {
+  display: grid;
+  gap: 10px;
+}
+
+/* 2 колонки */
+.panel-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3 колонки */
+.panel-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 4 колонки */
+.panel-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ (МОБИЛЬНАЯ ВЕРСИЯ)
+   ============================================ */
+@media (max-width: 480px) {
+  .panel {
+    padding: 8px;
+    margin-bottom: 4px;
+    border-radius: var(--panelRadiusSmall);
+  }
+  
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .panel-title {
+    font-size: 14px;
+  }
+  
+  .panel-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  /* Адаптивная сетка */
+  .panel-grid-2,
+  .panel-grid-3,
+  .panel-grid-4 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Горизонтальный скролл для toolbar */
+  .panel-toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+}
+
+/* ============================================
+   ПРИМЕРЫ ИСПОЛЬЗОВАНИЯ
+   ============================================ */
+   
+/* Пример 1: Простая панель
+   <div class="panel">
+     <div class="panel-content">
+       Контент
+     </div>
+   </div>
+*/
+
+/* Пример 2: Панель с заголовком
+   <div class="panel">
+     <div class="panel-header">
+       <h3 class="panel-title">Заголовок</h3>
+       <div class="panel-actions">
+         <button>Действие 1</button>
+         <button>Действие 2</button>
+       </div>
+     </div>
+     <div class="panel-content">
+       Контент
+     </div>
+   </div>
+*/
+
+/* Пример 3: Панель для таблицы
+   <div class="panel panel-table">
+     <div class="panel-toolbar">
+       <button>Кнопка 1</button>
+       <button>Кнопка 2</button>
+     </div>
+     <div class="panel-content">
+       <table>...</table>
+     </div>
+   </div>
+*/
+
+/* Пример 4: Панель с фильтрами
+   <div class="panel panel-filters">
+     <select>Фильтр 1</select>
+     <input type="text" placeholder="Поиск">
+     <button>Применить</button>
+   </div>
+*/

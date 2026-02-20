@@ -3,12 +3,14 @@
 /* Основной контейнер бухгалтерии */
 .accounting {
   width: 100%;
-  /*min-height: 400px;*/
-  /*padding-top: 5px;*/
-  padding-left: 5px;
+  padding: 20px 20px 0 48px;
+  box-sizing: border-box;
+
 }
 
-/* Навигация с вкладками — прилипает при прокрутке */
+
+
+/* Навигация с вкладками — прилипает при прокрутке 
 .tabs {
   display: flex;
   gap: 10px;
@@ -16,15 +18,15 @@
   position: sticky;
   top: 80px;
   z-index: 50;
-  /*background: linear-gradient(to bottom, #f9f9f9 70%, transparent);*/
+  /*background: linear-gradient(to bottom, #f9f9f9 70%, transparent);
 }
 
-/* Обёртка навигации Accounting - как table-general */
+/* Обёртка навигации Accounting - как table-general 
 .accounting-nav {
   position: sticky;
   top: 86px;
   z-index: 100;
-  /*margin-top: 7px;*/
+  /*margin-top: 7px;*//*
   padding: 16px;
   background: var(--glass-bg);
   border: 1px solid var(--generalColor);
@@ -37,22 +39,22 @@
   overflow-x: visible;
 }
 
-/* Отступ контента от навигации */
+/* Отступ контента от навигации 
 .accounting-nav + .tab-content {
   margin-top: 20px;
 }
 
-/* Контент вкладок */
+/* Контент вкладок 
 .tab-content {
   background: rgba(255, 255, 255, 0.05);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding-top: 2px;
-  /*min-height: 500px;*/
+  /*min-height: 500px;
 }
 
-/* Заголовки страниц */
+/* Заголовки страниц 
 .page-header {
   margin: 0 0 20px 0;
   color: #fff;
@@ -63,29 +65,29 @@
   color: #fff;
 }
 
-/* Заголовки секций */
+/* Заголовки секций 
 .section-header {
   text-align: center;
   margin:0 10px 0 0;
   color: #000000;
 }
 
-/* Подзаголовки */
+/* Подзаголовки 
 .page-subtitle {
   margin: 0;
   color: rgba(0, 0, 0, 0.6);
   font-size: 14px;
 }
 
-/* Контейнер с заголовком и кнопкой действия */
+/* Контейнер с заголовком и кнопкой действия 
 .header-with-action {
   display: flex;
-  /*justify-content: space-between;*/
+  /*justify-content: space-between;*//*
   align-items: center;
   margin-bottom: 10px;
 }
 
-/* Контейнер с заголовком и кнопкой (центрирование по вертикали) */
+/* Контейнер с заголовком и кнопкой (центрирование по вертикали) 
 .header-with-action-center {
   display: flex;
   justify-content: space-between;
@@ -93,38 +95,38 @@
   margin-bottom: 20px;
 }
 
-/* Группа кнопок действий */
+/* Группа кнопок действий 
 .action-buttons {
   display: flex;
   gap: 8px;
 }
 
-/* Группа вкладок/подразделов */
+/* Группа вкладок/подразделов 
 .subsection-tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 30px;
 }
 
-/* Контейнер для отображения сумм */
+/* Контейнер для отображения сумм 
 .total-display {
   font-size: 18px;
   color: rgba(1, 1, 1, 0.9);
 }
 
-/* Сумма дохода */
+/* Сумма дохода 
 .total-amount-income {
   color: #4ade80;
   font-size: 24px;
 }
 
-/* Сумма расхода */
+/* Сумма расхода 
 .total-amount-expense {
   color: #f87171;
   font-size: 24px;
 }
 
-/* Информационный блок в отчетах */
+/* Информационный блок в отчетах 
 .info {
   margin-top: 40px;
   padding: 20px;
@@ -138,7 +140,7 @@
   font-size: 14px;
 }
 
-/* Панель фильтров */
+/* Панель фильтров 
 .filters-panel {
   display: flex;
   gap: 12px;
@@ -153,7 +155,7 @@
   align-items: flex-end;
 }
 
-/* Группа фильтра */
+/* Группа фильтра 
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -161,14 +163,14 @@
   min-width: 150px;
 }
 
-/* Лейбл фильтра */
+/* Лейбл фильтра 
 .filter-label {
   font-size: 12px;
   color: #333;
   font-weight: 500;
 }
 
-/* Селект фильтра - стиль как у glass-button */
+/* Селект фильтра - стиль как у glass-button 
 .filter-select {
   height: 40px;
   padding: 0 10px;
@@ -195,7 +197,7 @@
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(74, 222, 128, 0.3);
 }
 
-/* Опции выпадающего списка */
+/* Опции выпадающего списка 
 .filter-select option {
   background: rgba(255, 255, 255, 0.95);
   -webkit-backdrop-filter: blur(8px);
@@ -206,7 +208,7 @@
   margin: 2px 0;
 }
 
-/* Стили для выпадающего списка (работает в некоторых браузерах) */
+/* Стили для выпадающего списка (работает в некоторых браузерах) 
 .filter-select::-webkit-calendar-picker-indicator {
   cursor: pointer;
   padding: 4px;

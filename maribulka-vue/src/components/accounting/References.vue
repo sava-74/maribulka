@@ -8,6 +8,7 @@ import ExpenseCategoriesTable from './ExpenseCategoriesTable.vue'
 import '../../assets/buttons.css'
 import '../../assets/tables.css'
 import '../../assets/layout.css'
+import '../../assets/panel.css'
 
 const referencesStore = useReferencesStore()
 const activeSection = ref('clients')
@@ -23,42 +24,40 @@ onMounted(() => {
 <template>
   <div class="accounting">
     <!-- Навигация (вкладки) -->
-    <div class="accounting-nav">
-      <nav class="tabs">
-        <button
-          class="glass-button-text"
-          @click="activeSection = 'clients'"
-          :class="{ active: activeSection === 'clients' }"
-        >
-          Клиенты
-        </button>
-        <button
-          class="glass-button-text"
-          @click="activeSection = 'shooting-types'"
-          :class="{ active: activeSection === 'shooting-types' }"
-        >
-          Типы съёмок
-        </button>
-        <button
-          class="glass-button-text"
-          @click="activeSection = 'promotions'"
-          :class="{ active: activeSection === 'promotions' }"
-        >
-          Акции
-        </button>
-        <button
-          class="glass-button-text"
-          @click="activeSection = 'expense-categories'"
-          :class="{ active: activeSection === 'expense-categories' }"
-        >
-          Категории расходов
-        </button>
-      </nav>
+    <div class="panel panel-toolbar">
+      <button
+        class="glass-button-text"
+        :class="{ active: activeSection === 'clients' }"
+        @click="activeSection = 'clients'"
+      >
+        Клиенты
+      </button>
+      <button
+        class="glass-button-text"
+        :class="{ active: activeSection === 'shooting-types' }"
+        @click="activeSection = 'shooting-types'"
+      >
+        Типы съёмок
+      </button>
+      <button
+        class="glass-button-text"
+        :class="{ active: activeSection === 'promotions' }"
+        @click="activeSection = 'promotions'"
+      >
+        Акции
+      </button>
+      <button
+        class="glass-button-text"
+        :class="{ active: activeSection === 'expense-categories' }"
+        @click="activeSection = 'expense-categories'"
+      >
+        Категории расходов
+      </button>
     </div>
 
     <!-- Контент вкладок -->
-    <div class="tab-content">
-      <!-- Клиенты -->
+    <div class="panel">
+      <!-- Клиенты --> 
       <div v-if="activeSection === 'clients'">
         <ClientsTable />
       </div>

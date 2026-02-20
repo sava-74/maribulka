@@ -1,9 +1,9 @@
 :root {
-  --generalColor: #39FF14;
-  --bgGeneral: #f0f0f0;
-  --neon-blue: #00F3FF;
-  --glass-bg: rgba(255, 255, 255, 0.4);
-  --generalTextColor: #333;
+  --generalColor: #39FF14; /* основной цвет бордюров (ярко-зеленый) */
+  --bgGeneral: #f0f0f0; /* светлый фон для всего приложения */
+  --neon-blue: #00F3FF; /* дополнительный цвет (неоновый голубой) */
+  --glass-bg: rgba(255, 255, 255, 0.4); /* полупрозрачный белый для эффекта стекла */ 
+  --generalTextColor: #333; /* основной цвет текста */
 
   --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
   --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */
@@ -19,9 +19,9 @@
 
   --glass-widthButton: 30px;/* ширина кнопки */
   --glass-heightButton: 30px;/* высота кнопки */
-  --glass-widthButtonText: 140px;/* ширина кнопки с текстом */
+  --glass-widthButtonText: 63px;/* ширина кнопки с текстом */
   --glass-heightButtonText: 30px;/* высота кнопки с текстом */
-  --glass-widthButtonCalendar: 80px;/* ширина кнопки с текстом */
+  --glass-widthButtonCalendar: 63px;/* ширина кнопки с текстом */
   --glass-heightButtonCalendar: 30px;/* высота кнопки с текстом */
   --glass-borderRadiusButton: 8px;/* радиус скругления кнопки */
   --glass-bgFilter: blur(12px); /* размытие фона для эффекта стекла */
