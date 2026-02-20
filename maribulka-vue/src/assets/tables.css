@@ -389,7 +389,7 @@
 }
 
 /* Мобильная адаптация (≤768px) */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* Ограничение ширины текстовых колонок */
   .accounting-table tbody td:nth-child(4) /* Примечание в ClientsTable */ {
     max-width: 100px;

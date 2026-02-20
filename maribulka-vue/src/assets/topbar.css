@@ -59,17 +59,18 @@
 
 /* ========== TOPBAR MOBILE (<=768px) ========== */
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
+  /*
   .top-bar {
     margin: 5px 13px;
     height: 46px;
     min-width: 255px ;
-    /*padding:  10px;*/
+    /*padding:  10px;
     border-radius: var(--panelRadius);
     padding-left: 44px;
     padding-bottom: 1px;
     box-shadow: var(--glass-shadowPanel);
-  }
+  }*/
 
   .owner-photo {
     width: 35px !important;

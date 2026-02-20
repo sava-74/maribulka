@@ -51,18 +51,6 @@
     border-color: var(--generalColor);
 }
 
-/* Кнопки в сайдбаре */
-.side-bar.expanded .glass-button {
-    width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
-    /*justify-content: flex-start;*/
-    padding-left: 8px;
-}
-
-.side-bar.expanded .nav-item .glass-button {
-  opacity: 1;
-  visibility: visible;
-}
-
 /* ========== КНОПКИ С ТЕКСТОМ (150x40) ========== */
 
 /* Кнопка с текстом - фиксированная ширина 150px */
@@ -229,7 +217,7 @@
 }
 
 /* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* Базовые кнопки - увеличенная область клика для тач-устройств */
   .glass-button {
     width: var(--glass-widthButtonSmall) !important;

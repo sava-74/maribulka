@@ -3,7 +3,7 @@
    ============================================ */
 
 /* Mobile (≤768px) */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* ========== TABLES ========== */
   .table-container {
     overflow-x: auto;
@@ -118,7 +118,7 @@
 }
 
 /* Landscape orientation on mobile */
-@media (max-width: 768px) and (orientation: landscape) {
+@media (max-width: 480px) and (orientation: landscape) {
   .modal-glass {
     max-height: 85vh;
     overflow-y: auto;

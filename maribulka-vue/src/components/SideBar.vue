@@ -78,7 +78,7 @@ onUnmounted(() => {
             <span class="nav-text">Справочники</span>
           </button>
         </div>
-        <div class="nav-item">
+        <div class="nav-item nav-item-setings">
           <button class="glass-button" @click="navigateTo('settings')">
             <svg-icon type="mdi" :path="mdilSettings" ></svg-icon>
             <span class="nav-text">Настройки</span>

@@ -1,7 +1,7 @@
 /* Стили для домашней страницы */
 
 .home-container {
-  padding-top: 20px;
+ /* padding-top: 20px;*/
 }
 
 /* Блок действующей акции */
@@ -26,7 +26,7 @@
 
 /* Блок фото студии */
 .studio-photos {
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .photos-grid {
@@ -66,8 +66,8 @@
 
 .photo-add-button {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
+  right: 6px;
+  bottom: 6px;
   /*z-index: 100;*/
 }
 
@@ -76,7 +76,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
-  padding: 30px;
+  padding: 10px;
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   box-shadow: var(--glass-shadowPanel);
@@ -86,7 +86,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .studio-description h2 {
@@ -207,7 +207,7 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
 
   .promotion-banner {
     top: 69px;

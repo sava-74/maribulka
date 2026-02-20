@@ -234,7 +234,7 @@ assets/
   max-width: 90vw;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-large {
     width: 600px;
     min-width: 600px;

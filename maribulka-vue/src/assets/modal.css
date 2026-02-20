@@ -590,7 +590,7 @@ select.modal-input {
 }
 
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ МОДАЛОК (≤768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-overlay {
     /* Убираем flex центрирование - разрешаем прокрутку */
     display: block;

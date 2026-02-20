@@ -392,7 +392,7 @@
 }
 
 /* Адаптивность согласно mobile.md */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .reports {
     color: var(--generalTextColor);
     -webkit-backdrop-filter: var(--glass-bgFilter);

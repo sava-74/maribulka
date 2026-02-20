@@ -25,7 +25,7 @@
 
 **CSS:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .fc-toolbar {
     flex-wrap: wrap;
   }
@@ -100,7 +100,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-overlay {
     display: block;  /* НЕ flex! */
     overflow-y: auto;
@@ -124,7 +124,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-small {
     position: absolute;
     top: 50%;
@@ -146,7 +146,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* Overlay - включаем скролл */
   .modal-overlay:has(.modal-glass.modal-large) {
     display: block;  /* НЕ flex! */
@@ -189,7 +189,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Мобилка (≤768px):**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* ClientsTable - 4-я колонка (Примечание) */
   .clients-table td:nth-child(4) {
     max-width: 100px;
@@ -214,7 +214,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Отключены на touch устройствах:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .glass-button:hover {
     transform: none;  /* Отключаем hover эффект */
   }
@@ -238,7 +238,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 **Мобилка:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .promotion-banner {
     top: 69px;  /* Меньше из-за компактного TopBar */
   }

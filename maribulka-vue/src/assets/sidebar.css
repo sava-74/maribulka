@@ -1,20 +1,22 @@
 .side-bar {
     position: fixed;
-    top: 80px;
-    left: 10px;
+    top: 40px;
+    left: 0px;
     bottom: 10px;
-    width: 45px; /* Сложенное состояние */
+    width: 30px; /* Сложенное состояние */
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
     border: 1px solid var(--generalColor); /* Делаем саму рамку тоже чуть прозрачнее */
-    border-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    border-left: none;
     box-shadow: var(--glass-shadowPanel); /* Тень справа */
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Сделаем анимацию чуть "вкуснее" */
     /*transition: width 0.3s ease;*/
     display: flex;
     flex-direction: column;
-    padding: 10px 8px;
+    padding: 5px;
     margin-top: 6px;
     z-index: 101;
     overflow: hidden;
@@ -30,6 +32,10 @@
     gap: 15px;
     margin-bottom: 15px;
     white-space: nowrap;
+}
+
+.nav-item-setings {
+    margin-top: auto; /* Отодвигаем настройки вниз */
 }
 
 .side-bar.expanded .nav-item {
@@ -50,18 +56,31 @@
     /*visibility: visible;*/
 }
 
+/* Кнопки в сайдбаре */
+.side-bar.expanded .glass-button {
+    width: 100%; /* Занимает всю ширину (с учетом padding 5px у сайдбара) */
+    justify-content: flex-start; /* Выравнивание по левому краю */
+    padding-left: 4px;  /* Отступ от левого края сайдбара */
+}
+
+.side-bar.expanded .nav-item .glass-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+
 /* ========== SIDEBAR MOBILE (<=768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   /* Collapsed: прозрачный, только гамбургер виден */
   .side-bar {
     position: fixed;
-    top: 11px !important;
-    left: 21px !important;
+    top: 3px !important;
+    left: 4px !important;
     width: 0px;
-    bottom: 10px;
     background: transparent;
     border: 1px solid transparent;
     box-shadow: 0 0 0 0 transparent;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     z-index: 1001;
@@ -80,8 +99,8 @@
   /* Expanded: полноценное меню-overlay */
   .side-bar.expanded {
     position: fixed;
-    top: 4px !important;
-    left: 13px !important;
+    top: 0px !important;
+    left: 0px !important;
     width: 110px;
     bottom: 10px;
     background: var(--glass-bg);
@@ -89,7 +108,7 @@
     backdrop-filter: var(--glass-bgFilter);
     border: 1px solid var(--generalColor);
     box-shadow: var(--glass-shadowPanel);
-    padding: 7px 8px;
+    padding: 4px 4px;
     overflow: visible; /* Тени не обрезаем */
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     z-index: 10001;
@@ -99,4 +118,10 @@
   .side-bar.expanded .nav-links {
     display: block;
   }
+
+    .nav-item {
+        margin-bottom: 8px;
+    }
+
+
 }

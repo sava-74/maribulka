@@ -173,7 +173,7 @@ if (status == 'completed') {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .glass-button:hover {
     transform: none;  /* Отключаем hover на touch */
   }
@@ -197,7 +197,7 @@ if (status == 'completed') {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-overlay {
     display: block;       /* Включаем прокрутку */
     overflow-y: auto;
@@ -211,7 +211,7 @@ if (status == 'completed') {
 
 **Проблема:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-large {
     width: 100vw;  /* Нет горизонтального скролла! */
   }
@@ -220,7 +220,7 @@ if (status == 'completed') {
 
 **Решение:**
 ```css
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .modal-large {
     width: 600px;      /* Фиксированная ширина */
     min-width: 600px;  /* Важно! */

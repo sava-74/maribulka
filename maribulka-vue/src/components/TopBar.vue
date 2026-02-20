@@ -64,7 +64,7 @@ const activePromotion = computed(() => {
     <div class="logo-area">
       <img src="/img/owner.jpg" alt="Марибулька" class="owner-photo">
       <span class="site-name">Фотостудия Марии</span>
-      <h1 class="promotion-text">
+      <h1 v-if="activePromotion" class="promotion-text">
         Акция "{{ activePromotion.name }}" {{ Math.round(activePromotion.discount_percent) }}%
       </h1>
     </div>
