@@ -192,9 +192,9 @@
 
 .analysis-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .analysis-card {
@@ -276,7 +276,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
-  padding: 24px;
+  padding: 16px;
   box-shadow: var(--glass-shadowPanel);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
@@ -284,7 +284,7 @@
   font-family: inherit;
   color: var(--generalTextColor);
   /* Добавляем внутренний отступ вместо внешнего */
-  margin: 0 20px 40px 20px;
+  margin: 0 0 20 0;
 }
 
 .comparison-grid {

@@ -4,7 +4,7 @@
 .accounting {
   width: 100%;
   /*min-height: 400px;*/
-  padding-top: 5px;
+  /*padding-top: 5px;*/
   padding-left: 5px;
 }
 
@@ -24,7 +24,7 @@
   position: sticky;
   top: 86px;
   z-index: 100;
-  margin-top: 7px;
+  /*margin-top: 7px;*/
   padding: 16px;
   background: var(--glass-bg);
   border: 1px solid var(--generalColor);

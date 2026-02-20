@@ -33,16 +33,39 @@ const periods = [
 const selectedPeriod = ref('month')
 const selectedDate = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
 
+// Фильтрация данных по периоду (месяц/квартал/год)
+const filterByPeriod = (items: any[], dateField: string) => {
+  if (selectedPeriod.value === 'month') {
+    // Для месяца фильтруем по selectedDate (YYYY-MM)
+    return items.filter(item => item[dateField]?.startsWith(selectedDate.value))
+  } else if (selectedPeriod.value === 'quarter') {
+    // Для квартала фильтруем по кварталу
+    const dateParts = selectedDate.value.split('-')
+    const yearStr = dateParts[0] || new Date().getFullYear().toString()
+    const month = parseInt(dateParts[1] || '1') - 1
+    const quarter = Math.floor(month / 3)
+    
+    return items.filter(item => {
+      if (!item[dateField]) return false
+      const itemDateParts = item[dateField].split('-')
+      const itemYear = parseInt(itemDateParts[0] || '0')
+      const itemMonth = parseInt(itemDateParts[1] || '1') - 1
+      const itemQuarter = Math.floor(itemMonth / 3)
+      return itemYear === parseInt(yearStr) && itemQuarter === quarter
+    })
+  } else if (selectedPeriod.value === 'year') {
+    // Для года фильтруем по году
+    const year = selectedDate.value.split('-')[0]
+    return items.filter(item => item[dateField]?.startsWith(year))
+  }
+  return items
+}
+
 // Мемоизированные вычисляемые свойства для оптимизации
 const filteredData = computed(() => {
-  const income = selectedPeriod.value === 'month' 
-    ? financeStore.income.filter(item => item.date?.startsWith(selectedDate.value))
-    : financeStore.income
-  
-  const expenses = selectedPeriod.value === 'month'
-    ? financeStore.expenses.filter(item => item.date?.startsWith(selectedDate.value))
-    : financeStore.expenses
-  
+  const income = filterByPeriod(financeStore.income, 'date')
+  const expenses = filterByPeriod(financeStore.expenses, 'date')
+
   return { income, expenses }
 })
 
@@ -54,11 +77,7 @@ const periodIncomeTotal = computed(() => {
 })
 
 const periodExpensesTotal = computed(() => {
-  // Используем financeStore.expenses напрямую (данные из API расходов)
-  const expensesData = selectedPeriod.value === 'month'
-    ? financeStore.expenses.filter(item => item.date?.startsWith(selectedDate.value))
-    : financeStore.expenses
-  
+  const expensesData = filterByPeriod(financeStore.expenses, 'date')
   return expensesData.reduce((sum, item) => {
     const amount = parseFloat(item.amount || '0')
     return sum + (isNaN(amount) ? 0 : amount)
@@ -74,21 +93,19 @@ const periodProfitability = computed(() => {
   return ((periodProfit.value / periodIncomeTotal.value) * 100).toFixed(2)
 })
 
-// Статистика по категориям расходов (из API расходов)
+// Статистика по категориям расходов (из таблицы расходов API)
 const expensesByCategory = computed(() => {
   const categories: Record<string, number> = {}
-  
-  // Используем financeStore.expenses напрямую (данные из API расходов)
-  const expensesData = selectedPeriod.value === 'month'
-    ? financeStore.expenses.filter(item => item.date?.startsWith(selectedDate.value))
-    : financeStore.expenses
-  
+
+  // Фильтрация по периоду
+  const expensesData = filterByPeriod(financeStore.expenses, 'date')
+
   expensesData.forEach(expense => {
     const categoryName = expense.category_name || 'Без категории'
     const amount = parseFloat(expense.amount || '0')
     categories[categoryName] = (categories[categoryName] || 0) + (isNaN(amount) ? 0 : amount)
   })
-  
+
   return Object.entries(categories)
     .map(([name, amount]) => ({ name, amount }))
     .sort((a, b) => b.amount - a.amount)
@@ -111,6 +128,7 @@ interface IncomeByType {
 }
 
 const incomeByShootingTypeTotal = computed(() => {
+  // Суммируем данные которые уже получены из API
   return incomeByShootingType.value.reduce((sum, item) => {
     const amount = parseFloat(item.total || '0')
     return sum + (isNaN(amount) ? 0 : amount)
@@ -125,15 +143,15 @@ const chartColors = [
 
 const createExpensesChart = () => {
   if (!expensesChartCanvas.value) return
-  
+
   // Уничтожить существующую диаграмму
   if (expensesChartInstance) {
     expensesChartInstance.destroy()
   }
-  
+
   const data = expensesByCategory.value
   if (data.length === 0) return
-  
+
   // Добавляем строку "Всего" первой
   const totalAmount = periodExpensesTotal.value
   const chartData = [
@@ -183,11 +201,11 @@ const createExpensesChart = () => {
               const rawValue = context.parsed.x
               const value = rawValue ?? 0
               const label = context.label
-              
+
               if (label === 'Всего') {
                 return `${value.toLocaleString('ru-RU')} ₽`
               }
-              
+
               const total = periodExpensesTotal.value
               const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
               return `${value.toLocaleString('ru-RU')} ₽ (${percent}%)`
@@ -205,7 +223,7 @@ const createExpensesChart = () => {
           ticks: {
             callback: function(value) {
               // Скрываем последний тик
-              if (value >= totalAmount) return ''
+              if (Number(value) >= totalAmount) return ''
               return Number(value).toLocaleString('ru-RU') + ' ₽'
             },
             font: {
@@ -241,14 +259,14 @@ const createExpensesChart = () => {
           const value = item.amount
           const text = value.toLocaleString('ru-RU') + ' ₽'
           
-          ctx.fillStyle = '#ffffff'
+          ctx.fillStyle = '#ffffff' // Цвет текста по умолчанию для надписей внутри баров
           const textWidth = ctx.measureText(text).width
           const barWidth = bar.width
           
           if (textWidth + 10 < barWidth) {
             ctx.fillText(text, bar.x - textWidth - 5, bar.y)
           } else {
-            ctx.fillStyle = '#333'
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--generalColorText').trim() || '#ffffff'
             ctx.fillText(text, bar.x + barWidth + 5, bar.y)
           }
         })
@@ -285,17 +303,23 @@ const createIncomeChart = async () => {
   
   if (!data || data.length === 0) return
   
-  const totalAmount = incomeByShootingTypeTotal.value
+  // Вычисляем сумму напрямую из данных
+  const totalAmount = data.reduce((sum: number, item: any) => {
+    return sum + (parseFloat(item.total || '0') || 0)
+  }, 0)
   
-  // Формируем данные для диаграммы
-  const chartData: IncomeByType[] = data.map((item: any) => ({
-    name: item.shooting_type_name || 'Unknown',
-    count: parseInt(item.count || '0'),
-    total: parseFloat(item.total || '0')
-  }))
+  // Формируем данные для диаграммы с "Всего" первой строкой
+  const chartData: IncomeByType[] = [
+    { name: 'Всего', count: 0, total: totalAmount },
+    ...data.map((item: any) => ({
+      name: item.shooting_type_name || 'Unknown',
+      count: parseInt(item.count || '0'),
+      total: parseFloat(item.total || '0')
+    }))
+  ]
   
-  // Цвета для диаграммы
-  const colors = chartColors.slice(0, chartData.length)
+  // Цвета: первой строке серый, остальным - цветные
+  const colors = ['#6b7280', ...chartColors.slice(0, data.length)]
   
   incomeChartInstance = new Chart(incomeChartCanvas.value, {
     type: 'bar',
@@ -387,8 +411,10 @@ const createIncomeChart = async () => {
           const item = chartData[index]
           if (!item) return
           
-          // Формат: {кол-во} {пробел} {пробел} {Сумма}
-          const text = `${item.count}  ${item.total.toLocaleString('ru-RU')} ₽`
+          // Формат: {кол-во} - {сумма}
+          const text = item.count > 0 
+            ? `${item.count} - ${item.total.toLocaleString('ru-RU')} ₽`
+            : item.total.toLocaleString('ru-RU') + ' ₽'
           
           ctx.fillStyle = '#ffffff'
           const textWidth = ctx.measureText(text).width
@@ -442,9 +468,9 @@ const formatDateRange = computed(() => {
 })
 
 // Загрузка данных при монтировании
-onMounted(() => {
-  financeStore.fetchIncome()
-  financeStore.fetchExpenses()
+onMounted(async () => {
+  await financeStore.fetchIncome()
+  await financeStore.fetchExpenses()
   nextTick(() => {
     createExpensesChart()
     createIncomeChart()
@@ -452,11 +478,20 @@ onMounted(() => {
 })
 
 // Реакция на изменение фильтров
-watch([selectedPeriod, selectedDate], () => {
+watch([selectedPeriod, selectedDate], async () => {
+  // Для месяца используем setCurrentMonth, для квартала/года - полную загрузку
   if (selectedPeriod.value === 'month') {
     financeStore.setCurrentMonth(selectedDate.value)
     financeStore.setCurrentExpenseMonth(selectedDate.value)
+  } else {
+    // Для квартала и года загружаем все данные, фильтрация будет в computed
+    await financeStore.fetchIncome()
+    await financeStore.fetchExpenses()
   }
+  nextTick(() => {
+    createExpensesChart()
+    createIncomeChart()
+  })
 })
 </script>
 
@@ -586,7 +621,7 @@ watch([selectedPeriod, selectedDate], () => {
     <div class="info">
       <p>Анализ за: {{ formatDateRange }}</p>
       <p>Всего записей дохода: {{ filteredData.income.length }}</p>
-      <p>Всего записей расхода: {{ filteredData.expenses.length }}</p>
+      <p>Всего расходов: {{ periodExpensesTotal.toLocaleString('ru-RU', { minimumFractionDigits: 2 }) }} ₽</p>
       <p v-if="periodProfit < 0" class="warning">
         Убыток! Рекомендуется проанализировать статьи расходов
       </p>
