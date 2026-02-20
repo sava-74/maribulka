@@ -4,7 +4,19 @@
   /* Убираем внешний padding согласно правилу проекта */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: var(--generalTextColor);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
+}
+
+/* Контейнер для диаграммы Chart.js */
+.chart-container {
+  height: 150px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.chart-container canvas {
+  max-height: 150px;
 }
 
 /* Панель с заголовком и фильтрами - как у панели вкладок */
@@ -38,6 +50,7 @@
   align-items: center;
   font-family: inherit;
   color: inherit;
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
 }
 
@@ -48,6 +61,7 @@
   padding: 8px 12px;
   color: var(--generalTextColor);
   font-family: inherit;
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   min-width: 120px;
 }
@@ -73,6 +87,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   color: var(--generalTextColor);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
 }
 
@@ -98,6 +113,7 @@
   /* Изменен padding с 24px на 5px согласно указанию */
   padding: 5px;
   box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   font-family: inherit;
   color: var(--generalTextColor);
@@ -167,6 +183,7 @@
   margin: 20px 0;
   font-family: inherit;
   color: var(--generalTextColor);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   /* Добавляем внутренний отступ вместо внешнего */
   
@@ -185,6 +202,7 @@
   border-radius: var(--panelRadius);
   padding: 10px;
   box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   font-family: inherit;
   color: var(--generalTextColor);
@@ -259,6 +277,7 @@
   border-radius: var(--panelRadius);
   padding: 24px;
   box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   text-align: center;
   font-family: inherit;
@@ -326,6 +345,7 @@
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
   box-shadow: var(--glass-shadowPanel);
+  -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   font-family: inherit;
   color: var(--generalTextColor);
@@ -374,6 +394,7 @@
 @media (max-width: 768px) {
   .reports {
     color: var(--generalTextColor);
+    -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
   }
   
@@ -440,7 +461,7 @@
   }
   
   .analytics-section {
-    padding: 0 16px;
+    /*padding: 0 16px;*/
   }
   
   .analysis-grid {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { 
   mdiCashPlus,        // Доход (вместо 💰)
@@ -8,8 +8,12 @@ import {
   mdiFinance          // Рентабельность (вместо 📈)
 } from '@mdi/js'
 import { useFinanceStore } from '../../stores/finance'
+import { Chart, BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js'
 import '../../assets/reports.css'
 import '../../assets/layout.css'
+
+// Регистрация компонентов Chart.js
+Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const financeStore = useFinanceStore()
 
@@ -50,7 +54,12 @@ const periodIncomeTotal = computed(() => {
 })
 
 const periodExpensesTotal = computed(() => {
-  return filteredData.value.expenses.reduce((sum, item) => {
+  // Используем financeStore.expenses напрямую (данные из API расходов)
+  const expensesData = selectedPeriod.value === 'month'
+    ? financeStore.expenses.filter(item => item.date?.startsWith(selectedDate.value))
+    : financeStore.expenses
+  
+  return expensesData.reduce((sum, item) => {
     const amount = parseFloat(item.amount || '0')
     return sum + (isNaN(amount) ? 0 : amount)
   }, 0)
@@ -65,12 +74,17 @@ const periodProfitability = computed(() => {
   return ((periodProfit.value / periodIncomeTotal.value) * 100).toFixed(2)
 })
 
-// Статистика по категориям расходов
+// Статистика по категориям расходов (из API расходов)
 const expensesByCategory = computed(() => {
   const categories: Record<string, number> = {}
   
-  filteredData.value.expenses.forEach(expense => {
-    const categoryName = expense.category?.name || 'Без категории'
+  // Используем financeStore.expenses напрямую (данные из API расходов)
+  const expensesData = selectedPeriod.value === 'month'
+    ? financeStore.expenses.filter(item => item.date?.startsWith(selectedDate.value))
+    : financeStore.expenses
+  
+  expensesData.forEach(expense => {
+    const categoryName = expense.category_name || 'Без категории'
     const amount = parseFloat(expense.amount || '0')
     categories[categoryName] = (categories[categoryName] || 0) + (isNaN(amount) ? 0 : amount)
   })
@@ -94,6 +108,161 @@ const incomeBySource = computed(() => {
     .map(([name, amount]) => ({ name, amount }))
     .sort((a, b) => b.amount - a.amount)
 })
+
+// ========================================
+// Chart.js для расходов по категориям
+// ========================================
+const expensesChartCanvas = ref<HTMLCanvasElement | null>(null)
+let expensesChartInstance: Chart | null = null
+
+// Цвета для диаграммы
+const chartColors = [
+  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+  '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+]
+
+const createExpensesChart = () => {
+  if (!expensesChartCanvas.value) return
+  
+  // Уничтожить существующую диаграмму
+  if (expensesChartInstance) {
+    expensesChartInstance.destroy()
+  }
+  
+  const data = expensesByCategory.value
+  if (data.length === 0) return
+  
+  // Добавляем строку "Всего" первой
+  const totalAmount = periodExpensesTotal.value
+  const chartData = [
+    { name: 'Всего', amount: totalAmount },
+    ...data
+  ]
+  
+  // Цвета: первой строке серый, остальным - цветные
+  const colors = ['#6b7280', ...chartColors.slice(0, data.length)]
+  
+  expensesChartInstance = new Chart(expensesChartCanvas.value, {
+    type: 'bar',
+    data: {
+      labels: chartData.map(item => item.name),
+      datasets: [{
+        label: 'Сумма (₽)',
+        data: chartData.map(item => item.amount),
+        backgroundColor: colors.slice(0, chartData.length),
+        borderColor: colors.slice(0, chartData.length).map(color => color),
+        borderWidth: 1,
+        barThickness: 'flex',
+        maxBarThickness: 40,
+        minBarLength: 2,
+        barPercentage: 0.6,
+        categoryPercentage: 1.5
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 0,
+          right: 10,
+          top: 10,
+          bottom: 10
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const rawValue = context.parsed.x
+              const value = rawValue ?? 0
+              const label = context.label
+              
+              if (label === 'Всего') {
+                return `${value.toLocaleString('ru-RU')} ₽`
+              }
+              
+              const total = periodExpensesTotal.value
+              const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
+              return `${value.toLocaleString('ru-RU')} ₽ (${percent}%)`
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: {
+            display: false
+          },
+          ticks: {
+            callback: function(value) {
+              return Number(value).toLocaleString('ru-RU') + ' ₽'
+            },
+            font: {
+              size: 10
+            }
+          }
+        },
+        y: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 11
+            },
+            color: '#333',
+            backdropColor: 'transparent'
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'barLabels',
+      afterDatasetsDraw(chart: any) {
+        const { ctx, chartArea } = chart
+        if (!chartArea) return
+        
+        ctx.save()
+        ctx.font = 'bold 10px sans-serif'
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        
+        chart.getDatasetMeta(0).data.forEach((bar: any, index: number) => {
+          const item = chartData[index]
+          if (!item) return
+          
+          const value = item.amount
+          const text = value.toLocaleString('ru-RU') + ' ₽'
+          
+          ctx.fillStyle = '#ffffff'
+          const textWidth = ctx.measureText(text).width
+          const barWidth = bar.width
+          
+          if (textWidth + 10 < barWidth) {
+            ctx.fillText(text, bar.x - textWidth - 5, bar.y)
+          } else {
+            ctx.fillStyle = '#333'
+            ctx.fillText(text, bar.x + barWidth + 5, bar.y)
+          }
+        })
+        ctx.restore()
+      }
+    }]
+  })
+}
+
+// Обновление диаграммы при изменении данных
+watch(expensesByCategory, () => {
+  nextTick(() => {
+    createExpensesChart()
+  })
+}, { deep: true })
 
 // Форматирование даты для отображения
 const formatDateRange = computed(() => {
@@ -126,6 +295,9 @@ const formatDateRange = computed(() => {
 onMounted(() => {
   financeStore.fetchIncome()
   financeStore.fetchExpenses()
+  nextTick(() => {
+    createExpensesChart()
+  })
 })
 
 // Реакция на изменение фильтров
@@ -209,45 +381,11 @@ watch([selectedPeriod, selectedDate], () => {
         <!-- Расходы по категориям -->
         <div class="analysis-card">
           <h3 class="card-title">Расходы по категориям</h3>
-          <div class="category-list">
-            <!-- Строка "Всего" -->
-            <div class="category-total">
-              <div class="category-header">
-                <span class="category-name">Всего</span>
-                <span class="category-amount">{{ periodExpensesTotal.toLocaleString('ru-RU', { minimumFractionDigits: 2 }) }} ₽</span>
-              </div>
-              <div class="progress-bar full-width">
-                <div class="progress-fill" style="width: 100%"></div>
-              </div>
-            </div>
-            
-            <!-- Список категорий с линиями разной длины -->
-            <div 
-              v-for="category in expensesByCategory" 
-              :key="category.name"
-              class="category-item"
-            >
-              <div class="category-header">
-                <span class="category-name">{{ category.name }}</span>
-                <span class="category-amount">
-                  {{ category.amount.toLocaleString('ru-RU', { minimumFractionDigits: 2 }) }} ₽ 
-                  <span class="category-percent">
-                    ({{ periodExpensesTotal > 0 ? ((category.amount / periodExpensesTotal) * 100).toFixed(1) : '0.0' }}%)
-                  </span>
-                </span>
-              </div>
-              <div class="progress-bar">
-                <div 
-                  class="progress-fill" 
-                  :style="{ width: periodExpensesTotal > 0 ? ((category.amount / periodExpensesTotal) * 100) + '%' : '0%' }"
-                ></div>
-              </div>
-            </div>
-            
-            <!-- Сообщение если нет данных -->
-            <div v-if="expensesByCategory.length === 0" class="no-data">
-              Нет данных о расходах
-            </div>
+          <div class="chart-container">
+            <canvas ref="expensesChartCanvas"></canvas>
+          </div>
+          <div v-if="expensesByCategory.length === 0" class="no-data">
+            Нет данных о расходах
           </div>
         </div>
 
