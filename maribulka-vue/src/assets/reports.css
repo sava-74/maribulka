@@ -17,6 +17,7 @@
 
 .chart-container canvas {
   max-height: 150px;
+  width: 100% !important;
 }
 
 /* Панель с заголовком и фильтрами - как у панели вкладок */

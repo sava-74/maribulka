@@ -196,11 +196,14 @@ const createExpensesChart = () => {
       scales: {
         x: {
           beginAtZero: true,
+          max: totalAmount, // Максимум = расходы всего
           grid: {
             display: false
           },
           ticks: {
             callback: function(value) {
+              // Скрываем последний тик
+              if (value >= totalAmount) return ''
               return Number(value).toLocaleString('ru-RU') + ' ₽'
             },
             font: {
@@ -213,11 +216,7 @@ const createExpensesChart = () => {
             display: false
           },
           ticks: {
-            font: {
-              size: 11
-            },
-            color: '#333',
-            backdropColor: 'transparent'
+            display: false
           }
         }
       }
