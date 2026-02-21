@@ -3,7 +3,7 @@
 /* Основной контейнер бухгалтерии */
 .accounting {
   width: 100%;
-  padding: 20px 20px 0 48px;
+  padding: 0;
   box-sizing: border-box;
 
 }
@@ -228,8 +228,8 @@ select.filter-select {
 /* ========== LAYOUT MOBILE (<=768px) ========== */
 @media (max-width: 480px) {
   .accounting {
-    padding-left: 0;
-    padding-top: 0;
+    
+    padding: 0;
   }
 
   .tabs {

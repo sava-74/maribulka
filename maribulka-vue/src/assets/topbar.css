@@ -29,7 +29,7 @@
 }
 
 .owner-photo { /* фотография владельца (аватар) */
-  margin-top: 2px;
+  
   width: var(--glass-widthButton) !important;
   height: var(--glass-heightButton) !important;
   min-width: var(--glass-widthButton) !important;

@@ -74,8 +74,8 @@
   /* Collapsed: прозрачный, только гамбургер виден */
   .side-bar {
     position: fixed;
-    top: 3px !important;
-    left: 4px !important;
+    top: 5px !important;
+    left: 5px !important;
     width: 0px;
     background: transparent;
     border: 1px solid transparent;
@@ -108,7 +108,7 @@
     backdrop-filter: var(--glass-bgFilter);
     border: 1px solid var(--generalColor);
     box-shadow: var(--glass-shadowPanel);
-    padding: 4px 4px;
+    padding: 5px 4px;
     overflow: visible; /* Тени не обрезаем */
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     z-index: 10001;
