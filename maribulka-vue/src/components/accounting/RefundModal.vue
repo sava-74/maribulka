@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCheck, mdilCancel } from '@mdi/light-js'
 import { useFinanceStore } from '../../stores/finance'
@@ -22,6 +22,20 @@ const alertTitle = ref('Ошибка')
 // Комментарий к возврату (опционально)
 const refundComment = ref('')
 
+// Баланс кассы (загружается при открытии модалки)
+const cashBalance = ref<number | null>(null)
+
+// Загрузка баланса кассы при открытии модалки
+watch(() => props.isVisible, async (visible) => {
+  if (visible) {
+    const balanceData = await financeStore.fetchCashBalance()
+    cashBalance.value = balanceData.balance
+  } else {
+    // Сбрасываем при закрытии
+    cashBalance.value = null
+  }
+})
+
 const refundInfo = computed(() => {
   if (!props.booking) return null
 
@@ -37,9 +51,8 @@ const refundInfo = computed(() => {
 
 // Проверка достаточности средств в кассе
 const hasSufficientCash = computed(() => {
-  if (!refundInfo.value) return false
-  const cashBalance = financeStore.totalIncome - financeStore.totalExpenses
-  return cashBalance >= refundInfo.value.paidAmount
+  if (!refundInfo.value || cashBalance.value === null) return false
+  return cashBalance.value >= refundInfo.value.paidAmount
 })
 
 const handleConfirm = async () => {

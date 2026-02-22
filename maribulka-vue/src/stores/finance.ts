@@ -216,6 +216,20 @@ export const useFinanceStore = defineStore('finance', () => {
     }
   }
 
+  // Получить общий баланс кассы (все приходы - все расходы)
+  async function fetchCashBalance() {
+    try {
+      const response = await fetch(`${API_URL}/expenses.php?balance=true`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      return await response.json() // { totalIncome, totalExpenses, balance }
+    } catch (error) {
+      console.error('Ошибка загрузки баланса кассы:', error)
+      return { totalIncome: 0, totalExpenses: 0, balance: 0 }
+    }
+  }
+
   return {
     // State
     income,
@@ -244,6 +258,7 @@ export const useFinanceStore = defineStore('finance', () => {
     deleteIncome,
     setCurrentMonth,
     setCurrentExpenseMonth,
-    fetchIncomeByShootingType
+    fetchIncomeByShootingType,
+    fetchCashBalance
   }
 })

@@ -2,8 +2,9 @@
 /**
  * API для работы с расходами
  *
- * GET /api/expenses.php - получить все расходы
+ * GET /api/expenses.php - получить все расходы (последние 100)
  * GET /api/expenses.php?month=2026-02 - расходы за месяц
+ * GET /api/expenses.php?balance=true - общий баланс кассы (приход - расход)
  * POST /api/expenses.php - создать расход
  * PUT /api/expenses.php - обновить расход
  * DELETE /api/expenses.php?id=1 - удалить расход
@@ -27,6 +28,23 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     switch ($method) {
         case 'GET':
+            // Получить общий баланс кассы (приход - расход)
+            if (isset($_GET['balance'])) {
+                $stmtIncome = $db->query("SELECT COALESCE(SUM(amount), 0) as total FROM income");
+                $stmtExpenses = $db->query("SELECT COALESCE(SUM(amount), 0) as total FROM expenses");
+
+                $totalIncome = $stmtIncome->fetch()['total'];
+                $totalExpenses = $stmtExpenses->fetch()['total'];
+                $balance = $totalIncome - $totalExpenses;
+
+                echo json_encode([
+                    'totalIncome' => floatval($totalIncome),
+                    'totalExpenses' => floatval($totalExpenses),
+                    'balance' => floatval($balance)
+                ]);
+                break;
+            }
+
             if (isset($_GET['month'])) {
                 // Расходы за месяц
                 $stmt = $db->prepare("

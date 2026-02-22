@@ -262,9 +262,12 @@ const canDeliver = computed(() => {
 const isShootingDateNotPassed = computed(() => {
   if (!selectedBooking.value) return true
 
-  const shootingDateTime = new Date(`${selectedBooking.value.shooting_date} ${selectedBooking.value.shooting_time || '00:00'}`)
-  const now = new Date()
+  // shooting_date уже содержит время (2026-02-23 09:00:00), shooting_time может быть undefined
+  const shootingDateTime = selectedBooking.value.shooting_time
+    ? new Date(`${selectedBooking.value.shooting_date} ${selectedBooking.value.shooting_time}`)
+    : new Date(selectedBooking.value.shooting_date)
 
+  const now = new Date()
   return now < shootingDateTime // Сейчас < момента съёмки
 })
 
@@ -281,10 +284,7 @@ const canDelete = computed(() => {
 // Computed: проверка что можно редактировать (ТОЛЬКО 'new' И дата не наступила)
 const canEdit = computed(() => {
   if (!selectedBooking.value) return false
-  if (selectedBooking.value.status !== 'new') return false
-  if (isLocked.value) return false
-  if (!isShootingDateNotPassed.value) return false // Дата-время наступило
-  return true
+  return selectedBooking.value.status === 'new' && !isLocked.value && isShootingDateNotPassed.value
 })
 
 // Computed: уникальные значения для фильтров
