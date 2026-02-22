@@ -258,13 +258,33 @@ const canDeliver = computed(() => {
   return selectedBooking.value.status === 'in_progress'
 })
 
-// Computed: проверка что можно удалить (ТОЛЬКО 'new' БЕЗ оплаты)
+// Computed: проверка что дата-время съёмки ещё не наступило
+const isShootingDateNotPassed = computed(() => {
+  if (!selectedBooking.value) return true
+
+  const shootingDateTime = new Date(`${selectedBooking.value.shooting_date} ${selectedBooking.value.shooting_time || '00:00'}`)
+  const now = new Date()
+
+  return now < shootingDateTime // Сейчас < момента съёмки
+})
+
+// Computed: проверка что можно удалить (ТОЛЬКО 'new' БЕЗ оплаты И дата не наступила)
 const canDelete = computed(() => {
   if (!selectedBooking.value) return false
   if (selectedBooking.value.status !== 'new') return false
   if (isLocked.value) return false
+  if (!isShootingDateNotPassed.value) return false // Дата-время наступило
   const paidAmount = parseFloat(selectedBooking.value.paid_amount) || 0
   return paidAmount === 0
+})
+
+// Computed: проверка что можно редактировать (ТОЛЬКО 'new' И дата не наступила)
+const canEdit = computed(() => {
+  if (!selectedBooking.value) return false
+  if (selectedBooking.value.status !== 'new') return false
+  if (isLocked.value) return false
+  if (!isShootingDateNotPassed.value) return false // Дата-время наступило
+  return true
 })
 
 // Computed: уникальные значения для фильтров
@@ -436,9 +456,9 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isLocked || selectedBooking?.status !== 'new'"
+          :disabled="!hasSelectedRow || !canEdit"
           @click="handleEdit"
-          title="Редактировать (только для 'new')"
+          title="Редактировать (только для 'new' и до начала съёмки)"
         >
           <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
         </button>
