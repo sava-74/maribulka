@@ -130,22 +130,22 @@
   opacity: 0.9;
 }
 
-/* Строка "Не состоялась" - красный текст */
-.accounting-table tbody tr.failed-booking {
-  color: var(--text-colorAlert) !important;
-}
-
-.accounting-table tbody tr.failed-booking td {
-  color: var(--text-colorAlert) !important;
-}
-
-/* Строка "Отменена" - серый текст */
+/* Строка "Отменена" / "Клиент не пришёл" - серый текст */
 .accounting-table tbody tr.cancelled-booking {
   color: var(--statusCancelledColor) !important;
 }
 
 .accounting-table tbody tr.cancelled-booking td {
   color: var(--statusCancelledColor) !important;
+}
+
+/* Строка "Новый заказ с прошедшей датой" - красный текст (алерт) */
+.accounting-table tbody tr.alert-booking {
+  color: var(--text-colorAlert) !important;
+}
+
+.accounting-table tbody tr.alert-booking td {
+  color: var(--text-colorAlert) !important;
 }
 
 /* Суммы */

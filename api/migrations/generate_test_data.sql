@@ -48,8 +48,8 @@ INSERT INTO income (date, booking_id, client_id, amount, category) VALUES ('2026
 
 -- Заказ 4: Выполнен (клиент принял полностью)
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status, is_locked, processed_at)
-VALUES ('МБ4142026', '2026-01-08', '2026-01-18 15:00:00', 7, '2026-01-25', 4, '+79001234570', 3, 1, 10000, 0, 10000, 10000, 10000, 'fully_paid', 'completed', 1, '2026-01-25 18:00:00');
-INSERT INTO income (date, booking_id, client_id, amount, category) VALUES ('2026-01-08', 4, 4, 10000, 'full_payment');
+VALUES ('МБ4142026', '2026-01-08', '2026-01-18 15:00:00', 7, '2026-01-25', 8, '+79001234570', 3, 1, 10000, 0, 10000, 10000, 10000, 'fully_paid', 'completed', 1, '2026-01-25 18:00:00');
+INSERT INTO income (date, booking_id, client_id, amount, category) VALUES ('2026-01-08', 4, 8, 10000, 'full_payment');
 
 -- Заказ 5: Выполнен частично (автовозврат 50%)
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status, is_locked, processed_at)
@@ -90,7 +90,7 @@ INSERT INTO income (date, booking_id, client_id, amount, category) VALUES ('2026
 
 -- Заказ 11: Новый
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status)
-VALUES ('МБ11212026', '2026-02-01', '2026-02-10 10:00:00', 7, '2026-02-17', 4, '+79001234570', 1, 1, 5000, 0, 5000, 5000, 0, 'unpaid', 'new');
+VALUES ('МБ11212026', '2026-02-01', '2026-02-10 10:00:00', 7, '2026-02-17', 8, '+79001234570', 1, 1, 5000, 0, 5000, 5000, 0, 'unpaid', 'new');
 
 -- Заказ 12: Новый (с предоплатой)
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status)
@@ -127,7 +127,7 @@ INSERT INTO expenses (date, amount, category, description, booking_id, refund_ty
 
 -- Заказ 18: Отменён фотографом
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status, is_locked)
-VALUES ('МБ18282026', '2026-02-08', '2026-02-17 14:00:00', 7, '2026-02-24', 4, '+79001234570', 2, 1, 7000, 0, 7000, 7000, 0, 'unpaid', 'cancelled_by_photographer', 1);
+VALUES ('МБ18282026', '2026-02-08', '2026-02-17 14:00:00', 7, '2026-02-24', 8, '+79001234570', 2, 1, 7000, 0, 7000, 7000, 0, 'unpaid', 'cancelled_by_photographer', 1);
 
 -- Заказ 19: Клиент не пришёл
 INSERT INTO bookings (order_number, booking_date, shooting_date, processing_days, delivery_date, client_id, phone, shooting_type_id, quantity, base_price, discount, final_price, total_amount, paid_amount, payment_status, status, is_locked)

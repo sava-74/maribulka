@@ -92,12 +92,13 @@ function formatDateTime(dateString: string) {
 function getStatusText(status: string) {
   switch (status) {
     case 'new': return '🔵 Новый'
-    case 'completed': return '🟠 Состоялась'
-    case 'delivered': return '🟢 Выдан'
-    case 'cancelled': return '🔴 Отменена'
-    case 'cancelled_client': return '⚪ Отмена-К'
-    case 'cancelled_photographer': return '⚪ Отмена-Ф'
-    case 'failed': return '🔴 Не состоялась'
+    case 'in_progress': return '🟠 В работе'
+    case 'completed': return '🟢 Выполнен'
+    case 'completed_partially': return '🟡 Выполнен частично'
+    case 'not_completed': return '🟤 Не выполнен'
+    case 'cancelled_by_client': return '⚪ Отменён клиентом'
+    case 'cancelled_by_photographer': return '⚪ Отменён фотографом'
+    case 'client_no_show': return '⚪ Клиент не пришёл'
     default: return status
   }
 }
@@ -230,18 +231,17 @@ const selectedBooking = computed(() => {
   return bookingsStore.bookings[index]
 })
 
-// Computed: проверка что заказ проведён или отменён (нельзя редактировать)
-const isDelivered = computed(() => {
-  const status = selectedBooking.value?.status
-  return status === 'delivered' || status === 'cancelled_client' || status === 'cancelled_photographer'
+// Computed: проверка что заказ заблокирован (is_locked = 1)
+const isLocked = computed(() => {
+  return selectedBooking.value?.is_locked == 1
 })
 
-// Computed: проверка что можно отметить "Съёмка состоялась" (в день съёмки и позже, если не отменена)
+// Computed: проверка что можно отметить "Съёмка состоялась" (только для 'new' в день съёмки и позже)
 const canMarkCompleted = computed(() => {
   if (!selectedBooking.value) return false
+  if (isLocked.value) return false
   const status = selectedBooking.value.status
-  if (status === 'cancelled') return false
-  if (status !== 'new' && status !== 'failed') return false
+  if (status !== 'new') return false
   const shootingDate = new Date(selectedBooking.value.shooting_date)
   shootingDate.setHours(0, 0, 0, 0)
   const today = new Date()
@@ -249,11 +249,11 @@ const canMarkCompleted = computed(() => {
   return shootingDate.getTime() <= today.getTime()
 })
 
-// Computed: проверка что можно выдать (статус "состоялась" и не проведено)
+// Computed: проверка что можно выдать (статус 'in_progress')
 const canDeliver = computed(() => {
   if (!selectedBooking.value) return false
-  if (isDelivered.value) return false
-  return selectedBooking.value.status === 'completed'
+  if (isLocked.value) return false
+  return selectedBooking.value.status === 'in_progress'
 })
 
 // Computed: уникальные значения для фильтров
@@ -279,11 +279,13 @@ const paymentStatuses = [
 
 const bookingStatuses = [
   { value: 'new', label: '🔵 Новый' },
-  { value: 'completed', label: '🟠 Состоялась' },
-  { value: 'delivered', label: '🟢 Выдан' },
-  { value: 'cancelled_client', label: '⚪ Отменил клиент' },
-  { value: 'cancelled_photographer', label: '⚪ Отменил фотограф' },
-  { value: 'failed', label: '🔴 Не состоялась' }
+  { value: 'in_progress', label: '🟠 В работе' },
+  { value: 'completed', label: '🟢 Выполнен' },
+  { value: 'completed_partially', label: '🟡 Выполнен частично' },
+  { value: 'not_completed', label: '🟤 Не выполнен' },
+  { value: 'cancelled_by_client', label: '⚪ Отменён клиентом' },
+  { value: 'cancelled_by_photographer', label: '⚪ Отменён фотографом' },
+  { value: 'client_no_show', label: '⚪ Клиент не пришёл' }
 ]
 
 // Filters
@@ -358,7 +360,7 @@ function handleMarkCompleted() {
 
 async function confirmMarkCompleted() {
   if (selectedBooking.value) {
-    await bookingsStore.markAsCompleted(selectedBooking.value.id)
+    await bookingsStore.confirmSession(selectedBooking.value.id)
     rowSelection.value = {}
     showConfirmCompleted.value = false
   }
@@ -421,15 +423,15 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
+          :disabled="!hasSelectedRow || isLocked || selectedBooking?.status !== 'new'"
           @click="handleEdit"
-          title="Редактировать"
+          title="Редактировать (только для 'new')"
         >
           <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.payment_status === 'fully_paid'"
+          :disabled="!hasSelectedRow || isLocked || selectedBooking?.payment_status === 'fully_paid'"
           @click="handleAddPayment"
           title="Добавить оплату"
         >
@@ -437,7 +439,7 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
+          :disabled="!hasSelectedRow || isLocked"
           @click="handleDelete"
           title="Удалить"
         >
@@ -447,15 +449,15 @@ function openMonthPicker() {
           class="glass-button"
           :disabled="!hasSelectedRow || !canMarkCompleted"
           @click="handleMarkCompleted"
-          title="Съёмка состоялась"
+          title="Подтвердить съёмку (new → in_progress)"
         >
           <svg-icon type="mdi" :path="mdiCameraOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isDelivered || selectedBooking?.status === 'completed'"
+          :disabled="!hasSelectedRow || isLocked || selectedBooking?.status !== 'new'"
           @click="handleCancelBooking"
-          title="Отменить запись"
+          title="Отменить запись (только для 'new')"
         >
           <svg-icon type="mdi" :path="mdiCameraOffOutline"></svg-icon>
         </button>
@@ -578,8 +580,8 @@ function openMonthPicker() {
             @click="row.toggleSelected()"
             :class="{
               selected: row.getIsSelected(),
-              'failed-booking': row.original.status === 'failed',
-              'cancelled-booking': row.original.status === 'cancelled_client' || row.original.status === 'cancelled_photographer'
+              'cancelled-booking': row.original.status === 'cancelled_by_client' || row.original.status === 'cancelled_by_photographer' || row.original.status === 'client_no_show',
+              'alert-booking': row.original.status === 'new' && new Date(row.original.shooting_date) < new Date()
             }"
           >
             <td v-for="cell in row.getVisibleCells()" :key="cell.id">
