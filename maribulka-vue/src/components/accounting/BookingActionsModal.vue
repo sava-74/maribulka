@@ -51,6 +51,15 @@ const canCancel = computed(() => {
   return props.booking.status === 'new' && !isLocked.value
 })
 
+// Кнопка "Удалить" - ТОЛЬКО для "new" БЕЗ оплаты
+const canDelete = computed(() => {
+  if (!props.booking) return false
+  if (props.booking.status !== 'new') return false
+  if (isLocked.value) return false
+  const paidAmount = parseFloat(props.booking.paid_amount) || 0
+  return paidAmount === 0
+})
+
 function handleAction(action: string) {
   emit(action as any)
 }
@@ -129,9 +138,9 @@ function handleAction(action: string) {
 
           <button
             class="glass-button-text action-danger"
-            :disabled="isLocked"
+            :disabled="!canDelete"
             @click="handleAction('delete')"
-            title="Удалить"
+            title="Удалить (только для 'new' без оплаты)"
           >
             <svg-icon type="mdi" :path="mdilDelete" :size="20"></svg-icon>
             <span>Удалить</span>

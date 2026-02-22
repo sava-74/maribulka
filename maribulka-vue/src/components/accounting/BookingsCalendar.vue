@@ -256,6 +256,15 @@ const canDeliver = computed(() => {
   return selectedBooking.value.status === 'in_progress'
 })
 
+// Computed: проверка что можно удалить (ТОЛЬКО 'new' БЕЗ оплаты)
+const canDelete = computed(() => {
+  if (!selectedBooking.value) return false
+  if (selectedBooking.value.status !== 'new') return false
+  if (isLocked.value) return false
+  const paidAmount = parseFloat(selectedBooking.value.paid_amount) || 0
+  return paidAmount === 0
+})
+
 // Computed: уникальные значения для фильтров
 const uniqueClients = computed(() => {
   const column = table.getColumn('client_name')
@@ -439,9 +448,9 @@ function openMonthPicker() {
         </button>
         <button
           class="glass-button"
-          :disabled="!hasSelectedRow || isLocked"
+          :disabled="!hasSelectedRow || !canDelete"
           @click="handleDelete"
-          title="Удалить"
+          title="Удалить (только для 'new' без оплаты)"
         >
           <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
         </button>

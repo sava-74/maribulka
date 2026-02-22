@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel } from '@mdi/light-js'
+import { mdilCheck, mdilCancel, mdilCurrencyRub } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
+import RefundModal from './RefundModal.vue'
 import '../../assets/responsive.css'
 
 const props = defineProps<{
@@ -19,6 +20,9 @@ const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
 
+// Refund modal
+const showRefundModal = ref(false)
+
 // Переключатель: кто отменил / клиент не пришёл
 const cancelledBy = ref<'client' | 'photographer' | 'no_show'>('client')
 
@@ -27,11 +31,15 @@ const bookingInfo = computed(() => {
 
   // ID заказа из БД
   const orderId = props.booking.order_number || `МБ-${props.booking.id}`
+  const paidAmount = Math.round(parseFloat(props.booking.paid_amount) || 0)
+  const hasPayment = paidAmount > 0
 
   return {
     orderId,
     client: props.booking.client_name,
-    shootingDate: formatDate(props.booking.shooting_date)
+    shootingDate: formatDate(props.booking.shooting_date),
+    paidAmount,
+    hasPayment
   }
 })
 
@@ -43,10 +51,30 @@ function formatDate(dateString: string) {
   return `${day}.${month}.${year}`
 }
 
-const handleConfirm = async () => {
+// Кнопка "Отмена" - если НЕ было оплаты
+const handleCancelWithoutRefund = async () => {
   if (!props.booking) return
 
   const result = await bookingsStore.cancelBooking(props.booking.id, cancelledBy.value)
+  if (result.success) {
+    emit('close')
+  } else {
+    alertTitle.value = 'Ошибка'
+    alertMessage.value = result.error || 'Не удалось отменить запись'
+    showAlert.value = true
+  }
+}
+
+// Кнопка "Р" (возврат) - если была оплата
+const handleOpenRefund = () => {
+  showRefundModal.value = true
+}
+
+// После успешного возврата - отменяем заказ
+const handleRefundCreated = async () => {
+  showRefundModal.value = false
+
+  const result = await bookingsStore.cancelBooking(props.booking!.id, cancelledBy.value)
   if (result.success) {
     emit('close')
   } else {
@@ -70,6 +98,14 @@ const handleConfirm = async () => {
 
           <div class="divider"></div>
 
+          <!-- Если была оплата - показываем сумму -->
+          <div v-if="bookingInfo.hasPayment" class="payment-warning">
+            <p><strong>⚠️ Оплата:</strong> {{ bookingInfo.paidAmount }} ₽</p>
+            <p class="hint">Для отмены требуется возврат средств</p>
+          </div>
+
+          <div class="divider"></div>
+
           <div class="cancel-reason">
             <p><strong>Причина отмены:</strong></p>
             <div class="radio-group">
@@ -90,15 +126,56 @@ const handleConfirm = async () => {
         </div>
 
         <div class="modal-actions">
-          <button class="glass-button" @click="emit('close')">
+          <button class="glass-button" @click="emit('close')" title="Закрыть">
             <svg-icon type="mdi" :path="mdilCancel" />
           </button>
-          <button class="glass-button" @click="handleConfirm">
+
+          <!-- Если НЕ было оплаты - кнопка "Отмена" -->
+          <button
+            v-if="bookingInfo && !bookingInfo.hasPayment"
+            class="glass-button"
+            @click="handleCancelWithoutRefund"
+            title="Отменить заказ"
+          >
             <svg-icon type="mdi" :path="mdilCheck" />
+          </button>
+
+          <!-- Если была оплата - кнопка "Р" (возврат) -->
+          <button
+            v-if="bookingInfo && bookingInfo.hasPayment"
+            class="glass-button"
+            @click="handleOpenRefund"
+            title="Возврат средств"
+          >
+            <svg-icon type="mdi" :path="mdilCurrencyRub" />
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Модалка возврата -->
+    <RefundModal
+      :isVisible="showRefundModal"
+      :booking="booking"
+      @close="showRefundModal = false"
+      @refundCreated="handleRefundCreated"
+    />
+
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
+
+<style scoped>
+.payment-warning {
+  padding: 10px;
+  background: rgba(255, 152, 0, 0.2);
+  border-left: 3px solid #ff9800;
+  border-radius: 4px;
+}
+
+.payment-warning .hint {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.7);
+}
+</style>

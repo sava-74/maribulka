@@ -494,28 +494,8 @@ function handleSpecialAction($db, $action, $id) {
             // Логируем
             logBookingStatusChange($db, $id, 'in_progress', $result, 'Выдача заказа');
 
-            // Если клиент принял ЧАСТИЧНО или НЕ ПРИНЯЛ - создаём автовозврат
-            if ($result === 'completed_partially') {
-                // Частичный возврат 50%
-                $refund_amount = $booking['total_amount'] * 0.5;
-                createRefund($db, $id, $booking['client_id'], $refund_amount, 'partial');
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Заказ завершён частично. Автовозврат 50% создан.',
-                    'refund_amount' => $refund_amount
-                ]);
-            } elseif ($result === 'not_completed') {
-                // Полный возврат 100%
-                $refund_amount = $booking['total_amount'];
-                createRefund($db, $id, $booking['client_id'], $refund_amount, 'full');
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Клиент не принял заказ. Автовозврат 100% создан.',
-                    'refund_amount' => $refund_amount
-                ]);
-            } else {
-                echo json_encode(['success' => true, 'message' => 'Заказ успешно выполнен!']);
-            }
+            // ВОЗВРАТЫ УДАЛЕНЫ: теперь делаются вручную через расходный ордер
+            echo json_encode(['success' => true, 'message' => 'Заказ успешно обработан!']);
             break;
 
         // ========================================
@@ -590,17 +570,8 @@ function handleSpecialAction($db, $action, $id) {
             // Логируем
             logBookingStatusChange($db, $id, $old_status, $status, $message);
 
-            // Если была оплата - создаём автовозврат ПРЕДОПЛАТЫ
-            if ($booking['paid_amount'] > 0) {
-                createRefund($db, $id, $booking['client_id'], $booking['paid_amount'], 'prepayment');
-                echo json_encode([
-                    'success' => true,
-                    'message' => $message . '. Автовозврат предоплаты создан.',
-                    'refund_amount' => $booking['paid_amount']
-                ]);
-            } else {
-                echo json_encode(['success' => true, 'message' => $message]);
-            }
+            // АВТОВОЗВРАТ УДАЛЁН: возврат делается вручную через расходный ордер
+            echo json_encode(['success' => true, 'message' => $message]);
             break;
 
         case 'payment':

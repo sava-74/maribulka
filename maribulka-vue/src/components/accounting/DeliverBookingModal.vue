@@ -73,13 +73,6 @@ const handleDeliver = async () => {
   const result = await bookingsStore.completeOrder(props.booking.id, orderResult.value)
   if (result.success) {
     emit('close')
-
-    // Показываем сообщение если был возврат
-    if (result.refund_amount) {
-      alertTitle.value = 'Информация'
-      alertMessage.value = result.message
-      showAlert.value = true
-    }
   } else {
     alertTitle.value = 'Ошибка'
     alertMessage.value = result.error || 'Не удалось выдать заказ'
