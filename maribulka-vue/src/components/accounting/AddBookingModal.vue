@@ -116,18 +116,17 @@ watch(selectedClient, (client) => {
 
 // Функция поиска активной акции для даты съёмки
 function getActivePromotionForDate(date: string): number | null {
-  // Если дата съёмки не выбрана - возвращаем null (без акции)
-  if (!date) return null
+  // Если дата съёмки выбрана - ищем срочную акцию на эту дату
+  if (date) {
+    const timedPromotion = referencesStore.promotions.find(promo => {
+      if (!promo.start_date || !promo.end_date) return false
+      return date >= promo.start_date && date <= promo.end_date
+    })
 
-  // Сначала ищем срочную акцию, действующую на дату съёмки
-  const timedPromotion = referencesStore.promotions.find(promo => {
-    if (!promo.start_date || !promo.end_date) return false
-    return date >= promo.start_date && date <= promo.end_date
-  })
+    if (timedPromotion) return timedPromotion.id
+  }
 
-  if (timedPromotion) return timedPromotion.id
-
-  // Если нет срочной акции - берём первую бессрочную
+  // Если даты нет ИЛИ нет срочной акции - берём бессрочную "Без скидки"
   const permanentPromotion = referencesStore.promotions.find(promo => {
     return !promo.start_date && !promo.end_date
   })
