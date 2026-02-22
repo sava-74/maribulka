@@ -11,7 +11,7 @@
   }
 
   .accounting-table th, .accounting-table td {
-    font-size: var(--generalTextSize) !important;
+    font-size: var(--generalTextSizeSmall) !important;
     /*padding: 4px 2px !important;
     white-space: nowrap;
     overflow: hidden;*/

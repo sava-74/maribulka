@@ -305,7 +305,7 @@ const statusFilter = ref('')
 
 // Применение фильтров к таблице
 function applyFilters() {
-  const filters: ColumnFiltersState = []
+  const filters: ColumnFiltersState = []  // Сбрасываем все фильтры и добавляем только те, которые выбраны
 
   if (clientFilter.value) {
     filters.push({ id: 'client_name', value: clientFilter.value })
