@@ -11,7 +11,7 @@
   }
 
   .accounting-table th, .accounting-table td {
-    font-size: 10px !important;
+    font-size: var(--generalTextSize) !important;
     /*padding: 4px 2px !important;
     white-space: nowrap;
     overflow: hidden;*/
@@ -85,7 +85,7 @@
   }
 
   .input-label {
-    font-size: 12px !important;
+    font-size: var(--generalTextSizeH1) !important;
   }
 
   .modal-input,
@@ -108,7 +108,7 @@
 
   /* ========== PRICE INFO ========== */
   .price-info {
-    font-size: 12px;
+    font-size: var(--generalTextSizeH1);
   }
 
   .price-row {

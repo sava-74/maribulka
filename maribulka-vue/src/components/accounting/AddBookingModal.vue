@@ -43,6 +43,12 @@ onMounted(async () => {
     await referencesStore.fetchClients()
   }
 
+  // Устанавливаем активную акцию по умолчанию
+  const activePromotion = referencesStore.promotions.find(p => p.is_active === 1)
+  if (activePromotion) {
+    promotionId.value = String(activePromotion.id)
+  }
+
   // Генерируем order_number
   const nextId = await bookingsStore.getNextId()
   const today = new Date()

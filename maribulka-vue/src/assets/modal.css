@@ -127,7 +127,7 @@
 
 /* Лейбл поля */
 .input-label {
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   color: var(--generalTextColor);
   font-weight: 500;
 }
@@ -339,7 +339,7 @@ select.modal-input {
 }
 
 .actions-type {
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   color: rgba(0, 0, 0, 0.5);
 }
 

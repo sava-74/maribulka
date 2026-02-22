@@ -34,12 +34,21 @@ const bookingInfo = computed(() => {
   const paidAmount = Math.round(parseFloat(props.booking.paid_amount) || 0)
   const hasPayment = paidAmount > 0
 
+  // Проверка: дата-время съёмки прошла?
+  const shootingDateTime = new Date(props.booking.shooting_date)
+  const now = new Date()
+  const isSessionPassed = shootingDateTime < now
+
+  // "Клиент не пришёл" доступна ТОЛЬКО если status='new' И дата прошла
+  const canNoShow = props.booking.status === 'new' && isSessionPassed
+
   return {
     orderId,
     client: props.booking.client_name,
     shootingDate: formatDate(props.booking.shooting_date),
     paidAmount,
-    hasPayment
+    hasPayment,
+    canNoShow
   }
 })
 
@@ -100,7 +109,7 @@ const handleRefundCreated = async () => {
 
           <!-- Если была оплата - показываем сумму -->
           <div v-if="bookingInfo.hasPayment" class="payment-warning">
-            <p><strong>⚠️ Оплата:</strong> {{ bookingInfo.paidAmount }} ₽</p>
+            <p><strong>⚠️ Возврат:</strong> {{ bookingInfo.paidAmount }} ₽</p>
             <p class="hint">Для отмены требуется возврат средств</p>
           </div>
 
@@ -117,7 +126,8 @@ const handleRefundCreated = async () => {
                 <input type="radio" name="cancelledBy" value="photographer" v-model="cancelledBy" />
                 <span>Отменил фотограф</span>
               </label>
-              <label class="radio-label">
+              <!-- "Клиент не пришёл" доступна ТОЛЬКО если status='new' И дата съёмки прошла -->
+              <label v-if="bookingInfo.canNoShow" class="radio-label">
                 <input type="radio" name="cancelledBy" value="no_show" v-model="cancelledBy" />
                 <span>Клиент не пришёл</span>
               </label>

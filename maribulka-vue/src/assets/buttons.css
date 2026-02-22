@@ -107,7 +107,7 @@
     padding: 0 12px;
     white-space: nowrap;
     font: initial;
-    font-size: clamp(7px, 2vw, 24px);
+    font-size: clamp(7px, 2vw, 12px);
     font-weight: bold;
     text-transform: initial;
     letter-spacing: -0.001em;
@@ -263,7 +263,7 @@
     min-width: var(--glass-widthButtonSmall) !important;
     min-height: var(--glass-heightButtonSmall) !important;
     padding: 5px !important;
-    font-size: 10px;
+    font-size: var(--generalTextSize);
   }
 
   .glass-button svg,
@@ -285,7 +285,7 @@
     width: auto;
     min-width: auto;
     padding: 0 8px;
-    font-size: 12px;
+    font-size: var(--generalTextSizeH1);
     height: 34px;
     flex-shrink: 0;
   }
@@ -298,7 +298,7 @@
     min-width: var(--glass-widthButtonSmall) !important;
     height: var(--glass-heightButtonSmall) !important;
     padding: 0 4px !important;
-    font-size: 10px !important;
+    font-size: var(--generalTextSize) !important;
   }
 
   /* Кнопки навигации < > (32x32 вместо 40x40) */

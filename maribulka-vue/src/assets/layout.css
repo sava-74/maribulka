@@ -163,9 +163,9 @@
   min-width: 150px;
 }
 
-/* Лейбл фильтра 
+/* Лейбл фильтра
 .filter-label {
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   color: #333;
   font-weight: 500;
 }

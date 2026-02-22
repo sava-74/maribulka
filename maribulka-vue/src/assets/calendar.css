@@ -54,7 +54,7 @@
 .calendar-container .fc-event {
   cursor: pointer;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   padding: 2px 4px;
 }
 
@@ -74,7 +74,7 @@
 }
 
 .calendar-container .fc-timegrid-slot-label {
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   color: #666;
 }
 
@@ -109,7 +109,7 @@
 
 .event-day-title {
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--generalTextSizeH1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,7 +173,7 @@
   }
 
   .calendar-container .fc-daygrid-day-number {
-    font-size: 10px;
+    font-size: var(--generalTextSize);
   }
 
   .calendar-container .fc-event {
@@ -186,11 +186,11 @@
   }
 
   .calendar-container .fc-timegrid-slot-label {
-    font-size: 10px;
+    font-size: var(--generalTextSize);
   }
 
   .calendar-container .fc-col-header-cell-cushion {
-    font-size: 10px;
+    font-size: var(--generalTextSize);
   }
 
   /* Скрыть текст событий и показать цветные точки */
