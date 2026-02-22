@@ -44,7 +44,21 @@ onMounted(async () => {
   }
 
   // Устанавливаем активную акцию по умолчанию
-  const activePromotion = referencesStore.promotions.find(p => p.is_active === 1)
+  const todayStr = new Date().toISOString().split('T')[0] as string
+
+  // Ищем бессрочную акцию или акцию, действующую на сегодня
+  const activePromotion = referencesStore.promotions.find(promo => {
+    // Бессрочная акция
+    if (!promo.start_date && !promo.end_date) return true
+
+    // Срочная акция, действующая на сегодня
+    if (promo.start_date && promo.end_date) {
+      return todayStr >= promo.start_date && todayStr <= promo.end_date
+    }
+
+    return false
+  })
+
   if (activePromotion) {
     promotionId.value = String(activePromotion.id)
   }
