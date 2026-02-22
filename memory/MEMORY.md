@@ -16,6 +16,7 @@
 - **[expenses-plan.md](file:///d:/GitHub/maribulka/memory/expenses-plan.md)** - ✅ РЕАЛИЗОВАНО - план работ: Расходы + Категории расходов
 - **[icons.md](file:///d:/GitHub/maribulka/memory/icons.md)** - список иконок
 - **[filters-plan.md](file:///d:/GitHub/maribulka/memory/filters-plan.md)** - план работ: Фильтры и поиск
+- **[business-process.md](file:///d:/GitHub/maribulka/memory/business-process.md)** - ✨ НОВЫЙ - бизнес-процесс заказа, статусы, переходы, финансы
 
 ---
 
@@ -118,6 +119,15 @@ git push
   - Обновлён changelog.md
 
 ### ⏳ В работе
+
+- 🚀 **ФАЗА 1: Миграция БД для бизнес-процесса** (22.02.2026) ⬅️ **НАЧИНАЕМ!**
+  - 8 новых статусов заказа (new, in_progress, completed, completed_partially, not_completed, cancelled_by_photographer, cancelled_by_client, client_no_show)
+  - Блокировка редактирования (`is_locked`)
+  - Связь возвратов с заказами (`expenses.booking_id`)
+  - Типы возвратов (`expenses.refund_type`)
+  - VIEW `v_booking_profit` для расчёта прибыли
+  - Колонки для мультипользователя: `created_by`, `updated_by`, `master_id`
+  - [Полный план в business-process.md](file:///d:/GitHub/maribulka/memory/business-process.md)
 
 - ⏳ **Оптимизация UI и мобильная адаптация**
   - Борьба со стилями меню клиентов (commit 2ec48f1)
