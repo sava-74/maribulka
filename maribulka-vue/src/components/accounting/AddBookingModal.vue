@@ -114,20 +114,20 @@ watch(selectedClient, (client) => {
 
 // Оплата по умолчанию = 0 (пользователь вводит сам)
 
-// Функция поиска активной акции для даты
+// Функция поиска активной акции для даты съёмки
 function getActivePromotionForDate(date: string): number | null {
-  // Если дата не указана - используем сегодня
-  const targetDate = (date || new Date().toISOString().split('T')[0]) as string
+  // Если дата съёмки не выбрана - возвращаем null (без акции)
+  if (!date) return null
 
-  // Сначала ищем срочную акцию для выбранной даты
+  // Сначала ищем срочную акцию, действующую на дату съёмки
   const timedPromotion = referencesStore.promotions.find(promo => {
     if (!promo.start_date || !promo.end_date) return false
-    return targetDate >= promo.start_date && targetDate <= promo.end_date
+    return date >= promo.start_date && date <= promo.end_date
   })
 
   if (timedPromotion) return timedPromotion.id
 
-  // Если нет срочной - берём первую бессрочную
+  // Если нет срочной акции - берём первую бессрочную
   const permanentPromotion = referencesStore.promotions.find(promo => {
     return !promo.start_date && !promo.end_date
   })
