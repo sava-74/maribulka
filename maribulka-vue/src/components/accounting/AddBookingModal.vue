@@ -43,26 +43,6 @@ onMounted(async () => {
     await referencesStore.fetchClients()
   }
 
-  // Устанавливаем активную акцию по умолчанию
-  const todayStr = new Date().toISOString().split('T')[0] as string
-
-  // Ищем бессрочную акцию или акцию, действующую на сегодня
-  const activePromotion = referencesStore.promotions.find(promo => {
-    // Бессрочная акция
-    if (!promo.start_date && !promo.end_date) return true
-
-    // Срочная акция, действующая на сегодня
-    if (promo.start_date && promo.end_date) {
-      return todayStr >= promo.start_date && todayStr <= promo.end_date
-    }
-
-    return false
-  })
-
-  if (activePromotion) {
-    promotionId.value = String(activePromotion.id)
-  }
-
   // Генерируем order_number
   const nextId = await bookingsStore.getNextId()
   const today = new Date()
@@ -136,18 +116,23 @@ watch(selectedClient, (client) => {
 
 // Функция поиска активной акции для даты
 function getActivePromotionForDate(date: string): number | null {
-  if (!date) return null
+  // Если дата не указана - используем сегодня
+  const targetDate = (date || new Date().toISOString().split('T')[0]) as string
 
-  const activePromotions = referencesStore.promotions.filter(promo => {
-    // Игнорируем бессрочные акции в автовыборе
+  // Сначала ищем срочную акцию для выбранной даты
+  const timedPromotion = referencesStore.promotions.find(promo => {
     if (!promo.start_date || !promo.end_date) return false
-
-    // Проверяем попадание даты в диапазон
-    return date >= promo.start_date && date <= promo.end_date
+    return targetDate >= promo.start_date && targetDate <= promo.end_date
   })
 
-  // Возвращаем первую найденную (не должно быть больше одной по валидации)
-  return activePromotions.length > 0 ? activePromotions[0].id : null
+  if (timedPromotion) return timedPromotion.id
+
+  // Если нет срочной - берём первую бессрочную
+  const permanentPromotion = referencesStore.promotions.find(promo => {
+    return !promo.start_date && !promo.end_date
+  })
+
+  return permanentPromotion ? permanentPromotion.id : null
 }
 
 // Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
