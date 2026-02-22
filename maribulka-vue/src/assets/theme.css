@@ -6,6 +6,9 @@
   --generalTextColor: #333; /* основной цвет текста */
   --generalTextSize: 10px; /* основной размер текста */
   --generalTextSizeH1: 12px; /* размер текста для заголовков */
+  --generalTextSizeH2: 14px; /* размер текста для подзаголовков */
+  --generalTextSizeH3: 16px; /* размер текста для важных заголовков */
+  --generalTextSizeH4: 18px; /* размер текста для важных заголовков */
 
   --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
   --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */

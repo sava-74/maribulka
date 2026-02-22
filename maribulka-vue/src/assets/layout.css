@@ -76,7 +76,7 @@
 .page-subtitle {
   margin: 0;
   color: rgba(0, 0, 0, 0.6);
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
 }
 
 /* Контейнер с заголовком и кнопкой действия 
@@ -108,9 +108,9 @@
   margin-bottom: 30px;
 }
 
-/* Контейнер для отображения сумм 
+/* Контейнер для отображения сумм
 .total-display {
-  font-size: 18px;
+  font-size: var(--generalTextSizeH4);
   color: rgba(1, 1, 1, 0.9);
 }
 
@@ -137,7 +137,7 @@
 
 .info p {
   margin: 8px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
 }
 
 /* Панель фильтров 
@@ -181,7 +181,7 @@
   backdrop-filter: blur(12px);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
   color: #333;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }

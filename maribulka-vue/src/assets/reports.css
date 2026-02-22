@@ -150,7 +150,7 @@
 .profit-content h3,
 .profitability-content h3 {
   margin: 0 0 8px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   font-weight: 500;
   color: var(--generalTextColor);
   text-transform: uppercase;
@@ -212,7 +212,7 @@
 .card-title {
   margin: 0 0 5px 0;
   color: var(--generalTextColor);
-  font-size: 18px;
+  font-size: var(--generalTextSizeH4);
   font-weight: 600;
   text-align: center;
   font-family: inherit;
@@ -304,7 +304,7 @@
 }
 
 .comparison-label {
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   color: var(--generalTextColor);
   font-family: inherit;
   /* Удалена тень текста */
@@ -485,7 +485,7 @@
   }
   
   .card-title {
-    font-size: 16px;
+    font-size: var(--generalTextSizeH3);
   }
   
   .info {

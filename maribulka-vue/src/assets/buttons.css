@@ -107,7 +107,7 @@
     padding: 0 12px;
     white-space: nowrap;
     font: initial;
-    font-size: clamp(7px, 2vw, 12px);
+    font-size: clamp(7px, var(--generalTextSize), 12px);
     font-weight: bold;
     text-transform: initial;
     letter-spacing: -0.001em;
@@ -182,7 +182,7 @@
   color: var(--glass-textButtonColor) !important;
   padding: 0 12px !important;
   white-space: nowrap !important;
-  font-size: 14px !important;
+  font-size: var(--generalTextSizeH2) !important;
   font-weight: 500 !important;
   text-transform: none !important;
 }

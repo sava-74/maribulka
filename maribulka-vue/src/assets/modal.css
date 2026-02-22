@@ -159,7 +159,7 @@ select.modal-input {
 
 .payment-info p {
   margin: 6px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   color: var(--generalTextColor);
 }
 
@@ -179,7 +179,7 @@ select.modal-input {
 
 .delete-info p {
   margin: 6px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   color: var(--generalTextColor);
 }
 
@@ -204,7 +204,7 @@ select.modal-input {
   justify-content: space-between;
   align-items: center;
   margin: 4px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   color: var(--generalTextColor);
 }
 
@@ -228,7 +228,7 @@ select.modal-input {
 }
 
 .price-value.total-value {
-  font-size: 18px;
+  font-size: var(--generalTextSizeH4);
   color: var(--generalTextColor);
 }
 
@@ -284,7 +284,7 @@ select.modal-input {
     padding: 2px 3px 0 0;
     border: 1px solid var(--generalColor);
     border-radius: var(--glass-borderRadiusButton);
-    font-size: 14px;
+    font-size: var(--generalTextSizeH2);
     text-align: right;
     margin-right: 4px;
 }
@@ -295,7 +295,7 @@ select.modal-input {
     padding: 2px 4px;
     border: 1px solid var(--generalColor);
     border-radius: var(--glass-borderRadiusButton);
-    font-size: 14px;
+    font-size: var(--generalTextSizeH2);
     text-align: right;
     margin-right: 4px;
 }
@@ -335,7 +335,7 @@ select.modal-input {
 .actions-title {
   font-weight: 600;
   color: var(--generalTextColor);
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
 }
 
 .actions-type {
@@ -363,7 +363,7 @@ select.modal-input {
 .cancel-info p,
 .delivery-info p {
   margin: 2px 0;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
 }
 
 .cancel-reason {
@@ -382,7 +382,7 @@ select.modal-input {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   padding: 0px;
   border-radius: 6px;
   transition: background-color 0.2s;
@@ -410,7 +410,7 @@ select.modal-input {
 
 .delivery-info .remaining-amount {
   color: #dc2626;
-  font-size: 16px;
+  font-size: var(--generalTextSizeH3);
   font-weight: 600;
 }
 
@@ -437,7 +437,7 @@ select.modal-input {
 }
 
 .info-section h3 {
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
   font-weight: 600;
   margin-bottom: 2px;
   color: #1f2937;
@@ -712,7 +712,7 @@ select.modal-input {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0 0 8px 8px;
   min-height: 625px;
-  font-size: 16px;
+  font-size: var(--generalTextSizeH3);
   background: rgba(255, 255, 255, 1);
 }
 

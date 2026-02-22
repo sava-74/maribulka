@@ -78,7 +78,7 @@
 
 .description-content {
   color: var(--generalTextColor);
-  font-size: 16px;
+  font-size: var(--generalTextSizeH3);
   line-height: 1.6;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .description-content h3 {
-  font-size: 18px;
+  font-size: var(--generalTextSizeH4);
 }
 
 .description-content ul,

@@ -52,7 +52,7 @@
 }
 
 .panel-title {
-  font-size: 16px;
+  font-size: var(--generalTextSizeH3);
   font-weight: 600;
   color: var(--generalTextColor);
   margin: 0;
@@ -88,7 +88,7 @@
 }
 
 .panel-compact .panel-title {
-  font-size: 14px;
+  font-size: var(--generalTextSizeH2);
 }
 
 /* Панель без тени */
@@ -213,7 +213,7 @@
   }
   
   .panel-title {
-    font-size: 14px;
+    font-size: var(--generalTextSizeH2);
   }
   
   .panel-actions {

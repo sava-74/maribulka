@@ -43,7 +43,7 @@
 .site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
-  font-size: clamp(8px, 2vw, 20px);
+  font-size: clamp(8px, var(--generalTextSize), 20px);
   /* 1. Убираем пространство под текстом */
   line-height: 1; /* Или установи равным font-size, например 16px */
   height: auto;   /* Чтобы высота подстраивалась под текст */
@@ -55,7 +55,7 @@
 }
 
 .promotion-text {
-    font-size: clamp(6px, 2vw, 24px);
+    font-size: clamp(6px, var(--generalTextSize), 24px);
     font-weight: 700;
     color: crimson;
     margin-left: 10px !important;

@@ -257,7 +257,7 @@
 
   /* Заголовок */
   .fc-toolbar-title {
-    font-size: 16px !important;
+    font-size: var(--generalTextSizeH3) !important;
     text-align: center;
   }
 
