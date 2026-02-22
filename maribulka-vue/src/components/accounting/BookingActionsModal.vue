@@ -12,32 +12,29 @@ const props = defineProps<{
   position: { x: number; y: number }
 }>()
 
-const emit = defineEmits(['close', 'view', 'edit', 'payment', 'delete', 'complete', 'cancel', 'deliver'])
+const emit = defineEmits(['close', 'view', 'edit', 'payment', 'delete', 'confirmSession', 'cancel', 'deliver'])
 
-// Проверка что заказ проведён или отменён (нельзя редактировать)
-const isDelivered = computed(() => {
-  const status = props.booking?.status
-  return status === 'delivered' || status === 'cancelled_client' || status === 'cancelled_photographer'
+// Проверка что заказ заблокирован (нельзя редактировать)
+const isLocked = computed(() => {
+  return props.booking?.is_locked == 1
 })
 
-// Проверка что можно отметить "Съёмка состоялась"
-const canMarkCompleted = computed(() => {
+// Кнопка "Подтвердить съёмку" (new → in_progress)
+const canConfirmSession = computed(() => {
   if (!props.booking) return false
-  const status = props.booking.status
-  if (status === 'cancelled') return false
-  if (status !== 'new' && status !== 'failed') return false
-  const shootingDate = new Date(props.booking.shooting_date)
-  shootingDate.setHours(0, 0, 0, 0)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return shootingDate.getTime() <= today.getTime()
+  return props.booking.status === 'new' && !isLocked.value
 })
 
-// Проверка что можно выдать (статус "состоялась" и не проведено)
+// Кнопка "Выдать заказ" (in_progress → completed/partially/not_completed)
 const canDeliver = computed(() => {
   if (!props.booking) return false
-  if (isDelivered.value) return false
-  return props.booking.status === 'completed'
+  return props.booking.status === 'in_progress' && !isLocked.value
+})
+
+// Кнопка "Отменить" / "Клиент не пришёл"
+const canCancel = computed(() => {
+  if (!props.booking) return false
+  return (props.booking.status === 'new' || props.booking.status === 'in_progress') && !isLocked.value
 })
 
 function handleAction(action: string) {
@@ -66,7 +63,7 @@ function handleAction(action: string) {
 
           <button
             class="glass-button-text"
-            :disabled="isDelivered || booking?.status === 'completed'"
+            :disabled="isLocked"
             @click="handleAction('edit')"
             title="Редактировать"
           >
@@ -76,7 +73,7 @@ function handleAction(action: string) {
 
           <button
             class="glass-button-text"
-            :disabled="isDelivered || booking?.payment_status === 'fully_paid'"
+            :disabled="isLocked || booking?.payment_status === 'fully_paid'"
             @click="handleAction('payment')"
             title="Оплата"
           >
@@ -84,39 +81,41 @@ function handleAction(action: string) {
             <span>Оплата</span>
           </button>
 
-          <button
-            class="glass-button-text"
-            :disabled="!canMarkCompleted"
-            @click="handleAction('complete')"
-            title="Съёмка состоялась"
-          >
-            <svg-icon type="mdi" :path="mdiCameraOutline" :size="20"></svg-icon>
-            <span>Состоялась</span>
-          </button>
+          <!-- НОВЫЙ БИЗНЕС-ПРОЦЕСС -->
 
           <button
             class="glass-button-text"
-            :disabled="isDelivered || booking?.status === 'completed'"
-            @click="handleAction('cancel')"
-            title="Отменить"
+            :disabled="!canConfirmSession"
+            @click="handleAction('confirmSession')"
+            title="Подтвердить съёмку (new → in_progress)"
           >
-            <svg-icon type="mdi" :path="mdiCameraOffOutline" :size="20"></svg-icon>
-            <span>Отменить</span>
+            <svg-icon type="mdi" :path="mdiCameraOutline" :size="20"></svg-icon>
+            <span>Подтвердить съёмку</span>
           </button>
 
           <button
             class="glass-button-text"
             :disabled="!canDeliver"
             @click="handleAction('deliver')"
-            title="Провести"
+            title="Выдать заказ (in_progress → completed)"
           >
             <svg-icon type="mdi" :path="mdiFolderPlayOutline" :size="20"></svg-icon>
-            <span>Провести</span>
+            <span>Выдать заказ</span>
+          </button>
+
+          <button
+            class="glass-button-text"
+            :disabled="!canCancel"
+            @click="handleAction('cancel')"
+            title="Отменить / Клиент не пришёл"
+          >
+            <svg-icon type="mdi" :path="mdiCameraOffOutline" :size="20"></svg-icon>
+            <span>Отменить</span>
           </button>
 
           <button
             class="glass-button-text action-danger"
-            :disabled="isDelivered || booking?.status === 'completed'"
+            :disabled="isLocked"
             @click="handleAction('delete')"
             title="Удалить"
           >

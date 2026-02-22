@@ -17,6 +17,7 @@ import DeleteConfirmModal from './DeleteConfirmModal.vue'
 import DeliverBookingModal from './DeliverBookingModal.vue'
 import ViewBookingModal from './ViewBookingModal.vue'
 import CancelBookingModal from './CancelBookingModal.vue'
+import ConfirmSessionModal from './ConfirmSessionModal.vue'
 import ConfirmModal from '../ConfirmModal.vue'
 import BookingActionsModal from './BookingActionsModal.vue'
 import '../../assets/buttons.css'
@@ -44,7 +45,7 @@ const showDeleteModal = ref(false)
 const showDeliverModal = ref(false)
 const showViewModal = ref(false)
 const showCancelModal = ref(false)
-const showConfirmCompleted = ref(false)
+const showConfirmSessionModal = ref(false) // НОВЫЙ: Подтвердить съёмку (new → in_progress)
 const showActionsModal = ref(false)
 const actionsModalPosition = ref({ x: 0, y: 0 })
 
@@ -341,17 +342,10 @@ function handleDelete() {
   showDeleteModal.value = true
 }
 
-function handleComplete() {
+// НОВЫЙ БИЗНЕС-ПРОЦЕСС: Подтвердить съёмку (new → in_progress)
+function handleConfirmSession() {
   showActionsModal.value = false
-  showConfirmCompleted.value = true
-}
-
-async function confirmMarkCompleted() {
-  if (selectedBooking.value) {
-    await bookingsStore.markAsCompleted(selectedBooking.value.id)
-    showConfirmCompleted.value = false
-    selectedBooking.value = null
-  }
+  showConfirmSessionModal.value = true
 }
 
 function handleCancel() {
@@ -380,6 +374,7 @@ function closeModal() {
   showPaymentModal.value = false
   showDeleteModal.value = false
   showDeliverModal.value = false
+  showConfirmSessionModal.value = false
   showViewModal.value = false
   showCancelModal.value = false
   showActionsModal.value = false
@@ -426,7 +421,7 @@ function closeActionsModal() {
       @edit="handleEdit"
       @payment="handlePayment"
       @delete="handleDelete"
-      @complete="handleComplete"
+      @confirmSession="handleConfirmSession"
       @cancel="handleCancel"
       @deliver="handleDeliver"
     />
@@ -436,14 +431,9 @@ function closeActionsModal() {
     <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
-    <DeliverBookingModal :isVisible="showDeliverModal" :booking="selectedBooking" @close="closeModal" />
+    <ConfirmSessionModal :isVisible="showConfirmSessionModal" :booking="selectedBooking" @close="closeModal" @openPayment="handlePayment" />
+    <DeliverBookingModal :isVisible="showDeliverModal" :booking="selectedBooking" @close="closeModal" @openPayment="handlePayment" />
     <ViewBookingModal :isVisible="showViewModal" :booking="selectedBooking" @close="closeModal" />
     <CancelBookingModal :isVisible="showCancelModal" :booking="selectedBooking" @close="closeModal" />
-    <ConfirmModal
-      :isVisible="showConfirmCompleted"
-      message="Съёмка состоялась?"
-      @confirm="confirmMarkCompleted"
-      @cancel="showConfirmCompleted = false"
-    />
   </div>
 </template>

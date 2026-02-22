@@ -10,12 +10,16 @@
  * PUT /api/bookings.php - обновить запись
  * DELETE /api/bookings.php?id=1 - удалить запись
  *
- * Специальные действия:
- * POST /api/bookings.php?action=complete&id=1 - отметить "Съёмка состоялась"
- * POST /api/bookings.php?action=deliver&id=1 - провести заказ (выдать съёмку)
+ * Специальные действия (НОВЫЙ БИЗНЕС-ПРОЦЕСС):
+ * POST /api/bookings.php?action=confirm_session&id=1 - подтвердить съёмку (new → in_progress)
+ * POST /api/bookings.php?action=complete_order&id=1 - выдать заказ с результатом (in_progress → completed/partially/not_completed)
+ * POST /api/bookings.php?action=cancel&id=1 - отменить/клиент не пришёл (cancelled_by_photographer/cancelled_by_client/client_no_show)
  * POST /api/bookings.php?action=quick_payment&id=1 - быстрая оплата остатка
- * POST /api/bookings.php?action=cancel&id=1 - отменить съёмку
  * POST /api/bookings.php?action=payment&id=1 - добавить оплату
+ *
+ * УСТАРЕВШИЕ (для обратной совместимости):
+ * POST /api/bookings.php?action=complete&id=1 - отметить "Съёмка состоялась" (→ использовать confirm_session)
+ * POST /api/bookings.php?action=deliver&id=1 - провести заказ (→ использовать complete_order)
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -59,7 +63,7 @@ try {
                 c.name as client_name
             FROM bookings b
             LEFT JOIN clients c ON b.client_id = c.id
-            WHERE (b.status = 'new' OR b.status = 'failed')
+            WHERE b.status IN ('new', 'in_progress')
             AND b.payment_status != 'unpaid'
             AND b.paid_amount > 0
             ORDER BY b.shooting_date DESC
@@ -127,13 +131,8 @@ try {
 // ============================================
 
 function handleGet($db) {
-    // Автоматически обновляем статусы "Не состоялась" для просроченных записей
-    $db->exec("
-        UPDATE bookings
-        SET status = 'failed'
-        WHERE status = 'new'
-        AND shooting_date < CURDATE()
-    ");
+    // ОТКЛЮЧЕНО: автоматическое обновление статусов
+    // В новом бизнес-процессе статусы меняются только вручную фотографом
 
     if (isset($_GET['id'])) {
         // Получить одну запись с полной информацией
@@ -322,13 +321,13 @@ function handlePut($db) {
     }
 
     // Проверяем, можно ли редактировать
-    $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
+    $stmt = $db->prepare("SELECT status, is_locked FROM bookings WHERE id = ?");
     $stmt->execute([$data['id']]);
     $booking = $stmt->fetch();
 
-    if ($booking['status'] === 'completed' || $booking['status'] === 'delivered') {
+    if ($booking['is_locked'] == 1) {
         http_response_code(403);
-        echo json_encode(['error' => 'Нельзя редактировать завершённую запись']);
+        echo json_encode(['error' => 'Нельзя редактировать заблокированную запись']);
         exit;
     }
 
@@ -400,13 +399,13 @@ function handleDelete($db) {
     }
 
     // Проверяем, можно ли удалить
-    $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
+    $stmt = $db->prepare("SELECT status, is_locked FROM bookings WHERE id = ?");
     $stmt->execute([$_GET['id']]);
     $booking = $stmt->fetch();
 
-    if ($booking['status'] === 'completed' || $booking['status'] === 'delivered') {
+    if ($booking['is_locked'] == 1) {
         http_response_code(403);
-        echo json_encode(['error' => 'Нельзя удалить завершённую запись. Используйте отмену.']);
+        echo json_encode(['error' => 'Нельзя удалить заблокированную запись. Используйте отмену.']);
         exit;
     }
 
@@ -428,41 +427,112 @@ function handleSpecialAction($db, $action, $id) {
     }
 
     switch ($action) {
-        case 'complete':
-            // Отметить "Съёмка состоялась"
-            // Проверка что дата съёмки прошла
-            $stmt = $db->prepare("SELECT DATE(shooting_date) as shooting_date FROM bookings WHERE id = ?");
+        // ========================================
+        // НОВЫЙ БИЗНЕС-ПРОЦЕСС
+        // ========================================
+
+        case 'confirm_session':
+            // Подтвердить съёмку (new → in_progress)
+            // Логика: проверить предоплату, если нет - вернуть ошибку
+            $stmt = $db->prepare("SELECT status, paid_amount FROM bookings WHERE id = ?");
             $stmt->execute([$id]);
             $booking = $stmt->fetch();
 
-            $today = date('Y-m-d');
-            if ($booking['shooting_date'] > $today) {
+            if ($booking['status'] !== 'new') {
                 http_response_code(403);
-                echo json_encode(['error' => 'Нельзя отметить съёмку состоявшейся до даты съёмки']);
+                echo json_encode(['error' => 'Можно подтвердить только новую съёмку']);
                 exit;
             }
 
-            $stmt = $db->prepare("UPDATE bookings SET status = 'completed' WHERE id = ?");
+            // ВАЖНО: фронтенд сам проверит предоплату и откроет IncomeModal если нужно
+            // Здесь просто меняем статус
+            $stmt = $db->prepare("UPDATE bookings SET status = 'in_progress' WHERE id = ?");
             $stmt->execute([$id]);
-            echo json_encode(['success' => true, 'message' => 'Съёмка отмечена как состоявшаяся']);
+
+            // Логируем в booking_history
+            logBookingStatusChange($db, $id, 'new', 'in_progress', 'Подтверждение съёмки');
+
+            echo json_encode(['success' => true, 'message' => 'Съёмка подтверждена. Статус: В работе']);
+            break;
+
+        case 'complete_order':
+            // Выдать заказ (in_progress → completed/partially/not_completed)
+            $data = json_decode(file_get_contents('php://input'), true);
+            $result = $data['result'] ?? null; // 'completed', 'completed_partially', 'not_completed'
+
+            if (!in_array($result, ['completed', 'completed_partially', 'not_completed'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Неверный результат выполнения']);
+                exit;
+            }
+
+            $stmt = $db->prepare("SELECT status, paid_amount, total_amount, client_id FROM bookings WHERE id = ?");
+            $stmt->execute([$id]);
+            $booking = $stmt->fetch();
+
+            if ($booking['status'] !== 'in_progress') {
+                http_response_code(403);
+                echo json_encode(['error' => 'Можно выдать только заказ со статусом "В работе"']);
+                exit;
+            }
+
+            // Проверяем что оплата 100%
+            if ($booking['paid_amount'] < $booking['total_amount']) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Сначала необходимо собрать 100% оплату']);
+                exit;
+            }
+
+            // Обновляем статус и блокируем редактирование
+            $stmt = $db->prepare("
+                UPDATE bookings
+                SET status = ?, is_locked = 1, processed_at = NOW()
+                WHERE id = ?
+            ");
+            $stmt->execute([$result, $id]);
+
+            // Логируем
+            logBookingStatusChange($db, $id, 'in_progress', $result, 'Выдача заказа');
+
+            // Если клиент принял ЧАСТИЧНО или НЕ ПРИНЯЛ - создаём автовозврат
+            if ($result === 'completed_partially') {
+                // Частичный возврат 50%
+                $refund_amount = $booking['total_amount'] * 0.5;
+                createRefund($db, $id, $booking['client_id'], $refund_amount, 'partial');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Заказ завершён частично. Автовозврат 50% создан.',
+                    'refund_amount' => $refund_amount
+                ]);
+            } elseif ($result === 'not_completed') {
+                // Полный возврат 100%
+                $refund_amount = $booking['total_amount'];
+                createRefund($db, $id, $booking['client_id'], $refund_amount, 'full');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Клиент не принял заказ. Автовозврат 100% создан.',
+                    'refund_amount' => $refund_amount
+                ]);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Заказ успешно выполнен!']);
+            }
+            break;
+
+        // ========================================
+        // УСТАРЕВШИЕ (для обратной совместимости)
+        // ========================================
+
+        case 'complete':
+            // Старая логика "Съёмка состоялась" → редирект на confirm_session
+            handleSpecialAction($db, 'confirm_session', $id);
             break;
 
         case 'deliver':
-            // Провести заказ (выдать съёмку)
-            // Проверка что съёмка состоялась
-            $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
-            $stmt->execute([$id]);
-            $booking = $stmt->fetch();
-
-            if ($booking['status'] !== 'completed') {
-                http_response_code(403);
-                echo json_encode(['error' => 'Нельзя провести заказ. Сначала отметьте съёмку как состоявшуюся']);
-                exit;
-            }
-
-            $stmt = $db->prepare("UPDATE bookings SET status = 'delivered', processed_at = NOW() WHERE id = ?");
-            $stmt->execute([$id]);
-            echo json_encode(['success' => true, 'message' => 'Заказ проведён']);
+            // Старая логика "Провести заказ" → редирект на complete_order с результатом 'completed'
+            $_POST_BACKUP = file_get_contents('php://input');
+            file_put_contents('php://input', json_encode(['result' => 'completed']));
+            handleSpecialAction($db, 'complete_order', $id);
+            file_put_contents('php://input', $_POST_BACKUP);
             break;
 
         case 'quick_payment':
@@ -490,16 +560,47 @@ function handleSpecialAction($db, $action, $id) {
             break;
 
         case 'cancel':
-            // Отменить съёмку
+            // Отменить съёмку / Клиент не пришёл
             $data = json_decode(file_get_contents('php://input'), true);
-            $cancelledBy = $data['cancelled_by'] ?? 'client';
+            $cancelledBy = $data['cancelled_by'] ?? 'client'; // 'client', 'photographer', 'no_show'
 
-            // Определяем статус в зависимости от того, кто отменил
-            $status = ($cancelledBy === 'photographer') ? 'cancelled_photographer' : 'cancelled_client';
+            // Определяем статус
+            if ($cancelledBy === 'no_show') {
+                $status = 'client_no_show';
+                $message = 'Клиент не пришёл на съёмку';
+            } elseif ($cancelledBy === 'photographer') {
+                $status = 'cancelled_by_photographer';
+                $message = 'Съёмка отменена фотографом';
+            } else {
+                $status = 'cancelled_by_client';
+                $message = 'Съёмка отменена клиентом';
+            }
 
-            $stmt = $db->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+            // Получаем данные заказа для возврата
+            $stmt = $db->prepare("SELECT status, client_id, paid_amount FROM bookings WHERE id = ?");
+            $stmt->execute([$id]);
+            $booking = $stmt->fetch();
+
+            $old_status = $booking['status'];
+
+            // Обновляем статус и блокируем
+            $stmt = $db->prepare("UPDATE bookings SET status = ?, is_locked = 1 WHERE id = ?");
             $stmt->execute([$status, $id]);
-            echo json_encode(['success' => true, 'message' => 'Съёмка отменена']);
+
+            // Логируем
+            logBookingStatusChange($db, $id, $old_status, $status, $message);
+
+            // Если была оплата - создаём автовозврат ПРЕДОПЛАТЫ
+            if ($booking['paid_amount'] > 0) {
+                createRefund($db, $id, $booking['client_id'], $booking['paid_amount'], 'prepayment');
+                echo json_encode([
+                    'success' => true,
+                    'message' => $message . '. Автовозврат предоплаты создан.',
+                    'refund_amount' => $booking['paid_amount']
+                ]);
+            } else {
+                echo json_encode(['success' => true, 'message' => $message]);
+            }
             break;
 
         case 'payment':
@@ -589,5 +690,62 @@ function addPayment($db, $booking_id, $client_id, $amount, $total_amount) {
         VALUES (CURDATE(), ?, ?, ?, ?)
     ");
     $stmt->execute([$booking_id, $client_id, $amount, $category]);
+}
+
+/**
+ * Создать возврат средств (автоматически при отмене/непринятии заказа)
+ *
+ * @param PDO $db
+ * @param int $booking_id
+ * @param int $client_id
+ * @param float $amount
+ * @param string $refund_type 'prepayment' | 'partial' | 'full'
+ */
+function createRefund($db, $booking_id, $client_id, $amount, $refund_type) {
+    // Получаем ID категории "Возвраты" (должна быть ID=2 согласно миграции)
+    $stmt = $db->query("SELECT id FROM expense_categories WHERE name = 'Возвраты' LIMIT 1");
+    $category = $stmt->fetch();
+
+    if (!$category) {
+        // Если категория не найдена - создаём её
+        $stmt = $db->prepare("INSERT INTO expense_categories (name) VALUES ('Возвраты')");
+        $stmt->execute();
+        $category_id = $db->lastInsertId();
+    } else {
+        $category_id = $category['id'];
+    }
+
+    // Создаём возврат
+    $stmt = $db->prepare("
+        INSERT INTO expenses (date, amount, category, description, booking_id, refund_type)
+        VALUES (CURDATE(), ?, ?, ?, ?, ?)
+    ");
+
+    $description = "Возврат средств по заказу (автоматический)";
+
+    $stmt->execute([
+        $amount,
+        $category_id,
+        $description,
+        $booking_id,
+        $refund_type
+    ]);
+}
+
+/**
+ * Логировать изменение статуса заказа
+ *
+ * @param PDO $db
+ * @param int $booking_id
+ * @param string $old_status
+ * @param string $new_status
+ * @param string $reason
+ */
+function logBookingStatusChange($db, $booking_id, $old_status, $new_status, $reason = null) {
+    $stmt = $db->prepare("
+        INSERT INTO booking_history (booking_id, old_status, new_status, reason)
+        VALUES (?, ?, ?, ?)
+    ");
+    $stmt->execute([$booking_id, $old_status, $new_status, $reason]);
 }
 ?>

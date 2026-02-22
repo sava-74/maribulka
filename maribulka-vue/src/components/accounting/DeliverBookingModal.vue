@@ -10,7 +10,7 @@ const props = defineProps<{
   isVisible: boolean
   booking: any | null
 }>()
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'openPayment'])
 
 const bookingsStore = useBookingsStore()
 
@@ -18,6 +18,9 @@ const bookingsStore = useBookingsStore()
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
+
+// Результат выполнения заказа
+const orderResult = ref<'completed' | 'completed_partially' | 'not_completed'>('completed')
 
 const orderInfo = computed(() => {
   if (!props.booking) return null
@@ -60,12 +63,26 @@ const handleQuickPayment = async () => {
 const handleDeliver = async () => {
   if (!props.booking) return
 
-  const result = await bookingsStore.markAsDelivered(props.booking.id)
+  // Проверяем оплату 100%
+  if (!orderInfo.value?.isPaidFull) {
+    emit('openPayment', props.booking.id)
+    return
+  }
+
+  // Выдаём заказ с выбранным результатом
+  const result = await bookingsStore.completeOrder(props.booking.id, orderResult.value)
   if (result.success) {
     emit('close')
+
+    // Показываем сообщение если был возврат
+    if (result.refund_amount) {
+      alertTitle.value = 'Информация'
+      alertMessage.value = result.message
+      showAlert.value = true
+    }
   } else {
     alertTitle.value = 'Ошибка'
-    alertMessage.value = result.error || 'Не удалось провести заказ'
+    alertMessage.value = result.error || 'Не удалось выдать заказ'
     showAlert.value = true
   }
 }
@@ -75,7 +92,7 @@ const handleDeliver = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Завершение заказа</h2>
+        <h2>Выдать заказ</h2>
 
         <div v-if="orderInfo" class="delivery-info">
           <p><strong>ID заказа:</strong> {{ orderInfo.orderId }}</p>
@@ -97,13 +114,35 @@ const handleDeliver = async () => {
             <span class="remaining-amount">{{ orderInfo.remaining }} ₽</span>
           </p>
           <p v-else class="paid-full">✅ Оплачено полностью</p>
+
+          <!-- Только если оплачено 100% показываем выбор результата -->
+          <div v-if="orderInfo.isPaidFull" class="order-result-section">
+            <div class="divider"></div>
+
+            <p><strong>Результат выполнения:</strong></p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="orderResult" value="completed" v-model="orderResult" />
+                <span>✅ Клиент принял заказ полностью</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="orderResult" value="completed_partially" v-model="orderResult" />
+                <span>⚠️ Клиент принял заказ частично (возврат 50%)</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="orderResult" value="not_completed" v-model="orderResult" />
+                <span>❌ Клиент не принял заказ (возврат 100%)</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="modal-actions">
           <!-- Кнопка "Закрыть" -->
           <button class="glass-button" @click="emit('close')">
             <svg-icon type="mdi" :path="mdilCancel" />
-          </button>          
+          </button>
+
           <!-- Кнопка "Оплата" - показываем только если не оплачено полностью -->
           <button
             v-if="orderInfo && !orderInfo.isPaidFull"
@@ -114,12 +153,12 @@ const handleDeliver = async () => {
             <svg-icon type="mdi" :path="mdilCurrencyRub" />
           </button>
 
-          <!-- Кнопка "Провести" - только если оплачено полностью -->
+          <!-- Кнопка "Выдать заказ" - только если оплачено полностью -->
           <button
             v-if="orderInfo && orderInfo.isPaidFull"
             class="glass-button"
             @click="handleDeliver"
-            title="Провести заказ"
+            title="Выдать заказ"
           >
             <svg-icon type="mdi" :path="mdilCheck" />
           </button>
@@ -129,3 +168,69 @@ const handleDeliver = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
+
+<style scoped>
+.delivery-info {
+  margin: 20px 0;
+}
+
+.price-value {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.remaining-warning {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.remaining-amount {
+  color: #ff5722;
+  font-size: 1.1em;
+}
+
+.paid-full {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 15px 0;
+}
+
+.order-result-section {
+  margin-top: 15px;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.radio-label:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.radio-label input[type="radio"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.radio-label span {
+  flex: 1;
+}
+</style>

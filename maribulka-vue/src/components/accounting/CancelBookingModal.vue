@@ -19,8 +19,8 @@ const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
 
-// Переключатель: кто отменил
-const cancelledBy = ref<'client' | 'photographer'>('client')
+// Переключатель: кто отменил / клиент не пришёл
+const cancelledBy = ref<'client' | 'photographer' | 'no_show'>('client')
 
 const bookingInfo = computed(() => {
   if (!props.booking) return null
@@ -71,7 +71,7 @@ const handleConfirm = async () => {
           <div class="divider"></div>
 
           <div class="cancel-reason">
-            <p><strong>Кто отменил:</strong></p>
+            <p><strong>Причина отмены:</strong></p>
             <div class="radio-group">
               <label class="radio-label">
                 <input type="radio" name="cancelledBy" value="client" v-model="cancelledBy" />
@@ -80,6 +80,10 @@ const handleConfirm = async () => {
               <label class="radio-label">
                 <input type="radio" name="cancelledBy" value="photographer" v-model="cancelledBy" />
                 <span>Отменил фотограф</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="cancelledBy" value="no_show" v-model="cancelledBy" />
+                <span>Клиент не пришёл</span>
               </label>
             </div>
           </div>
