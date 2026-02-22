@@ -19,6 +19,20 @@ const isLocked = computed(() => {
   return props.booking?.is_locked == 1
 })
 
+// Кнопка "Редактировать" - только для статуса "new"
+const canEdit = computed(() => {
+  if (!props.booking) return false
+  return props.booking.status === 'new' && !isLocked.value
+})
+
+// Кнопка "Оплата" - для "new" или "in_progress", если не fully_paid
+const canPayment = computed(() => {
+  if (!props.booking) return false
+  if (isLocked.value) return false
+  if (props.booking.payment_status === 'fully_paid') return false
+  return props.booking.status === 'new' || props.booking.status === 'in_progress'
+})
+
 // Кнопка "Подтвердить съёмку" (new → in_progress)
 const canConfirmSession = computed(() => {
   if (!props.booking) return false
@@ -31,10 +45,10 @@ const canDeliver = computed(() => {
   return props.booking.status === 'in_progress' && !isLocked.value
 })
 
-// Кнопка "Отменить" / "Клиент не пришёл"
+// Кнопка "Отменить" / "Клиент не пришёл" - ТОЛЬКО для "new"
 const canCancel = computed(() => {
   if (!props.booking) return false
-  return (props.booking.status === 'new' || props.booking.status === 'in_progress') && !isLocked.value
+  return props.booking.status === 'new' && !isLocked.value
 })
 
 function handleAction(action: string) {
@@ -63,9 +77,9 @@ function handleAction(action: string) {
 
           <button
             class="glass-button-text"
-            :disabled="isLocked"
+            :disabled="!canEdit"
             @click="handleAction('edit')"
-            title="Редактировать"
+            title="Редактировать (только для 'new')"
           >
             <svg-icon type="mdi" :path="mdiFileEditOutline" :size="20"></svg-icon>
             <span>Редактировать</span>
@@ -73,9 +87,9 @@ function handleAction(action: string) {
 
           <button
             class="glass-button-text"
-            :disabled="isLocked || booking?.payment_status === 'fully_paid'"
+            :disabled="!canPayment"
             @click="handleAction('payment')"
-            title="Оплата"
+            title="Оплата (для 'new' или 'in_progress')"
           >
             <svg-icon type="mdi" :path="mdiCashMultiple" :size="20"></svg-icon>
             <span>Оплата</span>

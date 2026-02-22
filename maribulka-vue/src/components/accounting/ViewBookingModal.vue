@@ -44,15 +44,16 @@ const orderInfo = computed(() => {
     return `${day}.${month}.${year} ${time}`
   }
 
-  // Определение статуса
+  // Определение статуса (НОВЫЙ БИЗНЕС-ПРОЦЕСС)
   const statusMap: Record<string, string> = {
-    'new': 'Новая съёмка',
-    'completed': 'Съёмка состоялась',
-    'delivered': 'Заказ выдан',
-    'cancelled': 'Отменена',
-    'cancelled_client': 'Отменил клиент',
-    'cancelled_photographer': 'Отменил фотограф',
-    'failed': 'Съёмка не состоялась'
+    'new': 'Новый заказ',
+    'in_progress': 'В работе',
+    'completed': 'Выполнен',
+    'completed_partially': 'Выполнен частично',
+    'not_completed': 'Не выполнен',
+    'cancelled_by_photographer': 'Отменён фотографом',
+    'cancelled_by_client': 'Отменён клиентом',
+    'client_no_show': 'Клиент не пришёл'
   }
   const statusText = statusMap[props.booking.status] || props.booking.status
 

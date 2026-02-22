@@ -103,10 +103,9 @@ const calendarEvents = computed(() => {
 
   // Сначала определяем, есть ли в каждой дате отмененные/не состоявшиеся записи
   for (const booking of bookingsStore.bookings) {
-    if (booking.status === 'cancelled_client' ||
-        booking.status === 'cancelled_photographer' ||
-        booking.status === 'cancelled' ||
-        booking.status === 'failed') {
+    if (booking.status === 'cancelled_by_client' ||
+        booking.status === 'cancelled_by_photographer' ||
+        booking.status === 'client_no_show') {
       const d = new Date(booking.shooting_date)
       const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       datePriorityMap.set(date, true)
@@ -126,23 +125,39 @@ const calendarEvents = computed(() => {
     // Вычисляем время окончания (duration + интервал)
     const endDateTime = new Date(shootingDateTime.getTime() + (durationMinutes + INTERVAL_MINUTES) * 60 * 1000)
 
-    // Определяем цвет по статусу
+    // Определяем цвет по статусу (НОВЫЙ БИЗНЕС-ПРОЦЕСС)
     let backgroundColor = '#4682B4' // new - темно-голубой (steel blue)
     let textColor = '#FFF'
-    
-    if (booking.status === 'completed') {
+
+    // В работе (после подтверждения съёмки)
+    if (booking.status === 'in_progress') {
       backgroundColor = '#FFA500' // оранжевый
       textColor = '#000'
     }
-    if (booking.status === 'delivered') {
+
+    // Выполнен (клиент принял полностью)
+    if (booking.status === 'completed') {
       backgroundColor = '#2E8B57' // темно-зелёный (sea green)
       textColor = '#FFF'
     }
-    if (booking.status === 'cancelled_client' ||
-        booking.status === 'cancelled_photographer' ||
-        booking.status === 'cancelled' ||
-        booking.status === 'failed') {
-      backgroundColor = '#DC2626' // красный для отмененных/не состоявшихся
+
+    // Выполнен частично
+    if (booking.status === 'completed_partially') {
+      backgroundColor = '#FDB022' // жёлто-оранжевый
+      textColor = '#000'
+    }
+
+    // Не выполнен (клиент не принял)
+    if (booking.status === 'not_completed') {
+      backgroundColor = '#8B4513' // коричневый (saddle brown)
+      textColor = '#FFF'
+    }
+
+    // Отменённые/не состоявшиеся
+    if (booking.status === 'cancelled_by_client' ||
+        booking.status === 'cancelled_by_photographer' ||
+        booking.status === 'client_no_show') {
+      backgroundColor = '#DC2626' // красный
       textColor = '#FFF'
     }
 
