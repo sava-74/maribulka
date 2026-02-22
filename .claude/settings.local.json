@@ -18,7 +18,8 @@
       "Bash(start /B php:*)",
       "Bash(npm search:*)",
       "Bash(claude mcp remove:*)",
-      "Bash(claude mcp add:*)"
+      "Bash(claude mcp add:*)",
+      "Bash(git -C d:/GitHub/maribulka log --all --format=\"%H %ai %s\")"
     ]
   }
 }

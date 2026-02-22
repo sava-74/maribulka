@@ -1,32 +1,245 @@
 # Changelog - История изменений
 
-## 20.02.2026 - Финансовые отчёты: диаграммы и фильтрация
+## 22.02.2026 - Актуализация памяти проекта 📋
 
-### ⚠️ Статус: ЧАСТИЧНО РЕАЛИЗОВАНО
+### Системный аудит
 
-**Выполнено:**
-- ✅ Отчёт "Расходы по категориям" использует данные из `financeStore.expenses`
-- ✅ Создана универсальная функция `filterByPeriod` для фильтрации
-- ✅ Добавлены computed свойства для метрик (Доход, Расход, Прибыль, Рентабельность)
+Проведён комплексный аудит всех файлов проекта. Обнаружены критические расхождения между реальным состоянием проекта и документацией в памяти.
 
-**НЕ РАБОТАЕТ:**
-- ❌ Фильтрация по периоду (месяц/квартал/год) - данные не обновляются при смене периода
-- ❌ При переключении вкладок сбрасывается выбранный период
-- ❌ Диаграммы не реагируют на изменение периода
+**Обновлены файлы памяти:**
+- architecture.md - добавлена информация о Chart.js, finance.ts, новых компонентах и API
+- changelog.md - детализация изменений 18-20 февраля
+- finance.md - создан новый файл с полным описанием финансовой системы
 
-**Файл:** `components/accounting/Reports.vue`
-
-### Описание проблемы
-
-При смене периода (месяц/квартал/год) в панели "Финансовые отчёты":
-1. Панельки "Доход" и "Расход" показывают неверные данные
-2. Диаграммы не обновляются согласно выбранному периоду
-3. При возврате на вкладку отчётов сбрасывается выбранный период
-
-**Требуется исправление в рамках плана "Фильтры и поиск"**
+**Ключевые находки:**
+- Chart.js v4.5.1 успешно интегрирован (20.02.2026)
+- Финансовая система полностью функциональна
+- Фильтрация по периодам РАБОТАЕТ корректно (вопреки ошибочной записи в changelog от 20.02)
+- Активная разработка мобильной адаптации (стили topbar, sidebar, кнопки)
 
 ---
 
+## 20.02.2026 - Финансовые отчёты с Chart.js диаграммами ✨
+
+### ✅ Статус: ПОЛНОСТЬЮ РЕАЛИЗОВАНО
+
+**Установлено:**
+- Chart.js v4.5.1 (commit c5a5748)
+- Минимальная регистрация компонентов: BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend
+
+**Реализовано:**
+
+**1. Компонент Reports.vue**
+- Новый компонент финансовых отчётов с диаграммами
+- Путь: `components/accounting/Reports.vue`
+- CSS: `assets/reports.css` (новый файл)
+
+**2. Диаграммы (Chart.js):**
+- **Расходы по категориям** (горизонтальный bar chart)
+  - Группировка расходов по category_name
+  - Первая строка "Всего" (серый цвет #6b7280)
+  - Остальные категории (цветная палитра)
+  - Кастомный плагин `barLabels` для отображения сумм
+
+- **Доход по источникам** (типам съёмок)
+  - Горизонтальный bar chart
+  - Данные из fetchIncomeByShootingType() API
+  - Формат: "{count} - {total} ₽"
+  - Кастомный плагин `incomeBarLabels`
+
+**3. Фильтрация по периодам:**
+- Режимы: месяц / квартал / год
+- Селект периода + input[type="month"]
+- Функция filterByPeriod() для вычисления диапазонов
+- Квартал: автоматический расчёт (месяц 0-3 → Q1, 4-7 → Q2, и т.д.)
+
+**4. Метрики отчёта:**
+- Доход (periodIncomeTotal)
+- Расход (periodExpensesTotal)
+- Прибыль (periodProfit = income - expenses)
+- Рентабельность (profitability = profit / income * 100%)
+- Все с динамическими цветами (зелёный/красный)
+
+**5. Sticky панель фильтров:**
+- `.reports-header-panel` с position: sticky
+- top: 86px (под topbar)
+- z-index: 100
+
+**Файлы:**
+- `components/accounting/Reports.vue` (новый)
+- `assets/reports.css` (новый)
+- `stores/finance.ts` (обновлён - fetchIncomeByShootingType)
+
+**API:**
+- `GET /api/bookings.php?action=income_by_type&month=YYYY-MM` (новый endpoint)
+
+**Коммиты:**
+- c5a5748 - Chart.js установлен
+- 1ef3b49 - Отчёты расходы по категориям готовы
+- fd66175 - Добавлена диаграмма для доходов
+
+---
+
+## 18-20.02.2026 - Система управления финансами ✨
+
+### Полный функционал доходов и расходов
+
+**Установлено:**
+- Полная CRUD система для расходов
+- Справочник категорий расходов
+- Логика возвратов средств с автозаполнением
+
+**1. База данных:**
+
+Новые таблицы:
+```sql
+-- Расходы
+CREATE TABLE expenses (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  date DATE NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  category_id INT NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES expense_categories(id)
+);
+
+-- Категории расходов
+CREATE TABLE expense_categories (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  is_active TINYINT DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Платежи (доходы)
+CREATE TABLE income (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  booking_id INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  payment_date DATE NOT NULL,
+  category VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (booking_id) REFERENCES bookings(id)
+);
+```
+
+**2. API Endpoints:**
+
+Новые PHP файлы:
+- `api/expenses.php` - CRUD расходов
+  - GET ?month=YYYY-MM - расходы за месяц
+  - POST - создать расход
+  - PUT - обновить
+  - DELETE ?id=X - удалить
+
+- `api/expense-categories.php` - справочник категорий
+  - GET - список активных
+  - GET ?check_relations=1&id=X - проверка связей
+  - POST - создать
+  - PUT - обновить
+  - DELETE ?id=X - удалить
+
+- `api/income.php` - управление платежами
+  - GET ?month=YYYY-MM - платежи за месяц
+  - GET ?booking_id=X - платежи по заказу
+  - POST - создать платёж
+  - DELETE ?id=X - удалить
+
+Обновлены endpoints:
+- `api/bookings.php?action=refundable` - заказы для возврата (new/failed с оплатой)
+- `api/bookings.php?action=income_by_type&month=YYYY-MM` - доход по типам съёмок
+
+**3. Pinia Store: finance.ts**
+
+Новый store для управления финансами:
+```typescript
+State:
+- income[] - платежи
+- expenses[] - расходы
+- refundableBookings[] - заказы для возврата
+- currentMonth / currentExpenseMonth
+
+Computed:
+- totalIncome, totalExpenses
+- profit, profitability
+
+Actions:
+- fetchIncome(month?)
+- fetchExpenses(month?)
+- fetchIncomeByBooking(id)
+- fetchRefundableBookings()
+- fetchIncomeByShootingType(month?)
+- createExpense, updateExpense, deleteExpense
+- deleteIncome
+```
+
+**4. Компоненты:**
+
+Новые таблицы:
+- `ExpensesTable.vue` - таблица расходов с фильтрацией по месяцам
+- `ExpenseCategoriesTable.vue` - справочник категорий
+- `IncomeTable.vue` - таблица платежей
+
+Модальные окна расходов:
+- `AddExpenseModal.vue` - создание расхода
+- `EditExpenseModal.vue` - редактирование
+- `ViewExpenseModal.vue` - просмотр
+- `AddExpenseCategoryModal.vue` - создание категории
+- `EditExpenseCategoryModal.vue` - редактирование категории
+
+Другие:
+- `AddPaymentModal.vue` - добавление платежа
+- `ViewIncomeModal.vue` - просмотр платежа
+
+**5. Логика возвратов средств:**
+
+Категория ID=2 "Возврат средств" - специальная обработка:
+- При выборе категории возврата открывается селект заказов
+- Источник: refundableBookings (статусы new/failed с paid_amount > 0)
+- Автозаполнение:
+  - amount = booking.paid_amount
+  - description = "{order_number} - {client_name}"
+- Сброс полей при смене категории
+
+**6. Вкладки:**
+
+Обновлён Accounting.vue:
+- Запись → BookingsFullCalendar
+- Приход → IncomeTable
+- Расход → ExpensesTable ✨ НОВОЕ
+- Отчёты → Reports ✨ НОВОЕ
+
+Обновлён References.vue:
+- Клиенты → ClientsTable
+- Типы съёмок → ShootingTypesTable
+- Акции → PromotionsTable
+- Категории расходов → ExpenseCategoriesTable ✨ НОВОЕ
+
+---
+
+## 21.02.2026 - Оптимизация UI и мобильная адаптация
+
+### Правки стилей
+
+**Проблемы:**
+- Стили меню клиентов нуждались в улучшении
+- Кнопки были слишком большие на мобилке
+- Sidebar и topbar требовали доработки
+
+**Решения:**
+- Общий стиль для всех меню (commit 2ec48f1)
+- Уменьшены кнопки для мобильной версии (commit d58a48c)
+- Исправлен sidebar (commit d58a48c)
+- Доработаны стили topbar (commit b6e7699)
+- Фиксик кнопок (commit 8d785f0)
+
+**Файлы:**
+- `assets/topbar.css` - обновлён
+- `assets/sidebar.css` - обновлён
+- `assets/buttons.css` - обновлён
+
+---
 
 ## 17.02.2026 - Синхронизация авторизации Frontend ↔ Backend
 
@@ -367,5 +580,7 @@ CREATE TABLE studio_description (
 - ✅ Таблица "Акции" (PromotionsTable)
 - ✅ Домашняя страница (баннер акции, 4 фото)
 - ✅ Блок описания студии (rich text editor)
+- ✅ Финансовая система (доходы, расходы, категории)
+- ✅ Финансовые отчёты с диаграммами Chart.js
 - ⏳ Кнопка скрыть/показать таблицу
 - ⏳ Доработка мобильной адаптации

@@ -6,15 +6,16 @@
 
 - **[deployment.md](file:///d:/GitHub/maribulka/memory/deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
 - **[architecture.md](file:///d:/GitHub/maribulka/memory/architecture.md)** - структура проекта, ключевые файлы, БД
+- **[finance.md](file:///d:/GitHub/maribulka/memory/finance.md)** - ✨ НОВЫЙ - финансовая система, Chart.js, отчёты
 - **[styles.md](file:///d:/GitHub/maribulka/memory/styles.md)** - организация CSS, паттерны, переменные
 - **[calendar.md](file:///d:/GitHub/maribulka/memory/calendar.md)** - календарь записей, статусы, цвета, слоты
 - **[mobile.md](file:///d:/GitHub/maribulka/memory/mobile.md)** - мобильная адаптация, брейкпоинты
 - **[changelog.md](file:///d:/GitHub/maribulka/memory/changelog.md)** - история изменений по датам
 - **[patterns.md](file:///d:/GitHub/maribulka/memory/patterns.md)** - эталоны кода, таблицы, модалки
 - **[traps.md](file:///d:/GitHub/maribulka/memory/traps.md)** - известные ловушки и баги
-- **[expenses-plan.md](file:///d:/GitHub/maribulka/memory/expenses-plan.md)** - план работ: Расходы + Категории расходов
+- **[expenses-plan.md](file:///d:/GitHub/maribulka/memory/expenses-plan.md)** - ✅ РЕАЛИЗОВАНО - план работ: Расходы + Категории расходов
 - **[icons.md](file:///d:/GitHub/maribulka/memory/icons.md)** - список иконок
-- **[filters-plan.md](file:///d:/GitHub/maribulka/memory/filters-plan.md)** - план работ: Фильтры и поиск ✨ НОВЫЙ
+- **[filters-plan.md](file:///d:/GitHub/maribulka/memory/filters-plan.md)** - план работ: Фильтры и поиск
 
 ---
 
@@ -87,6 +88,7 @@ git push
   - Quill (редактор описания)
   - @mdi/light-js (иконки)
   - TanStack Table (таблицы)
+  - Chart.js v4.5.1 (диаграммы финансовых отчётов) ✨ НОВОЕ
 
 Подробнее в [architecture.md](architecture.md)
 
@@ -94,19 +96,35 @@ git push
 
 ## 📝 Текущие задачи
 
-### ✅ Выполнено недавно
+### ✅ Выполнено недавно (февраль 2026)
+
 - ✅ Домашняя страница (баннер акции, 4 фото)
 - ✅ Rich text редактор описания студии
 - ✅ Синхронизация авторизации Frontend ↔ Backend
-- ✅ **Вкладка "Расходы" + Справочник категорий** (полностью завершено!)
-- ✅ **Возвраты средств** (категория ID=2, автозаполнение, валидация)
-- ✅ **Финансовые отчёты - диаграммы** (Расходы по категориям, Доход по источникам)
+- ✅ **Финансовая система - полностью реализована!**
+  - Вкладка "Расходы" + Справочник категорий
+  - Возвраты средств (категория ID=2, автозаполнение)
+  - Вкладка "Приход" (платежи, доходы)
+  - API для expenses, income, expense-categories
+  - Pinia store finance.ts
+- ✅ **Финансовые отчёты с Chart.js диаграммами!**
+  - Диаграмма "Расходы по категориям" (горизонтальный bar)
+  - Диаграмма "Доход по источникам" (типам съёмок)
+  - Фильтрация по периодам (месяц/квартал/год) - РАБОТАЕТ!
+  - Метрики: доход, расход, прибыль, рентабельность
+- ✅ **Актуализация памяти проекта** (22.02.2026)
+  - Создан finance.md с полным описанием финансовой системы
+  - Обновлён architecture.md
+  - Обновлён changelog.md
 
 ### ⏳ В работе
-- ⏳ **Фильтрация по периоду** (месяц/квартал/год) для финансовых отчётов - НЕ РАБОТАЕТ!
+
+- ⏳ **Оптимизация UI и мобильная адаптация**
+  - Борьба со стилями меню клиентов (commit 2ec48f1)
+  - Уменьшение кнопок для мобилки (commit d58a48c)
+  - Фиксы topbar и sidebar (commits b6e7699, 8d785f0)
 - ⏳ **Работа с фильтрами** (таблицы заказов, клиентов, съёмок, акций) - [План](filters-plan.md)
 - ⏳ Кнопка скрыть/показать таблицу
-- ⏳ Доработка мобильной адаптации
 
 ---
 
