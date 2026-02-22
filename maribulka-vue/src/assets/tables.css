@@ -223,7 +223,7 @@
   padding: 12px;
   text-align: right;
   color: var(--tableTextColor);
-  font-size: var(--generalTextSizeH2);
+  font-size: var(--generalTextSizeSmall);
 }
 
 .table-total strong {
@@ -377,7 +377,7 @@
   text-align: center;
   padding: 24px;
   color: var(--textMutedLightColor);
-  font-size: var(--generalTextSizeH2);
+  font-size: var(--generalTextSizeSmall);
   font-style: italic;
 }
 
