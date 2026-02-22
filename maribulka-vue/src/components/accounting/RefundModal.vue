@@ -24,15 +24,19 @@ const refundComment = ref('')
 
 // Баланс кассы (загружается при открытии модалки)
 const cashBalance = ref<number | null>(null)
+const loadingBalance = ref(false)
 
 // Загрузка баланса кассы при открытии модалки
 watch(() => props.isVisible, async (visible) => {
   if (visible) {
+    loadingBalance.value = true
     const balanceData = await financeStore.fetchCashBalance()
     cashBalance.value = balanceData.balance
+    loadingBalance.value = false
   } else {
     // Сбрасываем при закрытии
     cashBalance.value = null
+    loadingBalance.value = false
   }
 })
 
@@ -121,8 +125,11 @@ function handleClose() {
 
           <div class="divider"></div>
 
-          <!-- Предупреждение о недостатке средств -->
-          <div v-if="!hasSufficientCash" class="warning-message">
+          <!-- Статус баланса кассы -->
+          <div v-if="loadingBalance" class="info-message">
+            ⏳ Проверка баланса кассы...
+          </div>
+          <div v-else-if="!hasSufficientCash" class="warning-message">
             ⚠️ В кассе недостаточно средств для возврата!
           </div>
           <div v-else class="success-message">
@@ -137,7 +144,7 @@ function handleClose() {
           <button
             class="glass-button"
             @click="handleConfirm"
-            :disabled="!hasSufficientCash"
+            :disabled="loadingBalance || !hasSufficientCash"
             title="Выполнить возврат"
           >
             <svg-icon type="mdi" :path="mdilCheck" />
@@ -148,67 +155,3 @@ function handleClose() {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
-
-<style scoped>
-.refund-info {
-  margin: 20px 0;
-}
-
-.refund-amount {
-  font-weight: bold;
-  color: #ff5722;
-  font-size: 1.1em;
-}
-
-.divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 15px 0;
-}
-
-.form-group {
-  margin: 15px 0;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.form-textarea {
-  width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: var(--text-color);
-  font-family: inherit;
-  font-size: 14px;
-  resize: vertical;
-}
-
-.form-textarea:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.warning-message {
-  padding: 10px;
-  background: rgba(255, 87, 34, 0.2);
-  border-left: 3px solid #ff5722;
-  border-radius: 4px;
-  color: #ff9800;
-  font-weight: 500;
-}
-
-.success-message {
-  padding: 10px;
-  background: rgba(76, 175, 80, 0.2);
-  border-left: 3px solid #4caf50;
-  border-radius: 4px;
-  color: #4caf50;
-  font-weight: 500;
-}
-</style>
