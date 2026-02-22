@@ -341,8 +341,12 @@ function handleMonthChange(event: Event) {
 
 // Actions
 function handleAddBooking() {
-  // Устанавливаем сегодняшнюю дату по умолчанию
-  addModalDefaultDate.value = new Date().toISOString().split('T')[0] as string
+  // Устанавливаем сегодняшнюю дату по умолчанию (локальная дата, не UTC)
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  addModalDefaultDate.value = `${year}-${month}-${day}`
   showAddModal.value = true
 }
 
