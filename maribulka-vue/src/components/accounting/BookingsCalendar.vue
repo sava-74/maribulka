@@ -24,6 +24,7 @@ import DeliverBookingModal from './DeliverBookingModal.vue'
 import ViewBookingModal from './ViewBookingModal.vue'
 import CancelBookingModal from './CancelBookingModal.vue'
 import ConfirmModal from '../ConfirmModal.vue'
+import { getLocalDateString } from '../../config/timezone'
 import '../../assets/tables.css'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
@@ -341,12 +342,8 @@ function handleMonthChange(event: Event) {
 
 // Actions
 function handleAddBooking() {
-  // Устанавливаем сегодняшнюю дату по умолчанию (локальная дата, не UTC)
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-  addModalDefaultDate.value = `${year}-${month}-${day}`
+  // Устанавливаем сегодняшнюю дату по умолчанию (UTC+5 из конфига)
+  addModalDefaultDate.value = getLocalDateString()
   showAddModal.value = true
 }
 

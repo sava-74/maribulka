@@ -4,6 +4,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdilCancel, mdilCheck } from '@mdi/light-js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
+import { getLocalDateString } from '../../config/timezone'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/responsive.css'
 
@@ -136,17 +137,8 @@ function getActivePromotionForDate(date: string): number | null {
 
 // Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
 const availablePromotions = computed(() => {
-  // Используем дату съёмки, если выбрана, иначе сегодня (локальная дата, не UTC)
-  let targetDate: string
-  if (shootingDate.value) {
-    targetDate = shootingDate.value
-  } else {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = String(today.getMonth() + 1).padStart(2, '0')
-    const day = String(today.getDate()).padStart(2, '0')
-    targetDate = `${year}-${month}-${day}`
-  }
+  // Используем дату съёмки, если выбрана, иначе сегодня (UTC+5 из конфига)
+  const targetDate = shootingDate.value || getLocalDateString()
 
   return referencesStore.promotions.filter(promo => {
     // Бессрочные акции всегда доступны
