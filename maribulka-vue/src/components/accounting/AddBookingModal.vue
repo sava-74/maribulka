@@ -136,15 +136,16 @@ function getActivePromotionForDate(date: string): number | null {
 
 // Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
 const availablePromotions = computed(() => {
-  const today = new Date().toISOString().split('T')[0] as string
+  // Используем дату съёмки, если выбрана, иначе сегодня
+  const targetDate = (shootingDate.value || new Date().toISOString().split('T')[0]) as string
 
   return referencesStore.promotions.filter(promo => {
     // Бессрочные акции всегда доступны
     if (!promo.start_date && !promo.end_date) return true
 
-    // Срочные акции доступны только если сегодня в диапазоне
+    // Срочные акции доступны только если дата съёмки в диапазоне
     if (promo.start_date && promo.end_date) {
-      return today >= promo.start_date && today <= promo.end_date
+      return targetDate >= promo.start_date && targetDate <= promo.end_date
     }
 
     return false
