@@ -45,6 +45,7 @@ const monthInput = ref<HTMLInputElement | null>(null)
 
 // Модальные окна
 const showAddModal = ref(false)
+const addModalDefaultDate = ref('') // Дата по умолчанию для модалки нового заказа
 const showEditModal = ref(false)
 const showPaymentModal = ref(false)
 const showDeleteModal = ref(false)
@@ -340,6 +341,8 @@ function handleMonthChange(event: Event) {
 
 // Actions
 function handleAddBooking() {
+  // Устанавливаем сегодняшнюю дату по умолчанию
+  addModalDefaultDate.value = new Date().toISOString().split('T')[0] as string
   showAddModal.value = true
 }
 
@@ -623,7 +626,7 @@ function openMonthPicker() {
     </div>
 
     <!-- Модальные окна -->
-    <AddBookingModal :isVisible="showAddModal" @close="closeModal" />
+    <AddBookingModal :isVisible="showAddModal" :defaultDate="addModalDefaultDate" @close="closeModal" />
     <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
