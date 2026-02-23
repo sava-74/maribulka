@@ -8,6 +8,7 @@ import LoginModal from './components/LoginModal.vue'
 import Accounting from './components/accounting/Accounting.vue'
 import References from './components/accounting/References.vue'
 import Settings from './components/accounting/Settings.vue'
+import Portfolio from './components/Portfolio.vue'
 import Home from './views/Home.vue'
 
 // Глобальные стили
@@ -39,10 +40,7 @@ onMounted(async () => {
       <Home v-if="navStore.currentPage === 'home'" />
 
       <!-- Портфолио -->
-      <div v-else-if="navStore.currentPage === 'portfolio'" class="page-portfolio">
-        <h1>📸 Портфолио</h1>
-        <p>Раздел в разработке</p>
-      </div>
+      <Portfolio v-else-if="navStore.currentPage === 'portfolio'" />
 
       <!-- Бухгалтерия (только для админа) -->
       <Accounting v-else-if="navStore.currentPage === 'accounting' && authStore.isAdmin" />

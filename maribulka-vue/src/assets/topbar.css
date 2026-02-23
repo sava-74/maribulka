@@ -6,7 +6,7 @@
   background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
-  border: 1px solid var(--generalColor);
+  border: 2px solid var(--generalColor);
   border-bottom-left-radius: var(--panelRadius);
   border-bottom-right-radius: var(--panelRadius);
   border-top: none;

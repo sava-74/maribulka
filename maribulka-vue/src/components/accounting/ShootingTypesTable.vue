@@ -218,8 +218,8 @@ function refreshData() {
 <template>
   <div class="table-general">
     <!-- Toolbar с кнопками -->
-    <div class="header-with-action">
-      <div class="action-buttons">
+    <div class="table-toolbar">
+      <div class="table-actions">
         <button
           class="glass-button"
           @click="handleAdd"

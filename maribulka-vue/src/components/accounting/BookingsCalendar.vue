@@ -444,9 +444,9 @@ function openMonthPicker() {
 <template>
   <div class="bookings-calendar table-general">
     <!-- Toolbar с заголовком и кнопками -->
-    <div class="header-with-action">
+    <div class="table-toolbar">
       <!-- Кнопки действий -->
-      <div class="action-buttons">
+      <div class="table-actions">
         <button
           class="glass-button"
           @click="handleAddBooking"

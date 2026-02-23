@@ -2,22 +2,81 @@
 
 .table-general {
   position: relative;
-  /*margin-top: 30px;*/
-  padding: 20px;
-  border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-bgFilter);
-  backdrop-filter: var(--glass-bgFilter);
-  box-shadow: var(--glass-shadowPanel);
-  /*overflow: hidden;*/
-
-
-
-
-
-
 }
+
+/* Панель инструментов таблицы (заголовок + кнопки управления) */
+.table-toolbar {
+  display: flex;
+  /*justify-content: space-between;*/
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Группа кнопок управления таблицей */
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Панель фильтров */
+.filters-panel {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 3px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--glass-tab-inactive-border);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+/* Группа фильтра */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 50px;
+}
+
+/* Лейбл фильтра*/
+.filter-label {
+  font-size: var(--generalTextSize);
+  color: var(--generalTextColor);
+  font-weight: 600;
+}
+
+/* Селект фильтра - стиль как у glass-button */
+.filter-select {
+  height: 13px;
+  padding: 0 5px;
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--generalTextColor);
+  font-size: var(--generalTextSizeSmall);
+  border: 1px solid var(--glass-tab-inactive-border);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Input и select одинаковой высоты */
+input.filter-select {
+  height: 13px;
+}
+
+select.filter-select {
+  height: 13px;
+  padding: 0 3px;
+}
+
+.filter-select:hover {
+  border: 1px solid var(--generalTextColor);
+}
+
+.filter-select:focus {
+  outline: none;
+  border: 1px solid var(--generalColor);  
+}
+
 
 /* Контейнер таблицы с прокруткой */
 .table-container {
@@ -29,7 +88,8 @@
   overflow-x: auto;
   overflow-y: auto;
   max-height: calc(100vh - 200px);
-  border: 1px solid var(--generalTabBorderColor);
+  border-left: 1px solid var(--generalTabBorderColor);
+  border-top: 1px solid var(--generalTabBorderColor);
 }
 
 /* Подложка для таблицы (bookings-calendar) */
@@ -48,7 +108,8 @@
    overflow-y: auto !important;
    overflow-x: auto !important;
    position: relative;
-   border: 1px solid var(--generalTabBorderColor);
+   border-left: 1px solid var(--generalTabBorderColor);
+   border-top: 1px solid var(--generalTabBorderColor);
  }
 
 .accounting-table {
@@ -78,9 +139,10 @@
   text-overflow: ellipsis;
 }
 
+/*
 .accounting-table thead th {
   border-bottom: 2px solid var(--generalTabBorderColor);
-}
+}*/
 
 .accounting-table th {
   font-weight: 600;

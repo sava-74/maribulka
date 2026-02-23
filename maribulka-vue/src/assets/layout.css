@@ -10,49 +10,6 @@
 
 
 
-/* Навигация с вкладками — прилипает при прокрутке 
-.tabs {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  position: sticky;
-  top: 80px;
-  z-index: 50;
-  /*background: linear-gradient(to bottom, #f9f9f9 70%, transparent);
-}
-
-/* Обёртка навигации Accounting - как table-general 
-.accounting-nav {
-  position: sticky;
-  top: 86px;
-  z-index: 100;
-  /*margin-top: 7px;*//*
-  padding: 16px;
-  background: var(--glass-bg);
-  border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  box-shadow: var(--glass-shadowPanel);
-  -webkit-backdrop-filter: var(--glass-bgFilter);
-  backdrop-filter: var(--glass-bgFilter);
-  display: flex;
-  justify-content: center;
-  overflow-x: visible;
-}
-
-/* Отступ контента от навигации 
-.accounting-nav + .tab-content {
-  margin-top: 20px;
-}
-
-/* Контент вкладок 
-.tab-content {
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding-top: 2px;
-  /*min-height: 500px;
-}
 
 /* Заголовки страниц 
 .page-header {
@@ -79,15 +36,9 @@
   font-size: var(--generalTextSizeH2);
 }
 
-/* Контейнер с заголовком и кнопкой действия 
-.header-with-action {
-  display: flex;
-  /*justify-content: space-between;*//*
-  align-items: center;
-  margin-bottom: 10px;
-}
 
-/* Контейнер с заголовком и кнопкой (центрирование по вертикали) 
+
+/* Контейнер с заголовком и кнопкой (центрирование по вертикали)
 .header-with-action-center {
   display: flex;
   justify-content: space-between;
@@ -95,11 +46,7 @@
   margin-bottom: 20px;
 }
 
-/* Группа кнопок действий 
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
+
 
 /* Группа вкладок/подразделов 
 .subsection-tabs {
@@ -140,91 +87,6 @@
   font-size: var(--generalTextSizeH2);
 }
 
-/* Панель фильтров 
-.filters-panel {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 15px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.4);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-/* Группа фильтра 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 150px;
-}
-
-/* Лейбл фильтра
-.filter-label {
-  font-size: var(--generalTextSizeH1);
-  color: #333;
-  font-weight: 500;
-}
-
-/* Селект фильтра - стиль как у glass-button 
-.filter-select {
-  height: 40px;
-  padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid var(--generalColor);
-  background: rgba(255, 255, 255, 0.4);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-  color: #333;
-  font-size: var(--generalTextSizeH2);
-  cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.filter-select:hover {
-  border-color: var(--generalColor);
-  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: var(--generalColor);
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(74, 222, 128, 0.3);
-}
-
-/* Опции выпадающего списка 
-.filter-select option {
-  background: rgba(255, 255, 255, 0.95);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  color: #333;
-  padding: 10px;
-  border-radius: 4px;
-  margin: 2px 0;
-}
-
-/* Стили для выпадающего списка (работает в некоторых браузерах) 
-.filter-select::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  padding: 4px;
-}
-
-select.filter-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234ade80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px;
-  padding-right: 35px;
-}
-
 /* ========== LAYOUT MOBILE (<=768px) ========== */
 @media (max-width: 480px) {
   .accounting {
@@ -232,26 +94,11 @@ select.filter-select {
     padding: 0;
   }
 
-  .tabs {
-    gap: 4px;
-    top: 55px;
-    padding: 8px 10px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
 
-  .table-general {
-    padding: 10px 5px 10px 5px !important;
-  }
 
-  .header-with-action {
-    flex-wrap: wrap;
-  }
+ 
 
-  .action-buttons {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  
 
   .filters-panel {
     flex-direction: column;
@@ -261,12 +108,6 @@ select.filter-select {
   .filter-group {
     width: 100%;
     min-width: unset;
-  }
-
-  .accounting-nav {
-    /*margin-top: 70px;*/
-    padding: 0;
-    top: 70px !important;
   }
 }
 

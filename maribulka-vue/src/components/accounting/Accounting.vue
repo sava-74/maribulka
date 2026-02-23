@@ -5,9 +5,6 @@ import BookingsCalendar from './BookingsCalendar.vue'
 import IncomeTable from './IncomeTable.vue'
 import ExpensesTable from './ExpensesTable.vue'
 import Reports from './Reports.vue'
-import '../../assets/buttons.css'
-import '../../assets/layout.css'
-import '../../assets/responsive.css'
 
 // Текущая активная вкладка
 const activeTab = ref('bookings')
@@ -22,58 +19,50 @@ function switchTab(tab: string) {
 </script>
 
 <template>
-  <div class="accounting">
-    <!-- Навигация (вкладки) -->
-    <div class="accounting-nav">
-      <nav class="tabs">
+  <div class="glass-panel-tabs glass-panel-tabs-sticky">
+      <!-- Навигация вкладок -->
+      <div class="glass-panel-tabs-nav">
         <button
-          class="glass-button-text"
-          @click="switchTab('bookings')"
+          class="glass-button-tab"
           :class="{ active: activeTab === 'bookings' }"
+          @click="switchTab('bookings')"
         >
           Запись
         </button>
         <button
-          class="glass-button-text"
-          @click="switchTab('income')"
+          class="glass-button-tab"
           :class="{ active: activeTab === 'income' }"
+          @click="switchTab('income')"
         >
           Приход
         </button>
         <button
-          class="glass-button-text"
-          @click="switchTab('expenses')"
+          class="glass-button-tab"
           :class="{ active: activeTab === 'expenses' }"
+          @click="switchTab('expenses')"
         >
           Расход
         </button>
         <button
-          class="glass-button-text"
-          @click="switchTab('reports')"
+          class="glass-button-tab"
           :class="{ active: activeTab === 'reports' }"
+          @click="switchTab('reports')"
         >
           Отчёты
         </button>
-      </nav>
-    </div>
+      </div>
 
-    <!-- Контент вкладок -->
-    <div class="tab-content">
-      <template v-if="activeTab === 'bookings'">
-        <!-- Календарь class="calendar-container" -->
-        
+      <!-- Панель контента -->
+      <div class="glass-panel-tabs-content">
+        <template v-if="activeTab === 'bookings'">
           <BookingsFullCalendar :showTable="showTable" @toggle-table="showTable = !showTable" />
-        
-        <!-- Таблица -->
-        
           <div v-if="showTable" style="margin-top: 20px;">
             <BookingsCalendar />
           </div>
-        
-      </template>
-      <IncomeTable v-if="activeTab === 'income'" />
-      <ExpensesTable v-if="activeTab === 'expenses'" />
-      <Reports v-if="activeTab === 'reports'" />
-    </div>
+        </template>
+        <IncomeTable v-if="activeTab === 'income'" />
+        <ExpensesTable v-if="activeTab === 'expenses'" />
+        <Reports v-if="activeTab === 'reports'" />
+      </div>
   </div>
 </template>

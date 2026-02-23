@@ -5,6 +5,7 @@ import App from './App.vue'
 // Стили
 import './assets/theme.css'
 import './assets/buttons.css'
+import './assets/glass-panel.css'
 import './assets/sidebar.css'
 import './assets/topbar.css'
 import './assets/modal.css'

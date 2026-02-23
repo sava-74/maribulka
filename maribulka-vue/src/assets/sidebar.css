@@ -3,11 +3,11 @@
     top: 40px;
     left: 0px;
     bottom: 10px;
-    width: 30px; /* Сложенное состояние */
+    width: 20px; /* Сложенное состояние */
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
-    border: 1px solid var(--generalColor); /* Делаем саму рамку тоже чуть прозрачнее */
+    border: 2px solid var(--generalColor); /* Делаем саму рамку тоже чуть прозрачнее */
     border-top-right-radius: var(--panelRadius);
     border-bottom-right-radius: var(--panelRadius);
     border-left: none;
@@ -23,14 +23,14 @@
 }
 
 .side-bar.expanded {
-    width: 200px; /* Развернутое состояние */
+    width: 132px; /* Развернутое состояние */
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     white-space: nowrap;
 }
 
@@ -78,7 +78,7 @@
     left: 5px !important;
     width: 0px;
     background: transparent;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     box-shadow: 0 0 0 0 transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -106,7 +106,7 @@
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
-    border: 1px solid var(--generalColor);
+    border: 2px solid var(--generalColor);
     box-shadow: var(--glass-shadowPanel);
     padding: 5px 4px;
     overflow: visible; /* Тени не обрезаем */

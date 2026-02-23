@@ -5,10 +5,6 @@ import ClientsTable from './ClientsTable.vue'
 import ShootingTypesTable from './ShootingTypesTable.vue'
 import PromotionsTable from './PromotionsTable.vue'
 import ExpenseCategoriesTable from './ExpenseCategoriesTable.vue'
-import '../../assets/buttons.css'
-import '../../assets/tables.css'
-import '../../assets/layout.css'
-import '../../assets/panel.css'
 
 const referencesStore = useReferencesStore()
 const activeSection = ref('clients')
@@ -22,60 +18,53 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="accounting">
-    <!-- Навигация (вкладки) -->
-    <div class="panel panel-toolbar">
-      <button
-        class="glass-button-text"
-        :class="{ active: activeSection === 'clients' }"
-        @click="activeSection = 'clients'"
-      >
-        Клиенты
-      </button>
-      <button
-        class="glass-button-text"
-        :class="{ active: activeSection === 'shooting-types' }"
-        @click="activeSection = 'shooting-types'"
-      >
-        Типы съёмок
-      </button>
-      <button
-        class="glass-button-text"
-        :class="{ active: activeSection === 'promotions' }"
-        @click="activeSection = 'promotions'"
-      >
-        Акции
-      </button>
-      <button
-        class="glass-button-text"
-        :class="{ active: activeSection === 'expense-categories' }"
-        @click="activeSection = 'expense-categories'"
-      >
-        Категории расходов
-      </button>
-    </div>
-
-    <!-- Контент вкладок -->
-    <div class="panel">
-      <!-- Клиенты --> 
-      <div v-if="activeSection === 'clients'">
-        <ClientsTable />
+  <div class="glass-panel-tabs glass-panel-tabs-sticky">
+      <!-- Навигация вкладок -->
+      <div class="glass-panel-tabs-nav">
+        <button
+          class="glass-button-tab"
+          :class="{ active: activeSection === 'clients' }"
+          @click="activeSection = 'clients'"
+        >
+          Клиенты
+        </button>
+        <button
+          class="glass-button-tab"
+          :class="{ active: activeSection === 'shooting-types' }"
+          @click="activeSection = 'shooting-types'"
+        >
+          Типы съёмок
+        </button>
+        <button
+          class="glass-button-tab"
+          :class="{ active: activeSection === 'promotions' }"
+          @click="activeSection = 'promotions'"
+        >
+          Акции
+        </button>
+        <button
+          class="glass-button-tab"
+          :class="{ active: activeSection === 'expense-categories' }"
+          @click="activeSection = 'expense-categories'"
+        >
+          Категории расходов
+        </button>
       </div>
 
-      <!-- Типы съёмок -->
-      <div v-if="activeSection === 'shooting-types'">
-        <ShootingTypesTable />
+      <!-- Панель контента -->
+      <div class="glass-panel-tabs-content">
+        <div v-if="activeSection === 'clients'">
+          <ClientsTable />
+        </div>
+        <div v-if="activeSection === 'shooting-types'">
+          <ShootingTypesTable />
+        </div>
+        <div v-if="activeSection === 'promotions'">
+          <PromotionsTable />
+        </div>
+        <div v-if="activeSection === 'expense-categories'">
+          <ExpenseCategoriesTable />
+        </div>
       </div>
-
-      <!-- Акции -->
-      <div v-if="activeSection === 'promotions'">
-        <PromotionsTable />
-      </div>
-
-      <!-- Категории расходов -->
-      <div v-if="activeSection === 'expense-categories'">
-        <ExpenseCategoriesTable />
-      </div>
-    </div>
   </div>
 </template>
