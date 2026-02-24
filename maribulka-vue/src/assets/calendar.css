@@ -9,10 +9,6 @@
 .calendar-container {
   position: relative;
   background: var(--calendar-bg);
-  border: 1px solid var(--generalColor);
-  border-radius: var(--panelRadius);
-  padding: 16px;
-  box-shadow: var(--glass-shadowPanel);
   max-height: 680px;
 }
 

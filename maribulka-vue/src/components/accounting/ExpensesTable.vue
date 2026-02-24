@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import {
   useVueTable,
   getCoreRowModel,
@@ -25,7 +25,28 @@ import '../../assets/layout.css'
 import '../../assets/modal.css'
 import '../../assets/responsive.css'
 
+// Props от родителя
+const props = defineProps<{
+  periodStart: Date
+  periodEnd: Date
+}>()
+
 const financeStore = useFinanceStore()
+
+// Форматирование дат для API (YYYY-MM-DD)
+function formatDateForAPI(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Watch на изменение периода
+watch([() => props.periodStart, () => props.periodEnd], async () => {
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  await financeStore.fetchExpenses(start, end)
+}, { immediate: true })
 
 // Row selection state
 const rowSelection = ref<RowSelectionState>({})
@@ -35,19 +56,11 @@ const columnFilters = ref<ColumnFiltersState>([])
 // Видимость панели фильтров
 const showFilters = ref(false)
 
-// Ref для month input
-const monthInput = ref<HTMLInputElement | null>(null)
-
 // Модальные окна
 const showViewModal = ref(false)
 const showAddModal = ref(false)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
-
-onMounted(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7)
-  financeStore.setCurrentExpenseMonth(currentMonth)
-})
 
 // Форматирование даты в DD.MM.YY
 function formatDate(dateString: string) {
@@ -168,12 +181,6 @@ function resetFilters() {
   columnFilters.value = []
 }
 
-// Смена месяца
-function handleMonthChange(event: Event) {
-  const target = event.target as HTMLInputElement
-  financeStore.setCurrentExpenseMonth(target.value)
-}
-
 // Actions
 function handleAdd() {
   showAddModal.value = true
@@ -202,7 +209,9 @@ async function confirmDelete() {
 }
 
 function handleSuccess() {
-  financeStore.fetchExpenses(financeStore.currentExpenseMonth)
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  financeStore.fetchExpenses(start, end)
   rowSelection.value = {}
 }
 
@@ -210,14 +219,10 @@ function toggleFilters() {
   showFilters.value = !showFilters.value
 }
 
-function openMonthPicker() {
-  if (monthInput.value) {
-    monthInput.value.showPicker?.()
-  }
-}
-
 function refreshData() {
-  financeStore.fetchExpenses(financeStore.currentExpenseMonth)
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  financeStore.fetchExpenses(start, end)
 }
 </script>
 
@@ -276,19 +281,6 @@ function refreshData() {
 
     <!-- Панель фильтров -->
     <div v-if="showFilters" class="filters-panel">
-      <!-- Селектор месяца -->
-      <div class="filter-group">
-        <label class="filter-label" style="user-select: none;">Месяц:</label>
-        <input
-          ref="monthInput"
-          type="month"
-          class="filter-select"
-          :value="financeStore.currentExpenseMonth"
-          @change="handleMonthChange"
-          @click="openMonthPicker"
-        />
-      </div>
-
       <!-- Фильтр по категории -->
       <div class="filter-group">
         <label class="filter-label">Категория:</label>
@@ -348,12 +340,12 @@ function refreshData() {
     </div>
 
     <div v-else class="empty-state">
-      <p>📭 Нет расходов за выбранный месяц</p>
+      <p>📭 Нет расходов за выбранный период</p>
     </div>
 
-    <!-- Всего за месяц (ПОСЛЕ таблицы) -->
+    <!-- Всего за период (ПОСЛЕ таблицы) -->
     <div class="table-total">
-      <span>Всего за месяц: <strong>{{ financeStore.totalExpenses.toFixed(2) }} ₽</strong></span>
+      <span>Всего за период: <strong>{{ financeStore.totalExpenses.toFixed(2) }} ₽</strong></span>
     </div>
 
     <!-- Модалки -->

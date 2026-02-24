@@ -37,11 +37,18 @@ export const useFinanceStore = defineStore('finance', () => {
   // ========================================
   // ПРИХОД
   // ========================================
-  async function fetchIncome(month?: string) {
+  async function fetchIncome(start?: string, end?: string) {
     loadingIncome.value = true
     try {
-      const queryMonth = month || currentMonth.value
-      const response = await fetch(`${API_URL}/income.php?month=${queryMonth}`)
+      // Если переданы start и end, используем их, иначе текущий месяц
+      let url = `${API_URL}/income.php`
+      if (start && end) {
+        url += `?start=${start}&end=${end}`
+      } else {
+        url += `?month=${currentMonth.value}`
+      }
+
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -86,11 +93,18 @@ export const useFinanceStore = defineStore('finance', () => {
   // ========================================
   // РАСХОД
   // ========================================
-  async function fetchExpenses(month?: string) {
+  async function fetchExpenses(start?: string, end?: string) {
     loadingExpenses.value = true
     try {
-      const queryMonth = month || currentExpenseMonth.value
-      const response = await fetch(`${API_URL}/expenses.php?month=${queryMonth}`)
+      // Если переданы start и end, используем их, иначе текущий месяц
+      let url = `${API_URL}/expenses.php`
+      if (start && end) {
+        url += `?start=${start}&end=${end}`
+      } else {
+        url += `?month=${currentExpenseMonth.value}`
+      }
+
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -117,7 +131,7 @@ export const useFinanceStore = defineStore('finance', () => {
       
       const result = await response.json()
       if (result.success) {
-        await fetchExpenses(currentExpenseMonth.value)
+        await fetchExpenses()
       }
       return result
     } catch (error) {
@@ -140,7 +154,7 @@ export const useFinanceStore = defineStore('finance', () => {
       
       const result = await response.json()
       if (result.success) {
-        await fetchExpenses(currentExpenseMonth.value)
+        await fetchExpenses()
       }
       return result
     } catch (error) {
@@ -161,7 +175,7 @@ export const useFinanceStore = defineStore('finance', () => {
       
       const result = await response.json()
       if (result.success) {
-        await fetchExpenses(currentExpenseMonth.value)
+        await fetchExpenses()
       }
       return result
     } catch (error) {
@@ -193,19 +207,25 @@ export const useFinanceStore = defineStore('finance', () => {
 
   function setCurrentMonth(month: string) {
     currentMonth.value = month
-    fetchIncome(month)
+    fetchIncome()
   }
 
   function setCurrentExpenseMonth(month: string) {
     currentExpenseMonth.value = month
-    fetchExpenses(month)
+    fetchExpenses()
   }
 
   // Получить доход по типам съёмок
-  async function fetchIncomeByShootingType(month?: string) {
+  async function fetchIncomeByShootingType(start?: string, end?: string) {
     try {
-      const queryMonth = month || currentMonth.value
-      const response = await fetch(`${API_URL}/bookings.php?action=income_by_type&month=${queryMonth}`)
+      let url = `${API_URL}/bookings.php?action=income_by_type`
+      if (start && end) {
+        url += `&start=${start}&end=${end}`
+      } else {
+        url += `&month=${currentMonth.value}`
+      }
+
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }

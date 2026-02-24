@@ -45,8 +45,27 @@ try {
                 break;
             }
 
-            if (isset($_GET['month'])) {
-                // Расходы за месяц
+            if (isset($_GET['start']) && isset($_GET['end'])) {
+                // Расходы за период (НОВОЕ!)
+                $stmt = $db->prepare("
+                    SELECT
+                        e.*,
+                        ec.name as category_name,
+                        c.name as client_name,
+                        st.name as shooting_type_name
+                    FROM expenses e
+                    LEFT JOIN expense_categories ec ON e.category = ec.id
+                    LEFT JOIN bookings b ON e.booking_id = b.id
+                    LEFT JOIN clients c ON b.client_id = c.id
+                    LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                    WHERE e.date BETWEEN ? AND ?
+                    ORDER BY e.date DESC
+                ");
+                $stmt->execute([$_GET['start'], $_GET['end']]);
+                $result = $stmt->fetchAll();
+                echo json_encode($result);
+            } elseif (isset($_GET['month'])) {
+                // Расходы за месяц (обратная совместимость)
                 $stmt = $db->prepare("
                     SELECT
                         e.*,

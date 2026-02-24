@@ -27,11 +27,18 @@ export const useBookingsStore = defineStore('bookings', () => {
   // ========================================
   // ЗАПИСИ
   // ========================================
-  async function fetchBookings(month?: string) {
+  async function fetchBookings(start?: string, end?: string) {
     loading.value = true
     try {
-      const queryMonth = month || currentMonth.value
-      const response = await fetch(`${API_URL}/bookings.php?month=${queryMonth}`)
+      // Если переданы start и end, используем их, иначе текущий месяц
+      let url = `${API_URL}/bookings.php`
+      if (start && end) {
+        url += `?start=${start}&end=${end}`
+      } else {
+        url += `?month=${currentMonth.value}`
+      }
+
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }

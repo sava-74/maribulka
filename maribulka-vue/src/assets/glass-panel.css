@@ -28,9 +28,22 @@
 /* Контейнер для кнопок вкладок */
 .glass-panel-tabs-nav {
   display: flex;
+  justify-content: space-between;
   gap: 0;
   position: relative;
   z-index: 3;
+}
+
+/* Группы вкладок */
+.tabs-group-left {
+  display: flex;
+  gap: 0;
+}
+
+.tabs-group-right {
+  display: flex;
+  gap: 0;
+  margin-right: var(--panelRadius);
 }
 
 /* Кнопка вкладки (базовые стили) */
@@ -54,8 +67,13 @@
 }
 
 /* Первая кнопка вкладки - сдвиг вправо */
-.glass-button-tab:first-child {
+.tabs-group-left .glass-button-tab:first-child {
   margin-left: var(--panelRadius);
+}
+
+/* Кнопка фильтра периода */
+.period-filter-button {
+  text-align: center;
 }
 
 /* Активная вкладка */

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { 
+import {
   mdiCashPlus,        // Доход (вместо 💰)
-  mdiCashMinus,       // Расход (вместо 💸)  
+  mdiCashMinus,       // Расход (вместо 💸)
   mdiCashMultiple,    // Прибыль (вместо 💵)
   mdiFinance          // Рентабельность (вместо 📈)
 } from '@mdi/js'
@@ -15,58 +15,29 @@ import '../../assets/layout.css'
 // Регистрация компонентов Chart.js
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
+// Props от родителя
+const props = defineProps<{
+  periodStart: Date
+  periodEnd: Date
+}>()
+
 const financeStore = useFinanceStore()
 
-// Русские названия месяцев
-const monthNames = [
-  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
-  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'
-]
-
-// Периоды для фильтрации
-const periods = [
-  { value: 'month', label: 'Месяц' },
-  { value: 'quarter', label: 'Квартал' },
-  { value: 'year', label: 'Год' }
-]
-
-const selectedPeriod = ref('month')
-const selectedDate = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
-
-// Фильтрация данных по периоду (месяц/квартал/год)
-const filterByPeriod = (items: any[], dateField: string) => {
-  if (selectedPeriod.value === 'month') {
-    // Для месяца фильтруем по selectedDate (YYYY-MM)
-    return items.filter(item => item[dateField]?.startsWith(selectedDate.value))
-  } else if (selectedPeriod.value === 'quarter') {
-    // Для квартала фильтруем по кварталу
-    const dateParts = selectedDate.value.split('-')
-    const yearStr = dateParts[0] || new Date().getFullYear().toString()
-    const month = parseInt(dateParts[1] || '1') - 1
-    const quarter = Math.floor(month / 3)
-    
-    return items.filter(item => {
-      if (!item[dateField]) return false
-      const itemDateParts = item[dateField].split('-')
-      const itemYear = parseInt(itemDateParts[0] || '0')
-      const itemMonth = parseInt(itemDateParts[1] || '1') - 1
-      const itemQuarter = Math.floor(itemMonth / 3)
-      return itemYear === parseInt(yearStr) && itemQuarter === quarter
-    })
-  } else if (selectedPeriod.value === 'year') {
-    // Для года фильтруем по году
-    const year = selectedDate.value.split('-')[0]
-    return items.filter(item => item[dateField]?.startsWith(year))
-  }
-  return items
+// Форматирование дат для API (YYYY-MM-DD)
+function formatDateForAPI(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 // Мемоизированные вычисляемые свойства для оптимизации
+// Данные уже отфильтрованы на backend по периоду из родительского компонента
 const filteredData = computed(() => {
-  const income = filterByPeriod(financeStore.income, 'date')
-  const expenses = filterByPeriod(financeStore.expenses, 'date')
-
-  return { income, expenses }
+  return {
+    income: financeStore.income,
+    expenses: financeStore.expenses
+  }
 })
 
 const periodIncomeTotal = computed(() => {
@@ -77,8 +48,7 @@ const periodIncomeTotal = computed(() => {
 })
 
 const periodExpensesTotal = computed(() => {
-  const expensesData = filterByPeriod(financeStore.expenses, 'date')
-  return expensesData.reduce((sum, item) => {
+  return financeStore.expenses.reduce((sum, item) => {
     const amount = parseFloat(item.amount || '0')
     return sum + (isNaN(amount) ? 0 : amount)
   }, 0)
@@ -97,10 +67,7 @@ const periodProfitability = computed(() => {
 const expensesByCategory = computed(() => {
   const categories: Record<string, number> = {}
 
-  // Фильтрация по периоду
-  const expensesData = filterByPeriod(financeStore.expenses, 'date')
-
-  expensesData.forEach(expense => {
+  financeStore.expenses.forEach(expense => {
     const categoryName = expense.category_name || 'Без категории'
     const amount = parseFloat(expense.amount || '0')
     categories[categoryName] = (categories[categoryName] || 0) + (isNaN(amount) ? 0 : amount)
@@ -298,7 +265,9 @@ const createIncomeChart = async () => {
   }
   
   // Загружаем данные
-  const data = await financeStore.fetchIncomeByShootingType(selectedDate.value)
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  const data = await financeStore.fetchIncomeByShootingType(start, end)
   incomeByShootingType.value = data
   
   if (!data || data.length === 0) return
@@ -433,87 +402,26 @@ const createIncomeChart = async () => {
   })
 }
 
-// Обновление диаграммы дохода при изменении данных
-watch(selectedDate, () => {
-  nextTick(() => {
-    createIncomeChart()
-  })
-})
+// Watch на изменение периода
+watch([() => props.periodStart, () => props.periodEnd], async () => {
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
 
-// Форматирование даты для отображения
-const formatDateRange = computed(() => {
-  const parts = selectedDate.value.split('-')
-  if (parts.length !== 2) return ''
-  
-  const yearStr = parts[0]
-  const monthStr = parts[1]
-  
-  if (!yearStr || !monthStr) return ''
-  
-  const year = parseInt(yearStr)
-  const month = parseInt(monthStr) - 1
-  const date = new Date(year, month)
-  
-  switch (selectedPeriod.value) {
-    case 'month':
-      return `${monthNames[date.getMonth()]} ${year}`
-    case 'quarter':
-      const quarter = Math.floor(date.getMonth() / 3) + 1
-      return `${quarter} квартал ${year}`
-    case 'year':
-      return year.toString()
-    default:
-      return ''
-  }
-})
+  await financeStore.fetchIncome(start, end)
+  await financeStore.fetchExpenses(start, end)
 
-// Загрузка данных при монтировании
-onMounted(async () => {
-  await financeStore.fetchIncome()
-  await financeStore.fetchExpenses()
   nextTick(() => {
     createExpensesChart()
     createIncomeChart()
   })
-})
-
-// Реакция на изменение фильтров
-watch([selectedPeriod, selectedDate], async () => {
-  // Для месяца используем setCurrentMonth, для квартала/года - полную загрузку
-  if (selectedPeriod.value === 'month') {
-    financeStore.setCurrentMonth(selectedDate.value)
-    financeStore.setCurrentExpenseMonth(selectedDate.value)
-  } else {
-    // Для квартала и года загружаем все данные, фильтрация будет в computed
-    await financeStore.fetchIncome()
-    await financeStore.fetchExpenses()
-  }
-  nextTick(() => {
-    createExpensesChart()
-    createIncomeChart()
-  })
-})
+}, { immediate: true })
 </script>
 
 <template>
   <div class="reports">
-    <!-- Панель с заголовком и фильтрами -->
+    <!-- Панель с заголовком -->
     <div class="reports-header-panel">
       <h2 class="page-header-large">Финансовые отчёты</h2>
-      <div class="filter-controls">
-        <select v-model="selectedPeriod" class="glass-select">
-          <option v-for="period in periods" :key="period.value" :value="period.value">
-            {{ period.label }}
-          </option>
-        </select>
-        <input 
-          v-if="selectedPeriod === 'month'" 
-          v-model="selectedDate" 
-          type="month" 
-          class="glass-input"
-          :placeholder="formatDateRange"
-        >
-      </div>
     </div>
 
     <!-- Основные метрики за выбранный период -->
@@ -613,13 +521,12 @@ watch([selectedPeriod, selectedDate], async () => {
             </span>
           </div>
         </div>
-        <p class="comparison-note">* Данные за предыдущий {{ selectedPeriod === 'month' ? 'месяц' : selectedPeriod }}</p>
+        <p class="comparison-note">* Данные за предыдущий период</p>
       </div>
     </div>
 
     <!-- Информационный блок -->
     <div class="info">
-      <p>Анализ за: {{ formatDateRange }}</p>
       <p>Всего записей дохода: {{ filteredData.income.length }}</p>
       <p>Всего расходов: {{ periodExpensesTotal.toLocaleString('ru-RU', { minimumFractionDigits: 2 }) }} ₽</p>
       <p v-if="periodProfit < 0" class="warning">

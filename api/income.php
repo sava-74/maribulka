@@ -154,8 +154,40 @@ try {
         $stmt->execute([$_GET['booking_id']]);
         $result = $stmt->fetchAll();
         echo json_encode($result);
+    } elseif (isset($_GET['start']) && isset($_GET['end'])) {
+        // Платежи за период (НОВОЕ!)
+        $stmt = $db->prepare("
+            SELECT
+                i.*,
+                c.name as client_name,
+                c.phone,
+                st.name as shooting_type_name,
+                b.quantity,
+                b.order_number,
+                b.status as booking_status,
+                b.payment_status,
+                b.total_amount,
+                b.paid_amount,
+                b.booking_date,
+                b.shooting_date,
+                b.delivery_date,
+                b.processed_at,
+                b.id as booking_id,
+                b.created_at as booking_created_at,
+                p.discount_percent as promo_discount_percent
+            FROM income i
+            LEFT JOIN clients c ON i.client_id = c.id
+            LEFT JOIN bookings b ON i.booking_id = b.id
+            LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
+            WHERE i.date BETWEEN ? AND ?
+            ORDER BY i.date DESC
+        ");
+        $stmt->execute([$_GET['start'], $_GET['end']]);
+        $result = $stmt->fetchAll();
+        echo json_encode($result);
     } elseif (isset($_GET['month'])) {
-        // Платежи за месяц
+        // Платежи за месяц (обратная совместимость)
         $stmt = $db->prepare("
             SELECT
                 i.*,

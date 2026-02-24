@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -24,11 +24,30 @@ import '../../assets/layout.css'
 import '../../assets/modal.css'
 import '../../assets/calendar.css'
 
-const props = defineProps<{ showTable: boolean }>()
+const props = defineProps<{
+  showTable: boolean
+  periodStart: Date
+  periodEnd: Date
+}>()
 const emit = defineEmits(['toggle-table'])
 
 const bookingsStore = useBookingsStore()
 const referencesStore = useReferencesStore()
+
+// Форматирование дат для API (YYYY-MM-DD)
+function formatDateForAPI(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Watch на изменение периода
+watch([() => props.periodStart, () => props.periodEnd], async () => {
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  await bookingsStore.fetchBookings(start, end)
+}, { immediate: true })
 
 // Ref для доступа к API календаря
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
@@ -83,8 +102,6 @@ function handleResize() {
 }
 
 onMounted(async () => {
-  const currentMonth = new Date().toISOString().slice(0, 7)
-  bookingsStore.setCurrentMonth(currentMonth)
   await referencesStore.fetchShootingTypes()
 
   // Добавляем слушатель resize
@@ -323,15 +340,6 @@ function handleDatesSet(info: any) {
     currentCalendarDate.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   } else {
     currentCalendarDate.value = ''
-  }
-
-  // Берём середину видимого диапазона, чтобы корректно определить месяц
-  const start = info.start.getTime()
-  const end = info.end.getTime()
-  const middle = new Date(start + (end - start) / 2)
-  const newMonth = middle.toISOString().slice(0, 7)
-  if (newMonth !== bookingsStore.currentMonth) {
-    bookingsStore.setCurrentMonth(newMonth)
   }
 }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import {
   useVueTable,
   getCoreRowModel,
@@ -31,7 +31,28 @@ import '../../assets/layout.css'
 import '../../assets/modal.css'
 import '../../assets/responsive.css'
 
+// Props от родителя
+const props = defineProps<{
+  periodStart: Date
+  periodEnd: Date
+}>()
+
 const bookingsStore = useBookingsStore()
+
+// Форматирование дат для API (YYYY-MM-DD)
+function formatDateForAPI(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Watch на изменение периода
+watch([() => props.periodStart, () => props.periodEnd], async () => {
+  const start = formatDateForAPI(props.periodStart)
+  const end = formatDateForAPI(props.periodEnd)
+  await bookingsStore.fetchBookings(start, end)
+}, { immediate: true })
 
 // Row selection state
 const rowSelection = ref<RowSelectionState>({})
@@ -40,9 +61,6 @@ const columnFilters = ref<ColumnFiltersState>([])
 
 // Видимость панели фильтров (по умолчанию скрыты)
 const showFilters = ref(false)
-
-// Ref для month input
-const monthInput = ref<HTMLInputElement | null>(null)
 
 // Модальные окна
 const showAddModal = ref(false)
@@ -56,10 +74,8 @@ const showCancelModal = ref(false)
 const showConfirmCompleted = ref(false)
 
 onMounted(() => {
-  // Сброс фильтров и установка текущего месяца при входе на вкладку
+  // Сброс фильтров при входе на вкладку
   resetFilters()
-  const currentMonth = new Date().toISOString().slice(0, 7)
-  bookingsStore.setCurrentMonth(currentMonth)
 })
 
 // Форматирование даты в DD.MM.YYYY (убираем время если есть)
@@ -354,12 +370,6 @@ function resetFilters() {
   columnFilters.value = []
 }
 
-// Смена месяца
-function handleMonthChange(event: Event) {
-  const target = event.target as HTMLSelectElement
-  bookingsStore.setCurrentMonth(target.value)
-}
-
 // Actions
 function handleAddBooking() {
   // Устанавливаем сегодняшнюю дату по умолчанию (UTC+5 из конфига)
@@ -431,13 +441,6 @@ function closeModal() {
 
 function toggleFilters() {
   showFilters.value = !showFilters.value
-}
-
-// Открытие календаря при клике на весь input
-function openMonthPicker() {
-  if (monthInput.value) {
-    monthInput.value.showPicker?.()
-  }
 }
 </script>
 
@@ -522,19 +525,6 @@ function openMonthPicker() {
 
     <!-- Панель фильтров -->
     <div v-if="showFilters" class="filters-panel">
-      <!-- Селектор месяца -->
-      <div class="filter-group">
-        <label class="filter-label" style="user-select: none;">Месяц:</label>
-        <input
-          ref="monthInput"
-          type="month"
-          class="filter-select"
-          :value="bookingsStore.currentMonth"
-          @change="handleMonthChange"
-          @click="openMonthPicker"
-        />
-      </div>
-
       <!-- Фильтр по клиенту -->
       <div class="filter-group">
         <label class="filter-label">Клиент:</label>

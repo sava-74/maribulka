@@ -75,25 +75,61 @@ try {
 
     // GET action для получения дохода по типам съёмок
     if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'income_by_type') {
+        $start = $_GET['start'] ?? null;
+        $end = $_GET['end'] ?? null;
         $month = $_GET['month'] ?? null;
-        
+
         $whereClause = "b.payment_status = 'fully_paid' AND (b.status = 'delivered' OR b.status = 'completed')";
-        
-        if ($month) {
-            $whereClause .= " AND DATE_FORMAT(b.shooting_date, '%Y-%m') = '" . $month . "'";
+        $params = [];
+
+        if ($start && $end) {
+            // Период (НОВОЕ!)
+            $whereClause .= " AND b.shooting_date BETWEEN ? AND ?";
+            $params = [$start, $end];
+
+            $stmt = $db->prepare("
+                SELECT
+                    st.name as shooting_type_name,
+                    COUNT(b.id) as count,
+                    SUM(b.total_amount) as total
+                FROM bookings b
+                LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                WHERE $whereClause
+                GROUP BY b.shooting_type_id
+                ORDER BY total DESC
+            ");
+            $stmt->execute($params);
+        } elseif ($month) {
+            // Месяц (обратная совместимость)
+            $whereClause .= " AND DATE_FORMAT(b.shooting_date, '%Y-%m') = ?";
+
+            $stmt = $db->prepare("
+                SELECT
+                    st.name as shooting_type_name,
+                    COUNT(b.id) as count,
+                    SUM(b.total_amount) as total
+                FROM bookings b
+                LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                WHERE $whereClause
+                GROUP BY b.shooting_type_id
+                ORDER BY total DESC
+            ");
+            $stmt->execute([$month]);
+        } else {
+            // Без фильтра
+            $stmt = $db->query("
+                SELECT
+                    st.name as shooting_type_name,
+                    COUNT(b.id) as count,
+                    SUM(b.total_amount) as total
+                FROM bookings b
+                LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                WHERE $whereClause
+                GROUP BY b.shooting_type_id
+                ORDER BY total DESC
+            ");
         }
-        
-        $stmt = $db->query("
-            SELECT
-                st.name as shooting_type_name,
-                COUNT(b.id) as count,
-                SUM(b.total_amount) as total
-            FROM bookings b
-            LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
-            WHERE $whereClause
-            GROUP BY b.shooting_type_id
-            ORDER BY total DESC
-        ");
+
         $result = $stmt->fetchAll();
         echo json_encode($result);
         exit;
@@ -178,8 +214,28 @@ function handleGet($db) {
         $stmt->execute([$_GET['date']]);
         $result = $stmt->fetchAll();
         echo json_encode($result);
+    } elseif (isset($_GET['start']) && isset($_GET['end'])) {
+        // Получить записи за период (НОВОЕ!)
+        $stmt = $db->prepare("
+            SELECT
+                b.*,
+                c.name as client_name,
+                c.phone,
+                st.name as shooting_type_name,
+                p.name as promotion_name,
+                p.discount_percent as promo_discount_percent
+            FROM bookings b
+            LEFT JOIN clients c ON b.client_id = c.id
+            LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+            LEFT JOIN promotions p ON b.promotion_id = p.id
+            WHERE b.shooting_date BETWEEN ? AND ?
+            ORDER BY b.shooting_date, b.created_at
+        ");
+        $stmt->execute([$_GET['start'], $_GET['end']]);
+        $result = $stmt->fetchAll();
+        echo json_encode($result);
     } elseif (isset($_GET['month'])) {
-        // Получить записи за месяц
+        // Получить записи за месяц (обратная совместимость)
         $stmt = $db->prepare("
             SELECT
                 b.*,
