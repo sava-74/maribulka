@@ -5,12 +5,16 @@ import BookingsCalendar from './BookingsCalendar.vue'
 import IncomeTable from './IncomeTable.vue'
 import ExpensesTable from './ExpensesTable.vue'
 import Reports from './Reports.vue'
+import PeriodSelectorModal from './PeriodSelectorModal.vue'
 
 // Текущая активная вкладка
 const activeTab = ref('bookings')
 
 // Показать/скрыть таблицу записей
 const showTable = ref(false)
+
+// Модалка выбора периода
+const showPeriodModal = ref(false)
 
 // Период фильтрации (по умолчанию текущий месяц)
 const periodStart = ref<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
@@ -32,9 +36,15 @@ function switchTab(tab: string) {
   activeTab.value = tab
 }
 
-// Открыть модалку выбора периода (пока просто заглушка)
+// Открыть модалку выбора периода
 function openPeriodModal() {
-  console.log('Открыть модалку выбора периода')
+  showPeriodModal.value = true
+}
+
+// Обновить период
+function updatePeriod(start: Date, end: Date) {
+  periodStart.value = start
+  periodEnd.value = end
 }
 </script>
 
@@ -118,4 +128,13 @@ function openPeriodModal() {
         />
       </div>
   </div>
+
+  <!-- Модалка выбора периода -->
+  <PeriodSelectorModal
+    :is-visible="showPeriodModal"
+    :period-start="periodStart"
+    :period-end="periodEnd"
+    @close="showPeriodModal = false"
+    @update="updatePeriod"
+  />
 </template>
