@@ -104,13 +104,13 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
     box-shadow: var(--glass-shadowButton);
     color: var(--glass-textButtonColor);
-    padding: 0 12px;
+    padding: 0 5px;
     white-space: nowrap;
     font: initial;
-    font-size: clamp(7px, var(--generalTextSize), 12px);
+    font-size: clamp(var(--generalTextSizeExtraSmall), var(--generalTextSizeSmall), var(--generalTextSize));
     font-weight: bold;
     text-transform: initial;
-    letter-spacing: -0.001em;
+    letter-spacing: 0.0em;
     text-align: center;
 }
 
@@ -180,9 +180,9 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease !important;
   box-shadow: var(--glass-shadowButton) !important;
   color: var(--glass-textButtonColor) !important;
-  padding: 0 12px !important;
+  padding: 0 5px !important;
   white-space: nowrap !important;
-  font-size: var(--generalTextSizeH2) !important;
+  font-size: var(--generalTextSize) !important;
   font-weight: 500 !important;
   text-transform: none !important;
 }
@@ -225,8 +225,8 @@
   width: 100%;
   min-width: unset;
   justify-content: flex-start;
-  gap: 10px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: var(--generalTextSize);
 }
 
 .actions-buttons .glass-button-text:disabled {

@@ -38,62 +38,68 @@ function switchTab(tab: string) {
 
 // Открыть модалку выбора периода
 function openPeriodModal() {
+  console.log('🔵 openPeriodModal вызвана')
+  console.log('🔵 showPeriodModal до:', showPeriodModal.value)
   showPeriodModal.value = true
+  console.log('🔵 showPeriodModal после:', showPeriodModal.value)
 }
 
 // Обновить период
 function updatePeriod(start: Date, end: Date) {
+  console.log('🟢 updatePeriod вызвана:', start, end)
   periodStart.value = start
   periodEnd.value = end
+  console.log('🟢 Период обновлён:', periodStart.value, periodEnd.value)
 }
 </script>
 
 <template>
-  <div class="glass-panel-tabs glass-panel-tabs-sticky">
-      <!-- Навигация вкладок -->
-      <div class="glass-panel-tabs-nav">
-        <!-- Левая группа: вкладки -->
-        <div class="tabs-group-left">
-          <button
-            class="glass-button-tab"
-            :class="{ active: activeTab === 'bookings' }"
-            @click="switchTab('bookings')"
-          >
-            Запись
-          </button>
-          <button
-            class="glass-button-tab"
-            :class="{ active: activeTab === 'income' }"
-            @click="switchTab('income')"
-          >
-            Приход
-          </button>
-          <button
-            class="glass-button-tab"
-            :class="{ active: activeTab === 'expenses' }"
-            @click="switchTab('expenses')"
-          >
-            Расход
-          </button>
-          <button
-            class="glass-button-tab"
-            :class="{ active: activeTab === 'reports' }"
-            @click="switchTab('reports')"
-          >
-            Отчёты
-          </button>
-        </div>
+  <div>
+    <div class="glass-panel-tabs glass-panel-tabs-sticky">
+        <!-- Навигация вкладок -->
+        <div class="glass-panel-tabs-nav">
+          <!-- Левая группа: вкладки -->
+          <div class="tabs-group-left">
+            <button
+              class="glass-button-tab"
+              :class="{ active: activeTab === 'bookings' }"
+              @click="switchTab('bookings')"
+            >
+              Запись
+            </button>
+            <button
+              class="glass-button-tab"
+              :class="{ active: activeTab === 'income' }"
+              @click="switchTab('income')"
+            >
+              Приход
+            </button>
+            <button
+              class="glass-button-tab"
+              :class="{ active: activeTab === 'expenses' }"
+              @click="switchTab('expenses')"
+            >
+              Расход
+            </button>
+            <button
+              class="glass-button-tab"
+              :class="{ active: activeTab === 'reports' }"
+              @click="switchTab('reports')"
+            >
+              Отчёты
+            </button>
+          </div>
 
-        <!-- Правая группа: фильтр периода -->
-        <div class="tabs-group-right">
-          <button
-            class="glass-button-tab active period-filter-button"
-            @click="openPeriodModal"
-          >
-            {{ periodText }}
-          </button>
+          <!-- Правая группа: фильтр периода -->
+          <div class="tabs-group-right">
+            <button
+              class="glass-button-tab active period-filter-button"
+              @click="openPeriodModal"
+            >
+              {{ periodText }}
+            </button>
+          </div>
         </div>
-      </div>
 
       <!-- Панель контента -->
       <div class="glass-panel-tabs-content">
@@ -126,15 +132,16 @@ function updatePeriod(start: Date, end: Date) {
           :period-start="periodStart"
           :period-end="periodEnd"
         />
-      </div>
-  </div>
+        </div>
+    </div>
 
-  <!-- Модалка выбора периода -->
-  <PeriodSelectorModal
-    :is-visible="showPeriodModal"
-    :period-start="periodStart"
-    :period-end="periodEnd"
-    @close="showPeriodModal = false"
-    @update="updatePeriod"
-  />
+    <!-- Модалка выбора периода (ВЫНЕСЕНА ЗА ПРЕДЕЛЫ glass-panel) -->
+    <PeriodSelectorModal
+      :is-visible="showPeriodModal"
+      :period-start="periodStart"
+      :period-end="periodEnd"
+      @close="showPeriodModal = false"
+      @update="updatePeriod"
+    />
+  </div>
 </template>

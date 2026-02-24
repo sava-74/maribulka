@@ -20,23 +20,28 @@ const tempEnd = ref<Date>(props.periodEnd)
 
 // Обновление временных значений при открытии модалки
 watch(() => props.isVisible, (visible) => {
+  console.log('🟡 PeriodSelectorModal isVisible изменилось:', visible)
   if (visible) {
     tempStart.value = props.periodStart
     tempEnd.value = props.periodEnd
+    console.log('🟡 Модалка открыта, период:', tempStart.value, tempEnd.value)
   }
 })
 
 function handleUpdate(start: Date, end: Date) {
+  console.log('🟡 PeriodSelectorModal handleUpdate:', start, end)
   tempStart.value = start
   tempEnd.value = end
 }
 
 function handleApply() {
+  console.log('🟡 PeriodSelectorModal handleApply:', tempStart.value, tempEnd.value)
   emit('update', tempStart.value, tempEnd.value)
   emit('close')
 }
 
 function handleCancel() {
+  console.log('🟡 PeriodSelectorModal handleCancel')
   emit('close')
 }
 
@@ -49,66 +54,27 @@ function handleBackdropClick(event: MouseEvent) {
 </script>
 
 <template>
-  <Transition name="modal">
-    <div v-if="isVisible" class="modal-backdrop" @click="handleBackdropClick">
-      <div class="modal-content period-modal">
-        <!-- Заголовок -->
-        <div class="modal-header">
-          <h2 class="modal-title">Выбор периода</h2>
-          <button class="modal-close" @click="handleCancel" title="Закрыть">
-            <svg-icon type="mdi" :path="mdiClose"></svg-icon>
-          </button>
-        </div>
+  <div v-if="isVisible" class="modal-overlay" @click="handleBackdropClick">
+    <div class="modal-glass" @click.stop>
+      <!-- Заголовок -->
+      <h2>Выбор периода</h2>
 
-        <!-- Тело модалки -->
-        <div class="modal-body">
-          <PeriodSelector
-            :period-start="tempStart"
-            :period-end="tempEnd"
-            @update="handleUpdate"
-          />
-        </div>
+      <!-- Тело модалки -->
+      <PeriodSelector
+        :period-start="tempStart"
+        :period-end="tempEnd"
+        @update="handleUpdate"
+      />
 
-        <!-- Футер с кнопками -->
-        <div class="modal-footer">
-          <button class="glass-button-text" @click="handleCancel">
-            Отмена
-          </button>
-          <button class="glass-button-text primary" @click="handleApply">
-            Применить
-          </button>
-        </div>
+      <!-- Футер с кнопками -->
+      <div class="modal-actions">
+        <button class="glass-button-text" @click="handleCancel">
+          Отмена
+        </button>
+        <button class="glass-button-text" @click="handleApply">
+          Применить
+        </button>
       </div>
     </div>
-  </Transition>
+  </div>
 </template>
-
-<style scoped>
-.period-modal {
-  max-width: 600px;
-  width: 90%;
-}
-
-.modal-body {
-  padding: 0;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 20px;
-  border-top: 1px solid var(--border-color);
-}
-
-.primary {
-  background: var(--accent-color);
-  color: white;
-}
-
-.primary:hover {
-  background: var(--accent-hover);
-}
-</style>

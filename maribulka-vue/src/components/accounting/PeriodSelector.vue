@@ -57,7 +57,11 @@ const presets = [
 ]
 
 onMounted(() => {
-  if (!dateInput.value) return
+  console.log('🟣 PeriodSelector onMounted')
+  if (!dateInput.value) {
+    console.log('🟣 dateInput.value пусто!')
+    return
+  }
 
   flatpickrInstance = flatpickr(dateInput.value, {
     mode: 'range',
@@ -65,25 +69,34 @@ onMounted(() => {
     dateFormat: 'd.m.y',
     defaultDate: [props.periodStart, props.periodEnd],
     onChange: (selectedDates: Date[]) => {
+      console.log('🟣 flatpickr onChange:', selectedDates)
       if (selectedDates.length === 2 && selectedDates[0] && selectedDates[1]) {
         emit('update', selectedDates[0], selectedDates[1])
       }
     }
   })
+  console.log('🟣 flatpickr инициализирован:', flatpickrInstance)
 })
 
 // Применить пресет
 function applyPreset(preset: typeof presets[0]) {
+  console.log('🟣 applyPreset:', preset.label)
   const dates = preset.getValue()
   const start = dates[0]
   const end = dates[1]
+  console.log('🟣 Даты пресета:', start, end)
 
-  if (!start || !end) return
+  if (!start || !end) {
+    console.log('🟣 Даты пресета undefined!')
+    return
+  }
 
   if (flatpickrInstance) {
     flatpickrInstance.setDate([start, end])
+    console.log('🟣 flatpickr обновлён')
   }
   emit('update', start, end)
+  console.log('🟣 emit update отправлен')
 }
 
 // Обновление при изменении props
@@ -121,103 +134,3 @@ watch([() => props.periodStart, () => props.periodEnd], () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.period-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-}
-
-.period-presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.preset-button {
-  min-width: 140px;
-  height: 40px;
-}
-
-.period-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.period-label {
-  font-size: 14px;
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.period-input {
-  width: 100%;
-  height: 40px;
-  padding: 0 15px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  background: var(--glass-bg);
-  color: var(--text-color);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.period-input:hover {
-  border-color: var(--accent-color);
-}
-
-.period-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-}
-
-/* Стили для flatpickr */
-:deep(.flatpickr-calendar) {
-  background: var(--glass-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-:deep(.flatpickr-months) {
-  background: transparent;
-}
-
-:deep(.flatpickr-current-month) {
-  color: var(--text-color);
-}
-
-:deep(.flatpickr-weekday) {
-  color: var(--text-secondary);
-}
-
-:deep(.flatpickr-day) {
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-}
-
-:deep(.flatpickr-day:hover) {
-  background: var(--glass-hover);
-  border-color: var(--accent-color);
-}
-
-:deep(.flatpickr-day.selected) {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-  color: white;
-}
-
-:deep(.flatpickr-day.inRange) {
-  background: rgba(74, 144, 226, 0.2);
-  border-color: transparent;
-}
-
-:deep(.flatpickr-day.today) {
-  border-color: var(--accent-color);
-}
-</style>
