@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import {
   mdiCashPlus,        // Доход (вместо 💰)
