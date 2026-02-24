@@ -32,7 +32,7 @@ const promotionInfo = computed(() => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Просмотр акции</h2>
+        <div class="modal-glassTitle">Просмотр акции</div>
 
         <div v-if="promotionInfo" class="info-section">
           <div class="info-row">

@@ -26,7 +26,7 @@ const shootingTypeInfo = computed(() => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Просмотр типа съёмки</h2>
+        <div class="modal-glassTitle">Просмотр типа съёмки</div>
 
         <div v-if="shootingTypeInfo" class="info-section">
           <div class="info-row">

@@ -66,7 +66,7 @@ const handleConfirm = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Подтвердить съёмку</h2>
+        <div class="modal-glassTitle">Подтвердить съёмку</div>
 
         <div v-if="orderInfo" class="confirm-info">
           <p><strong>ID заказа:</strong> {{ orderInfo.orderId }}</p>

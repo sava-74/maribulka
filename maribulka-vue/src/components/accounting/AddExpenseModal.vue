@@ -136,7 +136,7 @@ const handleSubmit = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Новый расход</h2>
+        <div class="modal-glassTitle">Новый расход</div>
 
         <div class="input-group">
           <div class="input-field">

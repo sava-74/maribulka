@@ -85,7 +85,7 @@ const handleDeliver = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Выдать заказ</h2>
+        <div class="modal-glassTitle">Выдать заказ</div>
 
         <div v-if="orderInfo" class="delivery-info">
           <p><strong>ID заказа:</strong> {{ orderInfo.orderId }}</p>

@@ -98,7 +98,7 @@ const handleRefundCreated = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Отменить запись</h2>
+        <div class="modal-glassTitle">Отменить запись</div>
 
         <div v-if="bookingInfo" class="cancel-info">
           <p><strong>ID заказа:</strong> {{ bookingInfo.orderId }}</p>

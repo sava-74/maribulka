@@ -70,7 +70,7 @@ const handleSubmit = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-      <h2>Добавить оплату</h2>
+      <div class="modal-glassTitle">Добавить оплату</div>
 
       <div v-if="bookingInfo" class="payment-info">
         <p><strong>Клиент:</strong> {{ bookingInfo.client }}</p>

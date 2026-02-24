@@ -115,7 +115,7 @@ function handleClose() {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click="handleClose">
       <div class="modal-glass" @click.stop>
-        <h2 class="modal-title">Загрузить фото на позицию {{ position + 1 }}</h2>
+        <div class="modal-glassTitle">Загрузить фото на позицию {{ position + 1 }}</div>
 
         <div class="modal-content">
           <!-- Превью фото -->

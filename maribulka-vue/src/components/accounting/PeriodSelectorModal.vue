@@ -55,7 +55,7 @@ function handleBackdropClick(event: MouseEvent) {
   <div v-if="isVisible" class="modal-overlay" @click="handleBackdropClick">
     <div class="modal-glass" @click.stop>
       <!-- Заголовок -->
-      <h2>Выбор периода</h2>
+      <div class="modal-glassTitle">Выбор периода</div>
 
       <!-- Тело модалки -->
       <PeriodSelector

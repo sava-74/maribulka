@@ -3,6 +3,7 @@
   --bgGeneral: #f0f0f0; /* светлый фон для всего приложения */
   --neon-blue: #00F3FF; /* дополнительный цвет (неоновый голубой) */
   --glass-bg: rgba(255, 255, 255, 0.4); /* полупрозрачный белый для эффекта стекла */ 
+  --glass-bgModal: rgba(255, 255, 255, 0.4); /* полупрозрачный белый для модальных окон */
   --generalTextColor: #333; /* основной цвет текста */
   --generalTextSizeExtraSmall: 6px; /* размер текста для очень мелких элементов */
   --generalTextSizeSmall: 8px; /* размер текста для мелких элементов */
@@ -32,6 +33,8 @@
   --glass-heightButtonCalendar: 20px;/* высота кнопки с текстом */
   --glass-borderRadiusButton: 6px;/* радиус скругления кнопки */
   --glass-bgFilter: blur(12px); /* размытие фона для эффекта стекла */
+  --glass-bgFilterOverlay: blur(2px); /* размытие фона для оверлея */
+  --glass-bgFilterModal: blur(3px); /* размытие фона для модальных окон */
 
   /*панели*/
   --glass-shadowPanel: 4px 4px 6px rgba(0, 0, 0, 0.2); /* чёрная тень для сайдбара */

@@ -103,7 +103,7 @@ function handleClose() {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="handleClose">
       <div class="modal-glass">
-        <h2>Возврат средств</h2>
+        <div class="modal-glassTitle">Возврат средств</div>
 
         <div v-if="refundInfo" class="refund-info">
           <p><strong>ID заказа:</strong> {{ refundInfo.orderId }}</p>

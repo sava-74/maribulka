@@ -1,9 +1,11 @@
+/* ========== БАЗОВЫЕ КОНТЕЙНЕРЫ ========== */
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgb(0 0 0 / 10%);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: var(--glass-bgFilterOverlay);
+  backdrop-filter: var(--glass-bgFilterOverlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,46 +13,113 @@
 }
 
 .modal-glass {
-  background: rgba(255, 255, 255, 0.8);
-  -webkit-backdrop-filter: blur(60px);
-  backdrop-filter: blur(60px);
+  background: var(--glass-bgModal);
+  -webkit-backdrop-filter: var(--glass-bgFiltermModal);
+  backdrop-filter: var(--glass-bgFilterModal);
   border: 2px solid var(--generalColor);
-  border-radius: 15px;
-  padding: 30px;
-  width: 320px;
-  box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
+  border-radius: var(--panelRadius);
+  padding: 5px;
+  width: 150px;
+  box-shadow: var(--glass-shadowPanel);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
   color: var(--generalTextColor);
+  font-size: var(--generalTextSizeSmall);
 }
 
-.modal-glass h2 {
+/* Заголовок модалки (БЕЗ h2!) */
+.modal-glassTitle {
   margin: 0;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
 
 /* Сообщение в маленьких модалках (AlertModal, ConfirmModal) */
 .modal-message {
   text-align: center;
-  margin: 20px;
+  margin: 5px;
+  font-size: var(--generalTextSizeSmall);
   color: var(--generalTextColor);
 }
+
+/* ========== МОДИФИКАТОРЫ РАЗМЕРА (только расположение!) ========== */
+
+.modal-wide {
+  max-width: 600px;
+}
+
+.modal-large {
+  max-width: 800px;
+}
+
+.view-modal {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.actions-modal {
+  width: auto;
+  min-width: 200px;
+}
+
+/* ========== ФОРМЫ ========== */
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px 5px;
 }
 
+.input-row {
+  display: flex;
+  gap: 2px 5px;
+  flex-wrap: wrap;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 50px;
+}
+
+/* Узкие поля (субстили для расположения) */
+.input-field-narrow {
+  flex: 0 0 auto;
+  min-width: 45px;
+  max-width: 50px;
+}
+
+.input-field-phone {
+  flex: 0 0 auto;
+  min-width: 150px;
+  max-width: 160px;
+}
+
+.input-field-promotion {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Лейбл поля */
+.input-label {
+  font-size: var(--generalTextSize);
+  color: var(--generalTextColor);
+  font-weight: 500;
+}
+
+/* Поле ввода */
 .modal-input {
   all: unset;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--glass-bg);
   border: 1px solid var(--generalColor);
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: var(--glass-borderRadiusButton);
+  padding: 5px;
+  font-size: var(--generalTextSizeSmall);
   color: var(--generalTextColor);
   box-sizing: border-box;
   overflow: hidden;
@@ -60,76 +129,6 @@
 
 .modal-input::placeholder {
   color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.remember-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--generalTextColor);
-  cursor: pointer;
-}
-
-/* Широкое модальное окно для форм */
-.modal-wide {
-  width: 600px;
-  max-width: 90vw;
-}
-
-/* Узкие поля для чисел */
-.input-field-narrow {
-  flex: 0 0 auto;
-  min-width: 80px;
-  max-width: 80px;
-}
-
-/* Поле телефона */
-.input-field-phone {
-  flex: 0 0 auto;
-  min-width: 160px;
-  max-width: 160px;
-}
-
-/* Поле акции - чуть шире */
-.input-field-promotion {
-  flex: 1;
-  min-width: 180px;
-}
-
-/* Уменьшенный шрифт для длинных полей */
-.input-field-promotion .modal-input {
-  font-size: 13px;
-}
-
-/* Строка с полями формы */
-.input-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* Поле ввода в строке */
-.input-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-  min-width: 150px;
-}
-
-/* Лейбл поля */
-.input-label {
-  font-size: var(--generalTextSizeH1);
-  color: var(--generalTextColor);
-  font-weight: 500;
 }
 
 /* Стили для select в модальном окне */
@@ -149,62 +148,117 @@ select.modal-input {
   text-overflow: ellipsis;
 }
 
-/* Информация об оплате */
+/* Textarea для заметок */
+.modal-textarea {
+  width: 100%;
+  padding: 5px;
+  font-size: var(--generalTextSizeSmall);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  background: var(--glass-bg);
+  color: var(--generalTextColor);
+  resize: vertical;
+  min-height: 40px;
+}
+
+.modal-textarea:focus {
+  outline: none;
+  border-color: var(--generalColor);
+  background: var(--glass-bg);
+}
+
+/* Поле заметок */
+.notes-field {
+  width: 100%;
+}
+
+.notes-text {
+  padding: 5px;
+  font-size: var(--generalTextSizeSmall);
+  color: var(--generalTextColor);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* ========== ДЕЙСТВИЯ (КНОПКИ) ========== */
+
+.modal-actions {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ ========== */
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--generalTextSizeSmall);
+  color: var(--generalTextColor);
+  cursor: pointer;
+}
+
+/* Универсальный разделитель */
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 5px 0;
+}
+
+/* ========== ИНФОРМАЦИОННЫЕ БЛОКИ (БЕЗ фонов!) ========== */
+
 .payment-info {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
+  border-radius: var(--glass-borderRadiusButton);
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
 .payment-info p {
-  margin: 6px 0;
-  font-size: var(--generalTextSizeH2);
+  margin: 5px 0;
+  font-size: var(--generalTextSizeSmall);
   color: var(--generalTextColor);
 }
 
 .payment-info .remaining-amount {
   font-weight: 600;
-  color: #dc2626;
+  color: var(--expenseColor);
 }
 
-/* Информация для удаления */
 .delete-info {
-  background: rgba(248, 113, 113, 0.1);
-  border: 1px solid rgba(248, 113, 113, 0.3);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
+  border-radius: var(--glass-borderRadiusButton);
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
 .delete-info p {
-  margin: 6px 0;
-  font-size: var(--generalTextSizeH2);
+  margin: 5px 0;
+  font-size: var(--generalTextSizeSmall);
   color: var(--generalTextColor);
 }
 
 .delete-warning {
-  color: #f87171;
+  color: var(--expenseColor);
   font-weight: 600;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
-/* Информация о ценах (расчётная) */
+/* Стили для полей цены в компактной модалке 
 .price-info {
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 10px;
-}
+  border-radius: var(--glass-borderRadiusButton);
+  padding: 5px;
+  margin-top: 5px;
+}*/
 
 .price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 4px 0;
-  font-size: var(--generalTextSizeH2);
+  /*margin: 5px 0;*/
+  font-size: var(--generalTextSizeSmall);
   color: var(--generalTextColor);
 }
 
@@ -218,173 +272,81 @@ select.modal-input {
 }
 
 .price-value.discount-value {
-  color: #f87171;
+  color: var(--expenseColor);
 }
 
 .price-row.total {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(74, 222, 128, 0.3);
+
+  padding-top: 5px;
+  border-top: 1px solid var(--generalColor);
 }
 
 .price-value.total-value {
-  font-size: var(--generalTextSizeH4);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
-
-/* ========== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ МОДАЛЬНЫХ ОКОН ========== */
-
-/* Textarea для заметок */
-.modal-textarea {
-  width: 100%;
-  padding: 4px;
-  font-size: 13px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #000;
-  resize: vertical;
-  min-height: 40px;
-}
-
-.modal-textarea:focus {
-  outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 1);
-}
-
-/* Поле заметок */
-.notes-field {
-  margin-top: 2px;
-  width: 100%;
-}
-
-.notes-text {
-  padding: 4px;
-  font-size: 13px;
-  color: #374151;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.4;
-}
-
-/* Универсальный разделитель */
-.divider {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.1);
-  margin: 12px 0;
-}
-
-/* Поле оплаты для ViewIncomeModal (абсолютное позиционирование) */
-.payment-input {
-    position: absolute;
-    width: 45px;
-    right: 34px;
-    bottom: 94px;
-    padding: 2px 3px 0 0;
-    border: 1px solid var(--generalColor);
-    border-radius: var(--glass-borderRadiusButton);
-    font-size: var(--generalTextSizeH2);
-    text-align: right;
-    margin-right: 4px;
-}
-
-/* Поле оплаты inline для AddBookingModal (перед символом ₽) */
-.payment-input-inline {
-    width: 60px;
-    padding: 2px 4px;
-    border: 1px solid var(--generalColor);
-    border-radius: var(--glass-borderRadiusButton);
-    font-size: var(--generalTextSizeH2);
-    text-align: right;
-    margin-right: 4px;
-}
-
-/* Убрать стрелки у input[type="number"] для обоих классов */
-.payment-input::-webkit-outer-spin-button,
-.payment-input::-webkit-inner-spin-button,
-.payment-input-inline::-webkit-outer-spin-button,
-.payment-input-inline::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.payment-input[type="number"],
-.payment-input-inline[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-/* ========== ACTIONS MODAL (BookingActionsModal) ========== */
-
-.actions-modal {
-  width: auto;
-  min-width: 200px;
-  padding: 16px;
-  gap: 12px;
-}
-
-.actions-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(57, 255, 20, 0.3);
-}
-
-.actions-title {
-  font-weight: 600;
-  color: var(--generalTextColor);
-  font-size: var(--generalTextSizeH2);
-}
-
-.actions-type {
-  font-size: var(--generalTextSizeH1);
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.actions-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* ========== CANCEL & DELIVER MODALS ========== */
 
 .cancel-info,
 .delivery-info {
-  margin: 2px 0;
-  padding: 2px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: var(--glass-borderRadiusButton);
   color: var(--generalTextColor);
 }
 
 .cancel-info p,
 .delivery-info p {
-  margin: 2px 0;
-  font-size: var(--generalTextSizeH2);
+  margin: 5px 0;
+  font-size: var(--generalTextSizeSmall);
 }
 
 .cancel-reason {
-  margin-top: 15px;
+  margin-top: 5px;
 }
+
+.delivery-info .remaining-warning {
+  color: var(--warningColor);
+  font-weight: 600;
+}
+
+.delivery-info .remaining-amount {
+  color: var(--expenseColor);
+  font-size: var(--generalTextSize);
+  font-weight: 600;
+}
+
+.delivery-info .paid-full {
+  color: var(--incomeColor);
+  font-weight: 600;
+}
+
+.refund-info {
+  margin: 5px 0;
+}
+
+.refund-amount {
+  font-weight: bold;
+  color: var(--expenseColor);
+  font-size: var(--generalTextSize);
+}
+
+/* ========== RADIO BUTTONS ========== */
 
 .radio-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 5px 10px 20px 10px;
+  gap: 5px;
+  margin: 5px;
 }
 
 .radio-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   cursor: pointer;
-  font-size: var(--generalTextSizeH2);
-  padding: 0px;
-  border-radius: 6px;
+  font-size: var(--generalTextSizeSmall);
+  padding: 5px;
+  border-radius: var(--glass-borderRadiusButton);
   transition: background-color 0.2s;
 }
 
@@ -403,151 +365,196 @@ select.modal-input {
   user-select: none;
 }
 
-.delivery-info .remaining-warning {
-  color: #d97706;
-  font-weight: 600;
+/* ========== PAYMENT INPUT ========== */
+
+/* Поле оплаты для ViewIncomeModal (абсолютное позиционирование) */
+.payment-input {
+  position: absolute;
+  width: 45px;
+  right: 34px;
+  bottom: 94px;
+  padding: 5px;
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  font-size: var(--generalTextSizeSmall);
+  text-align: right;
+  margin-right: 5px;
 }
 
-.delivery-info .remaining-amount {
-  color: #dc2626;
-  font-size: var(--generalTextSizeH3);
-  font-weight: 600;
+/* Поле оплаты inline для AddBookingModal (перед символом ₽) */
+.payment-input-inline {
+  width: auto;
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  font-size: var(--generalTextSizeSmall);
+  text-align: right;
 }
 
-.delivery-info .paid-full {
-  color: #059669;
+/* Убрать стрелки у input[type="number"] */
+.payment-input::-webkit-outer-spin-button,
+.payment-input::-webkit-inner-spin-button,
+.payment-input-inline::-webkit-outer-spin-button,
+.payment-input-inline::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.payment-input[type="number"],
+.payment-input-inline[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ========== ACTIONS MODAL (BookingActionsModal) ========== */
+
+.actions-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--generalColor);
+}
+
+.actions-title {
   font-weight: 600;
+  color: var(--generalTextColor);
+  font-size: var(--generalTextSize);
+}
+
+.actions-type {
+  font-size: var(--generalTextSizeSmall);
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.actions-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 /* ========== VIEW MODAL ========== */
 
-.view-modal {
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
 .order-details {
-  margin: 2px 0;
+  margin: 5px 0;
   color: var(--generalTextColor);
 }
 
 .info-section {
-  margin-bottom: 2px;
+  margin-bottom: 5px;
 }
 
 .info-section h3 {
-  font-size: var(--generalTextSizeH2);
+  font-size: var(--generalTextSize);
   font-weight: 600;
-  margin-bottom: 2px;
-  color: #1f2937;
+  margin-bottom: 5px;
+  color: var(--generalTextColor);
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
-  padding: 2px 0;
-  font-size: 13px;
+  padding: 5px 0;
+  font-size: var(--generalTextSizeSmall);
 }
 
 .info-label {
-  color: #6b7280;
+  color: var(--generalTextColor);
   font-weight: 500;
+  opacity: 0.7;
 }
 
 .info-value {
-  color: #111827;
+  color: var(--generalTextColor);
   text-align: right;
   max-width: 60%;
   word-wrap: break-word;
-  font-size: 13px;
+  font-size: var(--generalTextSizeSmall);
 }
 
 .info-value.strong {
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--generalTextSize);
 }
 
 .info-value.discount {
-  color: #dc2626;
+  color: var(--expenseColor);
 }
 
 .info-value.paid {
-  color: #059669;
+  color: var(--incomeColor);
   font-weight: 600;
 }
 
 .info-value.remaining {
-  color: #dc2626;
+  color: var(--expenseColor);
   font-weight: 600;
 }
 
 .info-value.status-проведено {
-  color: #059669;
+  color: var(--incomeColor);
   font-weight: 600;
 }
 
 .info-value.status-отменена {
-  color: #dc2626;
+  color: var(--expenseColor);
   font-weight: 600;
 }
 
-/* Scrollbar для модальных окон */
+/* Scrollbar для модальных окон (НЕ трогаем по твоему указанию) */
 .view-modal::-webkit-scrollbar {
-  width: 8px;
+  width: 8px;                     /* ширина скроллбара */
 }
 
 .view-modal::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);  /* Цвет дорожки */
+  border-radius: 4px;             /* Скругление дорожки */
 }
 
 .view-modal::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);  /* Цвет ползунка */
+  border-radius: 4px;                 /* Скругление ползунка */
 }
 
-.view-modal::-webkit-scrollbar-thumb:hover {
+.view-modal::-webkit-scrollbar-thumb:hover { /* Немного затемняем при наведении */
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* ========== COMPACT MODAL (AddBooking/EditBooking) ========== */
-/* Компактные отступы для модалок создания/редактирования */
+/* ========== COMPACT MODAL (AddBooking/EditBooking) ========== 
 
 .modal-glass.modal-compact .input-group {
-  gap: 2px;
+  gap: 5px;
 }
-
+/*
 .modal-glass.modal-compact .input-row {
-  gap: 2px;
-  margin-bottom: 2px;
-}
+  gap: 5px;
+  margin-bottom: 5px;
+}*/
 
 .modal-glass.modal-compact .input-label {
-  font-size: 13px;
-  margin-bottom: 1px;
+  font-size: var(--generalTextSizeSmall);
+
 }
 
 .modal-glass.modal-compact .modal-input {
-  padding: 2px 4px;
-  font-size: 13px;
-  bottom: 172px;
-  margin-right: 8px;
+  padding: 2px;
+  font-size: var(--generalTextSizeSmall);
 }
 
+
+/* Стили для полей цены в компактной модалке 
 .modal-glass.modal-compact .price-info {
-  margin-top: 2px;
-  padding: 2px;
-}
+  margin-top: 5px;
+  padding: 5px;
+}*/
 
 .modal-glass.modal-compact .price-row {
-  padding: 1px 0;
-  font-size: 13px;
+  padding: 5px 0;
+  font-size: var(--generalTextSizeSmall);
 }
 
 /* Ссылка телефона в модалках */
 .modal-glass a[href^="tel:"] {
-  color: #1e40af;
+  color: var(--linkColor);
   text-decoration: none;
 }
 
@@ -560,8 +567,8 @@ select.modal-input {
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 16px 0;
+  gap: 5px;
+  margin: 5px 0;
 }
 
 .photo-preview {
@@ -570,14 +577,14 @@ select.modal-input {
   align-items: center;
   max-height: 200px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--glass-borderRadiusButton);
 }
 
 .photo-preview img {
   max-width: 100%;
   max-height: 200px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: var(--glass-borderRadiusButton);
 }
 
 .file-input-wrapper {
@@ -589,131 +596,55 @@ select.modal-input {
   display: none;
 }
 
-/* ========== МОБИЛЬНАЯ АДАПТАЦИЯ МОДАЛОК (≤768px) ========== */
-@media (max-width: 480px) {
-  .modal-overlay {
-    /* Убираем flex центрирование - разрешаем прокрутку */
-    display: block;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
-  }
-
-  .modal-glass {
-    /* Отступы со всех сторон: 20px сверху/снизу, 15px слева/справа */
-    margin: 20px 15px;
-    max-width: calc(100vw - 30px); /* 100vw минус 15px*2 */
-    width: auto;
-    /* Минимальная высота чтобы можно было прокрутить */
-    min-height: auto;
-  }
-
-  /* Маленькие модалки (AlertModal, ConfirmModal) - центрируем по вертикали */
-  .modal-glass.modal-small {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0;
-    width: max-content;
-    max-width: calc(80vw - 30px) !important;
-    padding: 10px 10px !important;
-  }
-
-  /* Большие модалки (view-modal) - уменьшаем padding */
-  .modal-glass.view-modal {
-    padding: 15px;
-  }
-
-  /* Компактные модалки */
-  .modal-glass.modal-compact {
-    padding: 12px;
-  }
-
-  /* Редактор описания студии - overlay на всю ширину */
-  .modal-overlay:has(.modal-glass.modal-large) {
-    display: block;
-    overflow-x: auto;
-    overflow-y: auto;
-    padding: 10px;
-  }
-
-  /* Редактор описания студии - на всю высоту экрана */
-  .modal-glass.modal-large {
-    margin: 5px;
-    width: 600px;
-    min-width: 600px;
-    height: calc(100vh - 10px);
-    /*max-height: calc(100vh - 10px);*/
-    overflow-y: auto;
-    padding: 15px;
-  }
-
-  /* Попап ссылки - адаптируем */
-  .editor-container .ql-tooltip {
-    left: 10px !important;
-    right: 10px !important;
-    transform: none !important;
-    width: auto !important;
-    max-width: calc(100vw - 60px) !important;
-  }
-}
-
 /* ========== QUILL EDITOR STYLES ========== */
-
-.modal-large {
-  width: 800px;
-  max-width: 90vw;
-}
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(57, 255, 20, 0.3);
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--generalColor);
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
   text-align: left;
 }
 
 .modal-body {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .modal-footer {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   justify-content: flex-end;
-  padding-top: 15px;
-  border-top: 1px solid rgba(57, 255, 20, 0.3);
+  padding-top: 5px;
+  border-top: 1px solid var(--generalColor);
 }
 
 .editor-container {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
+  background: var(--glass-bg);
+  border-radius: var(--glass-borderRadiusButton);
   overflow: hidden;
 }
 
-/* Quill редактор */
 .editor-container .ql-toolbar {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
   border-bottom: none;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--glass-borderRadiusButton) var(--glass-borderRadiusButton) 0 0;
 }
 
 .editor-container .ql-container {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 0 0 8px 8px;
+  border: 1px solid var(--generalColor);
+  border-radius: 0 0 var(--glass-borderRadiusButton) var(--glass-borderRadiusButton);
   min-height: 625px;
-  font-size: var(--generalTextSizeH3);
-  background: rgba(255, 255, 255, 1);
+  font-size: var(--generalTextSizeSmall);
+  background: var(--glass-bg);
 }
 
 .editor-container .ql-editor {
@@ -726,13 +657,11 @@ select.modal-input {
   font-style: normal;
 }
 
-/* Изображения - ограничение размера */
 .editor-container .ql-editor img {
   max-width: 200px;
   max-height: 300px;
 }
 
-/* Попап ссылки - центрируем */
 .editor-container .ql-tooltip {
   top: 50% !important;
   transform: translateY(-50px) !important;
@@ -740,69 +669,60 @@ select.modal-input {
   transform: translateX(-50%) !important;
 }
 
-/* ========== REFUND MODAL ========== */
-
-.refund-info {
-  margin: 20px 0;
-}
-
-.refund-amount {
-  font-weight: bold;
-  color: #ff5722;
-  font-size: 1.1em;
-}
+/* ========== REFUND MODAL (messages) ========== */
 
 .form-group {
-  margin: 15px 0;
+  margin: 5px 0;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   font-weight: 500;
+  font-size: var(--generalTextSizeSmall);
 }
 
 .form-textarea {
   width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  padding: 5px;
+  background: var(--glass-bg);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
   color: var(--generalTextColor);
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--generalTextSizeSmall);
   resize: vertical;
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--generalColor);
+  background: var(--glass-bg);
 }
 
 .info-message {
-  padding: 10px;
-  background: rgba(33, 150, 243, 0.2);
-  border-left: 3px solid #2196f3;
-  border-radius: 4px;
-  color: #64b5f6;
+  padding: 5px;
+  border-left: 3px solid var(--infoColor);
+  border-radius: var(--glass-borderRadiusButton);
+  color: var(--infoColor);
+  font-size: var(--generalTextSizeSmall);
   font-weight: 500;
 }
 
 .warning-message {
-  padding: 10px;
-  background: rgba(255, 87, 34, 0.2);
-  border-left: 3px solid #ff5722;
-  border-radius: 4px;
-  color: #ff9800;
+  padding: 5px;
+  border-left: 3px solid var(--warningColor);
+  border-radius: var(--glass-borderRadiusButton);
+  color: var(--warningColor);
+  font-size: var(--generalTextSizeSmall);
   font-weight: 500;
 }
 
 .success-message {
-  padding: 10px;
-  background: rgba(76, 175, 80, 0.2);
-  border-left: 3px solid #4caf50;
-  border-radius: 4px;
-  color: #4caf50;
+  padding: 5px;
+  border-left: 3px solid var(--incomeColor);
+  border-radius: var(--glass-borderRadiusButton);
+  color: var(--incomeColor);
+  font-size: var(--generalTextSizeSmall);
   font-weight: 500;
 }

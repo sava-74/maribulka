@@ -163,7 +163,7 @@ function handleClose() {
   <div v-if="isVisible" class="modal-overlay" @click.self="handleClose">
     <div class="modal-glass modal-large">
       <div class="modal-header">
-        <h2>Редактирование описания студии</h2>
+        <div class="modal-glassTitle">Редактирование описания студии</div>
         <button class="glass-button" @click="handleClose" title="Закрыть">
           <svg-icon type="mdi" :path="mdilCancel" />
         </button>

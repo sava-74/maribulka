@@ -14,7 +14,7 @@ const emit = defineEmits(['confirm', 'cancel'])
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('cancel')">
       <div class="modal-glass">
-        <h2>{{ title || 'Подтверждение' }}</h2>
+        <div class="modal-glassTitle">{{ title || 'Подтверждение' }}</div>
         <p class="modal-message">{{ message }}</p>
         <div class="modal-actions">
           <!-- Кнопка "Отмена" -->

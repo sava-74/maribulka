@@ -92,7 +92,7 @@ const orderInfo = computed(() => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass view-modal">
-        <h2>Информация о заказе</h2>
+        <div class="modal-glassTitle">Информация о заказе</div>
 
         <div v-if="orderInfo" class="order-details">
           <!-- ID и статусы -->

@@ -270,7 +270,7 @@ const handleSubmit = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass modal-compact modal-wide">
-      <h2>Редактировать запись</h2>
+      <div class="modal-glassTitle">Редактировать запись</div>
 
       <div v-if="booking?.order_number" class="order-number-preview">
         <label class="input-label">Номер заказа:</label>

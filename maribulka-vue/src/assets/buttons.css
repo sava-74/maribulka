@@ -218,6 +218,8 @@
 /* Кнопки в modal-actions (растянутые на всю ширину) */
 .modal-actions .glass-button {
   width: 100%;
+  background: rgb(255 255 255 / 0%);
+  backdrop-filter: none;
 }
 
 /* Кнопки в BookingActionsModal */

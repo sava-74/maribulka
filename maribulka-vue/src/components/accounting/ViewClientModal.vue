@@ -26,7 +26,7 @@ const clientInfo = computed(() => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-        <h2>Информация о клиенте</h2>
+        <div class="modal-glassTitle">Информация о клиенте</div>
 
         <div v-if="clientInfo" class="delivery-info">
           <p><strong>ID:</strong> {{ clientInfo.id }}</p>

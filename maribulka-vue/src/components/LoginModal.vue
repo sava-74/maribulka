@@ -55,8 +55,8 @@ const handleLogin = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-glass">
-      <h2>Вход в систему</h2>
-      
+      <div class="modal-glassTitle">Вход в систему</div>
+
       <div class="input-group">
         <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
         <input v-model="password" type="password" class="modal-input" placeholder="Пароль" @keyup.enter="handleLogin" />
