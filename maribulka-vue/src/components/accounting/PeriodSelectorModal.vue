@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import PeriodSelector from './PeriodSelector.vue'
-import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiClose } from '@mdi/js'
 
 const props = defineProps<{
   isVisible: boolean
