@@ -6,7 +6,7 @@
   background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
-  border: 2px solid var(--generalColor);
+  border: 1px solid var(--generalColor);
   border-bottom-left-radius: var(--panelRadius);
   border-bottom-right-radius: var(--panelRadius);
   border-top: none;
@@ -43,7 +43,7 @@
 .site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
-  font-size: clamp(8px, var(--generalTextSize), 20px);
+  font-size: clamp(8px, var(--generalTextSizeSmall), 10px);
   /* 1. Убираем пространство под текстом */
   line-height: 1; /* Или установи равным font-size, например 16px */
   height: auto;   /* Чтобы высота подстраивалась под текст */
@@ -55,7 +55,7 @@
 }
 
 .promotion-text {
-    font-size: clamp(6px, var(--generalTextSize), 24px);
+    font-size: clamp(6px, var(--generalTextSizeSmall), 10px);
     font-weight: 700;
     color: crimson;
     margin-left: 10px !important;
@@ -65,7 +65,7 @@
     background-origin: padding-box;
     padding: 4px;
     border-radius: 15px;
-    border: 2px solid;
+    border: 1px solid;
     text-transform: uppercase;
     white-space: nowrap;
 }

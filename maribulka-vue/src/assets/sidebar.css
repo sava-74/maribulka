@@ -7,7 +7,7 @@
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
-    border: 2px solid var(--generalColor); /* Делаем саму рамку тоже чуть прозрачнее */
+    border: 1px solid var(--generalColor); /* Делаем саму рамку тоже чуть прозрачнее */
     border-top-right-radius: var(--panelRadius);
     border-bottom-right-radius: var(--panelRadius);
     border-left: none;
@@ -78,7 +78,7 @@
     left: 5px !important;
     width: 0px;
     background: transparent;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     box-shadow: 0 0 0 0 transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -106,7 +106,7 @@
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
-    border: 2px solid var(--generalColor);
+    border: 1px solid var(--generalColor);
     box-shadow: var(--glass-shadowPanel);
     padding: 5px 4px;
     overflow: visible; /* Тени не обрезаем */

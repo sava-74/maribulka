@@ -16,9 +16,9 @@
   background: var(--glass-bgModal);
   -webkit-backdrop-filter: var(--glass-bgFiltermModal);
   backdrop-filter: var(--glass-bgFilterModal);
-  border: 2px solid var(--generalColor);
+  border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
-  padding: 5px;
+  padding: 5px 5px 5px 5px;
   width: 150px;
   box-shadow: var(--glass-shadowPanel);
   display: flex;
@@ -26,7 +26,7 @@
   gap: 5px;
   color: var(--generalTextColor);
   font-size: var(--generalTextSizeSmall);
-}
+  }
 
 /* Заголовок модалки (БЕЗ h2!) */
 .modal-glassTitle {
@@ -48,16 +48,19 @@
 
 .modal-wide {
   max-width: 600px;
+  min-width: 250px;
 }
 
 .modal-large {
-  max-width: 800px;
+  max-width: 600px;
+  min-width: 200px;
+  max-height:400px;
 }
 
 .view-modal {
   max-width: 600px;
   max-height: 80vh;
-  overflow-y: auto;
+  
 }
 
 .actions-modal {
@@ -76,9 +79,9 @@
 .input-row {
   display: flex;
   gap: 2px 5px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
-
+/* Группа для полей с разной шириной (например, телефон + промокод) */
 .input-field {
   display: flex;
   flex-direction: column;
@@ -90,19 +93,19 @@
 /* Узкие поля (субстили для расположения) */
 .input-field-narrow {
   flex: 0 0 auto;
-  min-width: 45px;
-  max-width: 50px;
+  min-width: 30px;
+  max-width: 40px;
 }
-
+/* Поля для телефона и промокода в AddBookingModal */
 .input-field-phone {
   flex: 0 0 auto;
-  min-width: 150px;
-  max-width: 160px;
+  min-width: 70px;
+  max-width: 70px;
 }
-
+/* Поле для промокода в AddBookingModal */
 .input-field-promotion {
   flex: 1;
-  min-width: 150px;
+  min-width: 50px;
 }
 
 /* Лейбл поля */
@@ -169,7 +172,9 @@ select.modal-input {
 
 /* Поле заметок */
 .notes-field {
-  width: 100%;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .notes-text {
@@ -205,7 +210,7 @@ select.modal-input {
 .divider {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
-  margin: 5px 0;
+  margin-bottom: 5px;
 }
 
 /* ========== ИНФОРМАЦИОННЫЕ БЛОКИ (БЕЗ фонов!) ========== */
@@ -435,8 +440,9 @@ select.modal-input {
 /* ========== VIEW MODAL ========== */
 
 .order-details {
-  margin: 5px 0;
   color: var(--generalTextColor);
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .info-section {
@@ -446,7 +452,7 @@ select.modal-input {
 .info-section h3 {
   font-size: var(--generalTextSize);
   font-weight: 600;
-  margin-bottom: 5px;
+  margin: 0;
   color: var(--generalTextColor);
 }
 
@@ -500,24 +506,9 @@ select.modal-input {
   font-weight: 600;
 }
 
-/* Scrollbar для модальных окон (НЕ трогаем по твоему указанию) */
-.view-modal::-webkit-scrollbar {
-  width: 8px;                     /* ширина скроллбара */
-}
 
-.view-modal::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);  /* Цвет дорожки */
-  border-radius: 4px;             /* Скругление дорожки */
-}
 
-.view-modal::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);  /* Цвет ползунка */
-  border-radius: 4px;                 /* Скругление ползунка */
-}
 
-.view-modal::-webkit-scrollbar-thumb:hover { /* Немного затемняем при наведении */
-  background: rgba(0, 0, 0, 0.3);
-}
 
 /* ========== COMPACT MODAL (AddBooking/EditBooking) ========== 
 
@@ -667,6 +658,47 @@ select.modal-input {
   transform: translateY(-50px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
+
+}
+
+
+.editor-container .ql-toolbar.ql-snow .ql-picker.ql-header{
+  font-size: 10px;
+  width: 50px;
+  height: 15px;
+  border: 1px solid;
+}
+
+.editor-container .ql-toolbar.ql-snow .ql-picker-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+
+.editor-container .ql-toolbar.ql-snow{
+  padding: 0;
+}
+
+.editor-container .ql-toolbar.ql-snow .ql-picker{
+  height: 15px;
+}
+
+.editor-container .ql-toolbar.ql-snow .ql-color-picker, 
+.ql-snow .ql-icon-picker {
+   /* width: 15px;*/
+}
+
+.editor-container .ql-toolbar.ql-snow .ql-formats{
+  margin-left: 5px;
+  margin-right: 0;
+}
+
+.editor-container .ql-toolbar.ql-snow.ql-toolbar button, 
+.ql-snow .ql-toolbar button {
+    height: 15px;
+    padding: 1px;
+    width: 15px;
 }
 
 /* ========== REFUND MODAL (messages) ========== */
