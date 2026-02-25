@@ -65,22 +65,23 @@
 
 .description-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  
 }
 
 .studio-description h2 {
-  color: var(--generalTextColor);
-  font-size: 28px;
-  font-weight: 600;
+  /*color: var(--generalTextColor);
+  font-size: var(--generalTextSizeH2);
+  font-weight: 600;*/
   margin: 0;
 }
 
 .description-content {
-  color: var(--generalTextColor);
-  font-size: var(--generalTextSizeH3);
-  line-height: 1.6;
+  /*color: var(--generalTextColor);*/
+  font-size: var(--generalTextSize);
+  /*line-height: 1.6;*/
+  margin-top: -30px;
 }
 
 .description-content p {
@@ -94,20 +95,20 @@
 .description-content h1,
 .description-content h2,
 .description-content h3 {
-  color: var(--generalTextColor);
-  margin: 15px 0 10px 0;
+ /* color: var(--generalTextColor);*/
+  margin: 8px 0 5px 0;
 }
 
 .description-content h1 {
-  font-size: 24px;
+  font-size: var(--generalTextSizeH1);
 }
 
 .description-content h2 {
-  font-size: 20px;
+  font-size: var(--generalTextSizeH2);
 }
 
 .description-content h3 {
-  font-size: var(--generalTextSizeH4);
+  font-size: var(--generalTextSizeH3);
 }
 
 .description-content ul,
@@ -181,7 +182,7 @@
 }
 
 
-@media (max-width: 480px) {
+@media (max-width: 80px) {
 
   .promotion-banner {
     top: 69px;

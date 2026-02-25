@@ -30,6 +30,7 @@
 
 /* Заголовок модалки (БЕЗ h2!) */
 .modal-glassTitle {
+  width: 100%;
   margin: 0;
   text-align: center;
   font-size: var(--generalTextSize);
@@ -53,8 +54,10 @@
 
 .modal-large {
   max-width: 600px;
-  min-width: 200px;
-  max-height:400px;
+  width: 600px;
+  min-width: 250px;
+  margin: 10px;
+  height: calc(100% - 10%);
 }
 
 .view-modal {
@@ -599,16 +602,16 @@ select.modal-input {
 
 /* ========== QUILL EDITOR STYLES ========== */
 
-.modal-header {
+.modal-header {  /* Заголовок модалки с кнопкой закрытия редактора */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-  padding-bottom: 5px;
+  margin-bottom: 3px;
+  padding-bottom: 3px;
   border-bottom: 1px solid var(--generalColor);
 }
 
-.modal-header h2 {
+.modal-header h2 { /* Заголовок модалки редактора */
   margin: 0;
   font-size: var(--generalTextSize);
   color: var(--generalTextColor);
@@ -616,6 +619,10 @@ select.modal-input {
 }
 
 .modal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   margin-bottom: 5px;
 }
 
@@ -625,6 +632,14 @@ select.modal-input {
   justify-content: flex-end;
   padding-top: 5px;
   border-top: 1px solid var(--generalColor);
+}
+
+.modal-footerUrl {
+  display: flex;
+  gap: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--generalColor);
+  justify-content: space-between;
 }
 
 .editor-container {

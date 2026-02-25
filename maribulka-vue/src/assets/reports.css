@@ -59,18 +59,19 @@
   background: var(--glass-bg);
   border: 1px solid var(--generalColor);
   border-radius: var(--glass-borderRadiusButton);
-  padding: 8px 12px;
+  padding: 4px;
   color: var(--generalTextColor);
   font-family: inherit;
   -webkit-backdrop-filter: var(--glass-bgFilter);
   backdrop-filter: var(--glass-bgFilter);
   min-width: 120px;
+  font-size: larger;
 }
 
 .glass-select:focus, .glass-input:focus {
   outline: none;
-  border-color: var(--neon-blue);
-  box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.2);
+  border-color: var(--generalColor);
+  box-shadow: var(--glass-shadowPanel); 
   color: var(--generalTextColor);
 }
 
@@ -411,11 +412,11 @@
     align-items: stretch;
     gap: 8px;
   }
-  
+  /*
   .glass-select, .glass-input {
     width: 100%;
     min-width: auto;
-  }
+  }*/
   
   .glass-select:hover {
     /* Адаптация hover эффектов для мобильных */

@@ -1,0 +1,158 @@
+/* ========== TIPTAP РЕДАКТОР ========== */
+/* Современный rich-text редактор на базе TipTap */
+/* 100% использование CSS переменных из theme.css */
+
+/* Обёртка редактора */
+.tiptap-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Панель инструментов */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  background: var(--glass-bgModal);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  backdrop-filter: var(--glass-bgFilterModal);
+}
+
+/* Разделитель в панели инструментов */
+.toolbar-separator {
+  width: 1px;
+  background: var(--generalColor);
+  margin: 0 2px;
+}
+
+/* Активная кнопка форматирования */
+.tiptap-toolbar .glass-button.is-active {
+  background: var(--glass-bgButtonActive);
+  border-color: var(--generalColor);
+}
+
+/* Область редактирования */
+.tiptap-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--glass-bgModal);
+  border: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+  backdrop-filter: var(--glass-bgFilterModal);
+  padding: 5px;
+}
+
+/* Стили внутри редактора */
+.tiptap-editor {
+  outline: none;
+}
+
+/* Placeholder */
+.tiptap-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--glass-textButtonColor);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Resize handles для изображений */
+.tiptap-editor [data-resize-handle] {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  z-index: 10;
+}
+
+.tiptap-editor [data-resize-handle]:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Угловые ручки */
+.tiptap-editor [data-resize-handle='top-left'],
+.tiptap-editor [data-resize-handle='top-right'],
+.tiptap-editor [data-resize-handle='bottom-left'],
+.tiptap-editor [data-resize-handle='bottom-right'] {
+  width: 8px;
+  height: 8px;
+}
+
+.tiptap-editor [data-resize-handle='top-left'] {
+  top: -4px;
+  left: -4px;
+  cursor: nwse-resize;
+}
+
+.tiptap-editor [data-resize-handle='top-right'] {
+  top: -4px;
+  right: -4px;
+  cursor: nesw-resize;
+}
+
+.tiptap-editor [data-resize-handle='bottom-left'] {
+  bottom: -4px;
+  left: -4px;
+  cursor: nesw-resize;
+}
+
+.tiptap-editor [data-resize-handle='bottom-right'] {
+  bottom: -4px;
+  right: -4px;
+  cursor: nwse-resize;
+}
+
+/* Боковые ручки */
+.tiptap-editor [data-resize-handle='top'],
+.tiptap-editor [data-resize-handle='bottom'] {
+  height: 6px;
+  left: 8px;
+  right: 8px;
+}
+
+.tiptap-editor [data-resize-handle='top'] {
+  top: -3px;
+  cursor: ns-resize;
+}
+
+.tiptap-editor [data-resize-handle='bottom'] {
+  bottom: -3px;
+  cursor: ns-resize;
+}
+
+.tiptap-editor [data-resize-handle='left'],
+.tiptap-editor [data-resize-handle='right'] {
+  width: 6px;
+  top: 8px;
+  bottom: 8px;
+}
+
+.tiptap-editor [data-resize-handle='left'] {
+  left: -3px;
+  cursor: ew-resize;
+}
+
+.tiptap-editor [data-resize-handle='right'] {
+  right: -3px;
+  cursor: ew-resize;
+}
+
+/* Обводка при активном изменении размера */
+.tiptap-editor [data-resize-state='true'] [data-resize-wrapper] {
+  outline: 1px solid var(--generalColor);
+  border-radius: var(--glass-borderRadiusButton);
+}
+
+/* Мобильная адаптация (≤768px) 
+@media (max-width: 768px) {
+  .tiptap-toolbar {
+    padding: 5px;
+    gap: 5px;
+  }
+}*/

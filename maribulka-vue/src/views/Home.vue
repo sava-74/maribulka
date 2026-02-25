@@ -93,7 +93,6 @@ function handleDescriptionClick(event: MouseEvent) {
     <!-- Блок описания студии -->
     <div class="studio-description">
       <div class="description-header">
-        <h2>О студии</h2>
         <button
           v-if="authStore.isAdmin"
           class="glass-button"

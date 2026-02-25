@@ -9,6 +9,7 @@ import './assets/glass-panel.css'
 import './assets/sidebar.css'
 import './assets/topbar.css'
 import './assets/modal.css'
+import './assets/tiptap.css'
 import './style.css'
 
 const app = createApp(App)

@@ -2,11 +2,9 @@
 import { ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import RichTextEditor from '../RichTextEditor.vue'
 import { useHomeStore } from '../../stores/home'
 import AlertModal from '../AlertModal.vue'
-import type Quill from 'quill'
 
 interface Props {
   isVisible: boolean
@@ -22,100 +20,14 @@ const homeStore = useHomeStore()
 const content = ref<string>('')
 const showAlert = ref(false)
 const alertMessage = ref('')
-const quillRef = ref<InstanceType<typeof QuillEditor> | null>(null)
 
-// Настройки редактора Quill
-const editorOptions = {
-  modules: {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ align: [] }],
-      [{ color: [] }, { background: [] }],
-      ['link', 'image'],
-      ['clean']
-    ]
-  },
-  placeholder: 'Введите описание студии...',
-  theme: 'snow'
-}
-
-// Обработчик загрузки изображений
-function setupImageHandler() {
-  if (!quillRef.value) return
-
-  const quill = quillRef.value.getQuill() as Quill
-  const toolbar = quill.getModule('toolbar') as any
-
-  toolbar.addHandler('image', () => {
-    const input = document.createElement('input')
-    input.setAttribute('type', 'file')
-    input.setAttribute('accept', 'image/*')
-
-    input.onchange = async () => {
-      const file = input.files?.[0]
-      if (!file) return
-
-      // Создаём canvas для ресайза
-      const img = new Image()
-      const reader = new FileReader()
-
-      reader.onload = (e) => {
-        img.src = e.target?.result as string
-
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
-          if (!ctx) return
-
-          // Ограничение: ширина 200px, высота 300px (сохраняем пропорции)
-          let width = img.width
-          let height = img.height
-          const maxWidth = 200
-          const maxHeight = 300
-
-          if (width > maxWidth) {
-            height = (height * maxWidth) / width
-            width = maxWidth
-          }
-
-          if (height > maxHeight) {
-            width = (width * maxHeight) / height
-            height = maxHeight
-          }
-
-          canvas.width = width
-          canvas.height = height
-          ctx.drawImage(img, 0, 0, width, height)
-
-          // Конвертируем в base64
-          const resizedImage = canvas.toDataURL('image/jpeg', 0.9)
-
-          // Вставляем в редактор
-          const range = quill.getSelection()
-          if (range) {
-            quill.insertEmbed(range.index, 'image', resizedImage)
-            quill.setSelection(range.index + 1, 0)
-          }
-        }
-      }
-
-      reader.readAsDataURL(file)
-    }
-
-    input.click()
-  })
-}
-
-// Загружаем текущее описание и настраиваем обработчик изображений
+// Загружаем текущее описание и блокируем скролл body
 watch(() => props.isVisible, (visible) => {
   if (visible) {
     content.value = homeStore.description
-    // Даём время QuillEditor отрендериться
-    setTimeout(() => {
-      setupImageHandler()
-    }, 100)
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
   }
 })
 
@@ -129,11 +41,10 @@ async function handleSave() {
   }
 
   // Исправляем ссылки: добавляем https:// если нет протокола
+  // (TipTap уже автоматически добавляет протокол, но для старых данных оставляем)
   let fixedContent = content.value
   fixedContent = fixedContent.replace(/<a\s+([^>]*?)href="([^"]+)"([^>]*)>/gi, (match, before, href, after) => {
-    // Если ссылка не начинается с http:// или https:// или mailto:
     if (!/^(https?:\/\/|mailto:)/i.test(href)) {
-      // Добавляем https://
       return `<a ${before}href="https://${href}"${after}>`
     }
     return match
@@ -152,7 +63,7 @@ async function handleSave() {
     alertMessage.value = result.message || 'Ошибка при сохранении'
     showAlert.value = true
   }
-}
+} 
 
 function handleClose() {
   emit('close')
@@ -164,30 +75,23 @@ function handleClose() {
     <div class="modal-glass modal-large">
       <div class="modal-header">
         <div class="modal-glassTitle">Редактирование описания студии</div>
-        <button class="glass-button" @click="handleClose" title="Закрыть">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
-        </button>
       </div>
 
       <div class="modal-body">
-        <div class="editor-container">
-          <QuillEditor
-            ref="quillRef"
-            v-model:content="content"
-            contentType="html"
-            :options="editorOptions"
-          />
-        </div>
+        <RichTextEditor
+          v-model="content"
+          placeholder="Введите описание студии..."
+        />
       </div>
 
       <div class="modal-footer">
-        <button class="glass-button-text" @click="handleSave">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-          <span>Сохранить</span>
-        </button>
         <button class="glass-button-text" @click="handleClose">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           <span>Отмена</span>
+        </button>        
+        <button class="glass-button-text" @click="handleSave">
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+          <span>Сохранить</span>
         </button>
       </div>
     </div>

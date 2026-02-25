@@ -22,7 +22,7 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 700
   },
 
   // Прокси для API запросов и медиа-файлов в development режиме
