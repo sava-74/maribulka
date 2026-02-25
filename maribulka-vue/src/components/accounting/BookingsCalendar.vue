@@ -13,8 +13,7 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus, mdilDelete, mdilMagnify, mdilRefresh, mdilEye } from '@mdi/light-js'
-import { mdiFolderPlayOutline, mdiCameraOutline, mdiCameraOffOutline, mdiFileEditOutline, mdiCashMultiple } from '@mdi/js'
+import { mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiTextBoxPlusOutline, mdiFolderPlayOutline, mdiCameraOutline, mdiCameraOffOutline, mdiFileEditOutline, mdiCashMultiple, mdiTrashCanOutline, mdiEyeOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AddBookingModal from './AddBookingModal.vue'
 import EditBookingModal from './EditBookingModal.vue'
@@ -455,7 +454,7 @@ function toggleFilters() {
           @click="handleAddBooking"
           title="Добавить запись"
         >
-          <svg-icon type="mdi" :path="mdilPlus"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTextBoxPlusOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -479,7 +478,7 @@ function toggleFilters() {
           @click="handleDelete"
           title="Удалить (только для 'new' без оплаты)"
         >
-          <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -511,14 +510,14 @@ function toggleFilters() {
           @click="handleView"
           title="Посмотреть заказ"
         >
-          <svg-icon type="mdi" :path="mdilEye"></svg-icon>
+          <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
-          <svg-icon type="mdi" :path="mdilMagnify"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterMenuOutline"></svg-icon>
         </button>
       </div>
     </div>
@@ -571,7 +570,7 @@ function toggleFilters() {
 
       <!-- Кнопка сброса фильтров -->
       <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
-        <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+        <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useFinanceStore } from '../../stores/finance'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/responsive.css'
@@ -139,7 +139,7 @@ function handleClose() {
 
         <div class="modal-actions">
           <button class="glass-button" @click="handleClose" title="Отмена">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
           <button
             class="glass-button"
@@ -147,7 +147,7 @@ function handleClose() {
             :disabled="loadingBalance || !hasSufficientCash"
             title="Выполнить возврат"
           >
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>

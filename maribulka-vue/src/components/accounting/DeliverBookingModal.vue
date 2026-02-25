@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCurrencyRub, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCurrencyRub, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/responsive.css'
@@ -133,7 +133,7 @@ const handleDeliver = async () => {
         <div class="modal-actions">
           <!-- Кнопка "Закрыть" -->
           <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
 
           <!-- Кнопка "Оплата" - показываем только если не оплачено полностью -->
@@ -143,7 +143,7 @@ const handleDeliver = async () => {
             @click="handleQuickPayment"
             title="Оплатить остаток"
           >
-            <svg-icon type="mdi" :path="mdilCurrencyRub" />
+            <svg-icon type="mdi" :path="mdiCurrencyRub" />
           </button>
 
           <!-- Кнопка "Выдать заказ" - только если оплачено полностью -->
@@ -153,7 +153,7 @@ const handleDeliver = async () => {
             @click="handleDeliver"
             title="Выдать заказ"
           >
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>
@@ -161,69 +161,3 @@ const handleDeliver = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
-
-<style scoped>
-.delivery-info {
-  margin: 20px 0;
-}
-
-.price-value {
-  font-weight: bold;
-  color: #4caf50;
-}
-
-.remaining-warning {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-.remaining-amount {
-  color: #ff5722;
-  font-size: 1.1em;
-}
-
-.paid-full {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 15px 0;
-}
-
-.order-result-section {
-  margin-top: 15px;
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.radio-label:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.radio-label input[type="radio"] {
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.radio-label span {
-  flex: 1;
-}
-</style>

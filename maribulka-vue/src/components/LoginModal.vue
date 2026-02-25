@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCancel, mdilCheck } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import AlertModal from './AlertModal.vue'
 
@@ -67,14 +67,16 @@ const handleLogin = async () => {
       </div>
 
       <div class="modal-actions">
-        <!-- Кнопка "Войти" -->
+        <!-- Кнопка "Отмена" -->
         <button class="glass-button" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdilCancel" />
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <span class="textButton">Отмена</span>
         </button>
         <!-- Кнопка "Войти" -->
         <button class="glass-button" @click="handleLogin">
-          <svg-icon type="mdi" :path="mdilCheck" />
-        </button>        
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+          <span class="textButton">Войти</span>
+        </button>
       </div>
       </div>
     </div>

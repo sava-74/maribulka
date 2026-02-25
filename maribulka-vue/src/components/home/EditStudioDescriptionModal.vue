@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCancel, mdilCheck } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useHomeStore } from '../../stores/home'
@@ -165,7 +165,7 @@ function handleClose() {
       <div class="modal-header">
         <div class="modal-glassTitle">Редактирование описания студии</div>
         <button class="glass-button" @click="handleClose" title="Закрыть">
-          <svg-icon type="mdi" :path="mdilCancel" />
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
         </button>
       </div>
 
@@ -182,11 +182,11 @@ function handleClose() {
 
       <div class="modal-footer">
         <button class="glass-button-text" @click="handleSave">
-          <svg-icon type="mdi" :path="mdilCheck" />
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           <span>Сохранить</span>
         </button>
         <button class="glass-button-text" @click="handleClose">
-          <svg-icon type="mdi" :path="mdilCancel" />
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           <span>Отмена</span>
         </button>
       </div>

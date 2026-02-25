@@ -583,6 +583,16 @@ select.modal-input {
   justify-content: center;
 }
 
+.file-input-wrapper label {
+  cursor: pointer;
+  display: inline-flex;
+  gap: 5px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+   width: auto;
+}
+
 .file-input {
   display: none;
 }
@@ -683,11 +693,11 @@ select.modal-input {
 .editor-container .ql-toolbar.ql-snow .ql-picker{
   height: 15px;
 }
-
+/*
 .editor-container .ql-toolbar.ql-snow .ql-color-picker, 
 .ql-snow .ql-icon-picker {
-   /* width: 15px;*/
-}
+   /* width: 15px;
+}*/
 
 .editor-container .ql-toolbar.ql-snow .ql-formats{
   margin-left: 5px;

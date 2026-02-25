@@ -1,8 +1,9 @@
 /* Стили для домашней страницы */
 
+/*
 .home-container {
- /* padding-top: 20px;*/
-}
+ /* padding-top: 20px;
+}*/
 
 /* Блок фото студии */
 .studio-photos {
@@ -163,20 +164,13 @@
   object-fit: contain;
 }
 
-.file-input-wrapper {
-  margin-bottom: 10px;
-}
+
 
 .file-input {
   display: none;
 }
 
-.file-input-wrapper label {
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
+
 
 .file-hint {
   color: var(--generalTextColor);

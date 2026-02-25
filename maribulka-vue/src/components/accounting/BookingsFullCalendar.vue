@@ -6,8 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ruLocale from '@fullcalendar/core/locales/ru'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus } from '@mdi/light-js'
-import { mdiFileTableBoxOutline } from '@mdi/js'
+import { mdiTextBoxPlusOutline, mdiFileTableBoxOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import AddBookingModal from './AddBookingModal.vue'
@@ -429,7 +428,7 @@ function closeActionsModal() {
         @click="handleAddBooking"
         title="Добавить запись"
       >
-        <svg-icon type="mdi" :path="mdilPlus"></svg-icon>
+        <svg-icon type="mdi" :path="mdiTextBoxPlusOutline"></svg-icon>
       </button>
     </div>
 

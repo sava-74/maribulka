@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { mdiCashMultiple } from '@mdi/js'
 import { useFinanceStore } from '../../stores/finance'
 import AlertModal from '../AlertModal.vue'
@@ -330,7 +330,7 @@ async function handlePayment() {
           </button>
           <!-- Кнопка "Закрыть" -->
           <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>
@@ -345,10 +345,10 @@ async function handlePayment() {
         </p>
         <div class="modal-actions">
           <button class="glass-button" @click="showConfirmModal = false">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
           <button class="glass-button" @click="handlePayment">
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>

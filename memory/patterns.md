@@ -3,6 +3,7 @@
 ## Ключевые паттерны
 
 ### Модалки
+
 - **НИКОГДА** не использовать `alert()` / `confirm()` / `prompt()`
 - **ВСЕГДА** использовать кастомные модалки:
   - `AlertModal.vue` - уведомления
@@ -10,10 +11,12 @@
   - Custom модалки для форм (Add/Edit/View)
 
 ### Иконки
+
 - **ТОЛЬКО** @mdi/light-js (Material Design Icons Light)
 - НЕ использовать другие библиотеки иконок
 
 ### ID заказа
+
 ```typescript
 // Формат: МБ{id}{magicNumber}{year}
 // magicNumber = день * месяц
@@ -32,7 +35,7 @@ const orderId = `МБ${id}${magicNumber}${year}`
 
 **Файлы-эталоны:** `ClientsTable.vue`, `PromotionsTable.vue`
 
-### 🚨 КРИТИЧНО: БЕЗ ЧЕКБОКСОВ!
+### 🚨 КРИТИЧНО: БЕЗ ЧЕКБОКСОВ
 
 ### Column definitions
 
@@ -88,17 +91,19 @@ const table = useVueTable({
 
 ```typescript
 import {
-  mdilPlus,          // Добавить
-  mdilEye,           // Просмотр
+  mdiTextBoxPlusOutline,          // Добавить
+  mdiEyeOutline,           // Просмотр
   mdiFileEditOutline, // Редактировать
   mdilDelete,        // Удалить
-  mdilMagnify,       // Фильтры
-  mdilRefresh        // Обновить
+  mdiFilterMenuOutline,       // Фильтры
+  mdiFilterRemoveOutline        // Обновить
 } from '@mdi/light-js'
 ```
 
 **Состояния disabled:**
+
 ```vue
+
 <button @click="showViewModal = true" :disabled="!hasSingleSelection">
   <!-- Просмотр -->
 </button>

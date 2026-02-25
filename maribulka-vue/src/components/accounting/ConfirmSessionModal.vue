@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCurrencyRub, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCurrencyRub, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
 import '../../assets/responsive.css'
@@ -99,7 +99,7 @@ const handleConfirm = async () => {
 
         <div class="modal-actions">
           <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
 
           <!-- Кнопка "Добавить оплату" - если нет предоплаты -->
@@ -109,7 +109,7 @@ const handleConfirm = async () => {
             @click="handleConfirm"
             title="Добавить оплату"
           >
-            <svg-icon type="mdi" :path="mdilCurrencyRub" />
+            <svg-icon type="mdi" :path="mdiCurrencyRub " />
           </button>
 
           <!-- Кнопка "Подтвердить" - если есть предоплата -->
@@ -119,7 +119,7 @@ const handleConfirm = async () => {
             @click="handleConfirm"
             title="Подтвердить съёмку"
           >
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>
@@ -127,41 +127,3 @@ const handleConfirm = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
-
-<style scoped>
-.confirm-info {
-  margin: 20px 0;
-}
-
-.prepayment-ok {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.prepayment-warning {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-.info-box {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-}
-
-.info-box ul {
-  margin: 10px 0 0 20px;
-  list-style: disc;
-}
-
-.info-box li {
-  margin: 5px 0;
-}
-
-.divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 15px 0;
-}
-</style>

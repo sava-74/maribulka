@@ -13,7 +13,7 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilDelete, mdilMagnify, mdilRefresh, mdilEye, mdilPlus, mdilPencil } from '@mdi/light-js'
+import { mdiEyeOutline, mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiFileEditOutline, mdiTrashCanOutline, mdiTextBoxPlusOutline } from '@mdi/js'
 import { useFinanceStore } from '../../stores/finance'
 import ConfirmModal from '../ConfirmModal.vue'
 import ViewExpenseModal from './ViewExpenseModal.vue'
@@ -236,7 +236,7 @@ function refreshData() {
           @click="handleAdd"
           title="Добавить расход"
         >
-          <svg-icon type="mdi" :path="mdilPlus"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTextBoxPlusOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -244,7 +244,7 @@ function refreshData() {
           @click="handleEdit"
           title="Редактировать расход"
         >
-          <svg-icon type="mdi" :path="mdilPencil"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -252,7 +252,7 @@ function refreshData() {
           @click="handleView"
           title="Посмотреть расход"
         >
-          <svg-icon type="mdi" :path="mdilEye"></svg-icon>
+          <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -260,21 +260,21 @@ function refreshData() {
           @click="handleDelete"
           title="Удалить"
         >
-          <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
-          <svg-icon type="mdi" :path="mdilMagnify"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterMenuOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="refreshData"
           title="Обновить данные"
         >
-          <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
         </button>
       </div>
     </div>
@@ -294,7 +294,7 @@ function refreshData() {
 
       <!-- Кнопка сброса фильтров -->
       <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
-        <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+        <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>
 

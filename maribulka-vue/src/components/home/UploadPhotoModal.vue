@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilUpload, mdilDelete } from '@mdi/light-js'
-import { mdiClose } from '@mdi/js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiDeleteCircleOutline, mdiCameraPlusOutline } from '@mdi/js'
 import { useHomeStore } from '../../stores/home'
 import AlertModal from '../AlertModal.vue'
 
@@ -133,7 +132,7 @@ function handleClose() {
               class="file-input"
             >
             <label for="photo-input" class="glass-button-text">
-              <svg-icon type="mdi" :path="mdilUpload" />
+              <svg-icon type="mdi" :path="mdiCameraPlusOutline" />
               <span>Выбрать файл</span>
             </label>
           </div>
@@ -146,7 +145,7 @@ function handleClose() {
             :disabled="!selectedFile || uploading"
             title="Загрузить"
           >
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
           <button
             class="glass-button"
@@ -154,14 +153,14 @@ function handleClose() {
             :disabled="uploading"
             title="Удалить фото"
           >
-            <svg-icon type="mdi" :path="mdilDelete" />
+            <svg-icon type="mdi" :path="mdiDeleteCircleOutline" />
           </button>
           <button
             class="glass-button"
             @click="handleClose"
             title="Отмена"
           >
-            <svg-icon type="mdi" :path="mdiClose" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
         </div>
       </div>

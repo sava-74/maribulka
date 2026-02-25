@@ -1,13 +1,12 @@
 <script setup lang="ts">
-//import { ref } from 'vue'
 import { ref, computed, onMounted } from 'vue'
-import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilLogin, mdilLogout } from '@mdi/light-js'
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiAccountOutline, mdiAccountOffOutline } from '@mdi/js';
 import { useAuthStore } from '../stores/auth'
 import ConfirmModal from './ConfirmModal.vue'
 import { useReferencesStore } from '../stores/references'
 
-// Context snippet 1 from d:/GitHub/maribulka/maribulka-vue/src/components/TopBar.vue
+
 
 const auth = useAuthStore()
 const emit = defineEmits(['open-login'])
@@ -71,7 +70,7 @@ const activePromotion = computed(() => {
 
     <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->
     <button class="glass-button" @click="handleAction">
-      <svg-icon type="mdi" :path="auth.isAdmin ? mdilLogout : mdilLogin" />
+      <svg-icon type="mdi" :path="auth.isAdmin ? mdiAccountOffOutline : mdiAccountOutline" />
     </button>
     <ConfirmModal
       :isVisible="showConfirm"

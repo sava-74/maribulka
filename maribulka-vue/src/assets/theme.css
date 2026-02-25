@@ -16,13 +16,13 @@
   --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
   --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */
   /*--test-shadow: 4px 4px 8px rgba(43, 4, 235, 0.666); /* для тестов */
-  --glass-bgButton: rgba(255, 255, 255, 0.4); /*задний фон кнопки*/
+  --glass-bgButton: rgba(239, 239, 239, 0.4); /*задний фон кнопки*/
   --glass-bgButtonActive: rgba(57, 255, 20, 0.3); /*задний фон активной кнопки*/
-  --glass-textButtonColor: #333; /* цвет текста на кнопках*/
+  --glass-textButtonColor: rgb(124, 124, 124); /* цвет текста на кнопках*/
   --glass-borderButttonColorFlash: #ffffff; /* цвет границы при флеше */
   --glass-borderbuttonAlertColor: #ff0000; /* цвет границы для кнопки с алертом */
-  --svg-colorButton: #333; /* цвет иконок SVG */
-  --svg-sizeButton: 18px; /* размер иконок SVG */
+  --svg-colorButton: rgb(124, 124, 124); /* цвет иконок SVG */
+  --svg-sizeButton: 15px; /* размер иконок SVG */
   --text-colorAlert: #ff0000; /* цвет текста для алерта */
 
   --glass-widthButton: 20px;/* ширина кнопки */

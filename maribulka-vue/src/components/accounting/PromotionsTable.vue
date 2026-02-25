@@ -13,8 +13,7 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus, mdilDelete, mdilMagnify, mdilRefresh, mdilEye } from '@mdi/light-js'
-import { mdiFileEditOutline } from '@mdi/js'
+import { mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiTextBoxPlusOutline, mdiFileEditOutline, mdiTrashCanOutline, mdiEyeOutline } from '@mdi/js'
 import { useReferencesStore } from '../../stores/references'
 import ViewPromotionModal from './ViewPromotionModal.vue'
 import AddPromotionModal from './AddPromotionModal.vue'
@@ -237,7 +236,7 @@ function handleTimelineClick(promotion: any) {
           @click="handleAdd"
           title="Добавить акцию"
         >
-          <svg-icon type="mdi" :path="mdilPlus"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTextBoxPlusOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -245,7 +244,7 @@ function handleTimelineClick(promotion: any) {
           @click="handleView"
           title="Посмотреть"
         >
-          <svg-icon type="mdi" :path="mdilEye"></svg-icon>
+          <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -261,21 +260,21 @@ function handleTimelineClick(promotion: any) {
           @click="handleDelete"
           title="Удалить"
         >
-          <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
-          <svg-icon type="mdi" :path="mdilMagnify"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterMenuOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="refreshData"
           title="Обновить данные"
         >
-          <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
         </button>
       </div>
     </div>
@@ -308,7 +307,7 @@ function handleTimelineClick(promotion: any) {
 
       <!-- Кнопка сброса фильтров -->
       <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
-        <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+        <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>
 

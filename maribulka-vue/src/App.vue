@@ -62,7 +62,3 @@ onMounted(async () => {
     <LoginModal :is-visible="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>
-
-<style scoped>
-
-</style>

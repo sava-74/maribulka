@@ -13,7 +13,7 @@ import {
   FlexRender
 } from '@tanstack/vue-table'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilDelete, mdilMagnify, mdilRefresh, mdilEye } from '@mdi/light-js'
+import { mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiTrashCanOutline, mdiEyeOutline } from '@mdi/js'
 import { useFinanceStore } from '../../stores/finance'
 import ConfirmModal from '../ConfirmModal.vue'
 import ViewIncomeModal from './ViewIncomeModal.vue'
@@ -283,7 +283,7 @@ function refreshData() {
           @click="handleView"
           title="Посмотреть платёж"
         >
-          <svg-icon type="mdi" :path="mdilEye"></svg-icon>
+          <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
@@ -291,21 +291,21 @@ function refreshData() {
           @click="handleDelete"
           title="Удалить"
         >
-          <svg-icon type="mdi" :path="mdilDelete"></svg-icon>
+          <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
-          <svg-icon type="mdi" :path="mdilMagnify"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterMenuOutline"></svg-icon>
         </button>
         <button
           class="glass-button"
           @click="refreshData"
           title="Обновить данные"
         >
-          <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+          <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
         </button>
       </div>
     </div>
@@ -336,7 +336,7 @@ function refreshData() {
 
       <!-- Кнопка сброса фильтров -->
       <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
-        <svg-icon type="mdi" :path="mdilRefresh"></svg-icon>
+        <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>
 

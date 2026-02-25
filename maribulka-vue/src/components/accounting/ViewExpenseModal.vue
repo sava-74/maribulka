@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck } from '@mdi/light-js'
+import { mdiCheckCircleOutline } from '@mdi/js'
 
 const props = defineProps<{
   isVisible: boolean
@@ -64,7 +64,7 @@ const expenseInfo = computed(() => {
 
         <div class="modal-actions">
           <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>

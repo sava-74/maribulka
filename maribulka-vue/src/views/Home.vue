@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilPlus } from '@mdi/light-js'
+import { mdiTextBoxPlusOutline, mdiCameraPlusOutline } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import { useHomeStore } from '../stores/home'
 import UploadPhotoModal from '../components/home/UploadPhotoModal.vue'
@@ -84,7 +84,7 @@ function handleDescriptionClick(event: MouseEvent) {
             @click="handleAddPhoto(index - 1)"
             title="Добавить/изменить фото"
           >
-            <svg-icon type="mdi" :path="mdilPlus" />
+            <svg-icon type="mdi" :path="mdiCameraPlusOutline" />
           </button>
         </div>
       </div>
@@ -100,7 +100,7 @@ function handleDescriptionClick(event: MouseEvent) {
           @click="showEditDescriptionModal = true"
           title="Редактировать описание"
         >
-          <svg-icon type="mdi" :path="mdilPlus" />
+          <svg-icon type="mdi" :path="mdiTextBoxPlusOutline" />
         </button>
       </div>
       <div class="description-content" v-html="descriptionHtml" @click="handleDescriptionClick"></div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel, mdilCurrencyRub } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiCurrencyRub } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
 import RefundModal from './RefundModal.vue'
@@ -137,7 +137,7 @@ const handleRefundCreated = async () => {
 
         <div class="modal-actions">
           <button class="glass-button" @click="emit('close')" title="Закрыть">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
 
           <!-- Если НЕ было оплаты - кнопка "Отмена" -->
@@ -147,7 +147,7 @@ const handleRefundCreated = async () => {
             @click="handleCancelWithoutRefund"
             title="Отменить заказ"
           >
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
 
           <!-- Если была оплата - кнопка "Р" (возврат) -->
@@ -157,7 +157,7 @@ const handleRefundCreated = async () => {
             @click="handleOpenRefund"
             title="Возврат средств"
           >
-            <svg-icon type="mdi" :path="mdilCurrencyRub" />
+            <svg-icon type="mdi" :path="mdiCurrencyRub" />
           </button>
         </div>
       </div>
@@ -174,18 +174,3 @@ const handleRefundCreated = async () => {
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
   </Teleport>
 </template>
-
-<style scoped>
-.payment-warning {
-  padding: 10px;
-  background: rgba(255, 152, 0, 0.2);
-  border-left: 3px solid #ff9800;
-  border-radius: 4px;
-}
-
-.payment-warning .hint {
-  margin-top: 5px;
-  font-size: 0.9em;
-  color: rgba(255, 255, 255, 0.7);
-}
-</style>

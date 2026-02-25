@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useReferencesStore } from '../../stores/references'
 import AlertModal from '../AlertModal.vue'
 
@@ -158,10 +158,10 @@ const handleSubmit = async () => {
 
         <div class="modal-actions">
           <button class="glass-button" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
           <button class="glass-button" @click="handleSubmit">
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>
       </div>

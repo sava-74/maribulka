@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCheck, mdilCancel } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 
 const props = defineProps<{
   isVisible: boolean
@@ -19,11 +19,13 @@ const emit = defineEmits(['confirm', 'cancel'])
         <div class="modal-actions">
           <!-- Кнопка "Отмена" -->
           <button class="glass-button" @click="emit('cancel')">
-            <svg-icon type="mdi" :path="mdilCancel" />
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span class="textButton">Отмена</span>
           </button>
           <!-- Кнопка "Подтвердить" -->
           <button class="glass-button" @click="emit('confirm')">
-            <svg-icon type="mdi" :path="mdilCheck" />
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span class="textButton">Ок</span> 
           </button>
         </div>
       </div>

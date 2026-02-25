@@ -235,10 +235,10 @@ const profitability = computed(() => {
 - CRUD операции: View, Add, Edit, Delete
 
 **Кнопки:**
-- Обновить (mdilRefresh)
-- Фильтры (mdilMagnify) - открывает фильтр по месяцам
-- Добавить (mdilPlus)
-- Просмотр (mdilEye) - disabled если не выбран элемент
+- Обновить (mdiFilterRemoveOutline)
+- Фильтры (mdiFilterMenuOutline) - открывает фильтр по месяцам
+- Добавить (mdiTextBoxPlusOutline)
+- Просмотр (mdiEyeOutline) - disabled если не выбран элемент
 - Редактировать (mdiFileEditOutline) - disabled если не выбран элемент
 - Удалить (mdilDelete) - disabled если не выбран элемент
 

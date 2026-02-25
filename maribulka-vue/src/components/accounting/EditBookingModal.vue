@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdilCancel, mdilCheck } from '@mdi/light-js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import AlertModal from '../AlertModal.vue'
@@ -374,11 +374,11 @@ const handleSubmit = async () => {
       <div class="modal-actions">
         <!-- Кнопка "Закрыть" -->
         <button class="glass-button" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdilCancel" />
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
         </button>
         <!-- Кнопка "Сохранить" -->
         <button class="glass-button" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdilCheck" />
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
         </button>        
       </div>
     </div>

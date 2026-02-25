@@ -18,6 +18,8 @@
     box-shadow: var(--glass-shadowButton);  
     color: var(--glass-textButtonColor);
     padding: 0;
+    font-size: var(--generalTextSize);
+    font-weight:bold;
     /*padding-left: 8px;*/
     white-space: nowrap;
     /*будем убивать родной стиль */
@@ -53,8 +55,17 @@
     /*background-color: buttonface;*/
     margin: 0em 0em 0em 0em;
     padding-block: 0px;
-    padding-inline: 0px;
-    
+    padding-inline: 0px;   
+}
+
+.textButton {
+    display: grid;
+    place-items: center;
+    height: calc(var(--generalTextSize) * 0.8);
+    font-size: calc(var(--generalTextSize) * 0.8); /* уменьшаем размер шрифта на 2px для большей читабельности в кнопках */
+    padding: 0 2px;
+    font-weight: bold;
+    color: var(--svg-colorButton);
 }
 
 .glass-button:hover {
@@ -115,7 +126,7 @@
 }
 
 .glass-button-text:hover {
-    transform: translate(-4px, -4px);
+    transform: translate(-2px, -2px);
     box-shadow: var(--glass-shadowButtonUp);
 }
 
@@ -133,11 +144,12 @@
     border-color: var(--generalColor);
 }
 
-/* Иконки внутри кнопок (SVG из библиотеки MDIL) */
-.glass-button svg {
+/* Иконки внутри кнопок (SVG из библиотеки MDI) */
+.glass-button svg,
+.glass-button-text svg {
   width: var(--svg-sizeButton) !important;
   height: var(--svg-sizeButton) !important;
-  fill: var(--svg-colorButton) !important; /* Убедись, что иконка не белая на светлом фоне */
+  color: var(--svg-colorButton) !important; /* @jamescoyle/vue-icon использует color, не fill! */
   display: block;
   flex-shrink: 0;
 }
@@ -218,8 +230,7 @@
 /* Кнопки в modal-actions (растянутые на всю ширину) */
 .modal-actions .glass-button {
   width: 100%;
-  background: rgb(255 255 255 / 0%);
-  backdrop-filter: none;
+
 }
 
 /* Кнопки в BookingActionsModal */
