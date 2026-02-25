@@ -12,6 +12,19 @@ export default defineConfig({
     }
   },
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'pinia'],
+          'fullcalendar': ['@fullcalendar/core', '@fullcalendar/vue3', '@fullcalendar/daygrid', '@fullcalendar/timegrid', '@fullcalendar/interaction'],
+          'charts': ['chart.js', '@tanstack/vue-table']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 600
+  },
+
   // Прокси для API запросов и медиа-файлов в development режиме
   server: {
     proxy: {
