@@ -57,7 +57,7 @@ function updatePeriod(start: Date, end: Date) {
   <div>
     <div class="glass-panel-tabs glass-panel-tabs-sticky">
         <!-- Навигация вкладок -->
-        <div class="glass-panel-tabs-nav">
+        <div class="glass-panel-tabs-nav accounting-tabs">
           <!-- Левая группа: вкладки -->
           <div class="tabs-group-left">
             <button

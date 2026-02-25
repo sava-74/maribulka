@@ -28,7 +28,6 @@
 /* Контейнер для кнопок вкладок */
 .glass-panel-tabs-nav {
   display: flex;
-  justify-content: space-between;
   gap: 0;
   position: relative;
   z-index: 3;
@@ -103,6 +102,15 @@
   padding: 6px;
   position: relative;
   z-index: 2;
+}
+
+/* =========================================
+   СУБ-СТИЛИ
+   ========================================= */
+
+/* Суб-стиль для Бухгалтерии: растягивает вкладки по сторонам */
+.glass-panel-tabs-nav.accounting-tabs {
+  justify-content: space-between;
 }
 
 /* =========================================

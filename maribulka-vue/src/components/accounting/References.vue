@@ -21,34 +21,36 @@ onMounted(() => {
   <div class="glass-panel-tabs glass-panel-tabs-sticky">
       <!-- Навигация вкладок -->
       <div class="glass-panel-tabs-nav">
-        <button
-          class="glass-button-tab"
-          :class="{ active: activeSection === 'clients' }"
-          @click="activeSection = 'clients'"
-        >
-          Клиенты
-        </button>
-        <button
-          class="glass-button-tab"
-          :class="{ active: activeSection === 'shooting-types' }"
-          @click="activeSection = 'shooting-types'"
-        >
-          Типы съёмок
-        </button>
-        <button
-          class="glass-button-tab"
-          :class="{ active: activeSection === 'promotions' }"
-          @click="activeSection = 'promotions'"
-        >
-          Акции
-        </button>
-        <button
-          class="glass-button-tab"
-          :class="{ active: activeSection === 'expense-categories' }"
-          @click="activeSection = 'expense-categories'"
-        >
-          Категории расходов
-        </button>
+        <div class="tabs-group-left">
+          <button
+            class="glass-button-tab"
+            :class="{ active: activeSection === 'clients' }"
+            @click="activeSection = 'clients'"
+          >
+            Клиенты
+          </button>
+          <button
+            class="glass-button-tab"
+            :class="{ active: activeSection === 'shooting-types' }"
+            @click="activeSection = 'shooting-types'"
+          >
+            Типы съёмок
+          </button>
+          <button
+            class="glass-button-tab"
+            :class="{ active: activeSection === 'promotions' }"
+            @click="activeSection = 'promotions'"
+          >
+            Акции
+          </button>
+          <button
+            class="glass-button-tab"
+            :class="{ active: activeSection === 'expense-categories' }"
+            @click="activeSection = 'expense-categories'"
+          >
+            Категории расходов
+          </button>
+        </div>
       </div>
 
       <!-- Панель контента -->
