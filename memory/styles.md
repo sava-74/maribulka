@@ -60,7 +60,7 @@ assets/
 --glass-heightButton: 40px;                       /* Высота квадратной кнопки */
 --glass-widthButtonText: 140px;                   /* Ширина кнопки с текстом */
 --glass-borderRadiusButton: 8px;                  /* Скругление кнопок */
---svg-colorButton: #333;                          /* Цвет иконок в кнопках */
+--svgColorForButton: #333;                          /* Цвет иконок в кнопках */
 ```
 
 ### Таблицы и статусы

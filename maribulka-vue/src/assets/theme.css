@@ -21,8 +21,8 @@
   --glass-textButtonColor: rgb(124, 124, 124); /* цвет текста на кнопках*/
   --glass-borderButttonColorFlash: #ffffff; /* цвет границы при флеше */
   --glass-borderbuttonAlertColor: #ff0000; /* цвет границы для кнопки с алертом */
-  --svg-colorButton: rgb(124, 124, 124); /* цвет иконок SVG */
-  --svg-sizeButton: 25px; /* размер иконок SVG */
+  --svgColorForButton: rgb(124, 124, 124); /* цвет иконок SVG */
+  --svgSizeForButton: 25px; /* размер иконок SVG */
   --text-colorAlert: #ff0000; /* цвет текста для алерта */
 
   --glass-widthButton: 30px;/* ширина кнопки */
@@ -50,7 +50,7 @@
   /* Мобильные размеры */
   --glass-widthButtonSmall: 26px;/* ширина кнопки под мобилку*/
   --glass-heightButtonSmall: 26px;/* высота кнопки под мобилку*/
-  --svg-sizeButtonSmall: 20px; /* размер иконок SVG для мобилки */
+  --svgSizeForButtonSmall: 20px; /* размер иконок SVG для мобилки */
   --panelRadiusSmall: 8px; /* радиус скругления панелей для мобилки */
 
   /* Таблицы */

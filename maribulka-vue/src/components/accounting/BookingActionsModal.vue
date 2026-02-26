@@ -75,7 +75,7 @@ function handleAction(action: string) {
 
         <div class="actions-buttons">
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             @click="handleAction('view')"
             title="Просмотр"
           >
@@ -84,7 +84,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             :disabled="!canEdit"
             @click="handleAction('edit')"
             title="Редактировать (только для 'new')"
@@ -94,7 +94,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             :disabled="!canPayment"
             @click="handleAction('payment')"
             title="Оплата (для 'new' или 'in_progress')"
@@ -106,7 +106,7 @@ function handleAction(action: string) {
           <!-- НОВЫЙ БИЗНЕС-ПРОЦЕСС -->
 
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             :disabled="!canConfirmSession"
             @click="handleAction('confirmSession')"
             title="Подтвердить съёмку (new → in_progress)"
@@ -116,7 +116,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             :disabled="!canDeliver"
             @click="handleAction('deliver')"
             title="Выдать заказ (in_progress → completed)"
@@ -126,7 +126,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="glass-button-text"
+            class="buttonGL-text"
             :disabled="!canCancel"
             @click="handleAction('cancel')"
             title="Отменить / Клиент не пришёл"
@@ -136,7 +136,7 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="glass-button-text action-danger"
+            class="buttonGL-text action-danger"
             :disabled="!canDelete"
             @click="handleAction('delete')"
             title="Удалить (только для 'new' без оплаты)"

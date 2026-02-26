@@ -80,7 +80,7 @@
   /* Удалены все тени для иконок */
 }
 
-/* Улучшенные стили для селектов в стиле glass-button-text */
+/* Улучшенные стили для селектов в стиле buttonGL-text */
 .glass-select {
   width: var(--glass-widthButtonText);
   height: var(--glass-heightButton);

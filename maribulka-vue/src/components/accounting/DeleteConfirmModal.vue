@@ -64,10 +64,10 @@ const handleConfirm = async () => {
       <p class="delete-warning">Вы уверены, что хотите удалить эту запись?</p>
 
       <div class="modal-actions">
-        <button class="glass-button" @click="emit('close')">
+        <button class="buttonGL" @click="emit('close')">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
         </button>
-        <button class="glass-button" @click="handleConfirm">
+        <button class="buttonGL" @click="handleConfirm">
           <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
         </button>
         

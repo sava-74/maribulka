@@ -414,7 +414,7 @@ function closeActionsModal() {
       <FullCalendar ref="calendarRef" :options="calendarOptions" />
       <!-- Кнопка таблицы -->
       <button
-        class="glass-button calendar-table-button"
+        class="buttonGL calendar-table-button"
         :class="{ active: showTable }"
         @click="emit('toggle-table')"
         title="Показать/скрыть таблицу"
@@ -424,7 +424,7 @@ function closeActionsModal() {
       <!-- Кнопка добавления - только в режиме дня -->
       <button
         v-if="canAddBooking"
-        class="glass-button calendar-add-button"
+        class="buttonGL calendar-add-button"
         @click="handleAddBooking"
         title="Добавить запись"
       >

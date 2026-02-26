@@ -131,7 +131,7 @@ function handleClose() {
               @change="handleFileSelect"
               class="file-input"
             >
-            <label for="photo-input" class="glass-button-text">
+            <label for="photo-input" class="buttonGL-text">
               <svg-icon type="mdi" :path="mdiCameraPlusOutline" />
               <span>Выбрать файл</span>
             </label>
@@ -140,7 +140,7 @@ function handleClose() {
 
         <div class="modal-actions">
           <button
-            class="glass-button"
+            class="buttonGL"
             @click="handleUpload"
             :disabled="!selectedFile || uploading"
             title="Загрузить"
@@ -148,7 +148,7 @@ function handleClose() {
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
           <button
-            class="glass-button"
+            class="buttonGL"
             @click="handleDelete"
             :disabled="uploading"
             title="Удалить фото"
@@ -156,7 +156,7 @@ function handleClose() {
             <svg-icon type="mdi" :path="mdiDeleteCircleOutline" />
           </button>
           <button
-            class="glass-button"
+            class="buttonGL"
             @click="handleClose"
             title="Отмена"
           >

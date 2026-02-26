@@ -9,21 +9,21 @@ const activeTab = ref('portrait')
       <!-- Навигация вкладок -->
       <div class="glass-panel-tabs-nav">
         <button
-          class="glass-button-tab"
+          class="buttonGL-tab"
           :class="{ active: activeTab === 'portrait' }"
           @click="activeTab = 'portrait'"
         >
           Портрет
         </button>
         <button
-          class="glass-button-tab"
+          class="buttonGL-tab"
           :class="{ active: activeTab === 'group' }"
           @click="activeTab = 'group'"
         >
           Групповая
         </button>
         <button
-          class="glass-button-tab"
+          class="buttonGL-tab"
           :class="{ active: activeTab === 'family' }"
           @click="activeTab = 'family'"
         >

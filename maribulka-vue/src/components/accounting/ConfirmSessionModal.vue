@@ -98,14 +98,14 @@ const handleConfirm = async () => {
         </div>
 
         <div class="modal-actions">
-          <button class="glass-button" @click="emit('close')">
+          <button class="buttonGL" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
 
           <!-- Кнопка "Добавить оплату" - если нет предоплаты -->
           <button
             v-if="orderInfo && !orderInfo.hasPrepayment"
-            class="glass-button"
+            class="buttonGL"
             @click="handleConfirm"
             title="Добавить оплату"
           >
@@ -115,7 +115,7 @@ const handleConfirm = async () => {
           <!-- Кнопка "Подтвердить" - если есть предоплата -->
           <button
             v-if="orderInfo && orderInfo.hasPrepayment"
-            class="glass-button"
+            class="buttonGL"
             @click="handleConfirm"
             title="Подтвердить съёмку"
           >

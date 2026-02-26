@@ -69,7 +69,7 @@ const activePromotion = computed(() => {
     </div>
 
     <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->
-    <button class="glass-button" @click="handleAction">
+    <button class="buttonGL" @click="handleAction">
       <svg-icon type="mdi" :path="auth.isAdmin ? mdiAccountOffOutline : mdiAccountOutline" />
     </button>
     <ConfirmModal

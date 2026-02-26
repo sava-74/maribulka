@@ -74,8 +74,8 @@
 
 @media (max-width: 480px) {
  
-  .side-bar .glass-button,
-  .top-bar .glass-button {
+  .side-bar .buttonGL,
+  .top-bar .buttonGL {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   border-bottom-left-radius: var(--glass-borderRadiusButton) !important;

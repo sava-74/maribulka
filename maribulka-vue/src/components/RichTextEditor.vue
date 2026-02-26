@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Заголовок 1"
       >
@@ -178,7 +178,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Заголовок 2"
       >
@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Заголовок 3"
       >
@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleBold().run()"
         :class="{ 'is-active': editor.isActive('bold') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Жирный"
       >
@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleItalic().run()"
         :class="{ 'is-active': editor.isActive('italic') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Курсив"
       >
@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleUnderline().run()"
         :class="{ 'is-active': editor.isActive('underline') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Подчёркнутый"
       >
@@ -227,7 +227,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleStrike().run()"
         :class="{ 'is-active': editor.isActive('strike') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Зачёркнутый"
       >
@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleBulletList().run()"
         :class="{ 'is-active': editor.isActive('bulletList') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Маркированный список"
       >
@@ -249,7 +249,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().toggleOrderedList().run()"
         :class="{ 'is-active': editor.isActive('orderedList') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Нумерованный список"
       >
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().setTextAlign('left').run()"
         :class="{ 'is-active': editor.isActive({ textAlign: 'left' }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="По левому краю"
       >
@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().setTextAlign('center').run()"
         :class="{ 'is-active': editor.isActive({ textAlign: 'center' }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="По центру"
       >
@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().setTextAlign('right').run()"
         :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="По правому краю"
       >
@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
       <button
         @click="editor.chain().focus().setTextAlign('justify').run()"
         :class="{ 'is-active': editor.isActive({ textAlign: 'justify' }) }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="По ширине"
       >
@@ -302,7 +302,7 @@ onBeforeUnmount(() => {
       <button
         @click="handleAddLink"
         :class="{ 'is-active': editor.isActive('link') }"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Вставить ссылку"
       >
@@ -310,7 +310,7 @@ onBeforeUnmount(() => {
       </button>
       <button
         @click="handleImageUpload"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Вставить изображение"
       >
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
       <!-- Очистить форматирование -->
       <button
         @click="editor.chain().focus().unsetAllMarks().clearNodes().run()"
-        class="glass-button"
+        class="buttonGL"
         type="button"
         title="Очистить форматирование"
       >
@@ -353,11 +353,11 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="modal-footerUrl">
-          <button class="glass-button-text" @click="cancelLinkUrl">
+          <button class="buttonGL-text" @click="cancelLinkUrl">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
             <span>Отмена</span>
           </button>
-          <button class="glass-button-text" @click="saveLinkUrl">
+          <button class="buttonGL-text" @click="saveLinkUrl">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
             <span>Сохранить</span>
           </button>

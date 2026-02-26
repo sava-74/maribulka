@@ -18,12 +18,12 @@ const emit = defineEmits(['confirm', 'cancel'])
         <p class="modal-message">{{ message }}</p>
         <div class="modal-actions">
           <!-- Кнопка "Отмена" -->
-          <button class="glass-button" @click="emit('cancel')">
+          <button class="buttonGL" @click="emit('cancel')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
             <span class="textButton">Отмена</span>
           </button>
           <!-- Кнопка "Подтвердить" -->
-          <button class="glass-button" @click="emit('confirm')">
+          <button class="buttonGL" @click="emit('confirm')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
             <span class="textButton">Ок</span> 
           </button>

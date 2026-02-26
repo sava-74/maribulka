@@ -138,11 +138,11 @@ function handleClose() {
         </div>
 
         <div class="modal-actions">
-          <button class="glass-button" @click="handleClose" title="Отмена">
+          <button class="buttonGL" @click="handleClose" title="Отмена">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
           <button
-            class="glass-button"
+            class="buttonGL"
             @click="handleConfirm"
             :disabled="loadingBalance || !hasSufficientCash"
             title="Выполнить возврат"

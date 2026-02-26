@@ -450,14 +450,14 @@ function toggleFilters() {
       <!-- Кнопки действий -->
       <div class="table-actions">
         <button
-          class="glass-button"
+          class="buttonGL"
           @click="handleAddBooking"
           title="Добавить запись"
         >
           <svg-icon type="mdi" :path="mdiTextBoxPlusOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || !canEdit"
           @click="handleEdit"
           title="Редактировать (только для 'new' и до начала съёмки)"
@@ -465,7 +465,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || isLocked || selectedBooking?.payment_status === 'fully_paid'"
           @click="handleAddPayment"
           title="Добавить оплату"
@@ -473,7 +473,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiCashMultiple"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || !canDelete"
           @click="handleDelete"
           title="Удалить (только для 'new' без оплаты)"
@@ -481,7 +481,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || !canMarkCompleted"
           @click="handleMarkCompleted"
           title="Подтвердить съёмку (new → in_progress)"
@@ -489,7 +489,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiCameraOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || isLocked || selectedBooking?.status !== 'new'"
           @click="handleCancelBooking"
           title="Отменить запись (только для 'new')"
@@ -497,7 +497,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiCameraOffOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || !canDeliver"
           @click="handleDeliver"
           title="Выдать съёмку"
@@ -505,7 +505,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiFolderPlayOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow"
           @click="handleView"
           title="Посмотреть заказ"
@@ -513,7 +513,7 @@ function toggleFilters() {
           <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
@@ -569,7 +569,7 @@ function toggleFilters() {
       </div>
 
       <!-- Кнопка сброса фильтров -->
-      <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
+      <button class="buttonGL" @click="resetFilters" title="Сбросить фильтры">
         <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>

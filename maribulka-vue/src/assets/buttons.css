@@ -1,105 +1,122 @@
-/* ========== БАЗОВЫЕ КНОПКИ-ИКОНКИ (40x40) ========== */
+/* ========================================
+   СТИЛИ КНОПОК ПРОЕКТА MARIBULKA
+   buttons.css
+   Дата создания: 2026-02-26
+   ======================================== */
 
-/* Базовое состояние кнопки - "висит в воздухе" */
-.button, .glass-button {
-    width: var(--glass-widthButton); /* Фиксированный размер в сложенном виде */
-    height: var(--glass-heightButton);
-    min-width: var(--glass-widthButton);
-    border-radius: var(--glass-borderRadiusButton);
-    border: 1px solid var(--generalColor);
-    background: var(--glass-bgButton);
-    -webkit-backdrop-filter: var(--glass-bgFilter);
-    backdrop-filter: var(--glass-bgFilter);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
-    box-shadow: var(--glass-shadowButton);  
-    color: var(--glass-textButtonColor);
-    padding: 0;
-    font-size: var(--generalTextSize);
-    font-weight:bold;
-    /*padding-left: 8px;*/
-    white-space: nowrap;
-    /*будем убивать родной стиль */
-    appearance: auto;    
-   /* font-style: ;
-    font-variant-ligatures: ;
-    font-variant-caps: ;
-    font-variant-numeric: ;
-    font-variant-east-asian: ;
-    font-variant-alternates: ;
-    font-variant-position: ;
-    font-variant-emoji: ;
-    font-weight: ;
-    font-stretch: ;
-    font-size: ;
-    font-family: ;
-    font-optical-sizing: ;
-    font-size-adjust: ;
-    font-kerning: ;
-    font-feature-settings: ;
-    font-variation-settings: ;
-    font-language-override: ;*/
-    text-rendering: auto;
-    letter-spacing: normal;
-    word-spacing: normal;
-    line-height: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    text-align: center;
-    /*cursor: default;*/
-    box-sizing: border-box;
-    /*background-color: buttonface;*/
-    margin: 0em 0em 0em 0em;
-    padding-block: 0px;
-    padding-inline: 0px;   
+/* ========== 1. БАЗОВАЯ КНОПКА ========== */
+/* Основной класс для кнопок с иконками (без текста) */
+/* Назначение: квадратная кнопка 30x30px для отображения только иконок SVG */
+/* Используется: везде где нужна компактная кнопка-иконка (топбар, сайдбар, модалки, таблицы) */
+
+.buttonGL {
+  /* === РАЗМЕРЫ === */
+  width: var(--glass-widthButton);         /* Фиксированная ширина кнопки */
+  height: var(--glass-heightButton);       /* Фиксированная высота кнопки */
+  min-width: var(--glass-widthButton);     /* Минимальная ширина (предотвращает сжатие) */
+
+  /* === РАМКА И ФОН === */
+  border: 1px solid var(--generalColor);   /* Цветная рамка */
+  border-radius: var(--glass-borderRadiusButton); /* Скругление углов */
+  background: var(--glass-bgButton);       /* Полупрозрачный фон */
+
+  /* === ЭФФЕКТ СТЕКЛА === */
+  -webkit-backdrop-filter: var(--glass-bgFilter); /* Размытие фона для WebKit браузеров */
+  backdrop-filter: var(--glass-bgFilter);  /* Размытие фона (создаёт эффект матового стекла) */
+
+  /* === ТЕНИ === */
+  box-shadow: var(--glass-shadowButton);   /* Стандартная тень кнопки */
+
+  /* === FLEXBOX ДЛЯ ЦЕНТРИРОВАНИЯ ИКОНКИ === */
+  display: flex;                           /* Flex-контейнер для выравнивания содержимого */
+  align-items: center;                     /* Вертикальное выравнивание по центру */
+  justify-content: center;                 /* Горизонтальное выравнивание по центру */
+
+  /* === ТЕКСТ И ШРИФТ === */
+  color: var(--glass-textButtonColor);     /* Цвет текста/иконки */
+  font-size: var(--generalTextSize);       /* Размер шрифта */
+  font-weight: bold;                       /* Жирный шрифт */
+  white-space: nowrap;                     /* Запрет переноса текста */
+  text-align: center;                      /* Выравнивание текста по центру */
+
+  /* === ОТСТУПЫ === */
+  padding: 0;                              /* Без внутренних отступов (иконка строго по центру) */
+  margin: 0;                               /* Без внешних отступов */
+
+  /* === АНИМАЦИИ === */
+  transition: transform 0.2s ease,         /* Плавное перемещение при hover (200мс) */
+              box-shadow 0.2s ease,        /* Плавное изменение тени при hover (200мс) */
+              filter 0.1s ease,            /* Быстрое свечение при active (100мс) */
+              border-color 0.1s ease;      /* Быстрая смена цвета рамки при active (100мс) */
+
+  /* === КУРСОР === */
+  cursor: pointer;                         /* Курсор-указатель при наведении */
+
+  /* === СБРОС СТАНДАРТНЫХ СТИЛЕЙ БРАУЗЕРА === */
+  appearance: none;                        /* Убираем нативный вид кнопки */
+  -webkit-appearance: none;                /* Убираем нативный вид для WebKit браузеров */
+  box-sizing: border-box;                  /* Включаем border/padding в размеры элемента */
+  text-rendering: auto;                    /* Стандартный рендеринг текста */
+  letter-spacing: normal;                  /* Стандартный межбуквенный интервал */
+  word-spacing: normal;                    /* Стандартный интервал между словами */
+  line-height: normal;                     /* Стандартная высота строки */
+  text-transform: none;                    /* Без трансформации текста (uppercase/lowercase) */
+  text-indent: 0;                          /* Без отступа первой строки */
+  text-shadow: none;                       /* Без тени текста */
+  padding-block: 0;                        /* Без вертикальных отступов (логическое свойство) */
+  padding-inline: 0;                       /* Без горизонтальных отступов (логическое свойство) */
 }
 
-.textButton {
-    display: grid;
-    place-items: center;
-    height: calc(var(--generalTextSize) * 0.8);
-    font-size: calc(var(--generalTextSize) * 0.8); /* уменьшаем размер шрифта на 2px для большей читабельности в кнопках */
-    padding: 0 2px;
-    font-weight: bold;
-    color: var(--svg-colorButton);
+/* ========== 2. СОСТОЯНИЯ БАЗОВОЙ КНОПКИ ========== */
+
+/* === НАВЕДЕНИЕ МЫШИ (HOVER) === */
+/* Эффект: кнопка "приподнимается" вверх-влево на 2px с увеличенной тенью */
+.buttonGL:hover {
+  transform: translate(-2px, -2px);        /* Смещение кнопки вверх-влево (создаёт эффект подъёма) */
+  box-shadow: var(--glass-shadowButtonUp); /* Увеличенная тень (создаёт эффект глубины) */
 }
 
-.glass-button:hover {
-    /* Приподнимаем кнопку по диагонали вверх-влево */
-    transform: translate(-2px, -2px); 
-    /* Делаем тень глубже и мягче, чтобы усилить эффект подъема */
-    box-shadow: var(--glass-shadowButtonUp);
-    /* Контур остается зеленым (не меняем border-color) */
+/* === КЛИК/НАЖАТИЕ (ACTIVE) === */
+/* Эффект: кнопка возвращается на место + вспышка белой рамки + яркое свечение */
+.buttonGL:active {
+  transform: translate(0, 0);              /* Возврат кнопки в исходную позицию */
+  box-shadow: var(--glass-shadowButton);   /* Обычная тень (эффект нажатия) */
+  border-color: var(--glass-borderButttonColorFlash); /* Белая вспышка рамки */
+  filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor)); /* Яркое свечение кнопки */
+  transition: transform 0.05s ease;        /* Быстрый возврат позиции (50мс) */
 }
 
-.glass-button:active {
-    transform: translate(0, 0); /* Вернули в исходную точку */
-    box-shadow: var(--glass-shadowButton); /* Тень вернулась в норму */
-    border-color: var(--glass-borderButttonColorFlash); /* Вспышка контура (белый или очень ярко-зеленый) */
-    filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor)); /* Усиливаем эффект свечения */
-    transition: transform 0.05s ease; /* Быстрый возврат */
+/* === ОТКЛЮЧЕННАЯ КНОПКА (DISABLED) === */
+/* Эффект: кнопка становится полупрозрачной и неинтерактивной */
+.buttonGL:disabled {
+  opacity: 0.4;                            /* Полупрозрачность 40% */
+  cursor: not-allowed;                     /* Курсор "запрещено" */
+  pointer-events: none;                    /* Отключаем все события мыши (hover, click) */
 }
 
-.glass-button:disabled {  
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
+/* === АКТИВНАЯ/ВЫБРАННАЯ КНОПКА (ACTIVE CLASS) === */
+/* Используется: когда кнопка представляет активное состояние (выбранная вкладка, активный режим) */
+.buttonGL.active {
+  background: var(--glass-bgButtonActive); /* Зелёный фон (визуально выделяет активность) */
+  border-color: var(--generalColor);       /* Стандартная цветная рамка */
 }
 
-/* Активная кнопка-иконка */
-.glass-button.active {
-    background: var(--glass-bgButtonActive);
-    border-color: var(--generalColor);
+/* ========== 3. ИКОНКИ В БАЗОВОЙ КНОПКЕ ========== */
+/* Настройка размера и цвета SVG иконок внутри кнопок */
+/* Используется библиотека @jamescoyle/vue-icon с иконками @mdi/js */
+
+.buttonGL svg {
+  width: var(--svgSizeForButton) !important;  /* Фиксированная ширина иконки (!important - переопределяет стили библиотеки) */
+  height: var(--svgSizeForButton) !important; /* Фиксированная высота иконки */
+  color: var(--svgColorForButton) !important; /* Цвет иконки (!important - библиотека использует color, не fill) */
+  display: block;                           /* Блочный элемент (убирает лишние отступы inline) */
+  flex-shrink: 0;                           /* Запрет сжатия иконки при малом пространстве */
 }
 
 /* ========== КНОПКИ С ТЕКСТОМ (150x40) ========== */
 
 /* Кнопка с текстом - фиксированная ширина 150px */
-.glass-button-text {
+.buttonGL-text {
     width: var(--glass-widthButtonText);
     height: var(--glass-heightButtonText);
     min-width: var(--glass-widthButtonText);
@@ -125,12 +142,12 @@
     text-align: center;
 }
 
-.glass-button-text:hover {
+.buttonGL-text:hover {
     transform: translate(-2px, -2px);
     box-shadow: var(--glass-shadowButtonUp);
 }
 
-.glass-button-text:active {
+.buttonGL-text:active {
     transform: translate(0, 0);
     box-shadow: var(--glass-shadowButton);
     border-color: var(--glass-borderButttonColorFlash);
@@ -139,17 +156,17 @@
 }
 
 /* Активная вкладка */
-.glass-button-text.active {
+.buttonGL-text.active {
     background: var(--glass-bgButtonActive);
     border-color: var(--generalColor);
 }
 
 /* Иконки внутри кнопок (SVG из библиотеки MDI) */
-.glass-button svg,
-.glass-button-text svg {
-  width: var(--svg-sizeButton) !important;
-  height: var(--svg-sizeButton) !important;
-  color: var(--svg-colorButton) !important; /* @jamescoyle/vue-icon использует color, не fill! */
+.buttonGL svg,
+.buttonGL-text svg {
+  width: var(--svgSizeForButton) !important;
+  height: var(--svgSizeForButton) !important;
+  color: var(--svgColorForButton) !important; /* @jamescoyle/vue-icon использует color, не fill! */
   display: block;
   flex-shrink: 0;
 }
@@ -228,13 +245,13 @@
 /* ========== КНОПКИ В МОДАЛЬНЫХ ОКНАХ ========== */
 
 /* Кнопки в modal-actions (растянутые на всю ширину) */
-.modal-actions .glass-button {
+.modal-actions .buttonGL {
   width: 100%;
 
 }
 
 /* Кнопки в BookingActionsModal */
-.actions-buttons .glass-button-text {
+.actions-buttons .buttonGL-text {
   width: 100%;
   min-width: unset;
   justify-content: flex-start;
@@ -242,16 +259,16 @@
   font-size: var(--generalTextSize);
 }
 
-.actions-buttons .glass-button-text:disabled {
+.actions-buttons .buttonGL-text:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.actions-buttons .glass-button-text svg {
+.actions-buttons .buttonGL-text svg {
   width: 20px !important;
   height: 20px !important;
-  fill: var(--svg-colorButton) !important;
+  fill: var(--svgColorForButton) !important;
   flex-shrink: 0;
 }
 
@@ -270,7 +287,7 @@
 /* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=350px) ========== */
 @media (max-width: 480px) {
   /* Базовые кнопки - увеличенная область клика для тач-устройств */
-  .glass-button {
+  .buttonGL {
     width: var(--glass-widthButtonSmall) !important;
     height: var(--glass-heightButtonSmall) !important;
     min-width: var(--glass-widthButtonSmall) !important;
@@ -279,22 +296,22 @@
     font-size: var(--generalTextSize);
   }
 
-  .glass-button svg,
+  .buttonGL svg,
   button svg {
-    width: var(--svg-sizeButtonSmall) !important;
-    height: var(--svg-sizeButtonSmall) !important;
+    width: var(--svgSizeForButtonSmall) !important;
+    height: var(--svgSizeForButtonSmall) !important;
   }
 
   /* Отключаем hover-эффект подъёма на тач-устройствах */
-  .glass-button:hover,
-  .glass-button-text:hover,
+  .buttonGL:hover,
+  .buttonGL-text:hover,
   .calendar-container .fc-button:hover {
     transform: none !important;
     box-shadow: var(--glass-shadowButtonUp) !important;
   }
 
   /* Кнопки в вкладках (tabs) - компактные */
-  .tabs .glass-button-text {
+  .tabs .buttonGL-text {
     width: auto;
     min-width: auto;
     padding: 0 8px;

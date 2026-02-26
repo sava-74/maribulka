@@ -52,7 +52,7 @@ const shootingTypeInfo = computed(() => {
         </div>
 
         <div class="modal-actions">
-          <button class="glass-button" @click="emit('close')">
+          <button class="buttonGL" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
         </div>

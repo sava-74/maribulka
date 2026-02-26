@@ -23,28 +23,28 @@ onMounted(() => {
       <div class="glass-panel-tabs-nav">
         <div class="tabs-group-left">
           <button
-            class="glass-button-tab"
+            class="buttonGL-tab"
             :class="{ active: activeSection === 'clients' }"
             @click="activeSection = 'clients'"
           >
             Клиенты
           </button>
           <button
-            class="glass-button-tab"
+            class="buttonGL-tab"
             :class="{ active: activeSection === 'shooting-types' }"
             @click="activeSection = 'shooting-types'"
           >
             Типы съёмок
           </button>
           <button
-            class="glass-button-tab"
+            class="buttonGL-tab"
             :class="{ active: activeSection === 'promotions' }"
             @click="activeSection = 'promotions'"
           >
             Акции
           </button>
           <button
-            class="glass-button-tab"
+            class="buttonGL-tab"
             :class="{ active: activeSection === 'expense-categories' }"
             @click="activeSection = 'expense-categories'"
           >

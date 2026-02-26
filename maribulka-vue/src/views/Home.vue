@@ -80,7 +80,7 @@ function handleDescriptionClick(event: MouseEvent) {
           <!-- Кнопка + в каждом слоте (только для админа) -->
           <button
             v-if="authStore.isAdmin"
-            class="glass-button photo-add-button"
+            class="buttonGL photo-add-button"
             @click="handleAddPhoto(index - 1)"
             title="Добавить/изменить фото"
           >
@@ -95,7 +95,7 @@ function handleDescriptionClick(event: MouseEvent) {
       <div class="description-header">
         <button
           v-if="authStore.isAdmin"
-          class="glass-button"
+          class="buttonGL"
           @click="showEditDescriptionModal = true"
           title="Редактировать описание"
         >

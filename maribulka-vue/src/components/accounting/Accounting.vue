@@ -61,28 +61,28 @@ function updatePeriod(start: Date, end: Date) {
           <!-- Левая группа: вкладки -->
           <div class="tabs-group-left">
             <button
-              class="glass-button-tab"
+              class="buttonGL-tab"
               :class="{ active: activeTab === 'bookings' }"
               @click="switchTab('bookings')"
             >
               Запись
             </button>
             <button
-              class="glass-button-tab"
+              class="buttonGL-tab"
               :class="{ active: activeTab === 'income' }"
               @click="switchTab('income')"
             >
               Приход
             </button>
             <button
-              class="glass-button-tab"
+              class="buttonGL-tab"
               :class="{ active: activeTab === 'expenses' }"
               @click="switchTab('expenses')"
             >
               Расход
             </button>
             <button
-              class="glass-button-tab"
+              class="buttonGL-tab"
               :class="{ active: activeTab === 'reports' }"
               @click="switchTab('reports')"
             >
@@ -93,7 +93,7 @@ function updatePeriod(start: Date, end: Date) {
           <!-- Правая группа: фильтр периода -->
           <div class="tabs-group-right">
             <button
-              class="glass-button-tab active period-filter-button"
+              class="buttonGL-tab active period-filter-button"
               @click="openPeriodModal"
             >
               {{ periodText }}

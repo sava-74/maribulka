@@ -278,7 +278,7 @@ function refreshData() {
     <div class="table-toolbar">
       <div class="table-actions">
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow"
           @click="handleView"
           title="Посмотреть платёж"
@@ -286,7 +286,7 @@ function refreshData() {
           <svg-icon type="mdi" :path="mdiEyeOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           :disabled="!hasSelectedRow || !canDeleteSelected"
           @click="handleDelete"
           title="Удалить"
@@ -294,14 +294,14 @@ function refreshData() {
           <svg-icon type="mdi" :path="mdiTrashCanOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           @click="toggleFilters"
           title="Показать/скрыть фильтры"
         >
           <svg-icon type="mdi" :path="mdiFilterMenuOutline"></svg-icon>
         </button>
         <button
-          class="glass-button"
+          class="buttonGL"
           @click="refreshData"
           title="Обновить данные"
         >
@@ -335,7 +335,7 @@ function refreshData() {
       </div>
 
       <!-- Кнопка сброса фильтров -->
-      <button class="glass-button" @click="resetFilters" title="Сбросить фильтры">
+      <button class="buttonGL" @click="resetFilters" title="Сбросить фильтры">
         <svg-icon type="mdi" :path="mdiFilterRemoveOutline"></svg-icon>
       </button>
     </div>

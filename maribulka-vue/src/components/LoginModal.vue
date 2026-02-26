@@ -68,12 +68,12 @@ const handleLogin = async () => {
 
       <div class="modal-actions">
         <!-- Кнопка "Отмена" -->
-        <button class="glass-button" @click="emit('close')">
+        <button class="buttonGL" @click="emit('close')">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           <span class="textButton">Отмена</span>
         </button>
         <!-- Кнопка "Войти" -->
-        <button class="glass-button" @click="handleLogin">
+        <button class="buttonGL" @click="handleLogin">
           <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           <span class="textButton">Войти</span>
         </button>

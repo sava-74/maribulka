@@ -40,7 +40,7 @@ onUnmounted(() => {
   >
     <!-- Кнопка меню -->
     <div class="nav-item">
-      <button class="glass-button" @click.stop="toggleSidebar">
+      <button class="buttonGL" @click.stop="toggleSidebar">
         <svg-icon type="mdi" :path="mdiMenu" ></svg-icon>
         <span class="nav-text">Меню</span>
       </button>
@@ -49,7 +49,7 @@ onUnmounted(() => {
     <div class="nav-links">
       <!-- Домой -->
       <div class="nav-item">
-        <button class="glass-button" @click="navigateTo('home')">
+        <button class="buttonGL" @click="navigateTo('home')">
           <svg-icon type="mdi" :path="mdiHomeOutline" ></svg-icon>
           <span class="nav-text">Домой</span>
         </button>
@@ -57,7 +57,7 @@ onUnmounted(() => {
 
       <!-- Портфолио -->
       <div class="nav-item">
-        <button class="glass-button" @click="navigateTo('portfolio')">
+        <button class="buttonGL" @click="navigateTo('portfolio')">
           <svg-icon type="mdi" :path="mdiImageMultipleOutline" ></svg-icon>
           <span class="nav-text">Портфолио</span>
         </button>
@@ -66,19 +66,19 @@ onUnmounted(() => {
       <!-- Админ-секция -->
       <div v-if="auth.isAdmin" class="admin-section">
         <div class="nav-item">
-          <button class="glass-button" @click="navigateTo('accounting')">
+          <button class="buttonGL" @click="navigateTo('accounting')">
             <svg-icon type="mdi" :path="mdiCurrencyRub " ></svg-icon>
             <span class="nav-text">Бухгалтерия</span>
           </button>
         </div>
         <div class="nav-item">
-          <button class="glass-button" @click="navigateTo('references')">
+          <button class="buttonGL" @click="navigateTo('references')">
             <svg-icon type="mdi" :path="mdiFileCabinet" ></svg-icon>
             <span class="nav-text">Справочники</span>
           </button>
         </div>
         <div class="nav-item nav-item-setings">
-          <button class="glass-button" @click="navigateTo('settings')">
+          <button class="buttonGL" @click="navigateTo('settings')">
             <svg-icon type="mdi" :path="mdiCogOutline" ></svg-icon>
             <span class="nav-text">Настройки</span>
           </button>

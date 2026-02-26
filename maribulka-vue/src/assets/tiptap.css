@@ -32,7 +32,7 @@
 }
 
 /* Активная кнопка форматирования */
-.tiptap-toolbar .glass-button.is-active {
+.tiptap-toolbar .buttonGL.is-active {
   background: var(--glass-bgButtonActive);
   border-color: var(--generalColor);
 }
