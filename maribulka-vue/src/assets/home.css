@@ -94,7 +94,7 @@
 /* Стили для заголовков, списков и ссылок внутри описания */
 .description-content h1,
 .description-content h2,
-.description-content h3 {
+.description-content h3 { 
  /* color: var(--generalTextColor);*/
   margin: 8px 0 5px 0;
 }
