@@ -323,7 +323,7 @@ ssh -i ~/.ssh/beget_maribulka  # Unix-стиль ВСЕГДА!
 **Решение:**
 ```typescript
 // Приоритет красного ТОЛЬКО в режиме месяца на мобилке
-if (windowWidth.value <= 768 && !isDayView.value) {
+if (windowWidth.value <= 350 && !isDayView.value) {
   // Логика приоритета красного
 }
 ```

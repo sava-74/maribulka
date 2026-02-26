@@ -5,13 +5,13 @@
   --glass-bg: rgba(255, 255, 255, 0.4); /* полупрозрачный белый для эффекта стекла */ 
   --glass-bgModal: rgb(228 228 228 / 85%); /* полупрозрачный белый для модальных окон */
   --generalTextColor: #333; /* основной цвет текста */
-  --generalTextSizeExtraSmall: 6px; /* размер текста для очень мелких элементов */
-  --generalTextSizeSmall: 8px; /* размер текста для мелких элементов */
-  --generalTextSize: 10px; /* основной размер текста */
-  --generalTextSizeH1: 12px; /* размер текста для заголовков */
-  --generalTextSizeH2: 14px; /* размер текста для подзаголовков */
-  --generalTextSizeH3: 16px; /* размер текста для важных заголовков */
-  --generalTextSizeH4: 18px; /* размер текста для важных заголовков */
+  --generalTextSizeExtraSmall: 8px; /* размер текста для очень мелких элементов */
+  --generalTextSizeSmall: 10px; /* размер текста для мелких элементов */
+  --generalTextSize: 12px; /* основной размер текста */
+  --generalTextSizeH1: 14px; /* размер текста для заголовков */
+  --generalTextSizeH2: 16px; /* размер текста для подзаголовков */
+  --generalTextSizeH3: 18px; /* размер текста для важных заголовков */
+  --generalTextSizeH4: 20px; /* размер текста для важных заголовков */
 
   --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
   --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */
@@ -22,16 +22,16 @@
   --glass-borderButttonColorFlash: #ffffff; /* цвет границы при флеше */
   --glass-borderbuttonAlertColor: #ff0000; /* цвет границы для кнопки с алертом */
   --svg-colorButton: rgb(124, 124, 124); /* цвет иконок SVG */
-  --svg-sizeButton: 15px; /* размер иконок SVG */
+  --svg-sizeButton: 25px; /* размер иконок SVG */
   --text-colorAlert: #ff0000; /* цвет текста для алерта */
 
-  --glass-widthButton: 20px;/* ширина кнопки */
-  --glass-heightButton: 20px;/* высота кнопки */
-  --glass-widthButtonText: 63px;/* ширина кнопки с текстом */
-  --glass-heightButtonText: 20px;/* высота кнопки с текстом */
-  --glass-widthButtonCalendar: 63px;/* ширина кнопки с текстом */
-  --glass-heightButtonCalendar: 20px;/* высота кнопки с текстом */
-  --glass-borderRadiusButton: 6px;/* радиус скругления кнопки */
+  --glass-widthButton: 30px;/* ширина кнопки */
+  --glass-heightButton: 30px;/* высота кнопки */
+  --glass-widthButtonText: 80px;/* ширина кнопки с текстом */
+  --glass-heightButtonText: 30px;/* высота кнопки с текстом */
+  --glass-widthButtonCalendar: 80px;/* ширина кнопки с текстом */
+  --glass-heightButtonCalendar: 30px;/* высота кнопки с текстом */
+  --glass-borderRadiusButton: 8px;/* радиус скругления кнопки */
   --glass-bgFilter: blur(5px); /* размытие фона для эффекта стекла */
   --glass-bgFilterOverlay: blur(10px); /* размытие фона для оверлея */
   --glass-bgFilterModal: blur(3px); /* размытие фона для модальных окон */

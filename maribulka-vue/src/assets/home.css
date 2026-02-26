@@ -73,15 +73,15 @@
 .studio-description h2 {
   /*color: var(--generalTextColor);
   font-size: var(--generalTextSizeH2);
-  font-weight: 600;*/
+  font-weight: 600;/
   margin: 0;
-}
+}*/
 
 .description-content {
-  /*color: var(--generalTextColor);*/
+  /*color: var(--generalTextColor);
   font-size: var(--generalTextSize);
-  /*line-height: 1.6;*/
-  margin-top: -30px;
+  /*line-height: 1.6;
+  margin-top: -8px;
 }
 
 .description-content p {
@@ -91,14 +91,14 @@
 .description-content p:last-child {
   margin-bottom: 0;
 }
-
+/* Стили для заголовков, списков и ссылок внутри описания */
 .description-content h1,
 .description-content h2,
 .description-content h3 {
  /* color: var(--generalTextColor);*/
   margin: 8px 0 5px 0;
 }
-
+/*
 .description-content h1 {
   font-size: var(--generalTextSizeH1);
 }

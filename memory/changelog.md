@@ -429,7 +429,7 @@ CREATE TABLE studio_description (
 
 **Решение:**
 - Приоритет красного ТОЛЬКО в режиме месяца на мобилке
-- Условие: `if (windowWidth.value <= 768 && !isDayView.value)`
+- Условие: `if (windowWidth.value <= 350 && !isDayView.value)`
 
 **Файл:** `BookingsFullCalendar.vue` (строки 153-159)
 
@@ -468,7 +468,7 @@ CREATE TABLE studio_description (
 
 **Изменения:**
 - Центрирование колонок: ID, Дата начала, Дата окончания (строки 378-382)
-- Мобильная адаптация (≤768px):
+- Мобильная адаптация (≤350px):
   - Примечание (ClientsTable, 4-я колонка): `max-width: 100px`
   - Описание (ShootingTypesTable, 5-я колонка): `max-width: 100px`
   - Текст обрезается многоточием

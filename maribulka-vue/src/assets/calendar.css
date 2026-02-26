@@ -151,7 +151,7 @@
 }
 
 
-/* ========== CALENDAR MOBILE (<=768px) ========== */
+/* ========== CALENDAR MOBILE (<=350px) ========== */
 @media (max-width: 480px) {
   .calendar-container {
     padding: 4px;

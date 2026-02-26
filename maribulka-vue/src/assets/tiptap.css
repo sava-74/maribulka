@@ -149,8 +149,8 @@
   border-radius: var(--glass-borderRadiusButton);
 }
 
-/* Мобильная адаптация (≤768px) 
-@media (max-width: 768px) {
+/* Мобильная адаптация (≤350px) 
+@media (max-width: 350px) {
   .tiptap-toolbar {
     padding: 5px;
     gap: 5px;

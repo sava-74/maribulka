@@ -118,7 +118,7 @@
     padding: 0 5px;
     white-space: nowrap;
     font: initial;
-    font-size: clamp(var(--generalTextSizeExtraSmall), var(--generalTextSizeSmall), var(--generalTextSize));
+    font-size: clamp(var(--generalTextSizeSmall), var(--generalTextSize), var(--generalTextSizeH1));
     font-weight: bold;
     text-transform: initial;
     letter-spacing: 0.0em;
@@ -267,7 +267,7 @@
   color: var(--text-colorAlert) !important;
 }
 
-/* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=768px) ========== */
+/* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=350px) ========== */
 @media (max-width: 480px) {
   /* Базовые кнопки - увеличенная область клика для тач-устройств */
   .glass-button {

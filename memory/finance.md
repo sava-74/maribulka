@@ -782,7 +782,7 @@ Response:
 ### Мобильная адаптация
 
 ```css
-@media (max-width: 768px) {
+@media (max-width: 350px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }

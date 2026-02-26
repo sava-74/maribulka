@@ -181,7 +181,7 @@ const calendarEvents = computed(() => {
     const d = shootingDateTime
     const eventDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
-    if (windowWidth.value <= 768 && !isDayView.value) {
+    if (windowWidth.value <= 350 && !isDayView.value) {
       // МОБИЛЬНАЯ ВЕРСИЯ (только режим месяца): серый или красный алерт
       const hasAlert = eventDate && datePriorityMap.has(eventDate)
       backgroundColor = hasAlert ? 'var(--text-colorAlert)' : 'var(--statusCancelledColor)'
@@ -250,7 +250,7 @@ function renderEventContent(arg: any) {
 // Опции календаря
 const calendarOptions = computed(() => {
   // Определяем ширину экрана для адаптации (используем reactive переменную)
-  const isMiniCalendar = windowWidth.value <= 768
+  const isMiniCalendar = windowWidth.value <= 350
 
   const options: any = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -262,9 +262,9 @@ const calendarOptions = computed(() => {
       right: 'dayGridMonth,timeGridDay'
     },
     buttonText: {
-      today: windowWidth.value <= 768 ? 'С' : 'Сегодня',
-      month: windowWidth.value <= 768 ? 'М' : 'Месяц',
-      day: windowWidth.value <= 768 ? 'Д' : 'День'
+      today: windowWidth.value <= 350 ? 'С' : 'Сегодня',
+      month: windowWidth.value <= 350 ? 'М' : 'Месяц',
+      day: windowWidth.value <= 350 ? 'Д' : 'День'
     },
     slotMinTime: '08:00:00',
     slotMaxTime: '23:00:00',

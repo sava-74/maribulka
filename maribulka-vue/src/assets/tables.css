@@ -450,7 +450,7 @@ select.filter-select {
   text-align: center;
 }
 
-/* Мобильная адаптация (≤768px) */
+/* Мобильная адаптация (≤350px) */
 @media (max-width: 480px) {
   /* Ограничение ширины текстовых колонок */
   .accounting-table tbody td:nth-child(4) /* Примечание в ClientsTable */ {

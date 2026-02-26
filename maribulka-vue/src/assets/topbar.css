@@ -43,7 +43,7 @@
 .site-name {  /* название проекта рядом с фото  */
   font-weight: bold;
   color: var(--generalTextColor);
-  font-size: clamp(8px, var(--generalTextSizeSmall), 10px);
+  font-size: clamp(var(--generalTextSize), var(--generalTextSizeH1), var(--generalTextSizeH2));
   /* 1. Убираем пространство под текстом */
   line-height: 1; /* Или установи равным font-size, например 16px */
   height: auto;   /* Чтобы высота подстраивалась под текст */
@@ -70,7 +70,7 @@
     white-space: nowrap;
 }
 
-/* ========== TOPBAR MOBILE (<=768px) ========== */
+/* ========== TOPBAR MOBILE (<=350px) ========== */
 
 @media (max-width: 480px) {
  

@@ -25,7 +25,7 @@
   flex-direction: column;
   gap: 5px;
   color: var(--generalTextColor);
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   }
 
 /* Заголовок модалки (БЕЗ h2!) */
@@ -41,7 +41,7 @@
 .modal-message {
   text-align: center;
   margin: 5px;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
 
@@ -125,7 +125,7 @@
   border: 1px solid var(--generalColor);
   border-radius: var(--glass-borderRadiusButton);
   padding: 5px;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
   box-sizing: border-box;
   overflow: hidden;
@@ -182,7 +182,7 @@ select.modal-input {
 
 .notes-text {
   padding: 5px;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -204,7 +204,7 @@ select.modal-input {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
   cursor: pointer;
 }
@@ -226,7 +226,7 @@ select.modal-input {
 
 .payment-info p {
   margin: 5px 0;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
 
@@ -243,7 +243,7 @@ select.modal-input {
 
 .delete-info p {
   margin: 5px 0;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
 
@@ -266,7 +266,7 @@ select.modal-input {
   justify-content: space-between;
   align-items: center;
   /*margin: 5px 0;*/
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: var(--generalTextColor);
 }
 
@@ -305,7 +305,7 @@ select.modal-input {
 .cancel-info p,
 .delivery-info p {
   margin: 5px 0;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 }
 
 .cancel-reason {
@@ -352,7 +352,7 @@ select.modal-input {
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   padding: 5px;
   border-radius: var(--glass-borderRadiusButton);
   transition: background-color 0.2s;
@@ -363,8 +363,8 @@ select.modal-input {
 }
 
 .radio-label input[type="radio"] {
-  width: 18px;
-  height: 18px;
+  width: 10px;
+  height: 10px;
   cursor: pointer;
 }
 
@@ -384,7 +384,7 @@ select.modal-input {
   padding: 5px;
   border: 1px solid var(--generalColor);
   border-radius: var(--glass-borderRadiusButton);
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   text-align: right;
   margin-right: 5px;
 }
@@ -430,7 +430,7 @@ select.modal-input {
 }
 
 .actions-type {
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   color: rgba(0, 0, 0, 0.5);
 }
 
@@ -463,7 +463,7 @@ select.modal-input {
   display: flex;
   justify-content: space-between;
   padding: 5px 0;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 }
 
 .info-label {
@@ -477,7 +477,7 @@ select.modal-input {
   text-align: right;
   max-width: 60%;
   word-wrap: break-word;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 }
 
 .info-value.strong {
@@ -525,13 +525,13 @@ select.modal-input {
 }*/
 
 .modal-glass.modal-compact .input-label {
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 
 }
 
 .modal-glass.modal-compact .modal-input {
   padding: 2px;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 }
 
 
@@ -543,7 +543,7 @@ select.modal-input {
 
 .modal-glass.modal-compact .price-row {
   padding: 5px 0;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
 }
 
 /* Ссылка телефона в модалках */
@@ -747,7 +747,7 @@ select.modal-input {
   border-radius: var(--glass-borderRadiusButton);
   color: var(--generalTextColor);
   font-family: inherit;
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   resize: vertical;
 }
 
@@ -762,7 +762,7 @@ select.modal-input {
   border-left: 3px solid var(--infoColor);
   border-radius: var(--glass-borderRadiusButton);
   color: var(--infoColor);
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   font-weight: 500;
 }
 
@@ -771,7 +771,7 @@ select.modal-input {
   border-left: 3px solid var(--warningColor);
   border-radius: var(--glass-borderRadiusButton);
   color: var(--warningColor);
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   font-weight: 500;
 }
 
@@ -780,6 +780,6 @@ select.modal-input {
   border-left: 3px solid var(--incomeColor);
   border-radius: var(--glass-borderRadiusButton);
   color: var(--incomeColor);
-  font-size: var(--generalTextSizeSmall);
+  font-size: var(--generalTextSize);
   font-weight: 500;
 }

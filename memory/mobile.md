@@ -2,7 +2,7 @@
 
 ## 🚨 ЕДИНЫЙ БРЕЙКПОИНТ!
 
-**Всё что ≤768px - это мобилка.**
+**Всё что ≤350px - это мобилка.**
 
 **НЕТ брейкпоинта 480px!**
 
@@ -47,7 +47,7 @@
 
 **Условие применения:**
 ```typescript
-if (windowWidth.value <= 768 && !isDayView.value) {
+if (windowWidth.value <= 350 && !isDayView.value) {
   // Приоритет красного ТОЛЬКО в режиме месяца на мобилке
 }
 ```
@@ -187,7 +187,7 @@ if (windowWidth.value <= 768 && !isDayView.value) {
 
 ### Обрезка длинного текста
 
-**Мобилка (≤768px):**
+**Мобилка (≤350px):**
 ```css
 @media (max-width: 480px) {
   /* ClientsTable - 4-я колонка (Примечание) */
@@ -293,7 +293,7 @@ onUnmounted(() => {
 
 **Использование:**
 ```typescript
-if (windowWidth.value <= 768) {
+if (windowWidth.value <= 350) {
   // Мобильная логика
 }
 ```

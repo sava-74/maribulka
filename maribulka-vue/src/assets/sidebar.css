@@ -3,7 +3,7 @@
     top: 40px;
     left: 0px;
     bottom: 10px;
-    width: 20px; /* Сложенное состояние */
+    width: 30px; /* Сложенное состояние */
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
     backdrop-filter: var(--glass-bgFilter);
@@ -69,7 +69,7 @@
 }
 
 
-/* ========== SIDEBAR MOBILE (<=768px) ========== */
+/* ========== SIDEBAR MOBILE (<=350px) ========== */
 @media (max-width: 480px) {
   /* Collapsed: прозрачный, только гамбургер виден */
   .side-bar {

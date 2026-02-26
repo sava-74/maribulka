@@ -58,7 +58,7 @@ async function handleSave() {
     setTimeout(() => {
       showAlert.value = false
       emit('close')
-    }, 1500)
+    }, 1500) // Закрываем модалку после успешного сохранения
   } else {
     alertMessage.value = result.message || 'Ошибка при сохранении'
     showAlert.value = true
@@ -67,7 +67,7 @@ async function handleSave() {
 
 function handleClose() {
   emit('close')
-}
+} 
 </script>
 
 <template>

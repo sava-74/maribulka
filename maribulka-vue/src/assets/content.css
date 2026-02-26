@@ -1,5 +1,5 @@
 .content {
-     margin: 47px 6px 10px 38px;
+     margin: 47px 6px 10px 47px;
 }
 
 /* Маска под TopBar — скрывает прокручиваемый контент под полупрозрачным хедером */
@@ -25,7 +25,7 @@
   }
 }*/
 
-/* ========== CONTENT MOBILE (<=768px) ========== */
+/* ========== CONTENT MOBILE (<=350px) ========== */
 @media (max-width: 480px) {
   .content {
     margin-left: 6px;

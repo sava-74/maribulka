@@ -87,7 +87,7 @@
   font-size: var(--generalTextSizeH2);
 }
 
-/* ========== LAYOUT MOBILE (<=768px) ========== */
+/* ========== LAYOUT MOBILE (<=350px) ========== */
 @media (max-width: 480px) {
   .accounting {
     
