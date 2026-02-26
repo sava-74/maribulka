@@ -23,7 +23,7 @@
     /*padding-left: 8px;*/
     white-space: nowrap;
     /*будем убивать родной стиль */
-    appearance: auto;
+    appearance: auto;    
    /* font-style: ;
     font-variant-ligatures: ;
     font-variant-caps: ;
@@ -84,7 +84,7 @@
     transition: transform 0.05s ease; /* Быстрый возврат */
 }
 
-.glass-button:disabled {
+.glass-button:disabled {  
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
