@@ -63,7 +63,7 @@ const handleConfirm = async () => {
 
       <p class="delete-warning">Вы уверены, что хотите удалить эту запись?</p>
 
-      <div class="modal-actions">
+      <div class="ButtonFooter PosRight">
         <button class="buttonGL" @click="emit('close')">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
         </button>

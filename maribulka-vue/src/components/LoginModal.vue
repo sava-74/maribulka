@@ -66,14 +66,14 @@ const handleLogin = async () => {
         </label>
       </div>
 
-      <div class="modal-actions">
+      <div class="ButtonFooter PosCenter">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-text" @click="emit('close')">
+        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           <span >Отмена</span>
         </button>
         <!-- Кнопка "Войти" -->
-        <button class="buttonGL buttonGL-text" @click="handleLogin">
+        <button class="buttonGL buttonGL-textFix" @click="handleLogin">
           <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           <span >Войти</span>
         </button>

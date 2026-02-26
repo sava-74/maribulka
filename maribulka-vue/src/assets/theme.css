@@ -27,9 +27,9 @@
 
   --glass-widthButton: 30px;/* ширина кнопки */
   --glass-heightButton: 30px;/* высота кнопки */
-  --glass-widthButtonText: 80px;/* ширина кнопки с текстом */
+  --glass-widthButtonText: 100px;/* ширина кнопки с текстом */
   --glass-heightButtonText: 30px;/* высота кнопки с текстом */
-  --glass-widthButtonCalendar: 80px;/* ширина кнопки с текстом */
+  --glass-widthButtonCalendar: 100px;/* ширина кнопки с текстом */
   --glass-heightButtonCalendar: 30px;/* высота кнопки с текстом */
   --glass-borderRadiusButton: 8px;/* радиус скругления кнопки */
   --glass-bgFilter: blur(5px); /* размытие фона для эффекта стекла */

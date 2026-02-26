@@ -138,7 +138,7 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="ButtonFooter PosRight">
           <button class="buttonGL" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>

@@ -199,7 +199,7 @@ const orderInfo = computed(() => {
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="ButtonFooter PosRight">
           <!-- Кнопка "Печать" -->
           <button class="buttonGL" @click="handlePrint" title="Печать">
             <svg-icon type="mdi" :path="mdiPrinterOutline" />

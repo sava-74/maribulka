@@ -16,9 +16,9 @@ const emit = defineEmits(['close'])
       <div class="modal-glass">
         <div class="modal-glassTitle">{{ title || 'Сообщение' }}</div>
         <p class="modal-message">{{ message }}</p>
-        <div class="modal-actions">
+        <div class="ButtonFooter PosCenter">
           <!-- Кнопка "OK" -->
-          <button class="buttonGL buttonGL-text" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
             <span >Ок</span>
           </button>

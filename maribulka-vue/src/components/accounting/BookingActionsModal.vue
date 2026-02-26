@@ -75,7 +75,7 @@ function handleAction(action: string) {
 
         <div class="actions-buttons">
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             @click="handleAction('view')"
             title="Просмотр"
           >
@@ -84,20 +84,20 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             :disabled="!canEdit"
             @click="handleAction('edit')"
-            title="Редактировать (только для 'new')"
+            title="Редактировать"
           >
             <svg-icon type="mdi" :path="mdiFileEditOutline"></svg-icon>
             <span>Редактировать</span>
           </button>
 
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             :disabled="!canPayment"
             @click="handleAction('payment')"
-            title="Оплата (для 'new' или 'in_progress')"
+            title="Оплата"
           >
             <svg-icon type="mdi" :path="mdiCashMultiple" ></svg-icon>
             <span>Оплата</span>
@@ -106,27 +106,27 @@ function handleAction(action: string) {
           <!-- НОВЫЙ БИЗНЕС-ПРОЦЕСС -->
 
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             :disabled="!canConfirmSession"
             @click="handleAction('confirmSession')"
-            title="Подтвердить съёмку (new → in_progress)"
+            title="Подтвердить съёмку"
           >
             <svg-icon type="mdi" :path="mdiCameraOutline" ></svg-icon>
             <span>Подтвердить съёмку</span>
           </button>
 
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             :disabled="!canDeliver"
             @click="handleAction('deliver')"
-            title="Выдать заказ (in_progress → completed)"
+            title="Выдать заказ"
           >
             <svg-icon type="mdi" :path="mdiFolderPlayOutline" ></svg-icon>
             <span>Выдать заказ</span>
           </button>
 
           <button
-            class="buttonGL buttonGL-text"
+            class="buttonGL buttonGL-textFix"
             :disabled="!canCancel"
             @click="handleAction('cancel')"
             title="Отменить / Клиент не пришёл"
@@ -136,10 +136,10 @@ function handleAction(action: string) {
           </button>
 
           <button
-            class="buttonGL-text action-danger"
+            class="buttonGL buttonGL-textFix action-danger"
             :disabled="!canDelete"
             @click="handleAction('delete')"
-            title="Удалить (только для 'new' без оплаты)"
+            title="Удалить"
           >
             <svg-icon type="mdi" :path="mdiTrashCanOutline" ></svg-icon>
             <span>Удалить</span>

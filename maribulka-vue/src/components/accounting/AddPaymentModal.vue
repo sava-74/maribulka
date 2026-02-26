@@ -94,16 +94,17 @@ const handleSubmit = async () => {
         </div>
       </div>
 
-      <div class="modal-actions">
+      <div class="ButtonFooter PosRight">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL" @click="emit('close')">
+        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <span>Отмена</span>
         </button>
         <!-- Кнопка "OK" -->
-        <button class="buttonGL" @click="handleSubmit">
+        <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
           <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-        </button>
-        
+          <span>Сохранить</span>
+        </button>        
       </div>
     </div>
   </div>

@@ -189,14 +189,6 @@ select.modal-input {
   line-height: 1.4;
 }
 
-/* ========== ДЕЙСТВИЯ (КНОПКИ) ========== */
-
-.modal-actions {
-  display: flex;
-  gap: 5px;
-  justify-content: space-between;
-  margin-top: 5px;
-}
 
 /* ========== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ ========== */
 
@@ -624,22 +616,6 @@ select.modal-input {
   flex-direction: column;
   overflow: hidden;
   margin-bottom: 5px;
-}
-
-.modal-footer {
-  display: flex;
-  gap: 5px;
-  justify-content: flex-end;
-  padding-top: 5px;
-  border-top: 1px solid var(--generalColor);
-}
-
-.modal-footerUrl {
-  display: flex;
-  gap: 5px;
-  padding-top: 5px;
-  border-top: 1px solid var(--generalColor);
-  justify-content: space-between;
 }
 
 .editor-container {

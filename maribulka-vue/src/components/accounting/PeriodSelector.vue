@@ -114,7 +114,7 @@ watch([() => props.periodStart, () => props.periodEnd], () => {
       <button
         v-for="preset in presets"
         :key="preset.label"
-        class="buttonGL-text preset-button"
+        class="buttonGL-textFix preset-button"
         @click="applyPreset(preset)"
       >
         {{ preset.label }}

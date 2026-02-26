@@ -113,28 +113,122 @@
   flex-shrink: 0;                           /* Запрет сжатия иконки при малом пространстве */
 }
 
-/* ========== 4. СУБСТИЛЬ: КНОПКА С ТЕКСТОМ ========== */
-/* Расширение базовой кнопки .buttonGL для отображения текста и иконки вместе */
-/* Назначение: кнопка 80x30px с текстом + опциональной иконкой слева */
-/* Используется: модальные окна, панели управления, формы */
-/* HTML: <button class="buttonGL buttonGL-text">Текст</button> */
-/* ВАЖНО: Комбинированный селектор .buttonGL.buttonGL-text наследует ВСЕ от .buttonGL! */
+/* ========== 4. СУБСТИЛИ: КНОПКИ С ТЕКСТОМ ========== */
+/* Три варианта текстовых кнопок для разных сценариев использования */
+/* Все наследуют базовые стили от .buttonGL (border, background, transitions, hover, active, disabled) */
+/* HTML: <button class="buttonGL buttonGL-[вариант]">Текст</button> */
 
-.buttonGL.buttonGL-text {
-  /* === РАЗМЕРЫ === */
-  width: var(--glass-widthButtonText);     /* Увеличенная ширина для размещения текста */
-  min-width: var(--glass-widthButtonText); /* Минимальная ширина (предотвращает сжатие текста) */
+/* === 4.0. ОБЩИЕ СВОЙСТВА ДЛЯ ВСЕХ ТЕКСТОВЫХ КНОПОК === */
+/* Эти свойства одинаковы для всех трёх вариантов - выносим в общий селектор для устранения дублирования */
 
+.buttonGL.buttonGL-textFix,
+.buttonGL.buttonGL-text,
+.buttonGL.buttonGL-textFull {
   /* === ОТСТУПЫ === */
-  padding: 10px;                          /* Горизонтальные отступы для текста (слева и справа) */
+  padding: 2px 5px 0 5px;                           /* Равномерные отступы со всех сторон для текста (увеличенные для комфортного клика) */
 
   /* === ТЕКСТ === */
   font-size: clamp(var(--generalTextSizeSmall), var(--generalTextSize), var(--generalTextSizeH1)); /* Адаптивный размер текста (8px-14px) */
+}
+
+/* === 4.1. КНОПКА С ФИКСИРОВАННОЙ ШИРИНОЙ === */
+/* Назначение: кнопка с фиксированной шириной 80px для единообразия в панелях */
+/* Используется: toolbar'ы, группы однотипных кнопок, где важна одинаковая ширина */
+/* HTML: <button class="buttonGL buttonGL-textFix">Текст</button> */
+
+.buttonGL.buttonGL-textFix {
+  /* === РАЗМЕРЫ === */
+  width: var(--glass-widthButtonText);     /* Фиксированная ширина 80px (из переменной) */
+  min-width: var(--glass-widthButtonText); /* Минимальная ширина 80px (предотвращает сжатие) */
 
   /* === ПРИМЕЧАНИЕ === */
-  /* Все остальные стили (border, background, flex, cursor, transition, hover, active, disabled) */
-  /* наследуются от базового класса .buttonGL автоматически - НЕТ дублирования! */
+  /* Все остальные стили (padding, font-size, border, background, flex, cursor, transition, hover, active, disabled) */
+  /* наследуются от общего селектора и базового класса .buttonGL автоматически - НЕТ дублирования! */
 }
+
+/* === 4.2. КНОПКА С АВТОМАТИЧЕСКОЙ ШИРИНОЙ === */
+/* Назначение: кнопка подстраивается под ширину текста + padding */
+/* Используется: кнопки с динамическим текстом разной длины, где не нужна фиксация ширины */
+/* HTML: <button class="buttonGL buttonGL-text">Динамический текст</button> */
+
+.buttonGL.buttonGL-text {
+  /* === РАЗМЕРЫ === */
+  width: auto;                             /* Автоматическая ширина по содержимому */
+
+  /* === ПРИМЕЧАНИЕ === */
+  /* Этот вариант идеален для inline кнопок с разной длиной текста */
+  /* padding и font-size наследуются от общего селектора */
+}
+
+/* === 4.3. КНОПКА НА ВСЮ ШИРИНУ КОНТЕЙНЕРА === */
+/* Назначение: кнопка растягивается на 100% ширины родителя */
+/* Используется: модальные окна, формы, footer'ы, где кнопка должна занимать всю доступную ширину */
+/* HTML: <button class="buttonGL buttonGL-textFull">Текст на всю ширину</button> */
+
+.buttonGL.buttonGL-textFull {
+  /* === РАЗМЕРЫ === */
+  width: 100%;                             /* Растягивается на всю ширину родительского контейнера */
+  min-width: auto;                        /* Минимальная ширина автоматически */
+
+  /* === ПРИМЕЧАНИЕ === */
+  /* Отлично работает в flex-контейнерах с flex-direction: column */
+  /* padding и font-size наследуются от общего селектора */
+}
+
+/* ========== 5. СИСТЕМА РАСПОЛОЖЕНИЯ КНОПОК В FOOTER ========== */
+/* Универсальная система позиционирования кнопок внизу модальных окон/панелей */
+/* Базовый класс + модификаторы для разных вариантов выравнивания */
+/* HTML: <div class="ButtonFooter PosRight">...</div> */
+
+/* === БАЗОВЫЙ КОНТЕЙНЕР FOOTER === */
+/* Создаёт flex-контейнер с разделителем сверху для визуального отделения от контента */
+
+.ButtonFooter {
+  display: flex;                           /* Flex-контейнер для горизонтального размещения кнопок */
+  gap: 5px;                                /* Отступ между кнопками (единый с системой панелей) */
+  padding-top: 5px;                        /* Отступ сверху от контента */
+  border-top: 1px solid var(--generalColor); /* Разделительная линия сверху (визуально отделяет footer) */
+  flex-direction: row;                     /* Горизонтальное размещение кнопок (слева направо) */
+  flex-wrap: nowrap;                       /* Запрет переноса кнопок на новую строку */
+  align-items: center;                     /* Вертикальное выравнивание кнопок по центру */
+}
+
+/* === МОДИФИКАТОР: КНОПКИ СПРАВА === */
+/* Используется: стандартный footer с кнопками "Отмена" и "Сохранить" справа */
+/* HTML: <div class="ButtonFooter PosRight"><button>Отмена</button><button>OK</button></div> */
+
+.ButtonFooter.PosRight {
+  justify-content: flex-end;               /* Прижимает все кнопки к правому краю */
+}
+
+/* === МОДИФИКАТОР: КНОПКИ СЛЕВА === */
+/* Используется: редко, когда логика требует расположения кнопок слева */
+/* HTML: <div class="ButtonFooter PosLeft"><button>Действие</button></div> */
+
+.ButtonFooter.PosLeft {
+  justify-content: flex-start;             /* Прижимает все кнопки к левому краю */
+}
+
+/* === МОДИФИКАТОР: КНОПКИ ПО КРАЯМ === */
+/* Используется: когда нужно разделить кнопки на логические группы (напр. "Удалить" слева, "Отмена/ОК" справа) */
+/* HTML: <div class="ButtonFooter PosSpace"><button>Удалить</button><button>OK</button></div> */
+
+.ButtonFooter.PosSpace {
+  justify-content: space-between;          /* Первая кнопка слева, остальные справа (максимальное расстояние между) */
+}
+
+/* === МОДИФИКАТОР: КНОПКИ ПО ЦЕНТРУ === */
+/* Используется: информационные модалки с одной кнопкой "Понятно" или симметричные группы */
+/* HTML: <div class="ButtonFooter PosCenter"><button>Понятно</button></div> */
+
+.ButtonFooter.PosCenter {
+  justify-content: center;                 /* Центрирует все кнопки */
+}
+/*читать до сюда */
+
+
+
+
 
 /* ========== КНОПКИ FULLCALENDAR ========== */
 
@@ -207,16 +301,9 @@
   padding: 0 !important;
 }
 
-/* ========== КНОПКИ В МОДАЛЬНЫХ ОКНАХ ========== */
-
-/* Кнопки в modal-actions (растянутые на всю ширину) */
-.modal-actions .buttonGL {
-  width: 100%;
-
-}
 
 /* Кнопки в BookingActionsModal */
-.actions-buttons .buttonGL.buttonGL-text {
+.actions-buttons .buttonGL.buttonGL-textFix {
   width: 100%;
   min-width: unset;
   justify-content: flex-start;
@@ -224,13 +311,13 @@
   font-size: var(--generalTextSize);
 }
 
-.actions-buttons .buttonGL.buttonGL-text:disabled {
+.actions-buttons .buttonGL.buttonGL-textFix:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.actions-buttons .buttonGL.buttonGL-text svg {
+.actions-buttons .buttonGL.buttonGL-textFix svg {
   width: 20px !important;
   height: 20px !important;
   fill: var(--svgColorForButton) !important;
@@ -269,14 +356,14 @@
 
   /* Отключаем hover-эффект подъёма на тач-устройствах */
   .buttonGL:hover,
-  .buttonGL.buttonGL-text:hover,
+  .buttonGL.buttonGL-textFix:hover,
   .calendar-container .fc-button:hover {
     transform: none !important;
     box-shadow: var(--glass-shadowButtonUp) !important;
   }
 
   /* Кнопки в вкладках (tabs) - компактные */
-  .tabs .buttonGL.buttonGL-text {
+  .tabs .buttonGL.buttonGL-textFix {
     width: auto;
     min-width: auto;
     padding: 0 8px;

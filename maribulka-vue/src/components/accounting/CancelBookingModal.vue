@@ -135,7 +135,7 @@ const handleRefundCreated = async () => {
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="ButtonFooter PosRight">
           <button class="buttonGL" @click="emit('close')" title="Закрыть">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>

@@ -138,9 +138,9 @@ function handleClose() {
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="ButtonFooter PosCenter">
           <button
-            class="buttonGL"
+            class="buttonGL buttonGL-textFull"
             @click="handleUpload"
             :disabled="!selectedFile || uploading"
             title="Загрузить"
@@ -148,7 +148,7 @@ function handleClose() {
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
           </button>
           <button
-            class="buttonGL"
+            class="buttonGL buttonGL-textFull"
             @click="handleDelete"
             :disabled="uploading"
             title="Удалить фото"
@@ -156,7 +156,7 @@ function handleClose() {
             <svg-icon type="mdi" :path="mdiDeleteCircleOutline" />
           </button>
           <button
-            class="buttonGL"
+            class="buttonGL buttonGL-textFull"
             @click="handleClose"
             title="Отмена"
           >

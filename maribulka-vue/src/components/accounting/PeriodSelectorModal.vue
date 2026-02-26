@@ -65,11 +65,11 @@ function handleBackdropClick(event: MouseEvent) {
       />
 
       <!-- Футер с кнопками -->
-      <div class="modal-actions">
-        <button class="buttonGL buttonGL-text" @click="handleCancel">
+      <div class="ButtonFooter PosCenter">
+        <button class="buttonGL buttonGL-textFix" @click="handleCancel">
           Отмена
         </button>
-        <button class="buttonGL buttonGL-text" @click="handleApply">
+        <button class="buttonGL buttonGL-textFix" @click="handleApply">
           Применить
         </button>
       </div>

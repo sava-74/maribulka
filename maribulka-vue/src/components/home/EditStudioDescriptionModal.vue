@@ -84,7 +84,7 @@ function handleClose() {
         />
       </div>
 
-      <div class="modal-footer">
+      <div class="ButtonFooter PosRight">
         <button class="buttonGL buttonGL-text" @click="handleClose">
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           <span>Отмена</span>

@@ -318,7 +318,7 @@ async function handlePayment() {
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="ButtonFooter PosRight">
           <!-- Кнопка "Оплатить" (если статус != fully_paid) -->
           <button
             v-if="orderInfo && orderInfo.remaining > 0"
@@ -343,7 +343,7 @@ async function handlePayment() {
         <p style="text-align: center; margin: 20px 0; color: #333; font-size: 16px;">
           Принять платёж на сумму <strong>{{ paymentAmount }} ₽</strong>?
         </p>
-        <div class="modal-actions">
+        <div class="ButtonFooter PosRight">
           <button class="buttonGL" @click="showConfirmModal = false">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
           </button>
