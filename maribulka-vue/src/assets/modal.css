@@ -19,7 +19,7 @@
   border: 1px solid var(--generalColor);
   border-radius: var(--panelRadius);
   padding: 5px 5px 5px 5px;
-  width: 150px;
+  min-width: 170px;
   box-shadow: var(--glass-shadowPanel);
   display: flex;
   flex-direction: column;

@@ -352,12 +352,12 @@ onBeforeUnmount(() => {
           />
         </div>
 
-        <div class="modal-footerUrl">
-          <button class="buttonGL-text" @click="cancelLinkUrl">
+        <div class="modal-actions">   <!-- Кнопки "Отмена" и "Сохранить modal-footerUrl" -->
+          <button class="buttonGL buttonGL-text" @click="cancelLinkUrl">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
             <span>Отмена</span>
           </button>
-          <button class="buttonGL-text" @click="saveLinkUrl">
+          <button class="buttonGL buttonGL-text" @click="saveLinkUrl">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
             <span>Сохранить</span>
           </button>

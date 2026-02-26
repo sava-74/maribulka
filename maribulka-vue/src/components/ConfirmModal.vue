@@ -20,12 +20,12 @@ const emit = defineEmits(['confirm', 'cancel'])
           <!-- Кнопка "Отмена" -->
           <button class="buttonGL" @click="emit('cancel')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
-            <span class="textButton">Отмена</span>
+            <span >Отмена</span>
           </button>
           <!-- Кнопка "Подтвердить" -->
           <button class="buttonGL" @click="emit('confirm')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-            <span class="textButton">Ок</span> 
+            <span >Ок</span> 
           </button>
         </div>
       </div>

@@ -131,7 +131,7 @@ function handleClose() {
               @change="handleFileSelect"
               class="file-input"
             >
-            <label for="photo-input" class="buttonGL-text">
+            <label for="photo-input" class="buttonGL buttonGL-text">
               <svg-icon type="mdi" :path="mdiCameraPlusOutline" />
               <span>Выбрать файл</span>
             </label>

@@ -113,62 +113,27 @@
   flex-shrink: 0;                           /* Запрет сжатия иконки при малом пространстве */
 }
 
-/* ========== КНОПКИ С ТЕКСТОМ (150x40) ========== */
+/* ========== 4. СУБСТИЛЬ: КНОПКА С ТЕКСТОМ ========== */
+/* Расширение базовой кнопки .buttonGL для отображения текста и иконки вместе */
+/* Назначение: кнопка 80x30px с текстом + опциональной иконкой слева */
+/* Используется: модальные окна, панели управления, формы */
+/* HTML: <button class="buttonGL buttonGL-text">Текст</button> */
+/* ВАЖНО: Комбинированный селектор .buttonGL.buttonGL-text наследует ВСЕ от .buttonGL! */
 
-/* Кнопка с текстом - фиксированная ширина 150px */
-.buttonGL-text {
-    width: var(--glass-widthButtonText);
-    height: var(--glass-heightButtonText);
-    min-width: var(--glass-widthButtonText);
-    border-radius: var(--glass-borderRadiusButton);
-    border: 1px solid var(--generalColor);
-    background: var(--glass-bgButton);
-    -webkit-backdrop-filter: var(--glass-bgFilter);
-    backdrop-filter: var(--glass-bgFilter);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.1s ease, border-color 0.1s ease;
-    box-shadow: var(--glass-shadowButton);
-    color: var(--glass-textButtonColor);
-    padding: 0 5px;
-    white-space: nowrap;
-    font: initial;
-    font-size: clamp(var(--generalTextSizeSmall), var(--generalTextSize), var(--generalTextSizeH1));
-    font-weight: bold;
-    text-transform: initial;
-    letter-spacing: 0.0em;
-    text-align: center;
-}
+.buttonGL.buttonGL-text {
+  /* === РАЗМЕРЫ === */
+  width: var(--glass-widthButtonText);     /* Увеличенная ширина для размещения текста */
+  min-width: var(--glass-widthButtonText); /* Минимальная ширина (предотвращает сжатие текста) */
 
-.buttonGL-text:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--glass-shadowButtonUp);
-}
+  /* === ОТСТУПЫ === */
+  padding: 10px;                          /* Горизонтальные отступы для текста (слева и справа) */
 
-.buttonGL-text:active {
-    transform: translate(0, 0);
-    box-shadow: var(--glass-shadowButton);
-    border-color: var(--glass-borderButttonColorFlash);
-    filter: brightness(1.5) drop-shadow(0 0 5px var(--generalColor));
-    transition: transform 0.05s ease;
-}
+  /* === ТЕКСТ === */
+  font-size: clamp(var(--generalTextSizeSmall), var(--generalTextSize), var(--generalTextSizeH1)); /* Адаптивный размер текста (8px-14px) */
 
-/* Активная вкладка */
-.buttonGL-text.active {
-    background: var(--glass-bgButtonActive);
-    border-color: var(--generalColor);
-}
-
-/* Иконки внутри кнопок (SVG из библиотеки MDI) */
-.buttonGL svg,
-.buttonGL-text svg {
-  width: var(--svgSizeForButton) !important;
-  height: var(--svgSizeForButton) !important;
-  color: var(--svgColorForButton) !important; /* @jamescoyle/vue-icon использует color, не fill! */
-  display: block;
-  flex-shrink: 0;
+  /* === ПРИМЕЧАНИЕ === */
+  /* Все остальные стили (border, background, flex, cursor, transition, hover, active, disabled) */
+  /* наследуются от базового класса .buttonGL автоматически - НЕТ дублирования! */
 }
 
 /* ========== КНОПКИ FULLCALENDAR ========== */
@@ -251,7 +216,7 @@
 }
 
 /* Кнопки в BookingActionsModal */
-.actions-buttons .buttonGL-text {
+.actions-buttons .buttonGL.buttonGL-text {
   width: 100%;
   min-width: unset;
   justify-content: flex-start;
@@ -259,13 +224,13 @@
   font-size: var(--generalTextSize);
 }
 
-.actions-buttons .buttonGL-text:disabled {
+.actions-buttons .buttonGL.buttonGL-text:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.actions-buttons .buttonGL-text svg {
+.actions-buttons .buttonGL.buttonGL-text svg {
   width: 20px !important;
   height: 20px !important;
   fill: var(--svgColorForButton) !important;
@@ -304,14 +269,14 @@
 
   /* Отключаем hover-эффект подъёма на тач-устройствах */
   .buttonGL:hover,
-  .buttonGL-text:hover,
+  .buttonGL.buttonGL-text:hover,
   .calendar-container .fc-button:hover {
     transform: none !important;
     box-shadow: var(--glass-shadowButtonUp) !important;
   }
 
   /* Кнопки в вкладках (tabs) - компактные */
-  .tabs .buttonGL-text {
+  .tabs .buttonGL.buttonGL-text {
     width: auto;
     min-width: auto;
     padding: 0 8px;
