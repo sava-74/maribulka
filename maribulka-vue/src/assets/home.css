@@ -69,7 +69,7 @@
   align-items: flex-end;
   
 }
-
+/*
 .studio-description h2 {
   /*color: var(--generalTextColor);
   font-size: var(--generalTextSizeH2);
@@ -80,8 +80,8 @@
 .description-content {
   /*color: var(--generalTextColor);
   font-size: var(--generalTextSize);
-  line-height: 1.6;
-  margin-top: -8px;*/
+  line-height: 1.6;*/
+  margin-top: -8px;
 }
 
 .description-content p {
