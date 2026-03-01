@@ -138,16 +138,17 @@ function handleClose() {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="handleClose" title="Отмена">
+          <button class="buttonGL buttonGL-textFix" @click="handleClose">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Отмена</span>
           </button>
           <button
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleConfirm"
             :disabled="loadingBalance || !hasSufficientCash"
-            title="Выполнить возврат"
           >
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Возврат</span>
           </button>
         </div>
       </div>

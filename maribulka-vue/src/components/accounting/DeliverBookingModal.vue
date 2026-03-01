@@ -132,28 +132,29 @@ const handleDeliver = async () => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Закрыть</span>
           </button>
 
-          <!-- Кнопка "Оплата" - показываем только если не оплачено полностью -->
+          <!-- Кнопка "Оплатить" - показываем только если не оплачено полностью -->
           <button
             v-if="orderInfo && !orderInfo.isPaidFull"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleQuickPayment"
-            title="Оплатить остаток"
           >
             <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span>Оплатить</span>
           </button>
 
-          <!-- Кнопка "Выдать заказ" - только если оплачено полностью -->
+          <!-- Кнопка "Выдать" - только если оплачено полностью -->
           <button
             v-if="orderInfo && orderInfo.isPaidFull"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleDeliver"
-            title="Выдать заказ"
           >
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Выдать</span>
           </button>
         </div>
       </div>

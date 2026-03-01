@@ -201,12 +201,14 @@ const orderInfo = computed(() => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Печать" -->
-          <button class="buttonGL" @click="handlePrint" title="Печать">
+          <button class="buttonGL buttonGL-textFix" @click="handlePrint">
             <svg-icon type="mdi" :path="mdiPrinterOutline" />
+            <span>Печать</span>
           </button>
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Закрыть</span>
           </button>
         </div>
       </div>

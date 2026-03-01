@@ -139,11 +139,13 @@ const handleSubmit = async () => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Отмена</span>
           </button>
-          <button class="buttonGL" @click="handleSubmit">
+          <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Сохранить</span>
           </button>
         </div>
       </div>

@@ -63,8 +63,9 @@ const expenseInfo = computed(() => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Закрыть</span>
           </button>
         </div>
       </div>

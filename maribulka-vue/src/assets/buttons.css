@@ -225,7 +225,7 @@
   justify-content: center;                 /* Центрирует все кнопки */
 }
 /*читать до сюда */
-
+ 
 
 
 
@@ -336,27 +336,10 @@
   color: var(--text-colorAlert) !important;
 }
 
-/* ========== АДАПТАЦИЯ КНОПОК ДЛЯ ПЛАНШЕТА/СМАРТФОНА (<=350px) ========== */
+/* ========== АДАПТАЦИЯ КНОПОК ДЛЯ СМАРТФОНА (<=480px) ========== */
 @media (max-width: 480px) {
-  /* Базовые кнопки - увеличенная область клика для тач-устройств */
-  .buttonGL {
-    width: var(--glass-widthButtonSmall) !important;
-    height: var(--glass-heightButtonSmall) !important;
-    min-width: var(--glass-widthButtonSmall) !important;
-    min-height: var(--glass-heightButtonSmall) !important;
-    padding: 5px !important;
-    font-size: var(--generalTextSize);
-  }
-
-  .buttonGL svg,
-  button svg {
-    width: var(--svgSizeForButtonSmall) !important;
-    height: var(--svgSizeForButtonSmall) !important;
-  }
-
   /* Отключаем hover-эффект подъёма на тач-устройствах */
   .buttonGL:hover,
-  .buttonGL.buttonGL-textFix:hover,
   .calendar-container .fc-button:hover {
     transform: none !important;
     box-shadow: var(--glass-shadowButtonUp) !important;
@@ -372,9 +355,7 @@
     flex-shrink: 0;
   }
 
-  
-
-  /* Кнопки календаря FullCalendar (уменьшенные с 80px до 32px для экономии места) */
+  /* Кнопки календаря FullCalendar (уменьшенные для экономии места) */
   .calendar-container .fc-button {
     width: var(--glass-widthButtonSmall) !important;
     min-width: var(--glass-widthButtonSmall) !important;
@@ -383,7 +364,7 @@
     font-size: var(--generalTextSize) !important;
   }
 
-  /* Кнопки навигации < > (32x32 вместо 40x40) */
+  /* Кнопки навигации < > */
   .calendar-container .fc-prev-button,
   .calendar-container .fc-next-button {
     width: var(--glass-widthButtonSmall) !important;

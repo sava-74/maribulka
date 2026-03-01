@@ -136,28 +136,29 @@ const handleRefundCreated = async () => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="emit('close')" title="Закрыть">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Закрыть</span>
           </button>
 
-          <!-- Если НЕ было оплаты - кнопка "Отмена" -->
+          <!-- Если НЕ было оплаты - кнопка "Отменить" -->
           <button
             v-if="bookingInfo && !bookingInfo.hasPayment"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleCancelWithoutRefund"
-            title="Отменить заказ"
           >
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Отменить</span>
           </button>
 
-          <!-- Если была оплата - кнопка "Р" (возврат) -->
+          <!-- Если была оплата - кнопка "Возврат" -->
           <button
             v-if="bookingInfo && bookingInfo.hasPayment"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleOpenRefund"
-            title="Возврат средств"
           >
             <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span>Возврат</span>
           </button>
         </div>
       </div>

@@ -98,28 +98,29 @@ const handleConfirm = async () => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Закрыть</span>
           </button>
 
-          <!-- Кнопка "Добавить оплату" - если нет предоплаты -->
+          <!-- Кнопка "Оплатить" - если нет предоплаты -->
           <button
             v-if="orderInfo && !orderInfo.hasPrepayment"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleConfirm"
-            title="Добавить оплату"
           >
-            <svg-icon type="mdi" :path="mdiCurrencyRub " />
+            <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span>Оплатить</span>
           </button>
 
           <!-- Кнопка "Подтвердить" - если есть предоплата -->
           <button
             v-if="orderInfo && orderInfo.hasPrepayment"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="handleConfirm"
-            title="Подтвердить съёмку"
           >
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Подтвердить</span>
           </button>
         </div>
       </div>

@@ -322,15 +322,16 @@ async function handlePayment() {
           <!-- Кнопка "Оплатить" (если статус != fully_paid) -->
           <button
             v-if="orderInfo && orderInfo.remaining > 0"
-            class="buttonGL"
+            class="buttonGL buttonGL-textFix"
             @click="showPaymentConfirm"
-            title="Оплатить"
           >
             <svg-icon type="mdi" :path="mdiCashMultiple" />
+            <span>Оплатить</span>
           </button>
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL" @click="emit('close')">
+          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Закрыть</span>
           </button>
         </div>
       </div>
@@ -343,12 +344,14 @@ async function handlePayment() {
         <p style="text-align: center; margin: 20px 0; color: #333; font-size: 16px;">
           Принять платёж на сумму <strong>{{ paymentAmount }} ₽</strong>?
         </p>
-        <div class="ButtonFooter PosRight">
-          <button class="buttonGL" @click="showConfirmModal = false">
+        <div class="ButtonFooter PosCenter">
+          <button class="buttonGL buttonGL-textFull" @click="showConfirmModal = false">
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+            <span>Отмена</span>
           </button>
-          <button class="buttonGL" @click="handlePayment">
+          <button class="buttonGL buttonGL-textFull" @click="handlePayment">
             <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span>Принять</span>
           </button>
         </div>
       </div>
