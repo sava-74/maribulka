@@ -101,7 +101,7 @@
     position: fixed;
     top: 0px !important;
     left: 0px !important;
-    width: 110px;
+    width: 145px;
     bottom: 10px;
     background: var(--glass-bg);
     -webkit-backdrop-filter: var(--glass-bgFilter);
