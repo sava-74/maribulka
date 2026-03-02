@@ -112,15 +112,19 @@ Symlink created during deploy: `public_html/media → ../media`
    - `app.css` - Global app styles
    - `responsive.css` - Mobile breakpoints (currently empty placeholder)
 
-### Current Button System (Feb 27, 2026 Refactoring)
+### Current Button System
 **Base class:** `.buttonGL` (30x30px icon button)
 
 **Text variants (use BOTH classes):**
 ```html
-<button class="buttonGL buttonGL-textFix">Fixed 80px</button>
+<button class="buttonGL buttonGL-textFix">Fixed 100px</button>
 <button class="buttonGL buttonGL-text">Auto width</button>
 <button class="buttonGL buttonGL-textFull">100% width</button>
 ```
+
+**Modal footer rules:**
+- Large modals (Add/Edit forms): `ButtonFooter PosRight` + `buttonGL-textFix`
+- Small modals (Alert/Confirm/Delete): `ButtonFooter PosCenter` + `buttonGL-textFull`
 
 **Footer positioning:**
 ```html
@@ -156,8 +160,8 @@ Symlink created during deploy: `public_html/media → ../media`
 - **Backgrounds:** Use `var(--glass-bgModal)`, `padding: 5px`, `gap: 5px`
 
 ### Mobile Adaptation
-- **Single breakpoint:** `@media (max-width: 768px)`
-- **Responsive file:** `responsive.css` (currently empty placeholder - mobile styles live in individual CSS files)
+- **Single breakpoint:** `@media (max-width: 480px)`
+- **Responsive file:** `responsive.css` (empty placeholder - mobile styles live in individual CSS files)
 
 ### Sticky Elements
 Use `position: sticky`, NOT `fixed`
@@ -234,14 +238,14 @@ maribulka/
 6. **Media files outside dist/** - Server symlink handles access
 7. **Proxy to production** - Dev environment has no local PHP
 8. **Admin-only features** - Check `authStore.isAdmin` before rendering
-9. **Mobile breakpoint:** 768px max-width
+9. **Mobile breakpoint:** 480px max-width
 10. **Deploy is 3 commands:** commit, push, `.\deploy.ps1`
 
 ## Memory Files
 
 The project has extensive documentation in `C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\`:
 - `MEMORY.md` - Quick reference (always loaded)
-- `buttons-refactoring.md` - Button system refactor status (ongoing Feb 27, 2026)
+- `buttons-refactoring.md` - Button system (refactoring completed Mar 2, 2026)
 - `styles.md` - CSS organization details
 - `patterns.md` - Code patterns and examples
 - `architecture.md` - Technical architecture deep-dive
