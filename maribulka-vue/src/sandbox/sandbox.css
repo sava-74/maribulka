@@ -1,0 +1,638 @@
+/* ========================================
+   ПЕСОЧНИЦА — glass-btn система
+   sandbox.css
+   Изолированные стили, не влияют на проект
+   ======================================== */
+
+/* ========== 1. ТЁМНАЯ ТЕМА (по умолчанию) ========== */
+
+[data-sandbox] {
+  --sb-bg-primary: #0a0a0f;
+  --sb-bg-secondary: #12121a;
+  --sb-glass-bg: linear-gradient(180deg, var(--gbDLine1) 0%, var(--gbDLine2) 50%, var(--gbDLine3) 100%);
+  --sb-glass-border: rgba(255,255,255,0.18);
+  --sb-glass-inner-glow: inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(0,0,0,0.1);
+  --sb-glass-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  --sb-text-primary: rgba(255,255,255,0.95);
+  --sb-text-secondary: rgba(255,255,255,0.6);
+  --sb-accent: #0a84ff;
+  --sb-accent-bg: linear-gradient(135deg, rgba(10,132,255,0.8) 0%, rgba(10,132,255,0.6) 50%, rgba(94,92,230,0.6) 100%);
+  --sb-accent-shadow: 0 8px 32px rgba(10,132,255,0.4), 0 0 60px rgba(10,132,255,0.2);
+  --sb-orb-1: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --sb-orb-2: linear-gradient(225deg, #0a84ff 0%, #5e5ce6 100%);
+  --sb-orb-3: linear-gradient(45deg, #ff6b6b 0%, #feca57 100%);
+  --sb-noise-opacity: 0.03;
+}
+
+/* ========== 2. СВЕТЛАЯ ТЕМА ========== */
+
+[data-sandbox="light"] {
+  --sb-bg-primary: #f5f5f7;
+  --sb-bg-secondary: #ffffff;
+  --sb-glass-bg: linear-gradient(180deg, var(--gbLLine1) 0%, var(--gbLLine2) 50%, var(--gbLLine3) 100%);
+  --sb-glass-border: rgba(0,0,0,0.08);
+  --sb-glass-inner-glow: inset 0 1px 0 0 rgba(255,255,255,0.9), inset 0 -1px 0 0 rgba(0,0,0,0.05);
+  --sb-glass-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --sb-text-primary: rgba(0,0,0,0.85);
+  --sb-text-secondary: rgba(0,0,0,0.5);
+  --sb-accent: #007aff;
+  --sb-accent-bg: linear-gradient(135deg, rgba(0,122,255,0.9) 0%, rgba(0,122,255,0.75) 50%, rgba(88,86,214,0.8) 100%);
+  --sb-accent-shadow: 0 8px 32px rgba(0,122,255,0.35), 0 0 40px rgba(0,122,255,0.15);
+  --sb-orb-1: linear-gradient(135deg, #e8e8ed 0%, #d1d1d6 50%, #c7c7cc 100%);
+  --sb-orb-2: linear-gradient(225deg, #007aff 0%, #5856d6 100%);
+  --sb-orb-3: linear-gradient(45deg, #ff3b30 0%, #ff9500 100%);
+  --sb-noise-opacity: 0.02;
+}
+
+/* ========== 3. LAYOUT ========== */
+
+.sandbox-root {
+  position: relative;
+  min-height: calc(100vh - 60px); /* вычитаем высоту топбара */
+  overflow: hidden;
+  background: var(--sb-bg-primary);
+  color: var(--sb-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  transition: background 0.5s ease, color 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px 20px;
+}
+
+.sb-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sb-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: sb-float 20s ease-in-out infinite;
+  transition: background 0.5s ease;
+}
+
+.sb-bg-orb:nth-child(1) {
+  width: 500px;
+  height: 500px;
+  background: var(--sb-orb-1);
+  top: -20%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.sb-bg-orb:nth-child(2) {
+  width: 400px;
+  height: 400px;
+  background: var(--sb-orb-2);
+  bottom: -15%;
+  right: -5%;
+  opacity: 0.3;
+  animation-delay: -7s;
+}
+
+.sb-bg-orb:nth-child(3) {
+  width: 300px;
+  height: 300px;
+  background: var(--sb-orb-3);
+  top: 50%;
+  left: 60%;
+  opacity: 0.15;
+  animation-delay: -14s;
+}
+
+[data-sandbox="light"] .sb-bg-orb:nth-child(2) { opacity: 0.25; }
+[data-sandbox="light"] .sb-bg-orb:nth-child(3) { opacity: 0.12; }
+
+@keyframes sb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(30px, -30px) scale(1.05); }
+  50%  { transform: translate(-20px, 20px) scale(0.95); }
+  75%  { transform: translate(-30px, -20px) scale(1.02); }
+}
+
+.sb-noise-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: var(--sb-noise-opacity);
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.sb-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+  max-width: 100%;
+}
+
+.sb-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.sb-section-title {
+  font-size: var(--generalTextSizeH1);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--sb-text-secondary);
+  transition: color 0.3s ease;
+
+}
+.section-title {
+    font-size: var(--generalTextSizeH1);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--sb-text-secondary);
+    transition: color 0.3s ease;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--sb-text-secondary);
+}
+
+
+.sectionPadIcon {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px 15px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  font-size: var(--generalTextSize);
+  color: var(--sb-text-secondary);
+  justify-content: center;
+}
+
+.sectionBigIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.textBigIcon{
+    width: 108px;
+    height: 40px;
+    margin: 0;
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.sb-buttons-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ========== 4. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ========== */
+
+.sb-theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+}
+
+.sb-theme-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 32px;
+  background: var(--sb-glass-bg);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--sb-glass-shadow);
+  transition: all 0.3s ease;
+}
+
+.sb-theme-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.sb-theme-indicator {
+  position: absolute;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  background: var(--sb-text-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+}
+
+[data-sandbox="light"] .sb-theme-indicator {
+  transform: translateX(24px);
+}
+
+.sb-theme-indicator svg {
+  width: 16px;
+  height: 16px;
+  color: var(--sb-bg-primary);
+  transition: color 0.3s ease;
+}
+
+/* ========== 5. GLASS BUTTON BASE ========== */
+
+.glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: var(--generalTextSize);
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--sb-text-primary);
+  background: var(--sb-glass-bg);
+  border: 2px solid var(--sb-glass-border);
+  border-radius: 100px;
+  border-style: groove;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(1px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--sb-glass-shadow);             
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease,
+              color 0.3s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Градиентная рамка через ::before */
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 40%,
+    rgba(255,255,255,0.05) 60%,
+    rgba(255,255,255,0.2) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.sectionPad{
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 30px;
+  border: 2px solid var(--sb-glass-border);
+  border-radius: 26px;
+  border-style: groove;
+    overflow: hidden;
+  backdrop-filter: blur(1px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--sb-glass-shadow);             
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease,
+              color 0.3s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sectonPad::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 40%,
+    rgba(255,255,255,0.05) 60%,
+    rgba(255,255,255,0.2) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+[data-sandbox="light"] .glass-btn::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.8) 0%,
+    rgba(255,255,255,0.3) 40%,
+    rgba(255,255,255,0.2) 60%,
+    rgba(255,255,255,0.5) 100%
+  );
+}
+
+/* Блик-полоса при hover через ::after */
+.glass-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.15) 45%,
+    rgba(255,255,255,0.25) 50%,
+    rgba(255,255,255,0.15) 55%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+[data-sandbox="light"] .glass-btn::after {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.5) 45%,
+    rgba(255,255,255,0.8) 50%,
+    rgba(255,255,255,0.5) 55%,
+    transparent 60%
+  );
+}
+
+/* Внутреннее свечение */
+.glass-btn .inner-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--sb-glass-inner-glow);
+  pointer-events: none;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Верхний блик */
+.glass-btn .top-shine {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 50%;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.12) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+[data-sandbox="light"] .glass-btn .top-shine {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, transparent 100%);
+}
+
+/* ========== 6. СОСТОЯНИЯ ========== */
+
+.glass-btn:hover {
+  transform: scale(1.02);
+}
+
+.glass-btn:hover::after {
+  transform: translateX(100%);
+}
+
+.glass-btn:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.glass-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0,122,255,0.5), var(--sb-glass-shadow);
+}
+
+/* ========== 7. ACCENT ВАРИАНТ ========== */
+
+.glass-btn.accent {
+  background: var(--sb-accent-bg);
+  color: #ffffff;
+}
+
+.glass-btn.accent .inner-glow {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,0.3),
+    inset 0 -1px 0 0 rgba(0,0,0,0.15),
+    inset 0 0 20px rgba(255,255,255,0.05);
+}
+
+.glass-btn.accent:hover {
+  box-shadow: var(--sb-accent-shadow);
+}
+
+/* ========== 8. РАЗМЕРЫ ========== */
+
+.glass-btn.hero {
+  padding: 18px 42px;
+  font-size: var(--generalTextSizeH4);
+  border-radius: 16px;
+}
+
+.glass-btn.hero.bigIcon {
+  padding: 2px 2px;
+  border-radius: 26px;
+}
+
+.glass-btn.rect {
+  border-radius: 10px;
+}
+
+.glass-btn.icon-only {
+  padding: 5.25px 16.47px;;
+  border-radius: 100px;
+}
+
+.glass-btn.iconText {
+  padding: 5.25px 18px 5.25px 12px;
+  gap: 3px;
+}
+
+/* ========== 9. ТИНТОВАННЫЕ ВАРИАНТЫ ========== */
+
+.glass-btn.tint-green {
+  background: linear-gradient(180deg, rgba(52,199,89,0.7) 0%, rgba(48,209,88,0.5) 100%);
+  color: #ffffff;
+}
+
+[data-sandbox="light"] .glass-btn.tint-green {
+  background: linear-gradient(180deg, rgba(52,199,89,0.85) 0%, rgba(48,209,88,0.7) 100%);
+}
+
+.glass-btn.tint-green:hover {
+  box-shadow: 0 8px 32px rgba(52,199,89,0.3), 0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+
+.glass-btn.tint-orange {
+  background: linear-gradient(180deg, rgba(255,149,0,0.7) 0%, rgba(255,159,10,0.5) 100%);
+  color: #ffffff;
+}
+
+[data-sandbox="light"] .glass-btn.tint-orange {
+  background: linear-gradient(180deg, rgba(255,149,0,0.85) 0%, rgba(255,159,10,0.7) 100%);
+}
+
+.glass-btn.tint-orange:hover {
+  box-shadow: 0 8px 32px rgba(255,149,0,0.3), 0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+
+.glass-btn.tint-pink {
+  background: linear-gradient(180deg, rgba(255,45,85,0.7) 0%, rgba(255,55,95,0.5) 100%);
+  color: #ffffff;
+}
+
+[data-sandbox="light"] .glass-btn.tint-pink {
+  background: linear-gradient(180deg, rgba(255,45,85,0.85) 0%, rgba(255,55,95,0.7) 100%);
+}
+
+.glass-btn.tint-pink:hover {
+  box-shadow: 0 8px 32px rgba(255,45,85,0.3), 0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+
+/* ========== 10. REFRACTION DEMO ========== */
+
+.sb-refraction-demo {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, #ff6b6b 25%, transparent 25%),
+    linear-gradient(-45deg, #feca57 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #48dbfb 75%),
+    linear-gradient(-45deg, transparent 75%, #ff9ff3 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.5s ease;
+}
+
+[data-sandbox="light"] .sb-refraction-demo {
+  background:
+    linear-gradient(45deg, #ff3b30 25%, transparent 25%),
+    linear-gradient(-45deg, #ff9500 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #5ac8fa 75%),
+    linear-gradient(-45deg, transparent 75%, #ff2d55 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+}
+
+.sb-refraction-demo .glass-btn {
+  backdrop-filter: blur(3px) saturate(600%) brightness(1.1);
+  -webkit-backdrop-filter: blur(3px) saturate(600%) brightness(1.1);
+}
+
+/* ========== 11. RIPPLE ========== */
+
+.sb-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  transform: scale(0);
+  animation: sb-ripple-effect 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+[data-sandbox="light"] .sb-ripple {
+  background: radial-gradient(circle, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 50%, transparent 70%);
+}
+
+@keyframes sb-ripple-effect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ========== 12. ИКОНКИ ========== */
+
+.sb-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sb-bigIcon {
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+}
+
+/* ========== 13. REDUCED MOTION ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-bg-orb,
+  .glass-btn::after,
+  .sb-ripple,
+  .sb-theme-indicator {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ========== 14. МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
+
+@media (max-width: 480px) {
+  .sb-theme-toggle {
+    top: 16px;
+    right: 16px;
+  }
+
+  .sb-buttons-row {
+    gap: 12px;
+  }
+
+  .glass-btn.hero {
+    padding: 16px 32px;
+    font-size: var(--generalTextSizeH3);
+  }
+
+  .sb-content {
+    gap: 50px;
+  }
+}

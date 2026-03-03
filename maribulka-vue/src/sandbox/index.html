@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS Glass Button — Light & Dark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark theme (default) */
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.08) 100%);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --accent: #0a84ff;
+      --accent-bg: linear-gradient(135deg, rgba(10, 132, 255, 0.8) 0%, rgba(10, 132, 255, 0.6) 50%, rgba(94, 92, 230, 0.6) 100%);
+      --accent-shadow: 0 8px 32px rgba(10, 132, 255, 0.4), 0 0 60px rgba(10, 132, 255, 0.2);
+      --orb-1: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      --orb-2: linear-gradient(225deg, #0a84ff 0%, #5e5ce6 100%);
+      --orb-3: linear-gradient(45deg, #ff6b6b 0%, #feca57 100%);
+      --refraction-bg: linear-gradient(45deg, #ff6b6b 25%, transparent 25%),
+                       linear-gradient(-45deg, #feca57 25%, transparent 25%),
+                       linear-gradient(45deg, transparent 75%, #48dbfb 75%),
+                       linear-gradient(-45deg, transparent 75%, #ff9ff3 75%);
+      --noise-opacity: 0.03;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f5f5f7;
+      --bg-secondary: #ffffff;
+      --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.75) 100%);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+      --text-primary: rgba(0, 0, 0, 0.85);
+      --text-secondary: rgba(0, 0, 0, 0.5);
+      --accent: #007aff;
+      --accent-bg: linear-gradient(135deg, rgba(0, 122, 255, 0.9) 0%, rgba(0, 122, 255, 0.75) 50%, rgba(88, 86, 214, 0.8) 100%);
+      --accent-shadow: 0 8px 32px rgba(0, 122, 255, 0.35), 0 0 40px rgba(0, 122, 255, 0.15);
+      --orb-1: linear-gradient(135deg, #e8e8ed 0%, #d1d1d6 50%, #c7c7cc 100%);
+      --orb-2: linear-gradient(225deg, #007aff 0%, #5856d6 100%);
+      --orb-3: linear-gradient(45deg, #ff3b30 0%, #ff9500 100%);
+      --refraction-bg: linear-gradient(45deg, #ff3b30 25%, transparent 25%),
+                       linear-gradient(-45deg, #ff9500 25%, transparent 25%),
+                       linear-gradient(45deg, transparent 75%, #5ac8fa 75%),
+                       linear-gradient(-45deg, transparent 75%, #ff2d55 75%);
+      --noise-opacity: 0.02;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      transition: background 0.5s ease;
+    }
+
+    /* Animated background */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 20s ease-in-out infinite;
+      transition: background 0.5s ease;
+    }
+
+    .bg-orb:nth-child(1) {
+      width: 500px;
+      height: 500px;
+      background: var(--orb-1);
+      top: -20%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .bg-orb:nth-child(2) {
+      width: 400px;
+      height: 400px;
+      background: var(--orb-2);
+      bottom: -15%;
+      right: -5%;
+      opacity: 0.3;
+      animation-delay: -7s;
+    }
+
+    .bg-orb:nth-child(3) {
+      width: 300px;
+      height: 300px;
+      background: var(--orb-3);
+      top: 50%;
+      left: 60%;
+      opacity: 0.15;
+      animation-delay: -14s;
+    }
+
+    [data-theme="light"] .bg-orb:nth-child(2) {
+      opacity: 0.25;
+    }
+
+    [data-theme="light"] .bg-orb:nth-child(3) {
+      opacity: 0.12;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -30px) scale(1.05); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(-30px, -20px) scale(1.02); }
+    }
+
+    /* Noise texture overlay */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      opacity: var(--noise-opacity);
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 100;
+    }
+
+    .theme-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 32px;
+      background: var(--glass-bg);
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 0.5px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .theme-indicator {
+      position: absolute;
+      left: 3px;
+      width: 26px;
+      height: 26px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-theme="light"] .theme-indicator {
+      transform: translateX(24px);
+    }
+
+    .theme-indicator svg {
+      width: 16px;
+      height: 16px;
+      color: var(--bg-primary);
+      transition: color 0.3s ease;
+    }
+
+    .theme-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent);
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 80px;
+      max-width: 100%;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
+    }
+
+    .buttons-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ========================================
+       GLASS BUTTON BASE
+    ======================================== */
+    .glass-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      color: var(--text-primary);
+      background: var(--glass-bg);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s ease,
+                  background 0.3s ease,
+                  color 0.3s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .glass-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 0.5px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.1) 40%,
+        rgba(255, 255, 255, 0.05) 60%,
+        rgba(255, 255, 255, 0.2) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .glass-btn::before {
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.2) 60%,
+        rgba(255, 255, 255, 0.5) 100%
+      );
+    }
+
+    .glass-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.15) 45%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.15) 55%,
+        transparent 60%
+      );
+      transform: translateX(-100%);
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .glass-btn::after {
+      background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.5) 45%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0.5) 55%,
+        transparent 60%
+      );
+    }
+
+    .glass-btn .inner-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: var(--glass-inner-glow);
+      pointer-events: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .glass-btn .top-shine {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 50%;
+      border-radius: inherit;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.12) 0%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .glass-btn .top-shine {
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.6) 0%,
+        transparent 100%
+      );
+    }
+
+    .glass-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .glass-btn:hover::after {
+      transform: translateX(100%);
+    }
+
+    .glass-btn:active {
+      transform: scale(0.97);
+      transition-duration: 0.1s;
+    }
+
+    .glass-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.5), var(--glass-shadow);
+    }
+
+    /* ========================================
+       ACCENT BUTTON
+    ======================================== */
+    .glass-btn.accent {
+      background: var(--accent-bg);
+      color: #ffffff;
+    }
+
+    .glass-btn.accent .inner-glow {
+      box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 0 rgba(0, 0, 0, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-btn.accent:hover {
+      box-shadow: var(--accent-shadow);
+    }
+
+    /* ========================================
+       SIZE VARIANTS
+    ======================================== */
+    .glass-btn.hero {
+      padding: 18px 42px;
+      font-size: 19px;
+      border-radius: 16px;
+    }
+
+    .glass-btn.hero .icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .glass-btn.small {
+      padding: 10px 18px;
+      font-size: 15px;
+      border-radius: 10px;
+    }
+
+    .glass-btn.icon-only {
+      width: 52px;
+      height: 52px;
+      padding: 0;
+      border-radius: 14px;
+    }
+
+    .glass-btn.icon-only .icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .glass-btn.pill {
+      border-radius: 100px;
+      padding: 12px 24px;
+    }
+
+    /* ========================================
+       TINTED VARIANTS
+    ======================================== */
+    .glass-btn.tint-green {
+      background: linear-gradient(135deg, rgba(52, 199, 89, 0.7) 0%, rgba(48, 209, 88, 0.5) 100%);
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .glass-btn.tint-green {
+      background: linear-gradient(135deg, rgba(52, 199, 89, 0.85) 0%, rgba(48, 209, 88, 0.7) 100%);
+    }
+
+    .glass-btn.tint-green:hover {
+      box-shadow: 0 8px 32px rgba(52, 199, 89, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .glass-btn.tint-orange {
+      background: linear-gradient(135deg, rgba(255, 149, 0, 0.7) 0%, rgba(255, 159, 10, 0.5) 100%);
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .glass-btn.tint-orange {
+      background: linear-gradient(135deg, rgba(255, 149, 0, 0.85) 0%, rgba(255, 159, 10, 0.7) 100%);
+    }
+
+    .glass-btn.tint-orange:hover {
+      box-shadow: 0 8px 32px rgba(255, 149, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .glass-btn.tint-pink {
+      background: linear-gradient(135deg, rgba(255, 45, 85, 0.7) 0%, rgba(255, 55, 95, 0.5) 100%);
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .glass-btn.tint-pink {
+      background: linear-gradient(135deg, rgba(255, 45, 85, 0.85) 0%, rgba(255, 55, 95, 0.7) 100%);
+    }
+
+    .glass-btn.tint-pink:hover {
+      box-shadow: 0 8px 32px rgba(255, 45, 85, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    /* ========================================
+       REFRACTION DEMO
+    ======================================== */
+    .refraction-demo {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 200px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--refraction-bg);
+      background-size: 40px 40px;
+      background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.5s ease;
+    }
+
+    .refraction-demo .glass-btn {
+      backdrop-filter: blur(30px) saturate(200%) brightness(1.1);
+      -webkit-backdrop-filter: blur(30px) saturate(200%) brightness(1.1);
+    }
+
+    /* ========================================
+       RIPPLE EFFECT
+    ======================================== */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+      transform: scale(0);
+      animation: ripple-effect 0.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .ripple {
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 70%);
+    }
+
+    @keyframes ripple-effect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .bg-orb, .glass-btn::after, .ripple, .theme-indicator {
+        animation: none;
+        transition: none;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .theme-toggle {
+        top: 16px;
+        right: 16px;
+      }
+      
+      .buttons-row {
+        gap: 12px;
+      }
+      
+      .glass-btn.hero {
+        padding: 16px 32px;
+        font-size: 17px;
+      }
+
+      .content {
+        gap: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+  </div>
+  <div class="noise-overlay"></div>
+
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <button class="theme-btn" id="themeToggle" aria-label="Переключить тему">
+      <span class="theme-indicator">
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="content">
+    <!-- Hero Button -->
+    <div class="section">
+      <span class="section-title">Hero Primary</span>
+      <button class="glass-btn accent hero" aria-label="Начать">
+        <span class="inner-glow"></span>
+        <span class="top-shine"></span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        <span>Начать</span>
+      </button>
+    </div>
+
+    <!-- Standard Buttons -->
+    <div class="section">
+      <span class="section-title">Standard</span>
+      <div class="buttons-row">
+        <button class="glass-btn accent">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Подтвердить</span>
+        </button>
+        
+        <button class="glass-btn">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Отмена</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tinted Variants -->
+    <div class="section">
+      <span class="section-title">Tinted Variants</span>
+      <div class="buttons-row">
+        <button class="glass-btn tint-green">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Готово</span>
+        </button>
+        
+        <button class="glass-btn tint-orange">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Важно</span>
+        </button>
+        
+        <button class="glass-btn tint-pink">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Удалить</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pill Buttons -->
+    <div class="section">
+      <span class="section-title">Pill Shape</span>
+      <div class="buttons-row">
+        <button class="glass-btn accent pill">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Принять все</span>
+        </button>
+        
+        <button class="glass-btn pill">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Настройки</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Icon Buttons -->
+    <div class="section">
+      <span class="section-title">Icon Only</span>
+      <div class="buttons-row">
+        <button class="glass-btn icon-only" aria-label="Поделиться">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </button>
+        
+        <button class="glass-btn icon-only accent" aria-label="Добавить">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        
+        <button class="glass-btn icon-only" aria-label="Поиск">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Refraction Demo -->
+    <div class="section">
+      <span class="section-title">Refraction Effect</span>
+      <div class="refraction-demo">
+        <button class="glass-btn accent">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Сквозь стекло</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Small Buttons -->
+    <div class="section">
+      <span class="section-title">Small</span>
+      <div class="buttons-row">
+        <button class="glass-btn small accent">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>OK</span>
+        </button>
+        <button class="glass-btn small">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <span>Закрыть</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const themeIndicator = themeToggle.querySelector('.theme-indicator');
+    
+    // Check for saved theme or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme) {
+      html.setAttribute('data-theme', savedTheme);
+    } else if (!prefersDark) {
+      html.setAttribute('data-theme', 'light');
+    }
+    
+    updateThemeIcon();
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon();
+    });
+    
+    function updateThemeIcon() {
+      const currentTheme = html.getAttribute('data-theme');
+      const icon = themeIndicator.querySelector('svg');
+      
+      if (currentTheme === 'light') {
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      } else {
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      }
+    }
+
+    // Ripple effect
+    document.querySelectorAll('.glass-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = size + 'px';
+        ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        
+        this.appendChild(ripple);
+        
+        ripple.addEventListener('animationend', () => ripple.remove());
+      });
+    });
+
+    // Magnetic hover for hero button
+    const heroBtn = document.querySelector('.glass-btn.hero');
+    if (heroBtn) {
+      heroBtn.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        this.style.transform = 'translate(' + (x * 0.1) + 'px, ' + (y * 0.1) + 'px) scale(1.02)';
+      });
+      
+      heroBtn.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    }
+
+    // Entrance animation
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.section').forEach((section, index) => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(30px)';
+      section.style.transition = 'opacity 0.6s ease ' + (index * 0.1) + 's, transform 0.6s ease ' + (index * 0.1) + 's';
+      observer.observe(section);
+    });
+  </script>
+</body>
+</html>

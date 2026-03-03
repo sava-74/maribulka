@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiAccountOutline, mdiAccountOffOutline } from '@mdi/js';
+import { mdiAccountOutline, mdiAccountOffOutline, mdiFlask } from '@mdi/js';
 import { useAuthStore } from '../stores/auth'
 import ConfirmModal from './ConfirmModal.vue'
 import { useReferencesStore } from '../stores/references'
+import { useNavigationStore } from '../stores/navigation'
 
 
 
 const auth = useAuthStore()
+const navStore = useNavigationStore()
 const emit = defineEmits(['open-login'])
 
 const referencesStore = useReferencesStore()
@@ -67,6 +69,11 @@ const activePromotion = computed(() => {
         Акция "{{ activePromotion.name }}" {{ Math.round(activePromotion.discount_percent) }}%
       </h1>
     </div>
+
+    <!-- Песочница -->
+    <button class="buttonGL" @click="navStore.navigateTo('sandbox')" title="Песочница">
+      <svg-icon type="mdi" :path="mdiFlask" />
+    </button>
 
     <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->
     <button class="buttonGL" @click="handleAction">

@@ -1,19 +1,20 @@
 :root {
-  --generalColor: #a614ff4f; /*    #39FF14; /* основной цвет бордюров (ярко-зеленый) */
+  --generalColor: rgb(68, 87, 197); /*    #39FF14; /* основной цвет бордюров (ярко-зеленый) */
   --bgGeneral: #f0f0f0; /* светлый фон для всего приложения */
   --neon-blue: #00F3FF; /* дополнительный цвет (неоновый голубой) */
   --glass-bg: rgba(255, 255, 255, 0.4); /* полупрозрачный белый для эффекта стекла */ 
   --glass-bgModal: rgb(228 228 228 / 85%); /* полупрозрачный белый для модальных окон */
-  --generalTextColor: #333; /* основной цвет текста */
-  --generalTextSizeExtraSmall: 8px; /* размер текста для очень мелких элементов */
-  --generalTextSizeSmall: 10px; /* размер текста для мелких элементов */
+  --generalTextColor: rgb(51, 51, 51); /* основной цвет текста */
+  --generalTestColor:51,51,51; /* основной цвет текста в формате rgb для rgba */
+  --generalTextSizeExtraSmall: calc(var(--generalTextSize) - 4px); /* размер текста для очень мелких элементов */
+  --generalTextSizeSmall: calc(var(--generalTextSize) - 2px); /* размер текста для мелких элементов */
   --generalTextSize: 12px; /* основной размер текста */
-  --generalTextSizeH1: 14px; /* размер текста для заголовков */
-  --generalTextSizeH2: 16px; /* размер текста для подзаголовков */
-  --generalTextSizeH3: 18px; /* размер текста для важных заголовков */
-  --generalTextSizeH4: 20px; /* размер текста для важных заголовков */
+  --generalTextSizeH1: calc(var(--generalTextSize) + 2px); /* размер текста для заголовков */
+  --generalTextSizeH2: calc(var(--generalTextSize) + 4px); /* размер текста для подзаголовков */
+  --generalTextSizeH3: calc(var(--generalTextSize) + 6px); /* размер текста для важных заголовков */
+  --generalTextSizeH4: calc(var(--generalTextSize) + 8px); /* размер текста для важных заголовков */
 
-  --glass-shadowButton: 4px 4px 8px rgba(0, 0, 0, 0.2); /* чёрная тень для кнопок */
+  --glass-shadowButton: 4px 4px 8px rgba(var(--generalTestColor), 0.2); /* чёрная тень для кнопок (var(--generalTextColor) 0.2); /* чёрная тень для кнопок */
   --glass-shadowButtonUp: 8px 8px 16px rgba(0, 0, 0, 0.2); /* чёрная тень для поднятых кнопок */
   /*--test-shadow: 4px 4px 8px rgba(43, 4, 235, 0.666); /* для тестов */
   --glass-bgButton: rgba(239, 239, 239, 0.4); /*задний фон кнопки*/
@@ -69,9 +70,22 @@
   --infoColor: #3b82f6; /* синий (баланс) */
   --tableTextColor: #000; /* основной текст в таблицах */
   --textMutedLightColor: rgba(255, 255, 255, 0.7); /* светлый приглушенный текст */
+
+/*--- переменные стекла фона ---*/
+/*Light*/
+  --gbLLine1: color-mix(in srgb, var(--generalColor) 30%, transparent);
+  --gbLLine2: color-mix(in srgb, var(--generalColor) 10%, transparent);
+  --gbLLine3: color-mix(in srgb, var(--generalColor) 5%, transparent);
+/*Darck*/
+  --gbDLine1: color-mix(in srgb, var(--generalColor) 12%, transparent);
+  --gbDLine2: color-mix(in srgb, var(--generalColor) 5%, transparent);
+  --gbDLine3: color-mix(in srgb, var(--generalColor) 8%, transparent);
 }
 
 /* Favicon цвет через CSS переменную */
 link[rel="icon"] {
   color: var(--generalColor);
 }
+
+
+

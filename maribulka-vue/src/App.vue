@@ -10,6 +10,7 @@ import References from './components/accounting/References.vue'
 import Settings from './components/accounting/Settings.vue'
 import Portfolio from './components/Portfolio.vue'
 import Home from './views/Home.vue'
+import SandboxView from './sandbox/SandboxView.vue'
 
 // Глобальные стили
 import './assets/modal.css'
@@ -50,6 +51,9 @@ onMounted(async () => {
 
       <!-- Настройки (только для админа) -->
       <Settings v-else-if="navStore.currentPage === 'settings' && authStore.isAdmin" />
+
+      <!-- Песочница -->
+      <SandboxView v-else-if="navStore.currentPage === 'sandbox'" />
 
       <!-- Если нет доступа -->
       <div v-else class="no-access">
