@@ -10,6 +10,9 @@ import {
   mdiMagnify,
   mdiShareVariant,
   mdiClose,
+  mdiAccountOutline,
+  mdiMenu,
+  mdiImageMultiple,
 } from '@mdi/js'
 
 const theme = ref<'dark' | 'light'>('dark')
@@ -38,6 +41,40 @@ function onRipple(event: MouseEvent) {
 
 <template>
   <div class="sandbox-root" :data-sandbox="theme">
+    <!-- верхняя панель управления -->
+    <div class="top-pad-bar">   
+      <div class="top-pad-icon">            
+            <div class="sectionBigIcon">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
+                <span class="inner-glow"></span>
+                <span class="top-shine"></span>
+                <svg-icon type="mdi" :path="mdiAccountOutline" class="sb-bigIcon" />
+              </button>
+            </div>
+            <div class="sectionBigIcon">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
+                <span class="inner-glow"></span>
+                <span class="top-shine"></span>
+                <svg-icon type="mdi" :path="mdiMenu" class="sb-bigIcon" />
+              </button>
+            </div>
+            <div class="sectionBigIcon">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
+                <span class="inner-glow"></span>
+                <span class="top-shine"></span>
+                <svg-icon type="mdi" :path="mdiImageMultiple" class="sb-bigIcon" />
+              </button>
+            </div>
+            <!-- Переключатель темы class="sb-theme-toggle" -->
+            <div class="sectionThemeIcon">
+              <button class="sb-theme-btn" @click="toggleTheme" aria-label="Переключить тему">
+                <span class="sb-theme-indicator">
+                <svg-icon type="mdi" :path="themeIcon" />
+                </span>
+              </button>
+            </div>
+          </div>
+    </div>
 
     <!-- Анимированный фон -->
     <div class="sb-bg-layer">
@@ -47,32 +84,16 @@ function onRipple(event: MouseEvent) {
     </div>
     <div class="sb-noise-overlay"></div>
 
-    <!-- Переключатель темы -->
-    <div class="sb-theme-toggle">
-      <button class="sb-theme-btn" @click="toggleTheme" aria-label="Переключить тему">
-        <span class="sb-theme-indicator">
-          <svg-icon type="mdi" :path="themeIcon" />
-        </span>
-      </button>
-    </div>
+    
 
     <!-- Контент -->
     <div class="sb-content">
-
       <!-- Hero -->
       <div class="sectionPad">
-        <span class="inner-glow"></span>
-        <span class="top-shine"></span>
         <span class="section-title">Название рабочей панели например "Запись на стрижку"</span>
-          <div class="sectionPadIcon">
-            <button class="glass-btn accent hero" @click="onRipple($event)">
-              <span class="inner-glow"></span>
-              <span class="top-shine"></span>
-              <svg-icon type="mdi" :path="mdiPlay" class="sb-icon" />
-              <span>Синий</span>
-            </button>
+          <div class="sectionPadIcon">            
             <div class="sectionBigIcon">
-              <button class="glass-btn accent hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn accent bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -80,7 +101,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Начать</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -88,7 +109,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Выполнить</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn accent hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn accent bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiCheck" class="sb-bigIcon" />
@@ -96,7 +117,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Запись на съёмку</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn accent hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn accent bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiCheck" class="sb-bigIcon" />
@@ -104,7 +125,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Расходы</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn accent hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn accent bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiCheck" class="sb-bigIcon" />
@@ -112,7 +133,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Приход</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -120,7 +141,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Касса</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -132,7 +153,7 @@ function onRipple(event: MouseEvent) {
           <span class="section-title">Название параграфа например "Справочники"</span>
           <div class="sectionPadIcon">
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -140,7 +161,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Клиенты</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -148,7 +169,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Акции</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />
@@ -156,7 +177,7 @@ function onRipple(event: MouseEvent) {
               <p class="textBigIcon">Таблица</p>
             </div>
             <div class="sectionBigIcon">
-              <button class="glass-btn hero bigIcon" @click="onRipple($event)">
+              <button class="glass-btn bigIcon" @click="onRipple($event)">
                 <span class="inner-glow"></span>
                 <span class="top-shine"></span>
                 <svg-icon type="mdi" :path="mdiPlay" class="sb-bigIcon" />

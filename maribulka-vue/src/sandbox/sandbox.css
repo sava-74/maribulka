@@ -59,7 +59,7 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  padding: 40px 20px;
+  padding: 102px 5px;
 }
 
 .sb-bg-layer {
@@ -153,9 +153,30 @@
   transition: color 0.3s ease;
 
 }
+
+.top-pad-bar{
+  position: fixed;
+  width: calc(100% - 40px);
+  top: 48px;
+  padding: 0 30px 0 30px;
+  margin-bottom: 10px;
+  z-index: 1000;
+}
+
+.top-pad-icon{
+    display: flex;
+    flex-direction: row;
+    column-gap: 1px;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 5px;
+    justify-content: center;
+}
+
 .section-title {
     font-size: var(--generalTextSizeH1);
     font-weight: 500;
+    text-align: center;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--sb-text-secondary);
@@ -167,6 +188,7 @@
 
 .sectionPadIcon {
   margin-top: 30px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: row;
   gap: 10px 15px;
@@ -182,6 +204,13 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  width: 85px;
+}
+
+.sectionThemeIcon{
+  width: 85px;
+  display: flex;
+  justify-content: center;
 }
 
 .textBigIcon{
@@ -284,7 +313,7 @@
   border-style: groove;
   cursor: pointer;
   overflow: hidden;
-  backdrop-filter: blur(1px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow: var(--sb-glass-shadow);             
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -316,19 +345,19 @@
   pointer-events: none;
 }
 
-.sectionPad{
+.sectionPad, .top-pad-bar{
   max-width: 600px;
+  min-width: 355px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 30px;
   border: 2px solid var(--sb-glass-border);
   border-radius: 26px;
   border-style: groove;
     overflow: hidden;
-  backdrop-filter: blur(1px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(4px) saturate(180%);
+  -webkit-backdrop-filter: blur(4px) saturate(180%);
   box-shadow: var(--sb-glass-shadow);             
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.3s ease,
@@ -336,6 +365,10 @@
               color 0.3s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+.sectionPad{
+  padding: 30px;
 }
 
 .sectonPad::before {
@@ -470,8 +503,8 @@
   border-radius: 16px;
 }
 
-.glass-btn.hero.bigIcon {
-  padding: 2px 2px;
+.glass-btn.bigIcon {
+  padding: 10px;
   border-radius: 26px;
 }
 
@@ -598,8 +631,8 @@
 }
 
 .sb-bigIcon {
-  width: 65px;
-  height: 65px;
+  width: 45px;
+  height: 45px;
   flex-shrink: 0;
 }
 
@@ -618,21 +651,18 @@
 /* ========== 14. МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 
 @media (max-width: 480px) {
-  .sb-theme-toggle {
-    top: 16px;
-    right: 16px;
-  }
 
-  .sb-buttons-row {
-    gap: 12px;
-  }
 
-  .glass-btn.hero {
-    padding: 16px 32px;
-    font-size: var(--generalTextSizeH3);
-  }
+.sectionPad, .top-pad-bar{
+  padding: 5px;
+}
+.sectionPadIcon{
+  gap: 5px 0;
+}
+.textBigIcon{
+  width: 85px;
+  height: 28px;
+  
+}
 
-  .sb-content {
-    gap: 50px;
-  }
 }
