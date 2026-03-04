@@ -1,34 +1,167 @@
+/* ========================================
+   ГЛОБАЛЬНЫЕ СТИЛИ И ТЕМЫ
+   style.css
+   ======================================== */
+
+/* ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ========== */
+
+:root {
+  --genColorGlass: rgb(68, 87, 197);
+
+  --genTextSizeExtraSmall: calc(var(--genTextSize) - 4px);
+  --genTextSizeSmall: calc(var(--genTextSize) - 2px);
+  --genTextSize: 12px;
+  --genTextSizeH1: calc(var(--genTextSize) + 2px);
+  --genTextSizeH2: calc(var(--genTextSize) + 4px);
+  --genTextSizeH3: calc(var(--genTextSize) + 6px);
+  --genTextSizeH4: calc(var(--genTextSize) + 8px);
+
+  --svgColor: rgb(124, 124, 124);
+  --svgSize: 20px;
+  --svgSizeBig: 45px;
+
+  --padRadius: 26px;
+  --padBlur: 5px;
+
+  /* градиенты стекла (используются в темах) */
+  --gbLLine1: color-mix(in srgb, var(--genColorGlass) 30%, transparent);
+  --gbLLine2: color-mix(in srgb, var(--genColorGlass) 10%, transparent);
+  --gbLLine3: color-mix(in srgb, var(--genColorGlass) 5%, transparent);
+  --gbDLine1: color-mix(in srgb, var(--genColorGlass) 12%, transparent);
+  --gbDLine2: color-mix(in srgb, var(--genColorGlass) 5%, transparent);
+  --gbDLine3: color-mix(in srgb, var(--genColorGlass) 8%, transparent);
+}
+
+/* ========== ТЁМНАЯ ТЕМА (по умолчанию) ========== */
+
+[data-theme] { 
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --glass-bg: linear-gradient(180deg, var(--gbDLine1) 0%, var(--gbDLine2) 50%, var(--gbDLine3) 100%);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --orb-1: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --orb-2: linear-gradient(225deg, #0a84ff 0%, #5e5ce6 100%);
+  --orb-3: linear-gradient(45deg, #ff6b6b 0%, #feca57 100%);
+  --noise-opacity: 0.03;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.35);
+}
+
+/* ========== СВЕТЛАЯ ТЕМА ========== */
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --glass-bg: linear-gradient(180deg, var(--gbLLine1) 0%, var(--gbLLine2) 50%, var(--gbLLine3) 100%);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --text-primary: rgba(0, 0, 0, 0.85);
+  --text-secondary: rgba(0, 0, 0, 0.5);
+  --orb-1: linear-gradient(135deg, #e8e8ed 0%, #d1d1d6 50%, #c7c7cc 100%);
+  --orb-2: linear-gradient(225deg, #007aff 0%, #5856d6 100%);
+  --orb-3: linear-gradient(45deg, #ff3b30 0%, #ff9500 100%);
+  --noise-opacity: 0.02;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+}
+
+/* ========== BODY ========== */
 
 body {
   margin: 0;
   padding: 0;
-  /*display: flex;
-  place-items: center;*/
   min-width: 280px;
   min-height: 100vh;
-  background: var(--bgGeneral);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Scrollbar для модальных окон (НЕ трогаем по твоему указанию) */
+/* ========== ОРБЫ (анимированный фон) ========== */
 
+#app {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 102px 5px;
+}
 
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  left: -150px;
+  background: var(--orb-1);
+  animation: orbFloat1 40s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  top: 30%;
+  right: -100px;
+  background: var(--orb-2);
+  animation: orbFloat2 35s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 350px;
+  height: 350px;
+  bottom: -100px;
+  left: 30%;
+  background: var(--orb-3);
+  animation: orbFloat3 45s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(80px, 60px) scale(1.05); }
+  66%       { transform: translate(-40px, 100px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-60px, 80px) scale(1.1); }
+  66%       { transform: translate(40px, -60px) scale(0.9); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(60px, -80px) scale(1.05); }
+  66%       { transform: translate(-80px, 40px) scale(1.1); }
+}
+
+/* ========== SCROLLBAR ========== */
 
 ::-webkit-scrollbar {
-  width: 2px;                     /* ширина скроллбара */
-
+  width: 2px;
 }
 
 ::-webkit-scrollbar-track {
- /* background: rgba(0, 0, 0, 0.05);  /* Цвет дорожки */
-  border-radius: 2px;             /* Скругление дорожки */
-
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);  /* Цвет ползунка */
-  border-radius: 2px;             /* Скругление ползунка */
+  background: var(--scrollbar-thumb);
+  border-radius: 2px;
 }
 
-::-webkit-scrollbar-thumb:hover { /* Немного затемняем при наведении */
-  background: rgba(0, 0, 0, 0.3);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }

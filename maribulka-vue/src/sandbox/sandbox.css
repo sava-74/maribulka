@@ -537,7 +537,7 @@
   border: 2px solid var(--sb-glass-border);
   border-radius: 26px;
   border-style: groove;
-    overflow: hidden;
+  overflow: hidden;
   backdrop-filter: blur(5px) saturate(180%);
   -webkit-backdrop-filter: blur(5px) saturate(180%);
   box-shadow: var(--sb-glass-shadow);             

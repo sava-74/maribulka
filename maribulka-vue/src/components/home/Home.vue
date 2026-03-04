@@ -2,10 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiTextBoxPlusOutline, mdiCameraPlusOutline } from '@mdi/js'
-import { useAuthStore } from '../stores/auth'
-import { useHomeStore } from '../stores/home'
-import UploadPhotoModal from '../components/home/UploadPhotoModal.vue'
-import EditStudioDescriptionModal from '../components/home/EditStudioDescriptionModal.vue'
+import { useAuthStore } from '../../stores/auth'
+import { useHomeStore } from '../../stores/home'
+import UploadPhotoModal from '../home/UploadPhotoModal.vue'
+import EditStudioDescriptionModal from '../home/EditStudioDescriptionModal.vue'
 
 
 const authStore = useAuthStore()
@@ -61,49 +61,9 @@ function handleDescriptionClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="home-container">
+  <div >
 
-    <!-- Блок фото студии -->
-    <div class="studio-photos">
-      <div class="photos-grid">
-        <div
-          v-for="index in 4"
-          :key="index"
-          class="photo-item"
-        >
-          <img
-            v-if="homeStore.photos[index - 1]"
-            :src="homeStore.photos[index - 1]"
-            :alt="`Студия фото ${index}`"
-          >
-
-          <!-- Кнопка + в каждом слоте (только для админа) -->
-          <button
-            v-if="authStore.isAdmin"
-            class="buttonGL photo-add-button"
-            @click="handleAddPhoto(index - 1)"
-            title="Добавить/изменить фото"
-          >
-            <svg-icon type="mdi" :path="mdiCameraPlusOutline" />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Блок описания студии -->
-    <div class="studio-description">
-      <div class="description-header">
-        <button
-          v-if="authStore.isAdmin"
-          class="buttonGL"
-          @click="showEditDescriptionModal = true"
-          title="Редактировать описание"
-        >
-          <svg-icon type="mdi" :path="mdiTextBoxPlusOutline" />
-        </button>
-      </div>
-      <div class="description-content" v-html="descriptionHtml" @click="handleDescriptionClick"></div>
-    </div>
+    
 
     <!-- Модалка загрузки фото -->
     <UploadPhotoModal

@@ -1,19 +1,12 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia' // 1. Импорт
+import { createPinia } from 'pinia'
 import App from './App.vue'
 
 // Стили
-import './assets/theme.css'
-import './assets/buttons.css'
-import './sandbox/sandbox.css'
-import './assets/glass-panel.css'
-import './assets/sidebar.css'
-import './assets/topbar.css'
-import './assets/modal.css'
-import './assets/tiptap.css'
 import './style.css'
+import './assets/buttonGlass.css'
+import './assets/padGlass.css'
 
 const app = createApp(App)
-
-app.use(createPinia()) // 2. Активация (БЕЗ ЭТОГО БУДЕТ ПУСТОЙ ЭКРАН)
+app.use(createPinia())
 app.mount('#app')

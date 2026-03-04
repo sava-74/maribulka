@@ -1,13 +1,46 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiAccountOutline, mdiAccountOffOutline, mdiFlask } from '@mdi/js';
+import { 
+  mdiAccountOutline, 
+  mdiMenu, 
+  mdiImageMultiple, 
+  mdiWeatherNight, 
+  mdiWeatherSunny,
+  mdiHome 
+} from '@mdi/js';
 import { useAuthStore } from '../stores/auth'
 import ConfirmModal from './ConfirmModal.vue'
 import { useReferencesStore } from '../stores/references'
 import { useNavigationStore } from '../stores/navigation'
 
 
+const theme = ref<'dark' | 'light'>('dark')
+const themeIcon = computed(() => theme.value === 'dark' ? mdiWeatherNight : mdiWeatherSunny)
+
+function toggleTheme() {
+  theme.value = theme.value === 'dark' ? 'light' : 'dark'
+  document.documentElement.setAttribute('data-theme', theme.value)
+}
+
+function onRipple(event: MouseEvent) {
+  const button = event.currentTarget as HTMLElement
+  const rect = button.getBoundingClientRect()
+  const size = Math.max(rect.width, rect.height)
+  const x = event.clientX - rect.left - size / 2
+  const y = event.clientY - rect.top - size / 2
+  const ripple = document.createElement('span')
+  ripple.className = 'btn-ripple'
+  ripple.style.width = `${size}px`
+  ripple.style.height = `${size}px`
+  ripple.style.left = `${x}px`
+  ripple.style.top = `${y}px`
+  button.appendChild(ripple)
+  ripple.addEventListener('animationend', () => ripple.remove())
+}
+
+const outin = false
+const outinIcon = computed(() => outin ? mdiMenu : mdiAccountOutline)
 
 const auth = useAuthStore()
 const navStore = useNavigationStore()
@@ -61,24 +94,37 @@ const activePromotion = computed(() => {
 </script>
 
 <template>
-  <header class="top-bar">
-    <div class="logo-area">
-      <img src="/img/owner.jpg" alt="Марибулька" class="owner-photo">
-      <h1 class="site-name">Фотостудия Марии</h1>
-      <h1 v-if="activePromotion" class="promotion-text">
-        Акция "{{ activePromotion.name }}" {{ Math.round(activePromotion.discount_percent) }}%
-      </h1>
+  <header class="padGlass padGlass-top">
+    <div class="padGlass-top-row">
+      <div class="pad-icon-cell">
+        <button class="btnGlass bigIcon" @click="onRipple($event)">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="outinIcon" class="btn-icon-big" />
+        </button>
+      </div>
+      <div class="pad-icon-cell">
+        <button class="btnGlass bigIcon" @click="onRipple($event)">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiHome" class="btn-icon-big" />
+        </button>
+      </div>
+      <div class="pad-icon-cell">
+        <button class="btnGlass bigIcon" @click="onRipple($event)">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiImageMultiple" class="btn-icon-big" />
+        </button>
+      </div>
+      <div class="pad-icon-cell">
+        <button class="btn-theme" @click="toggleTheme" aria-label="Переключить тему">
+          <div class="btn-theme-indicator">
+            <svg-icon type="mdi" :path="themeIcon" />
+          </div>
+        </button>
+      </div>
     </div>
-
-    <!-- Песочница -->
-    <button class="buttonGL" @click="navStore.navigateTo('sandbox')" title="Песочница">
-      <svg-icon type="mdi" :path="mdiFlask" />
-    </button>
-
-    <!-- Иконка меняется динамически: mdilLogin или mdilLogout -->
-    <button class="buttonGL" @click="handleAction">
-      <svg-icon type="mdi" :path="auth.isAdmin ? mdiAccountOffOutline : mdiAccountOutline" />
-    </button>
     <ConfirmModal
       :isVisible="showConfirm"
       message="Выйти из системы?"

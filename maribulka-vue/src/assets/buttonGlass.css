@@ -1,0 +1,266 @@
+/* ========================================
+   КНОПКИ — система .btnGlass
+   buttonGlass.css
+   ======================================== */
+
+/* ========== BASE ========== */
+
+.btnGlass {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: var(--genTextSize);
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-radius: 100px;
+  border-style: groove;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease,
+              color 0.3s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Градиентная рамка */
+.btnGlass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+[data-theme="light"] .btnGlass::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.3) 40%,
+    rgba(255, 255, 255, 0.2) 60%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+
+/* Блик-полоса при hover */
+.btnGlass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+[data-theme="light"] .btnGlass::after {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.5) 45%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.5) 55%,
+    transparent 60%
+  );
+}
+
+/* Внутреннее свечение */
+.btnGlass .inner-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--glass-inner-glow);
+  pointer-events: none;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Верхний блик */
+.btnGlass .top-shine {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 50%;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+[data-theme="light"] .btnGlass .top-shine {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+}
+
+/* ========== СОСТОЯНИЯ ========== */
+
+@media (hover: hover) {
+  .btnGlass:hover {
+    transform: scale(1.02);
+  }
+
+  .btnGlass:hover::after {
+    transform: translateX(100%);
+  }
+}
+
+.btnGlass:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.btnGlass:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.5), var(--glass-shadow);
+}
+
+/* ========== RIPPLE ========== */
+
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  transform: scale(0);
+  animation: btnRippleEffect 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+[data-theme="light"] .btn-ripple {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 70%);
+}
+
+@keyframes btnRippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ========== МОДИФИКАТОРЫ РАЗМЕРА / ФОРМЫ ========== */
+
+/* Большая квадратная кнопка-иконка (для панелей) */
+.btnGlass.bigIcon {
+  padding: 10px;
+  border-radius: var(--padRadius);
+}
+
+/* Иконка + текст */
+.btnGlass.iconText {
+  padding: 5.25px 18px 5.25px 12px;
+  gap: 3px;
+}
+
+/* Только иконка (pill) */
+.btnGlass.icon-only {
+  padding: 5.25px 16.47px;
+}
+
+/* ========== ИКОНКИ ========== */
+
+.btn-icon {
+  width: var(--svgSize);
+  height: var(--svgSize);
+  flex-shrink: 0;
+}
+
+.btn-icon-big {
+  width: var(--svgSizeBig);
+  height: var(--svgSizeBig);
+  flex-shrink: 0;
+}
+
+/* ========== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ========== */
+
+.btn-theme {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 32px;
+  background: var(--glass-bg);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
+}
+
+.btn-theme::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.btn-theme-indicator {
+  position: absolute;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  background: var(--text-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+}
+
+[data-theme="light"] .btn-theme-indicator {
+  transform: translateX(24px);
+}
+
+.btn-theme-indicator svg {
+  width: 16px;
+  height: 16px;
+  color: var(--bg-primary);
+  transition: color 0.3s ease;
+}
+
+/* ========== REDUCED MOTION ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .btnGlass::after,
+  .btn-ripple,
+  .btn-theme-indicator {
+    animation: none;
+    transition: none;
+  }
+}
