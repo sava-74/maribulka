@@ -154,74 +154,8 @@
 
 }
 
-.top-pad-bar{
-  position: fixed;
-  width: calc(100% - 40px);
-  top: 48px;
-  padding: 0 30px 0 30px;
-  margin-bottom: 10px;
-  z-index: 1000;
-}
-
-.top-pad-icon{
-    display: flex;
-    flex-direction: row;
-    column-gap: 1px;
-    flex-wrap: nowrap;
-    align-items: center;
-    padding: 5px;
-    justify-content: center;
-}
-
-.section-title {
-    font-size: var(--generalTextSizeH1);
-    font-weight: 500;
-    text-align: center;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--sb-text-secondary);
-    transition: color 0.3s ease;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--sb-text-secondary);
-}
 
 
-.sectionPadIcon {
-  margin-top: 30px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px 15px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  font-size: var(--generalTextSize);
-  color: var(--sb-text-secondary);
-  justify-content: center;
-}
-
-.sectionBigIcon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  width: 85px;
-}
-
-.sectionThemeIcon{
-  width: 85px;
-  display: flex;
-  justify-content: center;
-}
-
-.textBigIcon{
-    width: 108px;
-    height: 40px;
-    margin: 0;
-    text-align: center;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
 
 .sb-buttons-row {
   display: flex;
@@ -231,13 +165,6 @@
 }
 
 /* ========== 4. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ========== */
-
-.sb-theme-toggle {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  z-index: 100;
-}
 
 .sb-theme-btn {
   position: relative;
@@ -345,51 +272,7 @@
   pointer-events: none;
 }
 
-.sectionPad, .top-pad-bar{
-  max-width: 600px;
-  min-width: 355px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  border: 2px solid var(--sb-glass-border);
-  border-radius: 26px;
-  border-style: groove;
-    overflow: hidden;
-  backdrop-filter: blur(4px) saturate(180%);
-  -webkit-backdrop-filter: blur(4px) saturate(180%);
-  box-shadow: var(--sb-glass-shadow);             
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s ease,
-              background 0.3s ease,
-              color 0.3s ease;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
 
-.sectionPad{
-  padding: 30px;
-}
-
-.sectonPad::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 0.5px;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.4) 0%,
-    rgba(255,255,255,0.1) 40%,
-    rgba(255,255,255,0.05) 60%,
-    rgba(255,255,255,0.2) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
 
 [data-sandbox="light"] .glass-btn::before {
   background: linear-gradient(
@@ -459,12 +342,14 @@
 
 /* ========== 6. СОСТОЯНИЯ ========== */
 
-.glass-btn:hover {
-  transform: scale(1.02);
-}
+@media (hover: hover) {
+  .glass-btn:hover {
+    transform: scale(1.02);
+  }
 
-.glass-btn:hover::after {
-  transform: translateX(100%);
+  .glass-btn:hover::after {
+    transform: translateX(100%);
+  }
 }
 
 .glass-btn:active {
@@ -497,12 +382,6 @@
 
 /* ========== 8. РАЗМЕРЫ ========== */
 
-.glass-btn.hero {
-  padding: 18px 42px;
-  font-size: var(--generalTextSizeH4);
-  border-radius: 16px;
-}
-
 .glass-btn.bigIcon {
   padding: 10px;
   border-radius: 26px;
@@ -513,7 +392,7 @@
 }
 
 .glass-btn.icon-only {
-  padding: 5.25px 16.47px;;
+  padding: 5.25px 16.47px;
   border-radius: 100px;
 }
 
@@ -630,11 +509,6 @@
   flex-shrink: 0;
 }
 
-.sb-bigIcon {
-  width: 45px;
-  height: 45px;
-  flex-shrink: 0;
-}
 
 /* ========== 13. REDUCED MOTION ========== */
 
@@ -648,7 +522,142 @@
   }
 }
 
-/* ========== 14. МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
+
+
+/*=========== 14. паннели база ===============*/
+
+.top-pad-bar, 
+.sectionPad {
+  max-width: 600px;
+  min-width: 355px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid var(--sb-glass-border);
+  border-radius: 26px;
+  border-style: groove;
+    overflow: hidden;
+  backdrop-filter: blur(5px) saturate(180%);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  box-shadow: var(--sb-glass-shadow);             
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease,
+              color 0.3s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*---------------------------------- верхняя панель --------------------------------*/
+
+.top-pad-bar{
+  position: fixed;
+  width: calc(100% - 40px);
+  top: 48px;
+  padding: 0 30px 0 30px;
+  margin-bottom: 10px;
+  z-index: 1000;
+}
+
+.top-pad-icon{
+    display: flex;
+    flex-direction: row;
+    column-gap: 1px;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 5px;
+    justify-content: center;
+}
+
+/*------------------------------------рабочая панель-------------------------------*/
+
+.sectionPad{
+  position: relative;
+  padding: 30px;
+}
+
+.sectionPad::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 40%,
+    rgba(255,255,255,0.05) 60%,
+    rgba(255,255,255,0.2) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/*---------------------большие иконки панелей --------------------------------------*/
+
+
+.section-title {              /* стиль текста в названии панели */
+    font-size: var(--generalTextSizeH1);
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--sb-text-secondary);
+    transition: color 0.3s ease;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--sb-text-secondary);
+}
+
+
+.sectionPadIcon {         /*секция расположения иконок в панели */
+  margin-top: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px 15px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  font-size: var(--generalTextSize);
+  color: var(--sb-text-secondary);
+  justify-content: center;
+}
+
+.sectionBigIcon {           /*секция настройки расположения текста под иконкой*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 85px;
+  overflow: visible;
+}
+
+.sectionThemeIcon{      /*секция иконки темы*/
+  width: 85px;
+  display: flex;
+  justify-content: center;
+}
+
+.textBigIcon{           /*текст иконки*/
+    width: 108px;
+    height: 40px;
+    margin: 0;
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.sb-bigIcon {         /*размеры иконки*/
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+}
+
+/* ========== 15. МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 
 @media (max-width: 480px) {
 

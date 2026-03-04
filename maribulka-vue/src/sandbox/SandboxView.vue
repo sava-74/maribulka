@@ -88,7 +88,7 @@ function onRipple(event: MouseEvent) {
 
     <!-- Контент -->
     <div class="sb-content">
-      <!-- Hero -->
+      <!-- Big -->
       <div class="sectionPad">
         <span class="section-title">Название рабочей панели например "Запись на стрижку"</span>
           <div class="sectionPadIcon">            
@@ -311,7 +311,7 @@ function onRipple(event: MouseEvent) {
       <div class="sb-section">
         <span class="sb-section-title">Rect</span>
         <div class="sb-buttons-row">
-          <button class="glass-btn rect  accent" @click="onRipple($event)">
+          <button class="glass-btn rect accent" @click="onRipple($event)">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <span>OK</span>
