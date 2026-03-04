@@ -248,6 +248,12 @@ function onRipple(event: MouseEvent) {
             <svg-icon type="mdi" :path="mdiCheck" class="sb-icon" />
             <span>Удалить</span>
           </button>
+          <button class="glass-btn iconText" @click="onRipple($event)">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheck" class="sb-icon" />
+            <span>Удалить</span>
+          </button>
         </div>
       </div>
 
