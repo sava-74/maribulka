@@ -9,12 +9,10 @@
   0% {
     opacity: 0;
     transform: translate(var(--genie-dx), var(--genie-dy)) scale(0.05);
-    border-radius: 50%;
   }
   100% {
     opacity: 1;
     transform: translate(0, 0) scale(1);
-    border-radius: var(--padRadius);
   }
 }
 
@@ -22,23 +20,29 @@
   0% {
     opacity: 1;
     transform: translate(0, 0) scale(1);
-    border-radius: var(--padRadius);
   }
   100% {
     opacity: 0;
     transform: translate(var(--genie-dx), var(--genie-dy)) scale(0.05);
-    border-radius: 50%;
   }
 }
 
 .genie-enter {
   animation: genieIn 0.4s ease-out forwards;
   will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
+  transition: none;
 }
 
 .genie-leave {
   animation: genieOut 0.4s ease-in forwards;
   will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
+  transition: none;
 }
 
 @keyframes overlayFadeIn {
@@ -83,10 +87,5 @@
 .fade-leave {
   animation: fadeScaleOut 0.2s ease-in forwards;
   will-change: transform, opacity;
-  transition: none;
-}
-
-.genie-enter,
-.genie-leave {
   transition: none;
 }
