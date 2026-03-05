@@ -15,14 +15,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="app">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+  <div class="app-root">
     <TopBar @open-login="showLogin = true" />
-    <!-- <main>
-      <Home />
-    </main> -->
-    <LoginModal :isVisible="showLogin" @close="showLogin = false" />
+    <div class="app-bg-layer">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
   </div>
+  <!-- <main>
+    <Home />
+  </main> -->
+  <LoginModal :isVisible="showLogin" @close="showLogin = false" />
 </template>
