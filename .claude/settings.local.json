@@ -19,7 +19,8 @@
       "Bash(npm search:*)",
       "Bash(claude mcp remove:*)",
       "Bash(claude mcp add:*)",
-      "Bash(git -C d:/GitHub/maribulka log --all --format=\"%H %ai %s\")"
+      "Bash(git -C d:/GitHub/maribulka log --all --format=\"%H %ai %s\")",
+      "mcp__plugin_playwright_playwright__browser_run_code"
     ]
   }
 }

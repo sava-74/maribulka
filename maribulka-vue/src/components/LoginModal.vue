@@ -1,13 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import AlertModal from './AlertModal.vue'
+import { useGenie } from '../composables/useGenie'
 
-const props = defineProps<{ isVisible: boolean }>()
+const props = defineProps<{
+  isVisible: boolean
+  origin?: { x: number, y: number, w: number, h: number }
+}>()
 const emit = defineEmits(['close'])
-const rememberMe = ref(false) // Новая переменная для галочки
+
+const panelRef = ref<HTMLElement | null>(null)
+const { closing, close } = useGenie(panelRef, () => props.isVisible, () => emit('close'))
+
+const genieStyle = computed(() => {
+  if (!props.origin) return {}
+  const cx = window.innerWidth / 2
+  const cy = window.innerHeight / 2
+  return {
+    '--genie-dx': `${props.origin.x - cx}px`,
+    '--genie-dy': `${props.origin.y - cy}px`,
+  }
+})
+
+const rememberMe = ref(false)
 const auth = useAuthStore()
 const password = ref('')
 const login = ref('admin') // Логин по умолчанию
@@ -28,10 +46,9 @@ const handleLogin = async () => {
     if (response.ok) {
       const data = await response.json()
       if (data.success) {
-        // Устанавливаем флаг авторизации
         auth.login(rememberMe.value)
         password.value = ''
-        emit('close')
+        close()
       } else {
         alertTitle.value = 'Ошибка доступа'
         alertMessage.value = data.message || 'Неверный логин или пароль'
@@ -53,8 +70,8 @@ const handleLogin = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="padGlass modal-sm">
+    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }" @click.self="close()">
+      <div ref="panelRef" class="padGlass modal-sm" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
         <div class="modal-glassTitle">Вход в систему</div>
         <div class="input-group">
           <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
@@ -64,7 +81,7 @@ const handleLogin = async () => {
           </label>
         </div>
         <div class="ButtonFooter PosCenter">
-          <button class="btnGlass iconText" @click="emit('close')">
+          <button class="btnGlass iconText" @click="close()">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />

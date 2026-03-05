@@ -10,7 +10,6 @@ import {
   mdiHome 
 } from '@mdi/js';
 import { useAuthStore } from '../stores/auth'
-import ConfirmModal from './ConfirmModal.vue'
 import { useReferencesStore } from '../stores/references'
 
 
@@ -39,30 +38,25 @@ function onRipple(event: MouseEvent) {
 }
 
 const auth = useAuthStore()
-const emit = defineEmits(['open-login'])
+const emit = defineEmits(['open-login', 'open-launchpad'])
 
 const outinIcon = computed(() => auth.isAdmin ? mdiMenu : mdiAccountOutline)
 
 const referencesStore = useReferencesStore()
 
-const showConfirm = ref(false)
-
-const handleAction = () => {
+const handleAction = (event: MouseEvent) => {
+  const btn = event.currentTarget as HTMLElement
+  const r = btn.getBoundingClientRect()
+  const origin = { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }
   if (auth.isAdmin) {
-    showConfirm.value = true
+    emit('open-launchpad', origin)
   } else {
-    emit('open-login')
+    emit('open-login', origin)
   }
-}
-
-const handleLogout = async () => {
-  await auth.logout()
-  showConfirm.value = false
 }
 
 onMounted(() => {
   referencesStore.fetchPromotions()
-
 })
 
 // Находим действующую акцию (текущая дата в диапазоне start_date - end_date)
@@ -94,7 +88,7 @@ onMounted(() => {
   <header class="padGlass padGlass-top">
     <div class="padGlass-top-row">
       <div class="pad-icon-cell">
-        <button class="btnGlass bigIcon" @click="handleAction(); onRipple($event)">
+        <button class="btnGlass bigIcon" @click="handleAction($event); onRipple($event)">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
           <svg-icon type="mdi" :path="outinIcon" class="btn-icon-big" />
@@ -122,12 +116,5 @@ onMounted(() => {
         </button>
       </div>
     </div>
-    <ConfirmModal
-      :isVisible="showConfirm"
-      message="Выйти из системы?"
-      title="Подтверждение"
-      @confirm="handleLogout"
-      @cancel="showConfirm = false"
-    />
   </header>
 </template>

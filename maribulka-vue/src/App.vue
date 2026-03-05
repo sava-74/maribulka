@@ -2,11 +2,24 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
 import TopBar from './components/TopBar.vue'
-//import Home from './components/home/Home.vue'
 import LoginModal from './components/LoginModal.vue'
+import LaunchPad from './components/launchpad/LaunchPad.vue'
 
 const authStore = useAuthStore()
 const showLogin = ref(false)
+const loginOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
+const showLaunchpad = ref(false)
+const launchpadOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
+
+function openLogin(origin: { x: number, y: number, w: number, h: number }) {
+  loginOrigin.value = origin
+  showLogin.value = true
+}
+
+function openLaunchpad(origin: { x: number, y: number, w: number, h: number }) {
+  launchpadOrigin.value = origin
+  showLaunchpad.value = true
+}
 
 onMounted(async () => {
   document.documentElement.setAttribute('data-theme', 'dark')
@@ -16,15 +29,13 @@ onMounted(async () => {
 
 <template>
   <div class="app-root">
-    <TopBar @open-login="showLogin = true" />
+    <TopBar @open-login="openLogin" @open-launchpad="openLaunchpad" />
     <div class="app-bg-layer">
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
       <div class="orb orb-3"></div>
     </div>
   </div>
-  <!-- <main>
-    <Home />
-  </main> -->
-  <LoginModal :isVisible="showLogin" @close="showLogin = false" />
+  <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />
+  <LaunchPad :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
 </template>
