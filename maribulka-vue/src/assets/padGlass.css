@@ -100,7 +100,7 @@
   transition: color 0.3s ease;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--text-secondary);
-  width: 100%;
+  width: 85%;
 }
 
 /* ========== СЕТКА ИКОНОК ========== */
@@ -123,7 +123,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  width: 84px;
+  width: 80px;
   overflow: visible;
 }
 
@@ -141,15 +141,17 @@
 
 @media (max-width: 480px) {
   .padGlass-top {
+    margin: 5px ;
     padding: 0;
     width: calc(100% - 20px);
     min-width: auto;
   }
 
   .padGlass-work {
-    padding: 5px;
+    margin: 0 10px 0 10px;
+    padding: 10px 0 5px 0;
     min-width: unset;
-    width: calc(100% - 20px);
+    width: calc(100% - 10px);
   }
 
   .pad-icon-grid {
@@ -157,7 +159,7 @@
   }
 
   .pad-icon-label {
-    width: 85px;
+    width: 80px;
     height: 28px;
   }
 }

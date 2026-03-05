@@ -18,9 +18,9 @@
 
   --svgColor: rgb(124, 124, 124);
   --svgSize: 20px;
-  --svgSizeBig: 45px;
+  --svgSizeBig: 40px;
 
-  --padRadius: 26px;
+  --padRadius: 20px;
   --padBlur: 5px;
 
   /* градиенты стекла (используются в темах) */

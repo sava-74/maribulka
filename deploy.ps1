@@ -7,7 +7,8 @@ $ErrorActionPreference = "Stop"
 # Конфигурация
 $SSH_KEY = "$env:USERPROFILE\.ssh\beget_maribulka"
 $SSH_HOST = "sava7424@sava7424.beget.tech"
-$REMOTE_PATH = "/home/s/sava7424/maribulka.rf/maribulka-vue/dist"
+$REMOTE_DIST = "/home/s/sava7424/maribulka.rf/public_html"
+$REMOTE_API  = "/home/s/sava7424/maribulka.rf/api"
 $LOCAL_BUILD_PATH = "maribulka-vue\dist"
 $LOCAL_API_PATH = "api"
 
@@ -42,7 +43,7 @@ Write-Host ""
 # 3. Создание бэкапа на сервере
 Write-Host "💾 Создание бэкапа на сервере..." -ForegroundColor Yellow
 $BACKUP_NAME = "dist_backup_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
-ssh -i $SSH_KEY $SSH_HOST "cd /home/s/sava7424/maribulka.rf/maribulka-vue && cp -r dist $BACKUP_NAME && echo 'Бэкап создан: $BACKUP_NAME'"
+ssh -i $SSH_KEY $SSH_HOST "cd /home/s/sava7424/maribulka.rf/maribulka-vue && cp -r dist $BACKUP_NAME && echo Backup: $BACKUP_NAME"
 Write-Host "✅ Бэкап создан" -ForegroundColor Green
 Write-Host ""
 
@@ -51,13 +52,11 @@ Write-Host "📤 Загрузка фронтенда (dist)..." -ForegroundColor
 # Используем Git Bash rsync, если доступен
 if (Get-Command "C:\Program Files\Git\usr\bin\rsync.exe" -ErrorAction SilentlyContinue) {
     & "C:\Program Files\Git\usr\bin\rsync.exe" -avz --delete `
-        --exclude 'api' `
         -e "ssh -i $SSH_KEY" `
         "$LOCAL_BUILD_PATH/" `
-        "${SSH_HOST}:${REMOTE_PATH}/"
+        "${SSH_HOST}:${REMOTE_DIST}/"
 } else {
-    # Альтернатива: используем scp
-    scp -i $SSH_KEY -r "$LOCAL_BUILD_PATH\*" "${SSH_HOST}:${REMOTE_PATH}/"
+    scp -i $SSH_KEY -r "$LOCAL_BUILD_PATH\*" "${SSH_HOST}:${REMOTE_DIST}/"
 }
 Write-Host "✅ Фронтенд загружен" -ForegroundColor Green
 Write-Host ""
@@ -69,9 +68,9 @@ if (Test-Path $LOCAL_API_PATH) {
         & "C:\Program Files\Git\usr\bin\rsync.exe" -avz `
             -e "ssh -i $SSH_KEY" `
             "$LOCAL_API_PATH/" `
-            "${SSH_HOST}:${REMOTE_PATH}/api/"
+            "${SSH_HOST}:${REMOTE_API}/"
     } else {
-        scp -i $SSH_KEY -r "$LOCAL_API_PATH\*" "${SSH_HOST}:${REMOTE_PATH}/api/"
+        scp -i $SSH_KEY -r "$LOCAL_API_PATH\*" "${SSH_HOST}:${REMOTE_API}/"
     }
     Write-Host "✅ API загружен" -ForegroundColor Green
 } else {
@@ -81,17 +80,7 @@ Write-Host ""
 
 # 6. Настройка media (Создание "железного" симлинка с абсолютным путём) #
 Write-Host "🔗 Настройка media (Absolute path symlink)..." -ForegroundColor Yellow
-ssh -i $SSH_KEY $SSH_HOST "
-    
-    # 1. Удаляем старый симлинк (чтобы не было ошибок или дублей)
-    rm -f /home/s/sava7424/maribulka.rf/public_html/media && \
-    
-    # 2. Создаем новый симлинк:
-    # ИСТОЧНИК (где лежат файлы): /home/s/sava7424/maribulka.rf/media
-    # ССЫЛКА (где сайт их ищет): /home/s/sava7424/maribulka.rf/public_html/media
-    ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media && \
-"
-ssh -i $SSH_KEY $SSH_HOST $sshCommand
+ssh -i $SSH_KEY $SSH_HOST "rm -f /home/s/sava7424/maribulka.rf/public_html/media && ln -s /home/s/sava7424/maribulka.rf/media /home/s/sava7424/maribulka.rf/public_html/media"
 
 Write-Host "✅ Медиа настроено" -ForegroundColor Green
 Write-Host ""
