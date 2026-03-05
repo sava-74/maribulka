@@ -142,8 +142,8 @@
 @media (max-width: 480px) {
   .padGlass-top {
     padding: 0;
-    width: calc(100% - 20px);
-    min-width: 300px;
+    width: calc(100% - 11px);
+    min-width: 355px;
   }
 
   .padGlass-work {
