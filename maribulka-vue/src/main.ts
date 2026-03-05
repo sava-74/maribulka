@@ -12,3 +12,11 @@ import './assets/animations.css'
 const app = createApp(App)
 app.use(createPinia())
 app.mount('#app')
+
+import { useAuthStore } from './stores/auth'
+window.addEventListener('beforeunload', () => {
+  const auth = useAuthStore()
+  if (auth.isAdmin && !localStorage.getItem('isAdmin')) {
+    navigator.sendBeacon('/api/auth.php?action=logout')
+  }
+})

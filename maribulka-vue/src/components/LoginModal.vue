@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
@@ -30,6 +30,10 @@ const auth = useAuthStore()
 const password = ref('')
 const login = ref('admin') // Логин по умолчанию
 
+watch(() => props.isVisible, (val) => {
+  if (!val) password.value = ''
+})
+
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
@@ -40,7 +44,7 @@ const handleLogin = async () => {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login: login.value, password: password.value })
+      body: JSON.stringify({ login: login.value, password: password.value, rememberMe: rememberMe.value })
     });
 
     if (response.ok) {
