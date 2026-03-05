@@ -49,7 +49,7 @@ ssh -i ~/.ssh/beget_maribulka sava7424@sava7424.beget.tech
 
 ### Frontend (Vue 3 + TypeScript)
 - **Location:** `maribulka-vue/src/`
-- **Entry:** `App.vue` → imports global CSS, renders TopBar, SideBar, and routed pages
+- **Entry:** `App.vue` → imports global CSS, renders TopBar and routed pages
 - **State Management:** Pinia stores (`src/stores/`)
   - `auth.ts` - Authentication & admin check (syncs with backend session)
   - `navigation.ts` - Client-side page routing
@@ -95,77 +95,93 @@ Symlink created during deploy: `public_html/media → ../media`
 
 ## CSS Architecture (STRICT RULES)
 
-### Organization
+### Law
 1. **NO `<style>` blocks in `.vue` files** - All styles in separate CSS files
 2. **NO new CSS without explicit permission** - Use existing classes only
-3. **100% CSS variables** from `theme.css` - No hardcoded colors/sizes
-4. **One concern per file:**
-   - `theme.css` - CSS variables (colors, sizes, shadows)
-   - `buttons.css` - Button styles (`.buttonGL` system)
-   - `modal.css` - Modal overlays and containers
-   - `tables.css` - Table toolbars, filters, actions
-   - `glass-panel.css` - Panel containers with tabs
-   - `calendar.css` - FullCalendar customizations
-   - `reports.css` - Report/analytics styles
-   - `content.css` - Content area styles
-   - `layout.css`, `sidebar.css`, `topbar.css`, `home.css` - Layout sections
-   - `app.css` - Global app styles
-   - `responsive.css` - Mobile breakpoints (currently empty placeholder)
+3. **100% CSS variables** from `style.css` - No hardcoded colors/sizes
 
-### Current Button System
-**Base class:** `.buttonGL` (30x30px icon button)
+### Global CSS files (imported in `main.ts`)
 
-**Text variants (use BOTH classes):**
+| File | Purpose |
+|------|---------|
+| `style.css` | CSS variables `[data-theme]`, body, animated orbs, scrollbar |
+| `buttonGlass.css` | Buttons `.btnGlass` + modifiers + `.btn-theme` |
+| `padGlass.css` | Panels `.padGlass` + modifiers |
+| `modal.css` | Overlay, inputs, `.padGlass.modal-sm`, `.ButtonFooter` |
+
+**Old CSS** (pre-05.03.2026) moved to `src/assets/oldCss/` — do NOT import them.
+
+**Theme** is set on `<html>`: `document.documentElement.setAttribute('data-theme', 'dark')` — NOT on `#app`!
+
+### Button System (new — public UI)
+**Base class:** `.btnGlass`
+
 ```html
-<button class="buttonGL buttonGL-textFix">Fixed 100px</button>
-<button class="buttonGL buttonGL-text">Auto width</button>
-<button class="buttonGL buttonGL-textFull">100% width</button>
+<!-- Large icon button (TopBar, panels) -->
+<button class="btnGlass bigIcon" @click="onRipple($event)">
+  <span class="inner-glow"></span>
+  <span class="top-shine"></span>
+  <svg-icon type="mdi" :path="someIcon" class="btn-icon-big" />
+</button>
+
+<!-- Icon + text button (modals, forms) -->
+<button class="btnGlass iconText" @click="...">
+  <span class="inner-glow"></span>
+  <span class="top-shine"></span>
+  <svg-icon type="mdi" :path="someIcon" class="btn-icon" />
+  <span>Label</span>
+</button>
 ```
 
-**Modal footer rules:**
-- Large modals (Add/Edit forms): `ButtonFooter PosRight` + `buttonGL-textFix`
-- Small modals (Alert/Confirm/Delete): `ButtonFooter PosCenter` + `buttonGL-textFull`
+**EVERY button must have** `<span class="inner-glow">` and `<span class="top-shine">` inside.
 
-**Footer positioning:**
+**Button System (old — admin/accounting UI only)**
+`.buttonGL` system — used only in `src/components/accounting/`. Do NOT migrate without explicit task.
+
+### Panel System
+- `.padGlass` — base panel
+- `.padGlass-top` — fixed top bar
+- `.padGlass-work` — work area panel
+- `.padGlass.modal-sm` — small modal panel (`min-width: auto; gap: 12px; padding: 20px`)
+
+### Modals
+- **Custom modals ONLY** - NO browser `alert()`/`confirm()`
+- Use: `AlertModal.vue`, `ConfirmModal.vue`, `LoginModal.vue`
+- **Structure:**
+  ```html
+  <div class="modal-overlay">
+    <div class="padGlass modal-sm">
+      <div class="modal-glassTitle">Title</div>  <!-- NO <h2>! -->
+      <!-- content -->
+      <div class="ButtonFooter PosCenter">
+        <button class="btnGlass iconText">...</button>
+      </div>
+    </div>
+  </div>
+  ```
+- Use `<Teleport to="body">` wrapper
+
+### Footer positioning
 ```html
-<div class="ButtonFooter PosRight">...</div>  <!-- Right-aligned -->
-<div class="ButtonFooter PosLeft">...</div>   <!-- Left-aligned -->
-<div class="ButtonFooter PosSpace">...</div>  <!-- Space-between -->
-<div class="ButtonFooter PosCenter">...</div> <!-- Centered -->
+<div class="ButtonFooter PosRight">...</div>   <!-- Right-aligned -->
+<div class="ButtonFooter PosLeft">...</div>    <!-- Left-aligned -->
+<div class="ButtonFooter PosSpace">...</div>   <!-- Space-between -->
+<div class="ButtonFooter PosCenter">...</div>  <!-- Centered -->
 ```
 
 ### Icons
 - **Library:** `@mdi/js` (Material Design Icons)
 - **Component:** `@jamescoyle/vue-icon`
-- **Global file:** `src/utils/icons.ts` (if exists, exports ICON_* constants)
-- **Usage:**
-  ```vue
-  <svg-icon type="mdi" :path="ICON_CHECK" />
-  ```
-- **NO `:size` prop** - size/color controlled via CSS variables (`--svgSizeForButton`, `--svgColorForButton`)
+- **Usage:** `<svg-icon type="mdi" :path="mdiCheckCircleOutline" />` — **NO `:size` prop**
 
-### Modals
-- **Custom modals ONLY** - NO browser `alert()`/`confirm()`
-- Use: `AlertModal.vue`, `ConfirmModal.vue`
-- **Structure:**
-  ```html
-  <div class="modal-overlay">
-    <div class="modal-glass">
-      <div class="modal-glassTitle">Title</div> <!-- NO <h2>! -->
-      <div class="modal-actions">Content</div>
-      <div class="ButtonFooter PosRight">Buttons</div>
-    </div>
-  </div>
-  ```
-- **Backgrounds:** Use `var(--glass-bgModal)`, `padding: 5px`, `gap: 5px`
+### Reference (Sandbox)
+`src/sandbox/SandboxView.vue` is the design reference. Copy HTML **exactly as-is** — no modifications.
 
 ### Mobile Adaptation
 - **Single breakpoint:** `@media (max-width: 480px)`
-- **Responsive file:** `responsive.css` (empty placeholder - mobile styles live in individual CSS files)
 
 ### Sticky Elements
 Use `position: sticky`, NOT `fixed`
-Example: `.accounting-nav` in `layout.css`
 
 ## Backend Principles
 
