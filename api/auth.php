@@ -33,9 +33,19 @@ $action = $_GET['action'] ?? '';
 // ============================================
 if ($action === 'check') {
     if (isset($_SESSION['user'])) {
+        $rememberMe = $_SESSION['remember_me'] ?? false;
+        $lastPing = $_SESSION['last_ping'] ?? time();
+        // Если не "запомнить" и последний пинг > 90 сек назад — сессия протухла
+        if (!$rememberMe && (time() - $lastPing > 90)) {
+            $_SESSION = [];
+            session_destroy();
+            echo json_encode(['success' => true, 'isAuthenticated' => false]);
+            exit;
+        }
         echo json_encode([
             'success' => true,
             'isAuthenticated' => true,
+            'rememberMe' => $rememberMe,
             'user' => [
                 'id' => $_SESSION['user']['id'],
                 'login' => $_SESSION['user']['login'],
@@ -82,6 +92,8 @@ if ($action === 'login') {
                 'login' => $user['login'],
                 'role' => $user['role']
             ];
+            $_SESSION['remember_me'] = (bool)($input['rememberMe'] ?? false);
+            $_SESSION['last_ping'] = time();
 
             echo json_encode([
                 'success' => true,
@@ -120,6 +132,25 @@ if ($action === 'logout') {
         'success' => true,
         'message' => 'Вы успешно вышли из системы'
     ]);
+    exit;
+}
+
+// ============================================
+// PING - heartbeat для сессий без "запомнить"
+// ============================================
+if ($action === 'ping') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    if (isset($_SESSION['user'])) {
+        $_SESSION['last_ping'] = time();
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'No session']);
+    }
     exit;
 }
 

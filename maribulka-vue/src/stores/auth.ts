@@ -4,6 +4,26 @@ import { ref } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
   const isAdmin = ref(false)
   const isLoading = ref(false)
+  let heartbeatTimer: ReturnType<typeof setInterval> | null = null
+
+  function startHeartbeat() {
+    stopHeartbeat()
+    heartbeatTimer = setInterval(async () => {
+      try {
+        await fetch('/api/auth.php?action=ping', {
+          method: 'POST',
+          credentials: 'include'
+        })
+      } catch { /* ignore */ }
+    }, 30_000)
+  }
+
+  function stopHeartbeat() {
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer)
+      heartbeatTimer = null
+    }
+  }
 
   // Проверка сессии на бэкенде
   async function checkSession() {
@@ -18,8 +38,8 @@ export const useAuthStore = defineStore('auth', () => {
         const data = await response.json()
         if (data.success && data.isAuthenticated && data.user?.role === 'admin') {
           isAdmin.value = true
-          // Синхронизируем с localStorage
           localStorage.setItem('isAdmin', 'true')
+          if (!data.rememberMe) startHeartbeat()
           return true
         }
       }
@@ -43,13 +63,16 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin.value = true
     if (remember) {
       localStorage.setItem('isAdmin', 'true')
+      stopHeartbeat()
     } else {
       localStorage.removeItem('isAdmin')
+      startHeartbeat()
     }
   }
 
   // Выход (используется в TopBar, вызывает API)
   async function logout() {
+    stopHeartbeat()
     try {
       await fetch('/api/auth.php?action=logout', {
         method: 'POST',
@@ -58,7 +81,6 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Ошибка выхода:', error)
     } finally {
-      // Очищаем состояние независимо от результата API
       isAdmin.value = false
       localStorage.removeItem('isAdmin')
     }
