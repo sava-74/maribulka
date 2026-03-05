@@ -25,14 +25,16 @@ export function useGenie(
     }
 
     let fired = false
-    const safeDone = () => {
+    const safeDone = (e?: Event) => {
+      if (e && e.target !== el) return
       if (fired) return
       fired = true
       clearTimeout(timer)
+      el.removeEventListener('animationend', safeDone)
       done()
     }
 
-    el.addEventListener('animationend', safeDone, { once: true })
+    el.addEventListener('animationend', safeDone)
 
     // Страховка: если animationend не сработает за 600мс
     const timer = setTimeout(safeDone, 600)
