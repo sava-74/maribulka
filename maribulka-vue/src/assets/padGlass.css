@@ -143,6 +143,7 @@
   .padGlass-top {
     padding: 0;
     width: calc(100% - 20px);
+    min-width: 300px;
   }
 
   .padGlass-work {
