@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-nocheck
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiTextBoxPlusOutline, mdiCameraPlusOutline } from '@mdi/js'

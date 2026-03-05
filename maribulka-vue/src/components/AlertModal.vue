@@ -13,14 +13,15 @@ const emit = defineEmits(['close'])
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ title || 'Сообщение' }}</div>
         <p class="modal-message">{{ message }}</p>
         <div class="ButtonFooter PosCenter">
-          <!-- Кнопка "OK" -->
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-            <span >Ок</span>
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
+            <span>Ок</span>
           </button>
         </div>
       </div>

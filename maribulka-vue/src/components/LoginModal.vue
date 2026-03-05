@@ -54,30 +54,29 @@ const handleLogin = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
-      <div class="modal-glassTitle">Вход в систему</div>
-
-      <div class="input-group">
-        <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
-        <input v-model="password" type="password" class="modal-input" placeholder="Пароль" @keyup.enter="handleLogin" />
-        <!-- Галочка "Запомнить меня" -->
-        <label class="remember-label">
+      <div class="padGlass modal-sm">
+        <div class="modal-glassTitle">Вход в систему</div>
+        <div class="input-group">
+          <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
+          <input v-model="password" type="password" class="modal-input" placeholder="Пароль" @keyup.enter="handleLogin" />
+          <label class="remember-label">
             <input type="checkbox" v-model="rememberMe"> Запомнить меня
-        </label>
-      </div>
-
-      <div class="ButtonFooter PosCenter">
-        <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
-          <span >Отмена</span>
-        </button>
-        <!-- Кнопка "Войти" -->
-        <button class="buttonGL buttonGL-textFix" @click="handleLogin">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-          <span >Войти</span>
-        </button>
-      </div>
+          </label>
+        </div>
+        <div class="ButtonFooter PosCenter">
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
+            <span>Отмена</span>
+          </button>
+          <button class="btnGlass iconText" @click="handleLogin">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
+            <span>Войти</span>
+          </button>
+        </div>
       </div>
     </div>
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />

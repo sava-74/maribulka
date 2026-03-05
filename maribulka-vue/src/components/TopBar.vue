@@ -12,7 +12,6 @@ import {
 import { useAuthStore } from '../stores/auth'
 import ConfirmModal from './ConfirmModal.vue'
 import { useReferencesStore } from '../stores/references'
-import { useNavigationStore } from '../stores/navigation'
 
 
 const theme = ref<'dark' | 'light'>('dark')
@@ -39,12 +38,10 @@ function onRipple(event: MouseEvent) {
   ripple.addEventListener('animationend', () => ripple.remove())
 }
 
-const outin = false
-const outinIcon = computed(() => outin ? mdiMenu : mdiAccountOutline)
-
 const auth = useAuthStore()
-const navStore = useNavigationStore()
 const emit = defineEmits(['open-login'])
+
+const outinIcon = computed(() => auth.isAdmin ? mdiMenu : mdiAccountOutline)
 
 const referencesStore = useReferencesStore()
 
@@ -69,7 +66,7 @@ onMounted(() => {
 })
 
 // Находим действующую акцию (текущая дата в диапазоне start_date - end_date)
-const activePromotion = computed(() => {
+/*const activePromotion = computed(() => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -87,7 +84,7 @@ const activePromotion = computed(() => {
 
     return today >= startDate && today <= endDate
   })
-})
+})*/
 
 
 
@@ -97,7 +94,7 @@ const activePromotion = computed(() => {
   <header class="padGlass padGlass-top">
     <div class="padGlass-top-row">
       <div class="pad-icon-cell">
-        <button class="btnGlass bigIcon" @click="onRipple($event)">
+        <button class="btnGlass bigIcon" @click="handleAction(); onRipple($event)">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
           <svg-icon type="mdi" :path="outinIcon" class="btn-icon-big" />

@@ -13,19 +13,21 @@ const emit = defineEmits(['confirm', 'cancel'])
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('cancel')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ title || 'Подтверждение' }}</div>
         <p class="modal-message">{{ message }}</p>
         <div class="ButtonFooter PosCenter">
-          <!-- Кнопка "Отмена" -->
-          <button class="buttonGL buttonGL-textFull" @click="emit('cancel')">
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
-            <span >Отмена</span>
+          <button class="btnGlass iconText" @click="emit('cancel')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
+            <span>Отмена</span>
           </button>
-          <!-- Кнопка "Подтвердить" -->
-          <button class="buttonGL buttonGL-textFull" @click="emit('confirm')">
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-            <span >Ок</span> 
+          <button class="btnGlass iconText" @click="emit('confirm')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
+            <span>  Ок  </span>
           </button>
         </div>
       </div>

@@ -6,6 +6,7 @@ import App from './App.vue'
 import './style.css'
 import './assets/buttonGlass.css'
 import './assets/padGlass.css'
+import './assets/modal.css'
 
 const app = createApp(App)
 app.use(createPinia())
