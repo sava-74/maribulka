@@ -38,7 +38,8 @@ function onRipple(event: MouseEvent) {
 }
 
 const auth = useAuthStore()
-const emit = defineEmits(['open-login', 'open-launchpad'])
+const props = defineProps<{ isLaunchpadOpen: boolean }>()
+const emit = defineEmits(['open-login', 'open-launchpad', 'close-launchpad'])
 
 const outinIcon = computed(() => auth.isAdmin ? mdiMenu : mdiAccountOutline)
 
@@ -49,7 +50,11 @@ const handleAction = (event: MouseEvent) => {
   const r = btn.getBoundingClientRect()
   const origin = { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }
   if (auth.isAdmin) {
-    emit('open-launchpad', origin)
+    if (props.isLaunchpadOpen) {
+      emit('close-launchpad')
+    } else {
+      emit('open-launchpad', origin)
+    }
   } else {
     emit('open-login', origin)
   }

@@ -4,25 +4,21 @@
 
 Основная память разбита на тематические файлы для удобства:
 
-- **[deployment.md](file:///d:/GitHub/maribulka/memory/deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
-- **[architecture.md](file:///d:/GitHub/maribulka/memory/architecture.md)** - структура проекта, ключевые файлы, БД
-- **[finance.md](file:///d:/GitHub/maribulka/memory/finance.md)** - ✨ НОВЫЙ - финансовая система, Chart.js, отчёты
-- **[styles.md](file:///d:/GitHub/maribulka/memory/styles.md)** - организация CSS, паттерны, переменные
-- **[calendar.md](file:///d:/GitHub/maribulka/memory/calendar.md)** - календарь записей, статусы, цвета, слоты
-- **[mobile.md](file:///d:/GitHub/maribulka/memory/mobile.md)** - мобильная адаптация, брейкпоинты
-- **[changelog.md](file:///d:/GitHub/maribulka/memory/changelog.md)** - история изменений по датам
-- **[patterns.md](file:///d:/GitHub/maribulka/memory/patterns.md)** - эталоны кода, таблицы, модалки
-- **[traps.md](file:///d:/GitHub/maribulka/memory/traps.md)** - известные ловушки и баги
-- **[expenses-plan.md](file:///d:/GitHub/maribulka/memory/expenses-plan.md)** - ✅ РЕАЛИЗОВАНО - план работ: Расходы + Категории расходов
-- **[icons.md](file:///d:/GitHub/maribulka/memory/icons.md)** - список иконок
-- **[filters-plan.md](file:///d:/GitHub/maribulka/memory/filters-plan.md)** - план работ: Фильтры и поиск
-- **[business-process.md](file:///d:/GitHub/maribulka/memory/business-process.md)** - ✨ НОВЫЙ - бизнес-процесс заказа, статусы, переходы, финансы
-
----
-
-## ⚠️ Критическое замечание
-
-**Все общение и разработка в рамках проекта Maribulka должно происходить исключительно на русском языке.**
+- **[topbar-design.md](topbar-design.md)** - 🆕 топбар: 4 кнопки, Лаунчпад, HTML из эталона
+- **[roadmap.md](roadmap.md)** - генеральный план развития проекта (8 этапов!)
+- **[glass-panel-guide.md](glass-panel-guide.md)** - 🆕 универсальная система панелей, миграция
+- **[deployment.md](deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
+- **[architecture.md](architecture.md)** - структура проекта, ключевые файлы, БД
+- **[styles.md](styles.md)** - организация CSS, паттерны, переменные
+- **[calendar.md](calendar.md)** - календарь записей, статусы, цвета, слоты
+- **[mobile.md](mobile.md)** - мобильная адаптация, брейкпоинты
+- **[changelog.md](changelog.md)** - история изменений по датам
+- **[patterns.md](patterns.md)** - эталоны кода, таблицы, модалки
+- **[traps.md](traps.md)** - известные ловушки и баги
+- **[business-processes.md](business-processes.md)** - бизнес-процессы, правила работы с заказами
+- **[expenses-plan.md](expenses-plan.md)** - план работ: Расходы + Категории расходов
+- **[buttons-refactoring.md](buttons-refactoring.md)** - рефакторинг кнопок (26.02.2026)
+- **[glass-btn-guide.md](glass-btn-guide.md)** - 🆕 ЭТАЛОН новой системы glass-btn (04.03.2026)
 
 ---
 
@@ -44,24 +40,67 @@ git push
 
 ## 🔥 Критические правила
 
+### 0. ВСЕГДА: план → одобрение → применение
+
+**ЗАПРЕЩЕНО** вносить любые изменения в код без предварительного плана и одобрения пользователя.
+Нарушение этого правила вызывает **сильное недовольство** пользователя.
+
+---
+
 ### 1. НЕТ локального PHP сервера!
 Все API запросы идут через **Vite proxy** на удалённый BeGet.
+
+**Build оптимизация (vite.config.ts):**
+- Разбиение на чанки: `vue-vendor` (vue, pinia), `fullcalendar`, `charts` (chart.js, @tanstack/vue-table)
+- Chunk size warning limit: 700kb
 
 ### 2. Организация стилей (ЗАКОН!)
 - **НИКАКИХ** `<style>` блоков в .vue файлах!
 - Один тип стилей = один CSS файл
+- **НИКАКИХ** новых CSS стилей без явного разрешения пользователя!
+- **ТОЛЬКО** существующие базовые классы из CSS файлов проекта
+- **100% использование CSS переменных** из `style.css` (theme.css удалён 05.03.2026!)
 - Подробнее в [styles.md](styles.md)
 
-### 3. Sticky элементы
+### 2а. Новая CSS архитектура (05.03.2026) — АКТУАЛЬНО!
+
+**Три глобальных файла** (импортируются в `main.ts`):
+
+| Файл | Назначение |
+|------|-----------|
+| `style.css` | Переменные тем `[data-theme]`, body, орбы, scrollbar |
+| `buttonGlass.css` | Кнопки `.btnGlass` + модификаторы + `.btn-theme` |
+| `padGlass.css` | Панели `.padGlass` + модификаторы |
+| `modal.css` | Оверлей `.modal-overlay`, инпуты, субстиль `.padGlass.modal-sm`, `.ButtonFooter` |
+
+**Тема** устанавливается на `<html>` через `document.documentElement.setAttribute('data-theme', 'dark')` — НЕ на `#app`!
+
+**Все старые CSS** перенесены в `src/assets/oldCss/` (theme.css, buttons.css, modal.css и др.)
+
+**❌ НЕЛЬЗЯ:**
+- Менять классы эталона при переносе в новые файлы — только переменные (`--sb-*` → `--glass-*`)
+- Переименовывать структуру HTML из эталона
+- "Адаптировать" код эталона — копировать строго один в один
+
+**Эталон** — `src/sandbox/SandboxView.vue` + `src/sandbox/sandbox.css`
+
+### 3. Backend считает, Frontend получает результат
+
+- **Backend:** агрегация (SUM, COUNT, AVG) на уровне БД
+- **Frontend:** получает только итоговые данные (числа, объекты)
+- **❌ НЕ гонять** массивы записей по сети для подсчёта на клиенте!
+- Пример: `GET /api/expenses.php?balance=true` → `{ totalIncome, totalExpenses, balance }`
+
+### 4. Sticky элементы
 - Использовать `position: sticky`, **НЕ** `fixed`
 - Эталон: `.accounting-nav` в layout.css
 - Подробнее в [styles.md](styles.md)
 
-### 4. Мобильная адаптация
-- **Единый брейкпоинт:** `≤350px`
+### 5. Мобильная адаптация
+- **Единый брейкпоинт:** `≤768px`
 - Подробнее в [mobile.md](mobile.md)
 
-### 5. Медиа-файлы
+### 6. Медиа-файлы
 - Хранятся **вне dist/** в `/home/s/sava7424/maribulka.rf/media/`
 - Симлинк создаётся автоматически при деплое
 - Подробнее в [deployment.md](deployment.md)
@@ -70,12 +109,28 @@ git push
 
 ## 🎯 Ключевые паттерны
 
-- **Модалки:** Только кастомные (AlertModal, ConfirmModal), НЕ browser alert/confirm
-- **Иконки:** Только @mdi/light-js (Material Design Icons Light)
-- **Кнопки:** `glass-button` (40x40), `glass-button-text` (150x40)
+- **Модалки:** Только кастомные (AlertModal, ConfirmModal, LoginModal), НЕ browser alert/confirm
+  - **Структура:** `.modal-overlay` → `.padGlass.modal-sm` → контент → `.ButtonFooter`
+  - **Заголовок:** `.modal-glassTitle` (БЕЗ `<h2>`!)
+  - **Субстиль маленьких:** `.padGlass.modal-sm` — `min-width: auto; gap: 12px; padding: 20px`
+  - **Footer:** `.ButtonFooter PosCenter/PosRight/PosLeft/PosSpace`
+  - **Кнопки в модалках:** `btnGlass iconText` + обязательно `inner-glow` + `top-shine` в каждой!
+- **Иконки:** Только `@mdi/js` (Material Design Icons)
+  - **Использование:** `<svg-icon type="mdi" :path="mdiCheckCircleOutline" />` (БЕЗ пропа `:size`!)
+  - **Размер/цвет:** через CSS переменные
+- **Кнопки (новая система, 05.03.2026):** `.btnGlass` — базовый класс
+  - **Модификаторы:**
+    - `.btnGlass.bigIcon` — большая иконка-кнопка (TopBar, панели)
+    - `.btnGlass.iconText` — иконка + текст (модалки, формы), `min-width: 100px`
+    - `.btnGlass.icon-only` — только иконка (pill)
+  - **Обязательно в каждой кнопке:** `<span class="inner-glow"></span>` + `<span class="top-shine"></span>`
+  - **Footer система:** `.ButtonFooter` + `.PosRight/.PosLeft/.PosSpace/.PosCenter`
+  - ⚠️ Старая система `.buttonGL` — в admin-части (Учёт), НЕ трогать без задачи!
+- **Панели:** `.padGlass` — базовый, `.padGlass-top` — топбар, `.padGlass-work` — рабочая панель
+- **Таблицы:** `.table-toolbar`, `.table-actions`, `.filter-select` (унифицированные стили)
 - **ID заказа:** МБ{id}{magicNumber}{year}
 
-Подробнее в [patterns.md](patterns.md)
+Подробнее в [patterns.md](patterns.md) и [styles.md](styles.md)
 
 ---
 
@@ -86,10 +141,14 @@ git push
 - **БД:** MySQL на BeGet
 - **Библиотеки:**
   - FullCalendar (календарь записей)
-  - Quill (редактор описания)
-  - @mdi/light-js (иконки)
+  - **TipTap v3.20** (rich-text редактор, заменил Quill 26.02.2026)
+    - Включён resize изображений (ручки по углам/сторонам)
+    - Base64 изображения (allowBase64: true)
+    - Кастомная модалка ввода URL ссылки (БЕЗ window.prompt)
+  - @mdi/js (иконки Material Design)
+  - @jamescoyle/vue-icon (компонент для MDI иконок)
   - TanStack Table (таблицы)
-  - Chart.js v4.5.1 (диаграммы финансовых отчётов) ✨ НОВОЕ
+  - flatpickr (выбор дат, диапазоны)
 
 Подробнее в [architecture.md](architecture.md)
 
@@ -97,43 +156,47 @@ git push
 
 ## 📝 Текущие задачи
 
-### ✅ Выполнено недавно (февраль 2026)
-
 - ✅ Домашняя страница (баннер акции, 4 фото)
-- ✅ Rich text редактор описания студии
+- ✅ **Миграция с Quill на TipTap** (26.02.2026, v3.20.0)
+  - Убраны уязвимости npm (2 moderate XSS в quill)
+  - Resize изображений с сохранением пропорций
+  - Кастомная модалка ввода URL (`.modal-footerUrl`)
+  - Минимальные стили (БЕЗ переопределения HTML тегов)
 - ✅ Синхронизация авторизации Frontend ↔ Backend
-- ✅ **Финансовая система - полностью реализована!**
-  - Вкладка "Расходы" + Справочник категорий
-  - Возвраты средств (категория ID=2, автозаполнение)
-  - Вкладка "Приход" (платежи, доходы)
-  - API для expenses, income, expense-categories
-  - Pinia store finance.ts
-- ✅ **Финансовые отчёты с Chart.js диаграммами!**
-  - Диаграмма "Расходы по категориям" (горизонтальный bar)
-  - Диаграмма "Доход по источникам" (типам съёмок)
-  - Фильтрация по периодам (месяц/квартал/год) - РАБОТАЕТ!
-  - Метрики: доход, расход, прибыль, рентабельность
-- ✅ **Актуализация памяти проекта** (22.02.2026)
-  - Создан finance.md с полным описанием финансовой системы
-  - Обновлён architecture.md
-  - Обновлён changelog.md
-
-### ⏳ В работе
-
-- 🚀 **ФАЗА 1: Миграция БД для бизнес-процесса** (22.02.2026) ⬅️ **НАЧИНАЕМ!**
-  - 8 новых статусов заказа (new, in_progress, completed, completed_partially, not_completed, cancelled_by_photographer, cancelled_by_client, client_no_show)
-  - Блокировка редактирования (`is_locked`)
-  - Связь возвратов с заказами (`expenses.booking_id`)
-  - Типы возвратов (`expenses.refund_type`)
-  - VIEW `v_booking_profit` для расчёта прибыли
-  - Колонки для мультипользователя: `created_by`, `updated_by`, `master_id`
-  - [Полный план в business-process.md](file:///d:/GitHub/maribulka/memory/business-process.md)
-
-- ⏳ **Оптимизация UI и мобильная адаптация**
-  - Борьба со стилями меню клиентов (commit 2ec48f1)
-  - Уменьшение кнопок для мобилки (commit d58a48c)
-  - Фиксы topbar и sidebar (commits b6e7699, 8d785f0)
-- ⏳ **Работа с фильтрами** (таблицы заказов, клиентов, съёмок, акций) - [План](filters-plan.md)
+- ✅ **Вкладка "Расходы" + Справочник категорий** (полностью завершено!)
+- ✅ **Возвраты средств** (категория ID=2, автозаполнение, валидация)
+- ✅ **Бизнес-процесс: Отмена заказа с возвратом** (кнопка "Р" в модалке отмены)
+- ✅ **Бизнес-процесс: Правила редактирования** (кнопки edit/delete активны только для status=new + дата не наступила)
+- ✅ **Баг: кнопки редактирования** (парсинг shooting_date с временем)
+- ✅ **Баг: баланс возврата** (API баланса кассы, состояние загрузки)
+- ✅ **Этап 2 начало: Универсальные панели** (glass-panel.css создан!)
+- ✅ **Рефакторинг стилей таблиц** (tables.css: унифицированы фильтры, переименованы классы)
+- ✅ **Единый фильтр периода** (все вкладки Учёт используют общий фильтр с/по, flatpickr с пресетами)
+- ✅ **Полный рефакторинг модалок** (25.02.2026: 100% переменные, h2→div, единый фон, responsive.css очищен)
+- ✅ **Анализ стилей кнопок** (26.02.2026: найдено 7 файлов, ~40 селекторов, план готов)
+- ✅ **РЕФАКТОРИНГ КНОПОК ЗАВЕРШЁН** (02.03.2026)
+  - ✅ Переименование `.glass-button` → `.buttonGL` (47 файлов, 160 вхождений)
+  - ✅ Три текстовых суб-стиля (textFix 100px / text auto / textFull 100%)
+  - ✅ Система ButtonFooter (4 модификатора: PosRight/Left/Space/Center)
+  - ✅ Миграция всех 31 модального компонента — кнопки с текстом и правильным расположением
+  - ✅ Мобильные стили кнопок очищены (удалено уменьшение buttonGL до 26px)
+  - ⏳ Ещё не сделано: рефакторинг FullCalendar кнопок (после строки 227 buttons.css)
+- ✅ **Новый дизайн TopBar + Авторизация + Модалки** (05.03.2026)
+  - `data-theme` на `<html>`, темы работают глобально
+  - 3 анимированных орба, TopBar 4 кнопки
+  - Авторизация: кнопка 1 = `mdiAccountOutline`/`mdiMenu`, вход/выход
+  - AlertModal, ConfirmModal, LoginModal — новая система (`padGlass` + `btnGlass`)
+  - Новые CSS: `style.css`, `buttonGlass.css`, `padGlass.css`, `modal.css`
+- ✅ **Фикс структуры App + отступы мобилки** (05.03.2026 вечер)
+  - `App.vue`: корневой `<div class="app-root">` + орбы в `<div class="app-bg-layer">`
+  - Орбы: диагональные траектории через весь экран, orb-1 зелёно-бирюзовый (`#00ff88 → #00b4d8`)
+- ✅ **Мобильная адаптация LaunchPad + TopBar** (06.03.2026)
+  - Брейкпоинт `@media (max-width: 480px)` → `@media (pointer: coarse)` — по типу устройства
+  - TopBar на мобилке: `left: 5px; right: 5px; width: auto` вместо `calc`
+  - LaunchPad на мобилке: `display: block; overflow-y: auto; padding: 95px 5px 0 5px`
+  - `body min-width`: 280px → 355px; скролл по X в TopBar
+  - Закрытие LaunchPad кнопкой с анимацией: `defineExpose({ close })` + `launchpadRef?.close()`
+- 🚧 **Этап 1: Desktop дизайн** (в работе)
 - ⏳ Кнопка скрыть/показать таблицу
 
 ---

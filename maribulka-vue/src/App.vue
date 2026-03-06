@@ -10,6 +10,7 @@ const showLogin = ref(false)
 const loginOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
 const showLaunchpad = ref(false)
 const launchpadOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
+const launchpadRef = ref<InstanceType<typeof LaunchPad> | null>(null)
 
 function openLogin(origin: { x: number, y: number, w: number, h: number }) {
   loginOrigin.value = origin
@@ -34,9 +35,9 @@ onMounted(async () => {
       <div class="orb orb-2"></div>
       <div class="orb orb-3"></div>
     </div>
-    <TopBar @open-login="openLogin" @open-launchpad="openLaunchpad" />
+    <TopBar :isLaunchpadOpen="showLaunchpad" @open-login="openLogin" @open-launchpad="openLaunchpad" @close-launchpad="launchpadRef?.close()" />
     <div class="worck-table">
-      <LaunchPad :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
+      <LaunchPad ref="launchpadRef" :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

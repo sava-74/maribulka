@@ -42,6 +42,8 @@ const { closing, close } = useGenie(panelRef, () => props.isVisible, () => {
   emit('close')
 })
 
+defineExpose({ close })
+
 const onLogoutConfirm = () => {
   showLogoutConfirm.value = false
   auth.logout()
