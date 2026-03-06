@@ -29,13 +29,15 @@ onMounted(async () => {
 
 <template>
   <div class="app-root">
-    <TopBar @open-login="openLogin" @open-launchpad="openLaunchpad" />
     <div class="app-bg-layer">
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
       <div class="orb orb-3"></div>
     </div>
+    <TopBar @open-login="openLogin" @open-launchpad="openLaunchpad" />
+    <div class="worck-table">
+      <LaunchPad :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
+    </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />
-  <LaunchPad :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
 </template>

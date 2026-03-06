@@ -659,7 +659,7 @@
 
 /* ========== 15. МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 
-@media (max-width: 480px) {
+@media (pointer: coarse) {
 
 
 .sectionPad, .top-pad-bar{

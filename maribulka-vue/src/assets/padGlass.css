@@ -6,8 +6,8 @@
 /* ========== БАЗОВЫЕ СТИЛИ ========== */
 
 .padGlass {
-  max-width: 600px;
-  min-width: 355px;
+  max-width: 1200px;
+  /*min-width: 355px;*/
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,11 +31,12 @@
 /* ========== ВЕРХНЯЯ ФИКСИРОВАННАЯ ПАНЕЛЬ ========== */
 
 .padGlass-top {
+  box-sizing: border-box;
   position: fixed;
   width: calc(100% - 40px);
-  top: 0;
+  top: 10px;
   padding: 0 30px;
-  z-index: 1000;
+  z-index: 3000;
 }
 
 .padGlass-top-row {
@@ -44,17 +45,20 @@
   column-gap: 1px;
   flex-wrap: nowrap;
   align-items: center;
-  padding: 5px;
+  padding: 5px 0;
   justify-content: center;
+  overflow-x: auto;
 }
 
 /* ========== РАБОЧАЯ ПАНЕЛЬ ========== */
 
 .padGlass-work {
+  box-sizing: border-box;
   position: relative;
   padding: 30px;
-  max-width: 600px;
-  min-width: 355px;
+  width: calc(100% - 40px);
+  /*width: 600px;*/
+  
 }
 
 /* Градиентная рамка */
@@ -139,23 +143,25 @@
 
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 
-@media (max-width: 480px) {
+@media (pointer: coarse) {
   .padGlass-top {
-    margin: 5px ;
+    box-sizing: border-box;
+    left: 5px;
+    right: 5px;
+    width: auto;
     padding: 0;
-    width: calc(100% - 20px);
-    min-width: min-content;
   }
 
   .padGlass-work {
-    margin: 100px 10px 0 10px;
+    box-sizing: border-box;
     padding: 10px 0 5px 0;
     min-width: unset;
-    width: calc(100% - 10px);
+    width: 100%;
   }
 
   .pad-icon-grid {
     gap: 5px 0;
+    margin-top: 5px;
   }
 
   .pad-icon-label {

@@ -178,7 +178,7 @@ Symlink created during deploy: `public_html/media → ../media`
 `src/sandbox/SandboxView.vue` is the design reference. Copy HTML **exactly as-is** — no modifications.
 
 ### Mobile Adaptation
-- **Single breakpoint:** `@media (max-width: 480px)`
+- **Single breakpoint:** `@media (pointer: coarse)`
 
 ### Sticky Elements
 Use `position: sticky`, NOT `fixed`

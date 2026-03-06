@@ -75,7 +75,7 @@
 body {
   margin: 0;
   padding: 0;
-  min-width: 280px;
+  min-width: 355px;
   min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -101,7 +101,7 @@ body {
 
 .app-root{
   position: relative;
-  min-height: calc(100vh - 60px); /* вычитаем высоту топбара */
+  height: 100vh; 
   overflow: hidden;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -112,7 +112,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: 60px;
-  padding: 102px 5px;
+  padding: 0px 5px;
+}
+
+.worck-table{
+  position: fixed;
+  inset: 0;
 }
 
 /* ========== ОРБЫ (анимированный фон) ========== */
@@ -203,3 +208,4 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+

@@ -66,8 +66,8 @@ function onRipple(event: MouseEvent) {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }" @click.self="close()">
+  <template v-if="isVisible">
+  <div class="modal-overlay-launch" :class="{ 'overlay-leave': closing }" @click.self="close()">
       <div ref="panelRef" class="padGlass padGlass-work" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
 
         <!-- Секция: Учёт -->
@@ -182,5 +182,5 @@ function onRipple(event: MouseEvent) {
       @confirm="onLogoutConfirm"
       @cancel="showLogoutConfirm = false"
     />
-  </Teleport>
+  </template>
 </template>
