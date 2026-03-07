@@ -53,6 +53,95 @@ export function useStackFade(
     })
   }
 
+  let rafId = 0
+
+  function onScroll() {
+    if (rafId) return
+    rafId = requestAnimationFrame(() => {
+      updateOpacity()
+      rafId = 0
+    })
+  }
+
+  // Плавный скролл колёсиком
+  let smoothTarget = 0
+  let smoothRafId = 0
+
+  const SNAP_DURATION = 2500 // мс
+  let snapStartTime = 0
+  let snapStartPos = 0
+  let snapEndPos = 0
+
+  function easeOutQuad(t: number): number {
+    return t * (2 - t)
+  }
+
+  function smoothStep(timestamp: number) {
+    const container = scrollContainer.value
+    if (!container) return
+
+    if (!snapStartTime) {
+      snapStartTime = timestamp
+      snapStartPos = container.scrollTop
+      snapEndPos = smoothTarget
+    }
+
+    // Если цель изменилась во время анимации — перезапустить от текущей позиции
+    if (snapEndPos !== smoothTarget) {
+      snapStartTime = timestamp
+      snapStartPos = container.scrollTop
+      snapEndPos = smoothTarget
+    }
+
+    const elapsed = timestamp - snapStartTime
+    const t = Math.min(elapsed / SNAP_DURATION, 1)
+    const eased = easeOutQuad(t)
+
+    container.scrollTop = snapStartPos + (snapEndPos - snapStartPos) * eased
+
+    if (t < 1) {
+      smoothRafId = requestAnimationFrame(smoothStep)
+    } else {
+      container.scrollTop = snapEndPos
+      snapStartTime = 0
+      smoothRafId = 0
+    }
+  }
+
+  let snapTimer = 0
+
+  function snapByDirection(scrollingDown: boolean) {
+    const container = scrollContainer.value
+    if (!container || overlapPositions.length < 2) return
+
+    const scrollTop = container.scrollTop
+
+    if (scrollingDown) {
+      const next = overlapPositions.find(pos => pos > scrollTop + 1)
+      if (next !== undefined) {
+        smoothTarget = next
+        snapStartTime = 0
+        if (smoothRafId) cancelAnimationFrame(smoothRafId)
+        smoothRafId = requestAnimationFrame(smoothStep)
+      }
+    } else {
+      const prev = [...overlapPositions].reverse().find(pos => pos < scrollTop - 1)
+      if (prev !== undefined) {
+        smoothTarget = prev
+        snapStartTime = 0
+        if (smoothRafId) cancelAnimationFrame(smoothRafId)
+        smoothRafId = requestAnimationFrame(smoothStep)
+      }
+    }
+  }
+
+  function onWheel(e: WheelEvent) {
+    e.preventDefault()
+    const scrollingDown = e.deltaY > 0
+    clearTimeout(snapTimer)
+    snapTimer = window.setTimeout(() => snapByDirection(scrollingDown), 180)
+  }
+
   const resizeObserver = new ResizeObserver(() => {
     calcGeometry()
     updateOpacity()
@@ -61,9 +150,11 @@ export function useStackFade(
   onMounted(() => {
     const container = scrollContainer.value
     if (container) {
+      smoothTarget = container.scrollTop
       calcGeometry()
       updateOpacity()
-      container.addEventListener('scroll', updateOpacity, { passive: true })
+      container.addEventListener('scroll', onScroll, { passive: true })
+      container.addEventListener('wheel', onWheel, { passive: false })
       resizeObserver.observe(container)
     }
   })
@@ -71,8 +162,12 @@ export function useStackFade(
   onUnmounted(() => {
     const container = scrollContainer.value
     if (container) {
-      container.removeEventListener('scroll', updateOpacity)
+      container.removeEventListener('scroll', onScroll)
+      container.removeEventListener('wheel', onWheel)
     }
+    if (rafId) cancelAnimationFrame(rafId)
+    if (smoothRafId) cancelAnimationFrame(smoothRafId)
+    clearTimeout(snapTimer)
     resizeObserver.disconnect()
   })
 }

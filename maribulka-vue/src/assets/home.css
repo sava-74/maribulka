@@ -28,6 +28,8 @@
   width: calc(100% - 40px);
   box-sizing: border-box;
   opacity: var(--panel-opacity, 1);
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 /* z-index: каждая следующая панель перекрывает предыдущую */
