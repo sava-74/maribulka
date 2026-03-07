@@ -33,9 +33,9 @@ watch(() => props.modelValue, (val) => {
   if (val !== editorData.value) editorData.value = val
 })
 
-function onInput(event: any, editor: any) {
-  emit('update:modelValue', editor.getData())
-}
+watch(editorData, (val) => {
+  emit('update:modelValue', val)
+})
 
 const editorConfig = {
   plugins: [
@@ -113,7 +113,6 @@ const editorConfig = {
       :editor="ClassicEditor"
       v-model="editorData"
       :config="editorConfig"
-      @input="onInput"
     />
   </div>
 </template>
