@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
+import { useNavigationStore } from './stores/navigation'
 import TopBar from './components/TopBar.vue'
 import LoginModal from './components/LoginModal.vue'
 import LaunchPad from './components/launchpad/LaunchPad.vue'
+import Home from './components/home/Home.vue'
 
 const authStore = useAuthStore()
+const navStore = useNavigationStore()
 const showLogin = ref(false)
 const loginOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
 const showLaunchpad = ref(false)
@@ -38,6 +41,7 @@ onMounted(async () => {
     <TopBar :isLaunchpadOpen="showLaunchpad" @open-login="openLogin" @open-launchpad="openLaunchpad" @close-launchpad="launchpadRef?.close()" />
     <div class="worck-table">
       <LaunchPad ref="launchpadRef" :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
+      <Home v-if="navStore.currentPage === 'home'" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

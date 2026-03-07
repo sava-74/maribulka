@@ -11,6 +11,7 @@ import {
 } from '@mdi/js';
 import { useAuthStore } from '../stores/auth'
 import { useReferencesStore } from '../stores/references'
+import { useNavigationStore } from '../stores/navigation'
 
 
 const theme = ref<'dark' | 'light'>('dark')
@@ -44,6 +45,7 @@ const emit = defineEmits(['open-login', 'open-launchpad', 'close-launchpad'])
 const outinIcon = computed(() => auth.isAdmin ? mdiMenu : mdiAccountOutline)
 
 const referencesStore = useReferencesStore()
+const navStore = useNavigationStore()
 
 const handleAction = (event: MouseEvent) => {
   const btn = event.currentTarget as HTMLElement
@@ -100,7 +102,7 @@ onMounted(() => {
         </button>
       </div>
       <div class="pad-icon-cell">
-        <button class="btnGlass bigIcon" @click="onRipple($event)">
+        <button class="btnGlass bigIcon" @click="navStore.navigateTo('home'); props.isLaunchpadOpen && emit('close-launchpad'); onRipple($event)">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
           <svg-icon type="mdi" :path="mdiHome" class="btn-icon-big" />

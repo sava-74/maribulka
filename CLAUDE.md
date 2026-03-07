@@ -104,10 +104,11 @@ Symlink created during deploy: `public_html/media → ../media`
 
 | File | Purpose |
 |------|---------|
-| `style.css` | CSS variables `[data-theme]`, body, animated orbs, scrollbar |
+| `style.css` | CSS variables `[data-theme]`, body, animated orbs, scrollbar — lives at `src/style.css` (root, not assets/) |
 | `buttonGlass.css` | Buttons `.btnGlass` + modifiers + `.btn-theme` |
 | `padGlass.css` | Panels `.padGlass` + modifiers |
 | `modal.css` | Overlay, inputs, `.padGlass.modal-sm`, `.ButtonFooter` |
+| `animations.css` | Shared keyframe animations |
 
 **Old CSS** (pre-05.03.2026) moved to `src/assets/oldCss/` — do NOT import them.
 
@@ -247,14 +248,14 @@ maribulka/
 ## Important Notes
 
 1. **NO style blocks in Vue files** - Always use external CSS
-2. **Always use CSS variables** - Check `theme.css` for available vars
+2. **Always use CSS variables** - Check `style.css` for available vars (`theme.css` was deleted 05.03.2026)
 3. **Backend aggregates data** - Frontend should NOT sum/count large arrays
 4. **Custom modals only** - No browser dialogs
 5. **Icons via @mdi/js** - No other icon libraries
 6. **Media files outside dist/** - Server symlink handles access
 7. **Proxy to production** - Dev environment has no local PHP
 8. **Admin-only features** - Check `authStore.isAdmin` before rendering
-9. **Mobile breakpoint:** 480px max-width
+9. **Mobile breakpoint:** `@media (pointer: coarse)` — by device type, NOT pixel width
 10. **Deploy is 3 commands:** commit, push, `.\deploy.ps1`
 
 ## Memory Files
