@@ -102,7 +102,8 @@ const editorConfig = {
     }
   },
   placeholder: props.placeholder,
-  language: 'ru'
+  language: 'ru',
+  licenseKey: 'GPL'
 }
 </script>
 
