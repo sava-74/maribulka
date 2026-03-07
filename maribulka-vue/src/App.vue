@@ -39,7 +39,7 @@ onMounted(async () => {
       <div class="orb orb-3"></div>
     </div>
     <TopBar :isLaunchpadOpen="showLaunchpad" @open-login="openLogin" @open-launchpad="openLaunchpad" @close-launchpad="launchpadRef?.close()" />
-    <div class="worck-table" :class="{ 'worck-table-home': navStore.currentPage === 'home' }">
+    <div class="worck-table">
       <LaunchPad ref="launchpadRef" :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
       <Home v-if="navStore.currentPage === 'home'" />
     </div>

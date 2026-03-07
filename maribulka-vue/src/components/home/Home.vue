@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // @ts-nocheck
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, toRef } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiTextBoxPlusOutline, mdiCameraPlusOutline } from '@mdi/js'
 import { useAuthStore } from '../../stores/auth'
 import { useHomeStore } from '../../stores/home'
+import { useStackFade } from '../../composables/useStackFade'
 import UploadPhotoModal from '../home/UploadPhotoModal.vue'
 import EditStudioDescriptionModal from '../home/EditStudioDescriptionModal.vue'
-
 
 const authStore = useAuthStore()
 const homeStore = useHomeStore()
@@ -16,44 +16,44 @@ const showUploadModal = ref(false)
 const showEditDescriptionModal = ref(false)
 const selectedPosition = ref(0)
 
-// Загружаем данные при монтировании
+// Внутренний scroll-контейнер
+const scrollAreaRef = ref<HTMLElement | null>(null)
+
+// Refs на DOM-элементы панелей
+const panel1 = ref<HTMLElement | null>(null)
+const panel2 = ref<HTMLElement | null>(null)
+const panel3 = ref<HTMLElement | null>(null)
+const panel4 = ref<HTMLElement | null>(null)
+const panelsRef = computed(() =>
+  [panel1.value, panel2.value, panel3.value, panel4.value].filter(Boolean) as HTMLElement[]
+)
+
+useStackFade(scrollAreaRef, panelsRef)
+
 onMounted(() => {
   homeStore.fetchPhotos()
   homeStore.fetchDescription()
 })
 
-
-
-// Модифицируем HTML описания: добавляем target="_blank" ко всем ссылкам
 const descriptionHtml = computed(() => {
   const html = homeStore.description
-  // Заменяем все <a> теги, добавляя target="_blank" и rel="noopener noreferrer"
   return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ')
 })
 
-// Обработчик добавления фото
 function handleAddPhoto(position: number) {
   selectedPosition.value = position
   showUploadModal.value = true
 }
 
-// Обработчик кликов по ссылкам в описании
 function handleDescriptionClick(event: MouseEvent) {
   let target = event.target as HTMLElement
-
-  // Ищем ссылку (может быть обёрнута в span или другие элементы)
   while (target && target.tagName !== 'A' && target !== event.currentTarget) {
     target = target.parentElement as HTMLElement
   }
-
-  // Если нашли ссылку
   if (target && target.tagName === 'A') {
     const link = target as HTMLAnchorElement
-
-    // Для ЛЮБОЙ ссылки останавливаем обработку и открываем в новой вкладке
     event.preventDefault()
     event.stopPropagation()
-
     if (link.href) {
       window.open(link.href, '_blank', 'noopener,noreferrer')
     }
@@ -62,26 +62,41 @@ function handleDescriptionClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="home-stack">
+  <div ref="scrollAreaRef" class="home-scroll-area">
+    <div class="home-stack">
 
-    <!-- Панель 1 -->
-    <div class="home-panel padGlass padGlass-work">
-      Панель 1
-    </div>
+      <!-- Панель 1 -->
+      <div ref="panel1" class="home-panel">
+        <div class="home-panel-glass"></div>
+        <div class="home-panel-content">
+          Панель 1
+        </div>
+      </div>
 
-    <!-- Панель 2 -->
-    <div class="home-panel padGlass padGlass-work">
-      Панель 2
-    </div>
+      <!-- Панель 2 -->
+      <div ref="panel2" class="home-panel">
+        <div class="home-panel-glass"></div>
+        <div class="home-panel-content">
+          Панель 2
+        </div>
+      </div>
 
-    <!-- Панель 3 -->
-    <div class="home-panel padGlass padGlass-work">
-      Панель 3
-    </div>
+      <!-- Панель 3 -->
+      <div ref="panel3" class="home-panel">
+        <div class="home-panel-glass"></div>
+        <div class="home-panel-content">
+          Панель 3
+        </div>
+      </div>
 
-    <!-- Панель 4 -->
-    <div class="home-panel padGlass padGlass-work">
-      Панель 4
+      <!-- Панель 4 -->
+      <div ref="panel4" class="home-panel">
+        <div class="home-panel-glass"></div>
+        <div class="home-panel-content">
+          Панель 4
+        </div>
+      </div>
+
     </div>
 
     <!-- Модалка загрузки фото -->

@@ -3,24 +3,31 @@
    home.css
    ======================================== */
 
+/* Собственный scroll-контейнер домашней страницы */
+.home-scroll-area {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 /* Обёртка всех панелей — создаёт пространство для скролла */
 .home-stack {
   display: flex;
   flex-direction: column;
-  min-height: calc(110px + 800px * 4 + 200px);
+  min-height: calc(110px + 600px * 4 + 200px);
   padding-top: 110px;
   align-items: center;
 }
 
-/* Каждая sticky-панель */
+/* Внешняя обёртка панели — sticky + opacity */
 .home-panel {
   position: sticky;
   top: 110px;
-  height: 800px;
+  height: 600px;
   width: calc(100% - 40px);
   box-sizing: border-box;
-  backdrop-filter: blur(var(--padBlur));
-  -webkit-backdrop-filter: blur(var(--padBlur));
+  opacity: var(--panel-opacity, 1);
 }
 
 /* z-index: каждая следующая панель перекрывает предыдущую */
@@ -29,15 +36,41 @@
 .home-panel:nth-child(3) { z-index: 30; }
 .home-panel:nth-child(4) { z-index: 40; }
 
+/* Внутренний стеклянный слой — backdrop-filter здесь, не на .home-panel */
+.home-panel-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--padRadius);
+  backdrop-filter: blur(var(--padBlur));
+  -webkit-backdrop-filter: blur(var(--padBlur));
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-style: groove;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+
+/* Контентный слой поверх стекла */
+.home-panel-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 @media (pointer: coarse) {
   .home-stack {
-    padding-top: 80px;
-    min-height: calc(80px + 600px * 4 + 200px);
+    padding-top: 100px;
+    min-height: calc(100px + 600px * 4 + 200px);
   }
 
   .home-panel {
-    top: 80px;
+    top: 100px;
     height: 600px;
     width: 100%;
   }

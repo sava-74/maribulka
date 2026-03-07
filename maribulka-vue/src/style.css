@@ -120,11 +120,6 @@ body {
   inset: 0;
 }
 
-.worck-table-home {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 /* ========== ОРБЫ (анимированный фон) ========== */
 
 .app-bg-layer {
