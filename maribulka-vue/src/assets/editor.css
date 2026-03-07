@@ -41,6 +41,17 @@
   border-color: var(--accent, #00b4d8) !important;
 }
 
+/* Изображения в контенте — ограничение размера */
+.home-panel-content figure.image {
+  max-width: 100%;
+}
+
+.home-panel-content figure.image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Float изображения — для отображения контента на сайте */
 .home-panel-content .image-style-align-left,
 .description-content .image-style-align-left {
