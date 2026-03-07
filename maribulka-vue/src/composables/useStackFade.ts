@@ -67,7 +67,7 @@ export function useStackFade(
   let smoothTarget = 0
   let smoothRafId = 0
 
-  const SNAP_DURATION = 2500 // мс
+  const SNAP_DURATION = 1000 // мс время авто скрола
   let snapStartTime = 0
   let snapStartPos = 0
   let snapEndPos = 0
