@@ -41,6 +41,11 @@
   border-color: var(--accent, #00b4d8) !important;
 }
 
+/* CKEditor balloon toolbar — поверх модального оверлея */
+.ck-body-wrapper {
+  z-index: 10000 !important;
+}
+
 /* Изображения в контенте — ограничение размера */
 .home-panel-content figure.image {
   max-width: 100%;
