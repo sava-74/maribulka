@@ -142,6 +142,21 @@ export function useStackFade(
     snapTimer = window.setTimeout(() => snapByDirection(scrollingDown), 180)
   }
 
+  // Touch-поддержка
+  let touchStartY = 0
+
+  function onTouchStart(e: TouchEvent) {
+    touchStartY = e.touches[0].clientY
+  }
+
+  function onTouchEnd(e: TouchEvent) {
+    const dy = touchStartY - e.changedTouches[0].clientY
+    if (Math.abs(dy) < 10) return // игнорируем случайные касания
+    const scrollingDown = dy > 0
+    clearTimeout(snapTimer)
+    snapByDirection(scrollingDown)
+  }
+
   const resizeObserver = new ResizeObserver(() => {
     calcGeometry()
     updateOpacity()
@@ -155,6 +170,8 @@ export function useStackFade(
       updateOpacity()
       container.addEventListener('scroll', onScroll, { passive: true })
       container.addEventListener('wheel', onWheel, { passive: false })
+      container.addEventListener('touchstart', onTouchStart, { passive: true })
+      container.addEventListener('touchend', onTouchEnd, { passive: true })
       resizeObserver.observe(container)
     }
   })
@@ -164,6 +181,8 @@ export function useStackFade(
     if (container) {
       container.removeEventListener('scroll', onScroll)
       container.removeEventListener('wheel', onWheel)
+      container.removeEventListener('touchstart', onTouchStart)
+      container.removeEventListener('touchend', onTouchEnd)
     }
     if (rafId) cancelAnimationFrame(rafId)
     if (smoothRafId) cancelAnimationFrame(smoothRafId)
