@@ -62,25 +62,25 @@ function handleDescriptionClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div>
+  <div class="home-stack">
 
     <!-- Панель 1 -->
-    <div class="padGlass padGlass-work">
+    <div class="home-panel padGlass padGlass-work">
       Панель 1
     </div>
 
     <!-- Панель 2 -->
-    <div class="padGlass padGlass-work">
+    <div class="home-panel padGlass padGlass-work">
       Панель 2
     </div>
 
     <!-- Панель 3 -->
-    <div class="padGlass padGlass-work">
+    <div class="home-panel padGlass padGlass-work">
       Панель 3
     </div>
 
     <!-- Панель 4 -->
-    <div class="padGlass padGlass-work">
+    <div class="home-panel padGlass padGlass-work">
       Панель 4
     </div>
 

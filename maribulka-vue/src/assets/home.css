@@ -1,0 +1,44 @@
+/* ========================================
+   ДОМАШНЯЯ СТРАНИЦА — sticky-стопка панелей
+   home.css
+   ======================================== */
+
+/* Обёртка всех панелей — создаёт пространство для скролла */
+.home-stack {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(110px + 800px * 4 + 200px);
+  padding-top: 110px;
+  align-items: center;
+}
+
+/* Каждая sticky-панель */
+.home-panel {
+  position: sticky;
+  top: 110px;
+  height: 800px;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+  backdrop-filter: blur(var(--padBlur));
+  -webkit-backdrop-filter: blur(var(--padBlur));
+}
+
+/* z-index: каждая следующая панель перекрывает предыдущую */
+.home-panel:nth-child(1) { z-index: 10; }
+.home-panel:nth-child(2) { z-index: 20; }
+.home-panel:nth-child(3) { z-index: 30; }
+.home-panel:nth-child(4) { z-index: 40; }
+
+/* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
+@media (pointer: coarse) {
+  .home-stack {
+    padding-top: 80px;
+    min-height: calc(80px + 600px * 4 + 200px);
+  }
+
+  .home-panel {
+    top: 80px;
+    height: 600px;
+    width: 100%;
+  }
+}
