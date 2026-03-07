@@ -1,0 +1,72 @@
+/* ========================================
+   РЕДАКТОР CKEditor 5 — glass стиль + float изображений
+   editor.css
+   ======================================== */
+
+/* Обёртка редактора */
+.ck-editor-wrapper {
+  width: 100%;
+}
+
+/* Тулбар в glass стиле */
+.ck.ck-toolbar {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--padRadius) var(--padRadius) 0 0 !important;
+}
+
+.ck.ck-toolbar .ck-toolbar__items .ck-button {
+  color: var(--text-primary) !important;
+  border-radius: 6px !important;
+}
+
+.ck.ck-toolbar .ck-button:hover,
+.ck.ck-toolbar .ck-button.ck-on {
+  background: var(--glass-border) !important;
+}
+
+/* Область редактирования */
+.ck.ck-editor__editable {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-top: none !important;
+  border-radius: 0 0 var(--padRadius) var(--padRadius) !important;
+  color: var(--text-primary) !important;
+  min-height: 300px;
+  padding: 16px !important;
+}
+
+.ck.ck-editor__editable:focus {
+  box-shadow: none !important;
+  border-color: var(--accent, #00b4d8) !important;
+}
+
+/* Float изображения — для отображения контента на сайте */
+.home-panel-content .image-style-align-left,
+.description-content .image-style-align-left {
+  float: left;
+  margin: 0 16px 8px 0;
+  clear: left;
+}
+
+.home-panel-content .image-style-align-right,
+.description-content .image-style-align-right {
+  float: right;
+  margin: 0 0 8px 16px;
+  clear: right;
+}
+
+.home-panel-content .image-style-block,
+.description-content .image-style-block {
+  display: block;
+  margin: 8px auto;
+  clear: both;
+}
+
+/* Clearfix после блоков с float */
+.home-panel-content::after,
+.description-content::after {
+  content: '';
+  display: table;
+  clear: both;
+}

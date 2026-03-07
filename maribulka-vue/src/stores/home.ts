@@ -12,9 +12,11 @@ interface StudioPhoto {
 
 export const useHomeStore = defineStore('home', () => {
   const photos = ref<string[]>([])
-  const description = ref<string>('')
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  // Блоки домашней страницы (4 независимых)
+  const blocks = ref<Record<number, string>>({})
 
   // Загрузить фото студии
   async function fetchPhotos() {
@@ -26,7 +28,6 @@ export const useHomeStore = defineStore('home', () => {
       const data = await response.json()
 
       if (data.success) {
-        // Создаём массив из 4 элементов, заполняем по позициям
         const photoArray: string[] = ['', '', '', '']
         data.photos.forEach((photo: StudioPhoto) => {
           if (photo.position >= 0 && photo.position < 4) {
@@ -63,7 +64,6 @@ export const useHomeStore = defineStore('home', () => {
       const data = await response.json()
 
       if (data.success) {
-        // Обновляем локальный массив
         await fetchPhotos()
         return { success: true }
       } else {
@@ -87,16 +87,13 @@ export const useHomeStore = defineStore('home', () => {
     try {
       const response = await fetch(`${API_URL}/studio_photos.php`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ position })
       })
 
       const data = await response.json()
 
       if (data.success) {
-        // Обновляем локальный массив
         await fetchPhotos()
         return { success: true }
       } else {
@@ -112,83 +109,46 @@ export const useHomeStore = defineStore('home', () => {
     }
   }
 
-  // Загрузить описание студии
-  async function fetchDescription() {
-    loading.value = true
-    error.value = null
-
+  async function fetchBlock(id: number): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/studio_description.php`)
+      const response = await fetch(`${API_URL}/home_blocks.php?id=${id}`)
       const data = await response.json()
-
       if (data.success) {
-        description.value = data.data.content || ''
-      } else {
-        error.value = data.message || 'Ошибка загрузки описания'
+        blocks.value[id] = data.content
       }
     } catch (err) {
-      error.value = 'Ошибка сети'
-      console.error('Ошибка загрузки описания:', err)
-    } finally {
-      loading.value = false
+      console.error(`Ошибка загрузки блока ${id}:`, err)
     }
   }
 
-  // Обновить описание студии
-  async function updateDescription(content: string): Promise<{ success: boolean; message?: string }> {
-    loading.value = true
-    error.value = null
-
-    console.log('Отправка описания:', content.substring(0, 100))
-
+  async function saveBlock(id: number, content: string): Promise<{ success: boolean; message?: string }> {
     try {
-      const response = await fetch(`${API_URL}/studio_description.php`, {
+      const response = await fetch(`${API_URL}/home_blocks.php`, {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, content })
       })
-
-      console.log('Статус ответа:', response.status)
-
-      // Проверяем статус ответа
-      if (response.status === 403) {
-        const data = await response.json()
-        console.log('Ответ 403:', data)
-        error.value = data.message || 'Доступ запрещён'
-        return { success: false, message: data.message || 'Доступ запрещён. Требуется авторизация.' }
-      }
-
       const data = await response.json()
-      console.log('Ответ от сервера:', data)
-
       if (data.success) {
-        description.value = content
+        blocks.value[id] = content
         return { success: true }
-      } else {
-        error.value = data.message || 'Ошибка обновления описания'
-        return { success: false, message: data.message }
       }
+      return { success: false, message: data.message }
     } catch (err) {
-      error.value = 'Ошибка сети'
-      console.error('Ошибка обновления описания:', err)
       return { success: false, message: 'Ошибка сети' }
-    } finally {
-      loading.value = false
     }
   }
 
   return {
     photos,
-    description,
     loading,
     error,
+    blocks,
     fetchPhotos,
     uploadPhoto,
     deletePhoto,
-    fetchDescription,
-    updateDescription
+    fetchBlock,
+    saveBlock
   }
 })

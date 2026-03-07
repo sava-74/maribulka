@@ -9,6 +9,8 @@ import './assets/padGlass.css'
 import './assets/modal.css'
 import './assets/animations.css'
 import './assets/home.css'
+import 'ckeditor5/ckeditor5.css'
+import './assets/editor.css'
 
 const app = createApp(App)
 app.use(createPinia())

@@ -1,25 +1,18 @@
 <script setup lang="ts">
 // @ts-nocheck
-import { ref, computed, onMounted, toRef } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiTextBoxPlusOutline, mdiCameraPlusOutline } from '@mdi/js'
+import { mdiViewDashboardEditOutline } from '@mdi/js'
 import { useAuthStore } from '../../stores/auth'
 import { useHomeStore } from '../../stores/home'
 import { useStackFade } from '../../composables/useStackFade'
-import UploadPhotoModal from '../home/UploadPhotoModal.vue'
-import EditStudioDescriptionModal from '../home/EditStudioDescriptionModal.vue'
+import EditBlockModal from './EditBlockModal.vue'
 
 const authStore = useAuthStore()
 const homeStore = useHomeStore()
 
-const showUploadModal = ref(false)
-const showEditDescriptionModal = ref(false)
-const selectedPosition = ref(0)
-
-// Внутренний scroll-контейнер
 const scrollAreaRef = ref<HTMLElement | null>(null)
 
-// Refs на DOM-элементы панелей
 const panel1 = ref<HTMLElement | null>(null)
 const panel2 = ref<HTMLElement | null>(null)
 const panel3 = ref<HTMLElement | null>(null)
@@ -30,35 +23,14 @@ const panelsRef = computed(() =>
 
 useStackFade(scrollAreaRef, panelsRef)
 
+const editingBlock = ref<number | null>(null)
+
 onMounted(() => {
-  homeStore.fetchPhotos()
-  homeStore.fetchDescription()
+  homeStore.fetchBlock(1)
+  homeStore.fetchBlock(2)
+  homeStore.fetchBlock(3)
+  homeStore.fetchBlock(4)
 })
-
-const descriptionHtml = computed(() => {
-  const html = homeStore.description
-  return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ')
-})
-
-function handleAddPhoto(position: number) {
-  selectedPosition.value = position
-  showUploadModal.value = true
-}
-
-function handleDescriptionClick(event: MouseEvent) {
-  let target = event.target as HTMLElement
-  while (target && target.tagName !== 'A' && target !== event.currentTarget) {
-    target = target.parentElement as HTMLElement
-  }
-  if (target && target.tagName === 'A') {
-    const link = target as HTMLAnchorElement
-    event.preventDefault()
-    event.stopPropagation()
-    if (link.href) {
-      window.open(link.href, '_blank', 'noopener,noreferrer')
-    }
-  }
-}
 </script>
 
 <template>
@@ -69,7 +41,17 @@ function handleDescriptionClick(event: MouseEvent) {
       <div ref="panel1" class="home-panel">
         <div class="home-panel-glass"></div>
         <div class="home-panel-content">
-          Панель 1
+          <button
+            v-if="authStore.isAdmin"
+            class="glass-btn icon-only home-panel-edit-btn"
+            @click="editingBlock = 1"
+            aria-label="Редактировать"
+          >
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiViewDashboardEditOutline" class="sb-icon" />
+          </button>
+          <div class="home-block-content" v-html="homeStore.blocks[1] ?? ''"></div>
         </div>
       </div>
 
@@ -77,7 +59,17 @@ function handleDescriptionClick(event: MouseEvent) {
       <div ref="panel2" class="home-panel">
         <div class="home-panel-glass"></div>
         <div class="home-panel-content">
-          Панель 2
+          <button
+            v-if="authStore.isAdmin"
+            class="glass-btn icon-only home-panel-edit-btn"
+            @click="editingBlock = 2"
+            aria-label="Редактировать"
+          >
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiViewDashboardEditOutline" class="sb-icon" />
+          </button>
+          <div class="home-block-content" v-html="homeStore.blocks[2] ?? ''"></div>
         </div>
       </div>
 
@@ -85,7 +77,17 @@ function handleDescriptionClick(event: MouseEvent) {
       <div ref="panel3" class="home-panel">
         <div class="home-panel-glass"></div>
         <div class="home-panel-content">
-          Панель 3
+          <button
+            v-if="authStore.isAdmin"
+            class="glass-btn icon-only home-panel-edit-btn"
+            @click="editingBlock = 3"
+            aria-label="Редактировать"
+          >
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiViewDashboardEditOutline" class="sb-icon" />
+          </button>
+          <div class="home-block-content" v-html="homeStore.blocks[3] ?? ''"></div>
         </div>
       </div>
 
@@ -93,23 +95,27 @@ function handleDescriptionClick(event: MouseEvent) {
       <div ref="panel4" class="home-panel">
         <div class="home-panel-glass"></div>
         <div class="home-panel-content">
-          Панель 4
+          <button
+            v-if="authStore.isAdmin"
+            class="glass-btn icon-only home-panel-edit-btn"
+            @click="editingBlock = 4"
+            aria-label="Редактировать"
+          >
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiViewDashboardEditOutline" class="sb-icon" />
+          </button>
+          <div class="home-block-content" v-html="homeStore.blocks[4] ?? ''"></div>
         </div>
       </div>
 
     </div>
 
-    <!-- Модалка загрузки фото -->
-    <UploadPhotoModal
-      :is-visible="showUploadModal"
-      :position="selectedPosition"
-      @close="showUploadModal = false"
-    />
-
-    <!-- Модалка редактирования описания -->
-    <EditStudioDescriptionModal
-      :is-visible="showEditDescriptionModal"
-      @close="showEditDescriptionModal = false"
+    <!-- Модалка редактирования блока -->
+    <EditBlockModal
+      :is-visible="editingBlock !== null"
+      :block-id="editingBlock ?? 1"
+      @close="editingBlock = null"
     />
   </div>
 </template>

@@ -18,11 +18,12 @@ export default defineConfig({
         manualChunks: {
           'vue-vendor': ['vue', 'pinia'],
           'fullcalendar': ['@fullcalendar/core', '@fullcalendar/vue3', '@fullcalendar/daygrid', '@fullcalendar/timegrid', '@fullcalendar/interaction'],
-          'charts': ['chart.js', '@tanstack/vue-table']
+          'charts': ['chart.js', '@tanstack/vue-table'],
+          'ckeditor': ['ckeditor5', '@ckeditor/ckeditor5-vue']
         }
       }
     },
-    chunkSizeWarningLimit: 700
+    chunkSizeWarningLimit: 850
   },
 
   // Прокси для API запросов и медиа-файлов в development режиме
