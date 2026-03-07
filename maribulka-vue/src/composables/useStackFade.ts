@@ -31,20 +31,19 @@ export function useStackFade(
         const fadeEnd = overlapPositions[1] ?? h
         opacity = scrollTop >= fadeEnd ? 0 : 1 - scrollTop / fadeEnd
       } else {
-        const fadeInEnd = overlapPositions[index]      // полное перекрытие
-        const fadeInStart = overlapPositions[index - 1] // начало наезда
-
+        const fadeInEnd = overlapPositions[index] ?? 0
+        const fadeInStart = overlapPositions[index - 1] ?? 0
         const nextOverlap = overlapPositions[index + 1]
         const isLast = index === panels.value.length - 1
 
         if (scrollTop <= fadeInStart) {
           opacity = 0
         } else if (scrollTop < fadeInEnd) {
-          // Появление: от 0 до 1 на всём диапазоне наезда
-          opacity = (scrollTop - fadeInStart) / (fadeInEnd - fadeInStart)
+          const range = fadeInEnd - fadeInStart
+          opacity = range > 0 ? (scrollTop - fadeInStart) / range : 1
         } else if (!isLast && nextOverlap !== undefined) {
-          // Исчезновение: от 1 до 0 на диапазоне следующего наезда
-          opacity = scrollTop >= nextOverlap ? 0 : 1 - (scrollTop - fadeInEnd) / (nextOverlap - fadeInEnd)
+          const range = nextOverlap - fadeInEnd
+          opacity = scrollTop >= nextOverlap ? 0 : 1 - (scrollTop - fadeInEnd) / range
         } else {
           opacity = 1
         }
