@@ -146,10 +146,11 @@ export function useStackFade(
   let touchStartY = 0
 
   function onTouchStart(e: TouchEvent) {
-    touchStartY = e.touches[0].clientY
+    if (e.touches[0]) touchStartY = e.touches[0].clientY
   }
 
   function onTouchEnd(e: TouchEvent) {
+    if (!e.changedTouches[0]) return
     const dy = touchStartY - e.changedTouches[0].clientY
     if (Math.abs(dy) < 10) return // игнорируем случайные касания
     const scrollingDown = dy > 0
