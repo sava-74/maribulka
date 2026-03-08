@@ -12,18 +12,20 @@
 }
 
 /* Обёртка всех панелей — создаёт пространство для скролла */
+/* min-height устанавливается динамически в useStackFade.ts */
 .home-stack {
   display: flex;
   flex-direction: column;
-  min-height: calc(110px + 300px * 4 + 100vh);
+  min-height: calc(110px + 300px * 4 + 100vh); /* fallback, JS перезапишет */
   padding-top: 110px;
   align-items: center;
 }
 
 /* Внешняя обёртка панели — sticky + opacity */
+/* top устанавливается динамически в useStackFade.ts */
 .home-panel {
   position: sticky;
-  top: 110px;
+  top: 110px; /* fallback, JS перезапишет */
   width: calc(100% - 40px);
   box-sizing: border-box;
   opacity: var(--panel-opacity, 1);
