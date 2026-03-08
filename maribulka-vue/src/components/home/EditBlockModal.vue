@@ -32,7 +32,7 @@ async function handleSave() {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay modal-overlay-editor" @click.self="emit('close')">
       <div class="padGlass modal-sm" style="width: 90vw; max-width: 900px; min-width: auto;">
         <div class="modal-glassTitle">Редактирование блока {{ blockId }}</div>
         <RichTextEditor v-model="content" placeholder="Введите содержимое блока..." />

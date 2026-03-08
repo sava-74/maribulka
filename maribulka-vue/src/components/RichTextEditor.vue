@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { ref, watch } from 'vue'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
+import type { Editor } from 'ckeditor5'
 import {
   ClassicEditor,
   Bold, Italic, Underline, Strikethrough,
@@ -36,6 +37,16 @@ watch(() => props.modelValue, (val) => {
 watch(editorData, (val) => {
   emit('update:modelValue', val)
 })
+
+function onEditorReady(editor: Editor) {
+  const uploadEditing = editor.plugins.get('ImageUploadEditing')
+  uploadEditing.on('uploadComplete', (_evt, { imageElement }) => {
+    editor.model.change(writer => {
+      writer.setAttribute('resizedWidth', '30%', imageElement)
+      writer.removeAttribute('resizedHeight', imageElement)
+    })
+  })
+}
 
 const editorConfig = {
   plugins: [
@@ -113,6 +124,7 @@ const editorConfig = {
       :editor="ClassicEditor"
       v-model="editorData"
       :config="editorConfig"
+      @ready="onEditorReady"
     />
   </div>
 </template>

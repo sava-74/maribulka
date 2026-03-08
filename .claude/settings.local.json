@@ -22,7 +22,12 @@
       "Bash(git -C d:/GitHub/maribulka log --all --format=\"%H %ai %s\")",
       "mcp__plugin_playwright_playwright__browser_run_code",
       "mcp__plugin_playwright_playwright__browser_click",
-      "Bash(\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\rsync.exe\" -avz --delete -e \"ssh -i $HOME/.ssh/beget_maribulka\" /d/GitHub/maribulka/maribulka-vue/dist/ sava7424@sava7424.beget.tech:/home/s/sava7424/maribulka.rf/public_html/)"
+      "Bash(\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\rsync.exe\" -avz --delete -e \"ssh -i $HOME/.ssh/beget_maribulka\" /d/GitHub/maribulka/maribulka-vue/dist/ sava7424@sava7424.beget.tech:/home/s/sava7424/maribulka.rf/public_html/)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_playwright_playwright__browser_file_upload",
+      "mcp__context7__query-docs"
     ]
   }
 }

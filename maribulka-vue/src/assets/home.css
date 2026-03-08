@@ -15,7 +15,7 @@
 .home-stack {
   display: flex;
   flex-direction: column;
-  min-height: calc(110px + 600px * 4 + 200px);
+  min-height: calc(110px + 300px * 4 + 100vh);
   padding-top: 110px;
   align-items: center;
 }
@@ -24,12 +24,13 @@
 .home-panel {
   position: sticky;
   top: 110px;
-  height: 600px;
   width: calc(100% - 40px);
   box-sizing: border-box;
   opacity: var(--panel-opacity, 1);
   will-change: opacity;
   transform: translateZ(0);
+  /* position: relative нужен чтобы .home-panel-glass (absolute) привязывался сюда */
+  /* sticky уже создаёт containing block, поэтому отдельный relative не нужен */
 }
 
 /* z-index: каждая следующая панель перекрывает предыдущую */
@@ -38,7 +39,7 @@
 .home-panel:nth-child(3) { z-index: 30; }
 .home-panel:nth-child(4) { z-index: 40; }
 
-/* Внутренний стеклянный слой — backdrop-filter здесь, не на .home-panel */
+/* Внутренний стеклянный слой — абсолютный, растягивается по .home-panel */
 .home-panel-glass {
   position: absolute;
   inset: 0;
@@ -52,28 +53,29 @@
   overflow: hidden;
 }
 
-/* Контентный слой поверх стекла */
+/* Контентный слой поверх стекла — задаёт высоту всей панели */
 .home-panel-content {
   position: relative;
   z-index: 1;
   width: 100%;
-  height: 100%;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  border-radius: var(--padRadius);
 }
 
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 @media (pointer: coarse) {
   .home-stack {
     padding-top: 100px;
-    min-height: calc(100px + 600px * 4 + 200px);
+    min-height: calc(100px + 300px * 4 + 100vh);
   }
 
   .home-panel {
     top: 100px;
-    height: 600px;
     width: 100%;
   }
 }
@@ -89,7 +91,7 @@
 /* Контентная область блока */
 .home-block-content {
   width: 100%;
-  height: 100%;
+  min-height: 300px;
   padding: 20px;
   overflow-y: auto;
   box-sizing: border-box;

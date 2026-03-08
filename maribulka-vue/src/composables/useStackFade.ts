@@ -174,6 +174,7 @@ export function useStackFade(
       container.addEventListener('touchstart', onTouchStart, { passive: true })
       container.addEventListener('touchend', onTouchEnd, { passive: true })
       resizeObserver.observe(container)
+      panels.value.forEach(p => resizeObserver.observe(p))
     }
   })
 

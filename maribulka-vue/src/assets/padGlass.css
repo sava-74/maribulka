@@ -15,7 +15,7 @@
   border: 2px solid var(--glass-border);
   border-radius: var(--padRadius);
   border-style: groove;
-  overflow: hidden;
+  /*overflow: hidden;*/
   background: var(--glass-bg);
   backdrop-filter: blur(var(--padBlur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--padBlur)) saturate(180%);
