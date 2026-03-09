@@ -13,10 +13,24 @@
   width: 100%;
 }
 
+/* Отключаем всплывающие подсказки */
+.ck.ck-tooltip {
+  display: none !important;
+}
+
 /* Тулбар в glass стиле */
 .ck.ck-toolbar {
   background: transparent !important;
   border-radius: 0 !important;
+}
+
+/* Убираем рамку выделения кнопок тулбара */
+.ck.ck-toolbar .ck-button:focus,
+.ck.ck-toolbar .ck-button.ck-on:focus,
+.ck.ck-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
 .ck.ck-toolbar .ck-toolbar__items .ck-button {
@@ -79,7 +93,7 @@
 
 }
 
-.ck.ck-dropdown__panel .ck-button,
+.ck.ck-dropdown__panel .ck-button:not(.ck-color-grid__tile),
 .ck.ck-dropdown__panel .ck-list__item {
   color: var(--text-primary) !important;
   background: transparent !important;

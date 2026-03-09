@@ -5,7 +5,9 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import type { Editor } from 'ckeditor5'
 import {
   ClassicEditor,
-  Bold, Italic, Underline, Strikethrough,
+  Bold, Italic, Underline,
+  Superscript, Subscript,
+  FontColor, FontBackgroundColor,
   Heading,
   List, ListUI,
   Alignment,
@@ -50,7 +52,9 @@ function onEditorReady(editor: Editor) {
 
 const editorConfig = {
   plugins: [
-    Bold, Italic, Underline, Strikethrough,
+    Bold, Italic, Underline,
+    Superscript, Subscript,
+    FontColor, FontBackgroundColor,
     Heading,
     List, ListUI,
     Alignment,
@@ -62,12 +66,14 @@ const editorConfig = {
   toolbar: {
     items: [
       'heading', '|',
-      'bold', 'italic', 'underline', 'strikethrough', '|',
+      'bold', 'italic', 'underline', 'superscript', 'subscript', '|',
+      'fontColor', 'fontBackgroundColor', '|',
       'bulletedList', 'numberedList', '|',
       'alignment', '|',
       'link', 'uploadImage', '|',
       'undo', 'redo'
-    ]
+    ],
+    shouldNotGroupWhenFull: true
   },
   heading: {
     options: [

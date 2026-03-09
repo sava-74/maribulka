@@ -178,6 +178,10 @@ Symlink created during deploy: `public_html/media → ../media`
 ### Reference (Sandbox)
 `src/sandbox/SandboxView.vue` is the design reference. Copy HTML **exactly as-is** — no modifications.
 
+### Known CSS Traps
+
+- **DO NOT** add `overflow: hidden` to `.padGlass` — it breaks CKEditor balloon/dropdown panels (creates clip container)
+
 ### Mobile Adaptation
 - **Single breakpoint:** `@media (pointer: coarse)`
 
@@ -208,7 +212,11 @@ Backend uses SQL `SUM()`, `COUNT()`, `AVG()` and returns final numbers.
 ## Key Libraries
 
 - **FullCalendar** 6.1.20 - Booking calendar with day/time grid
-- **TipTap** 3.20.0 - Rich text editor (replaced Quill on Feb 26, 2026)
+- **CKEditor 5** (licenseKey: `'GPL'`) - Rich text editor for Home page blocks
+  - Component: `RichTextEditor.vue`, upload via `SimpleUploadAdapter`
+  - On image upload: auto-set 30% width via `resizedWidth` attribute (NOT `width`!)
+  - Upload endpoint: `POST /api/upload-image.php` (admin session required)
+- **TipTap** 3.20.0 - Rich text editor (other places, replaced Quill Feb 26, 2026)
   - Extensions: Image (with resize), Link (custom modal), Color, TextAlign, Underline
   - `allowBase64: true` for embedded images
 - **Pinia** - State management
@@ -224,7 +232,7 @@ maribulka/
 │   ├── src/
 │   │   ├── components/     # Vue SFCs
 │   │   │   ├── accounting/ # Admin booking/finance components
-│   │   │   ├── home/       # Public home page modals
+│   │   │   ├── home/       # Public home page: Home.vue, EditBlockModal.vue
 │   │   │   ├── TopBar.vue, SideBar.vue
 │   │   │   └── *Modal.vue  # Reusable modals
 │   │   ├── views/          # Page-level components
@@ -262,6 +270,7 @@ maribulka/
 
 The project has extensive documentation in `C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\`:
 - `MEMORY.md` - Quick reference (always loaded)
+- `home-stack.md` - Home page: sticky panels, CKEditor, smart scroll logic
 - `buttons-refactoring.md` - Button system (refactoring completed Mar 2, 2026)
 - `styles.md` - CSS organization details
 - `patterns.md` - Code patterns and examples
