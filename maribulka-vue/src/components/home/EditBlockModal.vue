@@ -31,26 +31,26 @@ async function handleSave() {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay modal-overlay-editor" @click.self="emit('close')">
-      <div class="padGlass modal-sm" style="width: 90vw; max-width: 900px; min-width: auto;">
-        <div class="modal-glassTitle">Редактирование блока {{ blockId }}</div>
+  <div v-if="isVisible" class="modal-overlay-worck-table modal-overlay-editor" @click.self="emit('close')">
+    <div class="padGlass modal-sm" style="width: 100%; max-width: 900px; min-width: auto; height: 100%; display: flex; flex-direction: column;">
+      <div class="modal-glassTitle">Редактирование блока {{ blockId }}</div>
+      <div style="flex: 1; overflow-y: auto; min-height: 0;">
         <RichTextEditor v-model="content" placeholder="Введите содержимое блока..." />
-        <div class="ButtonFooter PosRight">
-          <button class="btnGlass iconText" @click="emit('close')">
-            <span class="inner-glow"></span>
-            <span class="top-shine"></span>
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
-            <span>Отмена</span>
-          </button>
-          <button class="btnGlass iconText" @click="handleSave">
-            <span class="inner-glow"></span>
-            <span class="top-shine"></span>
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
-            <span>Сохранить</span>
-          </button>
-        </div>
+      </div>
+      <div class="ButtonFooter PosRight">
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
+          <span>Отмена</span>
+        </button>
+        <button class="btnGlass iconText" @click="handleSave">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
+          <span>Сохранить</span>
+        </button>
       </div>
     </div>
-  </Teleport>
+  </div>
 </template>

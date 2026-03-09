@@ -1,5 +1,20 @@
 # CLAUDE.md
 
+
+# ⛔ КРИТИЧЕСКИЕ ПРАВИЛА
+
+## 🔴 ПРАВИЛО #0: ПЛАН → ОДОБРЕНИЕ → ПРИМЕНЕНИЕ
+
+**CRITICAL:**
+
+ЗАПРЕЩЕНО вносить любые изменения в код без предварительного плана и одобрения пользователя.
+
+**Workflow:**
+1. План
+2. СТОП — ждать одобрения
+3. Одобрение получено → выполнять
+
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview

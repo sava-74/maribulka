@@ -3,9 +3,8 @@
    editor.css
    ======================================== */
 
-/* Модалка с редактором — без backdrop-filter чтобы balloon CKEditor был виден */
-.modal-overlay-editor {
-  z-index: 10;
+/* Субстиль модалки редактора */
+.worck-table .modal-overlay-worck-table.modal-overlay-editor {
 }
 
 /* Обёртка редактора */
@@ -56,6 +55,20 @@
   color: var(--text-primary) !important;
   min-height: 300px;
   padding: 16px !important;
+  box-sizing: border-box;
+}
+
+/* В полноэкранной модалке редактор растягивается по высоте */
+.ck.ck-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ck.ck-editor__main {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .ck.ck-editor__editable:focus {

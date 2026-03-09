@@ -119,9 +119,19 @@ body {
   padding: 0px 5px;
 }
 
-.worck-table{
+.worck-table {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  bottom: 0;
+  padding-top: 110px;
+}
+
+@media (pointer: coarse) {
+  .worck-table {
+    padding-top: 100px;
+  }
 }
 
 /* ========== ОРБЫ (анимированный фон) ========== */
