@@ -43,7 +43,7 @@ onMounted(() => {
         <div class="home-panel-content">
           <button
             v-if="authStore.isAdmin"
-            class="glass-btn icon-only home-panel-edit-btn"
+            class="btnGlass icon-only home-panel-edit-btn"
             @click="editingBlock = 1"
             aria-label="Редактировать"
           >
@@ -61,7 +61,7 @@ onMounted(() => {
         <div class="home-panel-content">
           <button
             v-if="authStore.isAdmin"
-            class="glass-btn icon-only home-panel-edit-btn"
+            class="btnGlass icon-only home-panel-edit-btn"
             @click="editingBlock = 2"
             aria-label="Редактировать"
           >
@@ -79,7 +79,7 @@ onMounted(() => {
         <div class="home-panel-content">
           <button
             v-if="authStore.isAdmin"
-            class="glass-btn icon-only home-panel-edit-btn"
+            class="btnGlass icon-only home-panel-edit-btn"
             @click="editingBlock = 3"
             aria-label="Редактировать"
           >
@@ -97,7 +97,7 @@ onMounted(() => {
         <div class="home-panel-content">
           <button
             v-if="authStore.isAdmin"
-            class="glass-btn icon-only home-panel-edit-btn"
+            class="btnGlass icon-only home-panel-edit-btn"
             @click="editingBlock = 4"
             aria-label="Редактировать"
           >

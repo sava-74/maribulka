@@ -21,7 +21,7 @@
   --svgSizeBig: 40px;
 
   --padRadius: 20px;
-  --padBlur: 5px;
+  --padBlur: 18px;
 
   /* градиенты стекла (используются в темах) */
   --gbLLine1: color-mix(in srgb, var(--genColorGlass) 30%, transparent);

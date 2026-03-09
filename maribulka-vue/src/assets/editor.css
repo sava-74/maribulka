@@ -4,12 +4,49 @@
    ======================================== */
 
 /* Субстиль модалки редактора */
-.worck-table .modal-overlay-worck-table.modal-overlay-editor {
+.modal-overlay.modal-overlay-editor {
+  align-items: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.modal-overlay.modal-overlay-editor .padGlass.modal-sm {
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 /* Обёртка редактора */
 .ck-editor-wrapper {
   width: 100%;
+}
+
+/* В модалке редактора — обёртка и редактор тянутся по высоте */
+.modal-overlay-editor .ck-editor-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay-editor .ck.ck-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-overlay-editor .ck.ck-editor__main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.modal-overlay-editor .ck.ck-editor__editable {
+  flex: 1;
+  min-height: 0;
 }
 
 /* Отключаем всплывающие подсказки */
@@ -49,13 +86,13 @@
 /* Область редактирования */
 .ck.ck-editor__editable {
   background: transparent !important;
-  border: 1px solid var(--glass-border) !important;
-  border-top: none !important;
+  border: 1px solid var(--text-secondary) !important;
   border-radius: 0 !important;
   color: var(--text-primary) !important;
   min-height: 300px;
   padding: 16px !important;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 /* В полноэкранной модалке редактор растягивается по высоте */
@@ -102,7 +139,7 @@
 .ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_se {
 
     background: var(--gb-ComboBox) !important;
-    backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(var(--padBlur)) !important;
 
 }
 

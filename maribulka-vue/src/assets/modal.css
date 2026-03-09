@@ -10,26 +10,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(var(--padBlur));
+  -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
 .modal-overlay-launch {
   position: absolute;
   align-items: flex-start;
   padding-top: 100px;
-  z-index: 2000;
+  z-index: 999;
 }
 
 .worck-table .modal-overlay-worck-table {
   position: absolute;
   inset: 0;
-  z-index: 9999;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(var(--padBlur));
+  -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
 

@@ -175,7 +175,7 @@ Symlink created during deploy: `public_html/media → ../media`
     </div>
   </div>
   ```
-- Use `<Teleport to="body">` wrapper
+- **ALWAYS** use `<Teleport to="body">` wrapper — prevents scroll issues when modal is inside a scrollable container
 
 ### Footer positioning
 ```html
@@ -196,6 +196,8 @@ Symlink created during deploy: `public_html/media → ../media`
 ### Known CSS Traps
 
 - **DO NOT** add `overflow: hidden` to `.padGlass` — it breaks CKEditor balloon/dropdown panels (creates clip container)
+- **CKEditor balloon z-index** — `.modal-overlay` has `z-index: 9999` which covers CKEditor balloon toolbar. Modals containing CKEditor must override to `z-index: 1000` (see `editor.css`)
+- **`glass-btn` does NOT exist** — correct class is `btnGlass`. Never use `glass-btn`.
 
 ### Mobile Adaptation
 - **Single breakpoint:** `@media (pointer: coarse)`
