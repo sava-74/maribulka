@@ -7,6 +7,9 @@ export function useStackFade(
   // Кэш высот панелей и позиций наезда — вычисляем один раз
   let panelHeights: number[] = []
   let overlapPositions: number[] = []
+  let fadePositions: number[] = [] // scrollTop момента реального визуального наезда панели i
+  let fadeRanges: number[] = []    // диапазон затухания для каждой панели (в px scrollTop)
+  let panelStickyTops: number[] = [] // отрицательный top для высоких панелей (кэш)
   let TOP_OFFSET = 110 // высота TopBar — обновляется в calcGeometry по реальному CSS
   let BOTTOM_GAP = 20 // отступ снизу — обновляется в calcGeometry (20px десктоп, 10px мобилка)
 
@@ -25,23 +28,45 @@ export function useStackFade(
     BOTTOM_GAP = window.matchMedia('(pointer: coarse)').matches ? 10 : 20
 
     panelHeights = panels.value.map(p => p.offsetHeight)
-    // overlapPositions[i] — scrollTop при котором панель i полностью перекрывает i-1
+    console.log('calcGeometry panelHeights:', panelHeights, 'fitsHeight:', viewportHeight - TOP_OFFSET)
+
+    // Кэшируем top для высоких панелей, изначально всем ставим TOP_OFFSET
+    const fitsHeight = viewportHeight - TOP_OFFSET
+    panelStickyTops = panelHeights.map(h => {
+      if (h > fitsHeight) {
+        return viewportHeight - h - BOTTOM_GAP // отрицательный top для высокой панели (активной)
+      }
+      return TOP_OFFSET
+    })
+    // Изначально все панели top: TOP_OFFSET — переключаем динамически при скролле
+    panels.value.forEach(panel => {
+      panel.style.top = `${TOP_OFFSET}px`
+    })
+
+    // overlapPositions[i] — scrollTop при котором панель i начинает наезжать на i-1
     overlapPositions = panelHeights.map((_, i) => {
       return panelHeights.slice(0, i).reduce((sum, h) => sum + h, 0)
     })
 
-    // Динамически обновляем top каждой панели и min-height стека
-    // Панель "высокая" если не помещается в viewport без учёта BOTTOM_GAP
-    const fitsHeight = viewportHeight - TOP_OFFSET
-    panels.value.forEach((panel, i) => {
-      const h = panelHeights[i] ?? 0
-      if (h > fitsHeight) {
-        // Панель выше viewport: top отрицательный → сначала виден верх, потом низ
-        panel.style.top = `${viewportHeight - h - BOTTOM_GAP}px`
-      } else {
-        panel.style.top = `${TOP_OFFSET}px`
+    // fadePositions[i] = scrollTop начала анимации наезда панели i
+    fadePositions = panelHeights.map((_, i) => {
+      if (i === 0) return 0
+      const prevH = panelHeights[i - 1] ?? 0
+      const prevStart = overlapPositions[i - 1] ?? 0
+      if (prevH > fitsHeight) {
+        return prevStart + (prevH - fitsHeight) + BOTTOM_GAP
       }
+      return (overlapPositions[i] ?? 0) - Math.min(prevH, fitsHeight)
     })
+
+    // fadeRanges[i] = overlapPositions[i] - fadePositions[i]
+    // всегда точно совпадает, анимация заканчивается ровно на overlapPositions[i]
+    fadeRanges = panelHeights.map((_, i) => {
+      if (i === 0) return 0
+      return Math.max((overlapPositions[i] ?? 0) - (fadePositions[i] ?? 0), 50)
+    })
+
+    console.log('overlapPositions:', overlapPositions, 'fadePositions:', fadePositions, 'fadeRanges:', fadeRanges)
 
     // Обновляем min-height стека чтобы хватало места для скролла последней панели
     if (stackEl) {
@@ -50,47 +75,49 @@ export function useStackFade(
     }
   }
 
-  const FADE_RANGE = 150 // px — диапазон затухания при наезде следующей панели
-
   function updateOpacity() {
     const container = scrollContainer.value
-    if (!container || !panels.value.length) return
+    if (!container || !panels.value.length || !fadePositions.length) return
 
-    // Читаем rects всех панелей один раз
-    const rects = panels.value.map(p => p.getBoundingClientRect())
+    const scrollTop = container.scrollTop
+
+    // ДИАГНОСТИКА — удалить после отладки
+    panels.value.forEach((p, i) => {
+      const r = p.getBoundingClientRect()
+      console.log(`панель ${i+1} высота панели: ${p.offsetHeight}, положение от верха: ${r.top.toFixed(0)}`)
+    })
+    console.log(`scrollTop: ${scrollTop.toFixed(0)}`)
 
     panels.value.forEach((panel, index) => {
-      let opacity = 1
       const isLast = index === panels.value.length - 1
+      // Переключаем top высокой панели: отрицательный только когда она активна
+      const stickyTop = panelStickyTops[index] ?? TOP_OFFSET
+      if (stickyTop < TOP_OFFSET) {
+        // Панель высокая — активна когда scrollTop >= overlapPositions[index]
+        const isActive = scrollTop >= (overlapPositions[index] ?? Infinity)
+        panel.style.top = isActive ? `${stickyTop}px` : `${TOP_OFFSET}px`
+      }
+      let opacity = 1
 
-      // overlap(i, i+1) = насколько панель i+1 перекрыла панель i снизу
-      // = нижний край панели i - верхний край панели i+1
-      // когда overlap <= 0 — панели не перекрываются
-      // когда overlap >= FADE_RANGE — панель i полностью затухла
-
-      if (index === 0) {
-        const nextRect = rects[1]
-        if (!nextRect) {
-          opacity = 1
-        } else {
-          const overlap = rects[0]!.bottom - nextRect.top
-          opacity = overlap <= 0 ? 1 : overlap >= FADE_RANGE ? 0 : 1 - overlap / FADE_RANGE
+      // Fade-out: когда следующая панель наезжает на эту
+      if (!isLast) {
+        const fadeOutStart = fadePositions[index + 1] ?? Infinity
+        const range = fadeRanges[index + 1] ?? 50
+        const progress = scrollTop - fadeOutStart
+        if (progress >= range) {
+          opacity = 0
+        } else if (progress > 0) {
+          opacity = 1 - progress / range
         }
-      } else {
-        // Fade-in: эта панель появляется по мере перекрытия предыдущей снизу
-        const prevRect = rects[index - 1]!
-        const fadeInOverlap = prevRect.bottom - rects[index]!.top
-        const fadeIn = fadeInOverlap <= 0 ? 0 : fadeInOverlap >= FADE_RANGE ? 1 : fadeInOverlap / FADE_RANGE
+      }
 
-        // Fade-out: следующая панель наезжает на эту
-        let fadeOut = 1
-        if (!isLast) {
-          const nextRect = rects[index + 1]!
-          const overlap = rects[index]!.bottom - nextRect.top
-          fadeOut = overlap <= 0 ? 1 : overlap >= FADE_RANGE ? 0 : 1 - overlap / FADE_RANGE
-        }
-
-        opacity = Math.min(fadeIn, fadeOut)
+      // Fade-in: когда эта панель наезжает на предыдущую
+      if (index > 0) {
+        const fadeInStart = fadePositions[index] ?? 0
+        const range = fadeRanges[index] ?? 50
+        const progress = scrollTop - fadeInStart
+        const fadeIn = progress <= 0 ? 0 : progress >= range ? 1 : progress / range
+        opacity = Math.min(opacity, fadeIn)
       }
 
       panel.style.setProperty('--panel-opacity', String(Math.max(0, Math.min(1, opacity))))
@@ -293,6 +320,7 @@ export function useStackFade(
     if (container) {
       smoothTarget = container.scrollTop
       calcGeometry()
+      console.log('onMounted panelHeights:', panelHeights, 'panelStickyTops:', panelStickyTops, 'fitsHeight:', container.clientHeight - TOP_OFFSET)
       updateOpacity()
       container.addEventListener('scroll', onScroll, { passive: true })
       container.addEventListener('wheel', onWheel, { passive: false })
