@@ -50,37 +50,47 @@ export function useStackFade(
     }
   }
 
+  const FADE_RANGE = 150 // px — диапазон затухания при наезде следующей панели
+
   function updateOpacity() {
     const container = scrollContainer.value
     if (!container || !panels.value.length) return
 
-    const scrollTop = container.scrollTop
+    // Читаем rects всех панелей один раз
+    const rects = panels.value.map(p => p.getBoundingClientRect())
 
     panels.value.forEach((panel, index) => {
       let opacity = 1
-      const h = panelHeights[index] || panel.offsetHeight
+      const isLast = index === panels.value.length - 1
+
+      // overlap(i, i+1) = насколько панель i+1 перекрыла панель i снизу
+      // = нижний край панели i - верхний край панели i+1
+      // когда overlap <= 0 — панели не перекрываются
+      // когда overlap >= FADE_RANGE — панель i полностью затухла
 
       if (index === 0) {
-        // Панель 1: исчезает по мере наезда панели 2 (100% диапазон)
-        const fadeEnd = overlapPositions[1] ?? h
-        opacity = scrollTop >= fadeEnd ? 0 : 1 - scrollTop / fadeEnd
-      } else {
-        const fadeInEnd = overlapPositions[index] ?? 0
-        const fadeInStart = overlapPositions[index - 1] ?? 0
-        const nextOverlap = overlapPositions[index + 1]
-        const isLast = index === panels.value.length - 1
-
-        if (scrollTop <= fadeInStart) {
-          opacity = 0
-        } else if (scrollTop < fadeInEnd) {
-          const range = fadeInEnd - fadeInStart
-          opacity = range > 0 ? (scrollTop - fadeInStart) / range : 1
-        } else if (!isLast && nextOverlap !== undefined) {
-          const range = nextOverlap - fadeInEnd
-          opacity = scrollTop >= nextOverlap ? 0 : 1 - (scrollTop - fadeInEnd) / range
-        } else {
+        const nextRect = rects[1]
+        if (!nextRect) {
           opacity = 1
+        } else {
+          const overlap = rects[0]!.bottom - nextRect.top
+          opacity = overlap <= 0 ? 1 : overlap >= FADE_RANGE ? 0 : 1 - overlap / FADE_RANGE
         }
+      } else {
+        // Fade-in: эта панель появляется по мере перекрытия предыдущей снизу
+        const prevRect = rects[index - 1]!
+        const fadeInOverlap = prevRect.bottom - rects[index]!.top
+        const fadeIn = fadeInOverlap <= 0 ? 0 : fadeInOverlap >= FADE_RANGE ? 1 : fadeInOverlap / FADE_RANGE
+
+        // Fade-out: следующая панель наезжает на эту
+        let fadeOut = 1
+        if (!isLast) {
+          const nextRect = rects[index + 1]!
+          const overlap = rects[index]!.bottom - nextRect.top
+          fadeOut = overlap <= 0 ? 1 : overlap >= FADE_RANGE ? 0 : 1 - overlap / FADE_RANGE
+        }
+
+        opacity = Math.min(fadeIn, fadeOut)
       }
 
       panel.style.setProperty('--panel-opacity', String(Math.max(0, Math.min(1, opacity))))
