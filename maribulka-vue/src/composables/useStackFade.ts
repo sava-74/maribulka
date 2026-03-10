@@ -210,7 +210,49 @@ export function useStackFade(
 
   function onWheel(e: WheelEvent) {
     e.preventDefault()
+    const container = scrollContainer.value
+    if (!container) return
+
+    // Пока идёт snap-анимация — игнорируем колёсико
+    if (smoothRafId) return
+
     const scrollingDown = e.deltaY > 0
+
+    // Найти текущую активную панель
+    const scrollTop = container.scrollTop
+    const viewportHeight = container.clientHeight
+    const fitsHeight = viewportHeight - TOP_OFFSET
+
+    let currentIndex = 0
+    for (let i = overlapPositions.length - 1; i >= 0; i--) {
+      if ((overlapPositions[i] ?? Infinity) <= scrollTop + 1) {
+        currentIndex = i
+        break
+      }
+    }
+
+    const panelHeight = panelHeights[currentIndex] ?? 0
+
+    if (panelHeight > fitsHeight) {
+      // Панель высокая — считаем границы ручного скролла
+      const panelScrollStart = overlapPositions[currentIndex] ?? 0
+      const panelScrollEnd = panelScrollStart + (panelHeight - fitsHeight)
+
+      if (scrollingDown && scrollTop < panelScrollEnd - 1) {
+        // Ещё не достигли низа — скроллим вручную
+        if (smoothRafId) { cancelAnimationFrame(smoothRafId); smoothRafId = 0; snapStartTime = 0 }
+        container.scrollTop = Math.min(scrollTop + Math.abs(e.deltaY), panelScrollEnd)
+        return
+      }
+      if (!scrollingDown && scrollTop > panelScrollStart + 1) {
+        // Ещё не достигли верха — скроллим вручную
+        if (smoothRafId) { cancelAnimationFrame(smoothRafId); smoothRafId = 0; snapStartTime = 0 }
+        container.scrollTop = Math.max(scrollTop - Math.abs(e.deltaY), panelScrollStart)
+        return
+      }
+    }
+
+    // Иначе — снап к следующей/предыдущей панели
     clearTimeout(snapTimer)
     snapTimer = window.setTimeout(() => snapByDirection(scrollingDown), 180)
   }
