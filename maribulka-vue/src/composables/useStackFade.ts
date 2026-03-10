@@ -8,6 +8,7 @@ export function useStackFade(
   let panelHeights: number[] = []
   let overlapPositions: number[] = []
   let TOP_OFFSET = 110 // высота TopBar — обновляется в calcGeometry по реальному CSS
+  let BOTTOM_GAP = 20 // отступ снизу — обновляется в calcGeometry (20px десктоп, 10px мобилка)
 
   function calcGeometry() {
     const container = scrollContainer.value
@@ -20,6 +21,9 @@ export function useStackFade(
       if (!isNaN(pt) && pt > 0) TOP_OFFSET = pt
     }
 
+    // Обновляем BOTTOM_GAP по типу устройства
+    BOTTOM_GAP = window.matchMedia('(pointer: coarse)').matches ? 10 : 20
+
     panelHeights = panels.value.map(p => p.offsetHeight)
     // overlapPositions[i] — scrollTop при котором панель i полностью перекрывает i-1
     overlapPositions = panelHeights.map((_, i) => {
@@ -27,12 +31,13 @@ export function useStackFade(
     })
 
     // Динамически обновляем top каждой панели и min-height стека
-    const availableHeight = viewportHeight - TOP_OFFSET
+    // Панель "высокая" если не помещается в viewport без учёта BOTTOM_GAP
+    const fitsHeight = viewportHeight - TOP_OFFSET
     panels.value.forEach((panel, i) => {
       const h = panelHeights[i] ?? 0
-      if (h > availableHeight) {
+      if (h > fitsHeight) {
         // Панель выше viewport: top отрицательный → сначала виден верх, потом низ
-        panel.style.top = `${viewportHeight - h}px`
+        panel.style.top = `${viewportHeight - h - BOTTOM_GAP}px`
       } else {
         panel.style.top = `${TOP_OFFSET}px`
       }
@@ -145,7 +150,7 @@ export function useStackFade(
 
     const scrollTop = container.scrollTop
     const viewportHeight = container.clientHeight
-    const availableHeight = viewportHeight - TOP_OFFSET
+    const fitsHeight = viewportHeight - TOP_OFFSET
 
     if (scrollingDown) {
       // Найти текущую активную панель — последняя с overlapPosition <= scrollTop
@@ -159,11 +164,11 @@ export function useStackFade(
 
       const panelHeight = panelHeights[currentIndex] ?? 0
 
-      if (panelHeight > availableHeight) {
+      if (panelHeight > fitsHeight) {
         // Панель выше viewport — нужно сначала показать её низ
         // overlapPositions[currentIndex] = scrollTop при котором панель начинает sticky
         // Чтобы увидеть низ: scrollTop = overlapPositions[currentIndex] + (panelHeight - availableHeight)
-        const targetToShowBottom = (overlapPositions[currentIndex] ?? 0) + (panelHeight - availableHeight)
+        const targetToShowBottom = (overlapPositions[currentIndex] ?? 0) + (panelHeight - fitsHeight)
         if (targetToShowBottom > scrollTop + 1) {
           smoothTarget = targetToShowBottom
           snapStartTime = 0

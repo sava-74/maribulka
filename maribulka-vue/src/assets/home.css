@@ -16,7 +16,7 @@
 .home-stack {
   display: flex;
   flex-direction: column;
-  min-height: calc(110px + 300px * 4 + 100vh); /* fallback, JS перезапишет */
+  min-height: calc(110px + 100vh * 4 + 100vh); /* fallback, JS перезапишет */
   padding-top: 110px;
   align-items: center;
 }
@@ -60,25 +60,31 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 300px;
+  min-height: calc(100vh - 110px - 20px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   border-radius: var(--padRadius);
+  padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
 @media (pointer: coarse) {
   .home-stack {
     padding-top: 100px;
-    min-height: calc(100px + 300px * 4 + 100vh);
+    min-height: calc(100px + 100vh * 4 + 100vh);
   }
 
   .home-panel {
     top: 100px;
     width: 100%;
+  }
+
+  .home-panel-content {
+    min-height: calc(100vh - 100px - 10px);
+    padding-bottom: 10px;
   }
 }
 
@@ -93,7 +99,6 @@
 /* Контентная область блока */
 .home-block-content {
   width: 100%;
-  min-height: 300px;
   padding: 20px;
   overflow-y: auto;
   box-sizing: border-box;
