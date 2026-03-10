@@ -28,7 +28,6 @@ export function useStackFade(
     BOTTOM_GAP = window.matchMedia('(pointer: coarse)').matches ? 10 : 20
 
     panelHeights = panels.value.map(p => p.offsetHeight)
-    console.log('calcGeometry panelHeights:', panelHeights, 'fitsHeight:', viewportHeight - TOP_OFFSET)
 
     // Кэшируем top для высоких панелей, изначально всем ставим TOP_OFFSET
     const fitsHeight = viewportHeight - TOP_OFFSET
@@ -66,8 +65,6 @@ export function useStackFade(
       return Math.max((overlapPositions[i] ?? 0) - (fadePositions[i] ?? 0), 50)
     })
 
-    console.log('overlapPositions:', overlapPositions, 'fadePositions:', fadePositions, 'fadeRanges:', fadeRanges)
-
     // Обновляем min-height стека чтобы хватало места для скролла последней панели
     if (stackEl) {
       const totalPanelHeight = panelHeights.reduce((sum, h) => sum + h, 0)
@@ -80,13 +77,6 @@ export function useStackFade(
     if (!container || !panels.value.length || !fadePositions.length) return
 
     const scrollTop = container.scrollTop
-
-    // ДИАГНОСТИКА — удалить после отладки
-    panels.value.forEach((p, i) => {
-      const r = p.getBoundingClientRect()
-      console.log(`панель ${i+1} высота панели: ${p.offsetHeight}, положение от верха: ${r.top.toFixed(0)}`)
-    })
-    console.log(`scrollTop: ${scrollTop.toFixed(0)}`)
 
     panels.value.forEach((panel, index) => {
       const isLast = index === panels.value.length - 1
@@ -320,8 +310,7 @@ export function useStackFade(
     if (container) {
       smoothTarget = container.scrollTop
       calcGeometry()
-      console.log('onMounted panelHeights:', panelHeights, 'panelStickyTops:', panelStickyTops, 'fitsHeight:', container.clientHeight - TOP_OFFSET)
-      updateOpacity()
+updateOpacity()
       container.addEventListener('scroll', onScroll, { passive: true })
       container.addEventListener('wheel', onWheel, { passive: false })
       container.addEventListener('touchstart', onTouchStart, { passive: true })
