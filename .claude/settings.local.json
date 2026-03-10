@@ -27,7 +27,16 @@
       "mcp__plugin_playwright_playwright__browser_take_screenshot",
       "mcp__plugin_playwright_playwright__browser_console_messages",
       "mcp__plugin_playwright_playwright__browser_file_upload",
-      "mcp__context7__query-docs"
+      "mcp__context7__query-docs",
+      "Bash(cp ../accounting/AddBookingModal.vue .)",
+      "Bash(cp ../accounting/AddPaymentModal.vue .)",
+      "Bash(cp ../accounting/BookingActionsModal.vue .)",
+      "Bash(cp ../accounting/CancelBookingModal.vue .)",
+      "Bash(cp ../accounting/ConfirmSessionModal.vue .)",
+      "Bash(cp ../accounting/DeleteConfirmModal.vue .)",
+      "Bash(cp ../accounting/DeliverBookingModal.vue .)",
+      "Bash(cp ../accounting/EditBookingModal.vue .)",
+      "Bash(cp ../accounting/ViewBookingModal.vue .)"
     ]
   }
 }
