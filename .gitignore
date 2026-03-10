@@ -67,6 +67,10 @@ vendor/
 composer.phar
 composer.lock
 
+# Git worktrees
+.worktrees/
+.superpowers/
+
 # Backup files
 *_backup_*
 *.bak
