@@ -153,6 +153,7 @@ export function useStackFade(
   }
 
   let snapTimer = 0
+  let bottomReached = false // флаг: низ высокой панели достигнут, следующий щелчок — снап
 
   function snapByDirection(scrollingDown: boolean) {
     const container = scrollContainer.value
@@ -236,23 +237,32 @@ export function useStackFade(
     if (panelHeight > fitsHeight) {
       // Панель высокая — считаем границы ручного скролла
       const panelScrollStart = overlapPositions[currentIndex] ?? 0
-      const panelScrollEnd = panelScrollStart + (panelHeight - fitsHeight)
+      const panelScrollEnd = panelScrollStart + (panelHeight - fitsHeight) + BOTTOM_GAP
 
-      if (scrollingDown && scrollTop < panelScrollEnd - 1) {
-        // Ещё не достигли низа — скроллим вручную
-        if (smoothRafId) { cancelAnimationFrame(smoothRafId); smoothRafId = 0; snapStartTime = 0 }
-        container.scrollTop = Math.min(scrollTop + Math.abs(e.deltaY), panelScrollEnd)
-        return
+      if (scrollingDown) {
+        if (!bottomReached) {
+          // Ещё не достигли низа — скроллим вручную
+          const newScrollTop = Math.min(scrollTop + Math.abs(e.deltaY), panelScrollEnd)
+          container.scrollTop = newScrollTop
+          // Если достигли границы — выставляем флаг (следующий щелчок = снап)
+          if (newScrollTop >= panelScrollEnd - 1) bottomReached = true
+          return
+        }
+        // bottomReached = true → падаем вниз к снапу
       }
-      if (!scrollingDown && scrollTop > panelScrollStart + 1) {
-        // Ещё не достигли верха — скроллим вручную
-        if (smoothRafId) { cancelAnimationFrame(smoothRafId); smoothRafId = 0; snapStartTime = 0 }
-        container.scrollTop = Math.max(scrollTop - Math.abs(e.deltaY), panelScrollStart)
-        return
+      if (!scrollingDown) {
+        // Скролл вверх — сбрасываем флаг, скроллим вручную
+        bottomReached = false
+        if (scrollTop > panelScrollStart + 1) {
+          container.scrollTop = Math.max(scrollTop - Math.abs(e.deltaY), panelScrollStart)
+          return
+        }
       }
+    } else {
+      bottomReached = false
     }
 
-    // Иначе — снап к следующей/предыдущей панели
+    // Снап к следующей/предыдущей панели
     clearTimeout(snapTimer)
     snapTimer = window.setTimeout(() => snapByDirection(scrollingDown), 180)
   }
