@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import BookingsFullCalendar from './BookingsFullCalendar.vue'
 import BookingsCalendar from './BookingsCalendar.vue'
 import IncomeTable from './IncomeTable.vue'
 import ExpensesTable from './ExpensesTable.vue'
@@ -9,9 +8,6 @@ import PeriodSelectorModal from './PeriodSelectorModal.vue'
 
 // Текущая активная вкладка
 const activeTab = ref('bookings')
-
-// Показать/скрыть таблицу записей
-const showTable = ref(false)
 
 // Модалка выбора периода
 const showPeriodModal = ref(false)
@@ -104,18 +100,10 @@ function updatePeriod(start: Date, end: Date) {
       <!-- Панель контента -->
       <div class="glass-panel-tabs-content">
         <template v-if="activeTab === 'bookings'">
-          <BookingsFullCalendar
-            :showTable="showTable"
+          <BookingsCalendar
             :period-start="periodStart"
             :period-end="periodEnd"
-            @toggle-table="showTable = !showTable"
           />
-          <div v-if="showTable" style="margin-top: 20px;">
-            <BookingsCalendar
-              :period-start="periodStart"
-              :period-end="periodEnd"
-            />
-          </div>
         </template>
         <IncomeTable
           v-if="activeTab === 'income'"

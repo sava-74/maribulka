@@ -15,6 +15,7 @@ import {
   mdiLogout,
 } from '@mdi/js'
 import { useAuthStore } from '../../stores/auth'
+import { useNavigationStore } from '../../stores/navigation'
 import ConfirmModal from '../ConfirmModal.vue'
 import { useGenie } from '../../composables/useGenie'
 
@@ -35,12 +36,18 @@ const genieStyle = computed(() => {
 })
 
 const auth = useAuthStore()
+const navStore = useNavigationStore()
 const showLogoutConfirm = ref(false)
 const panelRef = ref<HTMLElement | null>(null)
 const { closing, close } = useGenie(panelRef, () => props.isVisible, () => {
   showLogoutConfirm.value = false
   emit('close')
 })
+
+function openCalendar() {
+  navStore.navigateTo('calendar')
+  close()
+}
 
 defineExpose({ close })
 
@@ -76,7 +83,7 @@ function onRipple(event: MouseEvent) {
         <div class="pad-title">Учёт</div>
         <div class="pad-icon-grid">
           <div class="pad-icon-cell">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openCalendar()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiCalendarMonth" class="btn-icon-big" />

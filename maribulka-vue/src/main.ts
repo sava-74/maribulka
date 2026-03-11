@@ -9,6 +9,7 @@ import './assets/padGlass.css'
 import './assets/modal.css'
 import './assets/animations.css'
 import './assets/home.css'
+import './assets/calendar.css'
 import 'ckeditor5/ckeditor5.css'
 import './assets/editor.css'
 

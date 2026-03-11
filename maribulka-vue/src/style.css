@@ -121,6 +121,9 @@ body {
 
 .worck-table {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   top: 0;
   left: 5px;
   right: 5px;
