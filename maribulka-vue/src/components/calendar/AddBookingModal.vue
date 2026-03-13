@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
@@ -7,6 +7,9 @@ import { useReferencesStore } from '../../stores/references'
 import { getLocalDateString } from '../../config/timezone'
 import AlertModal from '../AlertModal.vue'
 import SelectBox from '../SelectBox.vue'
+import flatpickr from 'flatpickr'
+import { Russian } from 'flatpickr/dist/l10n/ru.js'
+import 'flatpickr/dist/flatpickr.min.css'
 
 const props = defineProps<{ isVisible: boolean, defaultDate?: string }>()
 const emit = defineEmits(['close'])
@@ -31,6 +34,156 @@ const generatedOrderNumber = ref('')
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
+
+// Flatpickr
+const dateInputRef = ref<HTMLInputElement | null>(null)
+let fpInstance: any = null
+
+// Автокомплит клиента
+const clientInputRef = ref<HTMLInputElement | null>(null)
+const clientDropdownOpen = ref(false)
+const clientDropdownStyle = ref({ top: '0px', left: '0px', width: '0px' })
+
+const filteredClients = computed(() => {
+  if (!clientName.value) return referencesStore.clients
+  const q = clientName.value.toLowerCase()
+  return referencesStore.clients.filter(c => c.name.toLowerCase().includes(q))
+})
+
+function onClientInput() {
+  if (!clientInputRef.value) return
+  const rect = clientInputRef.value.getBoundingClientRect()
+  clientDropdownStyle.value = {
+    top: `${rect.bottom + 4}px`,
+    left: `${rect.left}px`,
+    width: `${rect.width}px`,
+  }
+  clientDropdownOpen.value = filteredClients.value.length > 0
+}
+
+function selectClient(name: string) {
+  clientName.value = name
+  clientDropdownOpen.value = false
+}
+
+function onClientDocClick(e: MouseEvent) {
+  if (clientDropdownOpen.value && !clientInputRef.value?.contains(e.target as Node)) {
+    clientDropdownOpen.value = false
+  }
+}
+
+// Кастомный дропдаун месяца
+const monthDropdownOpen = ref(false)
+const monthDropdownStyle = ref({ top: '0px', left: '0px', width: '0px' })
+const monthDropdownCurrentMonth = ref(0)
+const monthDropdownCurrentYear = ref(new Date().getFullYear())
+let monthTriggerEl: HTMLElement | null = null
+
+const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
+
+function openMonthDropdown() {
+  if (!monthTriggerEl) return
+  const rect = monthTriggerEl.getBoundingClientRect()
+  monthDropdownStyle.value = {
+    top: `${rect.bottom + 4}px`,
+    left: `${rect.left}px`,
+    width: 'auto',
+  }
+  monthDropdownOpen.value = true
+}
+
+function selectMonth(monthIndex: number) {
+  monthDropdownOpen.value = false
+  if (fpInstance) {
+    fpInstance.changeMonth(monthIndex - fpInstance.currentMonth, false)
+  }
+}
+
+function onMonthDropdownDocClick(_e: MouseEvent) {
+  if (monthDropdownOpen.value) {
+    monthDropdownOpen.value = false
+  }
+}
+
+// Инициализация flatpickr при открытии модалки
+watch(() => props.isVisible, async (visible) => {
+  if (visible) {
+    await nextTick()
+    if (dateInputRef.value) {
+      if (fpInstance) { fpInstance.destroy(); fpInstance = null }
+      fpInstance = flatpickr(dateInputRef.value, {
+        locale: Russian,
+        dateFormat: 'd.m.Y',
+        minDate: new Date(),
+        allowInput: false,
+        clickOpens: true,
+        onReady: (_dates: Date[], _str: string, fp: any) => {
+          // Масштабировать календарь под ширину инпута без мелькания
+          if (dateInputRef.value && fp.calendarContainer) {
+            fp.calendarContainer.style.visibility = 'hidden'
+            requestAnimationFrame(() => {
+              if (!dateInputRef.value || !fp.calendarContainer) return
+              const inputWidth = dateInputRef.value.getBoundingClientRect().width
+              const calWidth = fp.calendarContainer.offsetWidth || 307
+              if (calWidth > inputWidth) {
+                const scale = inputWidth / calWidth
+                fp.calendarContainer.style.transformOrigin = 'top left'
+                fp.calendarContainer.style.transform = `scale(${scale})`
+              }
+              fp.calendarContainer.style.visibility = 'visible'
+            })
+          }
+
+          // Найти нативный select месяца и скрыть его
+          const nativeSelect = fp.calendarContainer?.querySelector('.flatpickr-monthDropdown-months') as HTMLSelectElement | null
+          if (nativeSelect) {
+            nativeSelect.style.display = 'none'
+            // Создать кастомный триггер
+            const trigger = document.createElement('div')
+            trigger.className = 'fp-month-trigger'
+            trigger.setAttribute('tabindex', '0')
+            nativeSelect.parentNode?.insertBefore(trigger, nativeSelect)
+            monthTriggerEl = trigger
+
+            const updateTrigger = () => {
+              trigger.textContent = monthNames[fp.currentMonth] ?? ''
+              monthDropdownCurrentMonth.value = fp.currentMonth
+              monthDropdownCurrentYear.value = fp.currentYear
+            }
+            updateTrigger()
+
+            trigger.addEventListener('click', (e) => {
+              e.stopPropagation()
+              updateTrigger()
+              openMonthDropdown()
+            })
+
+            // Обновлять триггер при смене месяца кнопками
+            fp.calendarContainer?.addEventListener('click', () => {
+              setTimeout(updateTrigger, 0)
+            })
+          }
+        },
+        onChange: (selectedDates: Date[]) => {
+          if (selectedDates[0]) {
+            const d = selectedDates[0]
+            shootingDate.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+          }
+        }
+      })
+
+      document.addEventListener('click', onMonthDropdownDocClick, true)
+      document.addEventListener('click', onClientDocClick, true)
+    }
+  } else {
+    monthDropdownOpen.value = false
+    clientDropdownOpen.value = false
+    monthTriggerEl = null
+    if (fpInstance) { fpInstance.destroy(); fpInstance = null }
+    document.removeEventListener('click', onMonthDropdownDocClick, true)
+    document.removeEventListener('click', onClientDocClick, true)
+  }
+})
 
 // Load reference data on mount and generate order number
 onMounted(async () => {
@@ -377,7 +530,7 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="padGlass modal-sm">
+      <div class="padGlass modal-sm modal-wide">
       <div class="modal-glassTitle">Добавить запись на съёмку</div>
 
       <!-- Номер заказа -->
@@ -386,20 +539,12 @@ const handleSubmit = async () => {
         <strong>{{ generatedOrderNumber }}</strong>
       </div>
 
-      <div class="input-group">
-        <!-- Строка 1: Тип съёмки, количество, акция -->
+      <div class="modal-body">
+        <!-- Строка 1: Тип съёмки -->
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Тип съёмки: *</label>
             <SelectBox v-model="shootingTypeId" :options="shootingTypeOptions" placeholder="Выберите тип" />
-          </div>
-          <div class="input-field input-field-narrow">
-            <label class="input-label">Кол-во:</label>
-            <input v-model.number="quantity" type="number" class="modal-input" min="1" max="99" />
-          </div>
-          <div class="input-field input-field-promotion">
-            <label class="input-label">Акция:</label>
-            <SelectBox v-model="promotionId" :options="promotionOptions" />
           </div>
         </div>
 
@@ -407,7 +552,9 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Дата съёмки: *</label>
-            <input v-model="shootingDate" type="date" class="modal-input" :min="todayStr" required />
+            <div class="date-input-wrap">
+              <input ref="dateInputRef" type="text" class="modal-input" placeholder="Выберите дату" />
+            </div>
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
@@ -427,10 +574,16 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Клиент: *</label>
-            <input v-model="clientName" type="text" class="modal-input" list="clients-list" placeholder="Выберите или введите имя" required />
-            <datalist id="clients-list">
-              <option v-for="client in referencesStore.clients" :key="client.id" :value="client.name"></option>
-            </datalist>
+            <input
+              ref="clientInputRef"
+              v-model="clientName"
+              type="text"
+              class="modal-input"
+              placeholder="Выберите или введите имя"
+              autocomplete="off"
+              @input="onClientInput"
+              @focus="onClientInput"
+            />
           </div>
           <div class="input-field input-field-phone">
             <label class="input-label">Телефон: *</label>
@@ -438,7 +591,20 @@ const handleSubmit = async () => {
           </div>
         </div>
 
+        <!-- Строка 4: Кол-во и акция -->
+        <div class="input-row">
+          <div class="input-field input-field-narrow">
+            <label class="input-label">Кол-во:</label>
+            <input v-model.number="quantity" type="number" class="modal-input" min="1" max="99" />
+          </div>
+          <div class="input-field input-field-promotion">
+            <label class="input-label">Акция:</label>
+            <SelectBox v-model="promotionId" :options="promotionOptions" />
+          </div>
+        </div>
+
         <!-- Информация о ценах + оплата -->
+        <label class="input-label">Цена:</label>
         <div class="price-info">
           <div class="price-row">
             <span class="price-label">Базовая цена:</span>
@@ -467,7 +633,7 @@ const handleSubmit = async () => {
         <!-- Примечания -->
         <div class="notes-field">
           <label class="input-label">Примечания:</label>
-          <textarea v-model="notes" class="modal-textarea" rows="2" placeholder="Дополнительная информация о заказе"></textarea>
+          <textarea v-model="notes" class="modal-input" rows="2" placeholder="Дополнительная информация о заказе"></textarea>
         </div>
       </div>
 
@@ -490,5 +656,35 @@ const handleSubmit = async () => {
     </div>
   </div>
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
+
+    <!-- Автокомплит клиентов -->
+    <template v-if="clientDropdownOpen">
+      <div class="combo-box-dropdown" :style="clientDropdownStyle">
+        <div
+          v-for="client in filteredClients"
+          :key="client.id"
+          class="combo-box-option"
+          :class="{ 'combo-box-option--selected': client.name === clientName }"
+          @mousedown.prevent="selectClient(client.name)"
+        >
+          {{ client.name }}
+        </div>
+      </div>
+    </template>
+
+    <!-- Кастомный дропдаун месяцев для flatpickr -->
+    <template v-if="monthDropdownOpen">
+      <div class="combo-box-dropdown fp-month-dropdown" :style="monthDropdownStyle">
+        <div
+          v-for="(name, index) in monthNames"
+          :key="index"
+          class="combo-box-option"
+          :class="{ 'combo-box-option--selected': index === monthDropdownCurrentMonth }"
+          @click.stop="selectMonth(index)"
+        >
+          {{ name }}
+        </div>
+      </div>
+    </template>
   </Teleport>
 </template>
