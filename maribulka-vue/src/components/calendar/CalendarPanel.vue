@@ -209,7 +209,7 @@ const calendarOptions = computed(() => ({
   allDaySlot: false,
   dayMaxEvents: 2,
   moreLinkText: 'ещё',
-  height: 'auto',
+  height: '100%',
   events: calendarEvents.value,
   dateClick: handleDateClick,
   eventClick: handleEventClick,

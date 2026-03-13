@@ -10,6 +10,8 @@
   height: calc(100% - 20px);
   gap: 0;
   overflow: hidden;
+  max-width: 100%;
+  align-items: stretch;
 }
 
 /* Внутренний layout: календарь + сайдбар */
@@ -33,6 +35,11 @@
 .calendar-main .fc {
   flex: 1;
   min-width: 0;
+  height: 100%;
+}
+
+.calendar-main .fc .fc-scroller {
+  overflow-y: auto !important;
 }
 
 /* Кнопка добавления в режиме дня */

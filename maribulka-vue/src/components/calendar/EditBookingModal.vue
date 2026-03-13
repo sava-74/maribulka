@@ -268,7 +268,7 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass modal-compact modal-wide">
+      <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Редактировать запись</div>
 
       <div v-if="booking?.order_number" class="order-number-preview">
@@ -372,13 +372,17 @@ const handleSubmit = async () => {
 
       <div class="ButtonFooter PosRight">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
           <span>Отмена</span>
         </button>
         <!-- Кнопка "Сохранить" -->
-        <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+        <button class="btnGlass iconText" @click="handleSubmit">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
           <span>Сохранить</span>
         </button>
       </div>

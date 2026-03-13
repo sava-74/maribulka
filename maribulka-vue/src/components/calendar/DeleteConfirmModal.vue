@@ -52,7 +52,7 @@ const handleConfirm = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Подтверждение удаления</div>
 
       <div v-if="bookingInfo" class="delete-info">
@@ -64,12 +64,16 @@ const handleConfirm = async () => {
       <p class="delete-warning">Вы уверены, что хотите удалить эту запись?</p>
 
       <div class="ButtonFooter PosCenter">
-        <button class="buttonGL buttonGL-textFull" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
           <span>Отмена</span>
         </button>
-        <button class="buttonGL buttonGL-textFull" @click="handleConfirm">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+        <button class="btnGlass iconText" @click="handleConfirm">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
           <span>Удалить</span>
         </button>
       </div>

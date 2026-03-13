@@ -1,0 +1,91 @@
+/* ========================================
+   SelectBox — кастомный выпадающий список
+   selectBox.css
+   ======================================== */
+
+.combo-box-wrap {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--genTextSize);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--padRadius) / 2);
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  user-select: none;
+  transition: border-color 0.2s ease;
+}
+
+.combo-box-wrap:focus,
+.combo-box-wrap--open {
+  border-color: var(--text-secondary);
+}
+
+.combo-box-wrap--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.combo-box-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.combo-box-placeholder {
+  color: var(--text-secondary);
+}
+
+.combo-box-arrow {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.combo-box-wrap--open .combo-box-arrow {
+  transform: rotate(180deg);
+}
+
+/* Дропдаун — стеклянная панель как padGlass */
+.combo-box-dropdown {
+  position: fixed;
+  z-index: 9999;
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-style: groove;
+  border-radius: var(--padRadius);
+  backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  box-shadow: var(--glass-shadow);
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.combo-box-option {
+  padding: 8px 12px;
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.combo-box-option:hover {
+  color: var(--text-primary);
+  background: var(--glass-border);
+}
+
+.combo-box-option--selected {
+  color: var(--text-primary);
+  font-weight: 600;
+}

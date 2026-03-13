@@ -68,7 +68,7 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Добавить оплату</div>
 
       <div v-if="bookingInfo" class="payment-info">
@@ -95,13 +95,17 @@ const handleSubmit = async () => {
 
       <div class="ButtonFooter PosRight">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
           <span>Отмена</span>
         </button>
         <!-- Кнопка "OK" -->
-        <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+        <button class="btnGlass iconText" @click="handleSubmit">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
           <span>Сохранить</span>
         </button>        
       </div>

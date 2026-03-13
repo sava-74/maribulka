@@ -6,6 +6,7 @@ import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import { getLocalDateString } from '../../config/timezone'
 import AlertModal from '../AlertModal.vue'
+import SelectBox from '../SelectBox.vue'
 
 const props = defineProps<{ isVisible: boolean, defaultDate?: string }>()
 const emit = defineEmits(['close'])
@@ -72,6 +73,21 @@ const selectedShootingType = computed(() => {
 const selectedPromotion = computed(() => {
   if (!promotionId.value) return null
   return referencesStore.promotions.find(p => p.id === parseInt(promotionId.value))
+})
+
+// Опции для SelectBox
+const shootingTypeOptions = computed(() =>
+  referencesStore.shootingTypes.map(t => ({ value: t.id, label: t.name }))
+)
+const promotionOptions = computed(() => [
+  { value: '', label: 'Без акции' },
+  ...availablePromotions.value.map(p => ({ value: p.id, label: `${p.name} (-${p.discount_percent}%)` }))
+])
+
+const timeSlotOptions = computed(() => {
+  if (!shootingTypeId.value) return []
+  if (freeTimeSlots.value.length === 0) return [{ value: '', label: 'Нет слотов' }]
+  return freeTimeSlots.value.map(slot => ({ value: slot, label: slot }))
 })
 
 // Computed: Базовая цена
@@ -254,7 +270,7 @@ const freeTimeSlots = computed(() => {
 
 // При смене даты/типа — выбрать первый свободный слот
 watch([() => shootingDate.value, () => shootingTypeId.value, freeTimeSlots], () => {
-  if (freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
+  if (freeTimeSlots.value.length > 0) {
     const firstSlot = freeTimeSlots.value[0]
     if (firstSlot) {
       shootingTime.value = firstSlot
@@ -361,7 +377,7 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass modal-compact modal-wide">
+      <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Добавить запись на съёмку</div>
 
       <!-- Номер заказа -->
@@ -375,12 +391,7 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Тип съёмки: *</label>
-            <select v-model="shootingTypeId" class="modal-input" required>
-              <option value="">Выберите тип</option>
-              <option v-for="type in referencesStore.shootingTypes" :key="type.id" :value="type.id">
-                {{ type.name }}
-              </option>
-            </select>
+            <SelectBox v-model="shootingTypeId" :options="shootingTypeOptions" placeholder="Выберите тип" />
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Кол-во:</label>
@@ -388,12 +399,7 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field input-field-promotion">
             <label class="input-label">Акция:</label>
-            <select v-model="promotionId" class="modal-input">
-              <option value="">Без акции</option>
-              <option v-for="promo in availablePromotions" :key="promo.id" :value="promo.id">
-                {{ promo.name }} (-{{ promo.discount_percent }}%)
-              </option>
-            </select>
+            <SelectBox v-model="promotionId" :options="promotionOptions" />
           </div>
         </div>
 
@@ -405,11 +411,7 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
-            <select v-model="shootingTime" class="modal-input" :disabled="!shootingTypeId" required>
-              <option v-if="!shootingTypeId" value="" disabled>Выберите тип</option>
-              <option v-else-if="freeTimeSlots.length === 0" value="" disabled>Нет слотов</option>
-              <option v-for="slot in freeTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
-            </select>
+            <SelectBox v-model="shootingTime" :options="timeSlotOptions" :disabled="!shootingTypeId" placeholder="Выберите тип" />
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Дней:</label>
@@ -471,14 +473,18 @@ const handleSubmit = async () => {
 
       <div class="ButtonFooter PosRight">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
-          <span >Отмена</span>
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
+          <span>Отмена</span>
         </button>
         <!-- Кнопка "OK" -->
-        <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
-          <span >Сохранить</span>
+        <button class="btnGlass iconText" @click="handleSubmit">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
+          <span>Сохранить</span>
         </button>
       </div>
     </div>

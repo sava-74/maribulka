@@ -89,7 +89,7 @@ const orderInfo = computed(() => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass view-modal">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Информация о заказе</div>
 
         <div v-if="orderInfo" class="order-details">
@@ -200,13 +200,17 @@ const orderInfo = computed(() => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Печать" -->
-          <button class="buttonGL buttonGL-textFix" @click="handlePrint">
-            <svg-icon type="mdi" :path="mdiPrinterOutline" />
+          <button class="btnGlass iconText" @click="handlePrint">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiPrinterOutline" class="btn-icon" />
             <span>Печать</span>
           </button>
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
         </div>

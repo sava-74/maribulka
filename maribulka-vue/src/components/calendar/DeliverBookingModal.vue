@@ -83,7 +83,7 @@ const handleDeliver = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Выдать заказ</div>
 
         <div v-if="orderInfo" class="delivery-info">
@@ -131,28 +131,34 @@ const handleDeliver = async () => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
 
           <!-- Кнопка "Оплатить" - показываем только если не оплачено полностью -->
           <button
             v-if="orderInfo && !orderInfo.isPaidFull"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleQuickPayment"
           >
-            <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCurrencyRub" class="btn-icon" />
             <span>Оплатить</span>
           </button>
 
           <!-- Кнопка "Выдать" - только если оплачено полностью -->
           <button
             v-if="orderInfo && orderInfo.isPaidFull"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleDeliver"
           >
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Выдать</span>
           </button>
         </div>

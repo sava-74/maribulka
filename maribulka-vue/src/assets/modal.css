@@ -76,6 +76,16 @@
   color: var(--text-secondary);
 }
 
+.modal-input[type="number"]::-webkit-inner-spin-button,
+.modal-input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+}
+
+.modal-input[type="number"] {
+  appearance: textfield;
+}
+
+
 .remember-label {
   display: flex;
   align-items: center;
