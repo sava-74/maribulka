@@ -6,6 +6,8 @@ import TopBar from './components/TopBar.vue'
 import LoginModal from './components/LoginModal.vue'
 import LaunchPad from './components/launchpad/LaunchPad.vue'
 import Home from './components/home/Home.vue'
+import CalendarPanel from './components/calendar/CalendarPanel.vue'
+import CalendarSidebar from './components/calendar/CalendarSidebar.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -14,6 +16,16 @@ const loginOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
 const showLaunchpad = ref(false)
 const launchpadOrigin = ref({ x: 0, y: 0, w: 0, h: 0 })
 const launchpadRef = ref<InstanceType<typeof LaunchPad> | null>(null)
+const calendarPanelRef = ref<InstanceType<typeof CalendarPanel> | null>(null)
+const sidebarDate = ref('')
+const sidebarBookings = ref<any[]>([])
+const sidebarIsDayView = ref(false)
+
+function onSidebarUpdate(payload: { date: string; bookings: any[]; isDayView: boolean }) {
+  sidebarDate.value = payload.date
+  sidebarBookings.value = payload.bookings
+  sidebarIsDayView.value = payload.isDayView
+}
 
 function openLogin(origin: { x: number, y: number, w: number, h: number }) {
   loginOrigin.value = origin
@@ -42,6 +54,16 @@ onMounted(async () => {
     <div class="worck-table">
       <LaunchPad ref="launchpadRef" :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
       <Home v-if="navStore.currentPage === 'home'" />
+      <template v-if="navStore.currentPage === 'calendar'">
+        <CalendarPanel ref="calendarPanelRef" @sidebar-update="onSidebarUpdate" />
+        <CalendarSidebar
+          v-if="!sidebarIsDayView"
+          :date="sidebarDate"
+          :bookings="sidebarBookings"
+          @add="calendarPanelRef?.handleSidebarAdd()"
+          @select="calendarPanelRef?.handleSidebarSelect($event)"
+        />
+      </template>
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

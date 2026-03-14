@@ -4,7 +4,6 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCurrencyRub, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
-import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -15,6 +14,7 @@ const emit = defineEmits(['close', 'openPayment'])
 const bookingsStore = useBookingsStore()
 
 // Alert modal
+
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
@@ -46,28 +46,14 @@ const orderInfo = computed(() => {
   }
 })
 
-const handleQuickPayment = async () => {
-  if (!props.booking) return
-
-  const result = await bookingsStore.quickPayment(props.booking.id)
-  if (result.success) {
-    // После успешной оплаты обновляем данные
-    await bookingsStore.fetchBookings()
-  } else {
-    alertTitle.value = 'Ошибка'
-    alertMessage.value = result.error || 'Не удалось провести оплату'
-    showAlert.value = true
-  }
-}
-
 const handleDeliver = async () => {
   if (!props.booking) return
 
   // Проверяем оплату 100%
-  if (!orderInfo.value?.isPaidFull) {
+  /*if (!orderInfo.value?.isPaidFull) {
     emit('openPayment', props.booking.id)
     return
-  }
+  }*/
 
   // Выдаём заказ с выбранным результатом
   const result = await bookingsStore.completeOrder(props.booking.id, orderResult.value)
@@ -83,8 +69,8 @@ const handleDeliver = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Выдать заказ</div>
 
         <div v-if="orderInfo" class="delivery-info">
@@ -132,28 +118,34 @@ const handleDeliver = async () => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
 
           <!-- Кнопка "Оплатить" - показываем только если не оплачено полностью -->
           <button
             v-if="orderInfo && !orderInfo.isPaidFull"
-            class="buttonGL buttonGL-textFix"
-            @click="handleQuickPayment"
+            class="btnGlass iconText"
+            @click="emit('openPayment', booking?.id)"
           >
-            <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCurrencyRub" class="btn-icon" />
             <span>Оплатить</span>
           </button>
 
           <!-- Кнопка "Выдать" - только если оплачено полностью -->
           <button
             v-if="orderInfo && orderInfo.isPaidFull"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleDeliver"
           >
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Выдать</span>
           </button>
         </div>

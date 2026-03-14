@@ -4,7 +4,6 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCurrencyRub, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
-import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -65,7 +64,7 @@ const handleConfirm = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Подтвердить съёмку</div>
 
         <div v-if="orderInfo" class="confirm-info">
@@ -98,28 +97,34 @@ const handleConfirm = async () => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
 
           <!-- Кнопка "Оплатить" - если нет предоплаты -->
           <button
             v-if="orderInfo && !orderInfo.hasPrepayment"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleConfirm"
           >
-            <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCurrencyRub" class="btn-icon" />
             <span>Оплатить</span>
           </button>
 
           <!-- Кнопка "Подтвердить" - если есть предоплата -->
           <button
             v-if="orderInfo && orderInfo.hasPrepayment"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleConfirm"
           >
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Подтвердить</span>
           </button>
         </div>

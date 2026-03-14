@@ -39,7 +39,7 @@
 [data-theme] { 
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
-  --gb-ComboBox: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+  --gb-ComboBox: color-mix(in srgb, rgb(54, 54, 94) 92%, transparent);
   --glass-bg: linear-gradient(180deg, var(--gbDLine1) 0%, var(--gbDLine2) 50%, var(--gbDLine3) 100%);
   --glass-border: rgba(255, 255, 255, 0.18);
   --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
@@ -59,7 +59,7 @@
 [data-theme="light"] {
   --bg-primary: #f5f5f7;
   --bg-secondary: #ffffff;
-  --gb-ComboBox: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+  --gb-ComboBox: linear-gradient(180deg, var(--gbLLine1) 80%, var(--gbLLine2) 90%, var(--gbLLine3) 100%);
   --glass-bg: linear-gradient(180deg, var(--gbLLine1) 0%, var(--gbLLine2) 50%, var(--gbLLine3) 100%);
   --glass-border: rgba(0, 0, 0, 0.08);
   --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
@@ -123,6 +123,7 @@ body {
   position: fixed;
   display: flex;
   justify-content: center;
+  gap: 10px;
   top: 0;
   left: 5px;
   right: 5px;

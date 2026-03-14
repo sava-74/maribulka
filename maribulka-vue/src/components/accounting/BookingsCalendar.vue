@@ -15,13 +15,12 @@ import {
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiTextBoxPlusOutline, mdiFolderPlayOutline, mdiCameraOutline, mdiCameraOffOutline, mdiFileEditOutline, mdiCashMultiple, mdiTrashCanOutline, mdiEyeOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
-import AddBookingModal from './AddBookingModal.vue'
-import EditBookingModal from './EditBookingModal.vue'
-import AddPaymentModal from './AddPaymentModal.vue'
+import BookingFormModal from '../calendar/BookingFormModal.vue'
+import AddPaymentModal from '../calendar/AddPaymentModal.vue'
 import DeleteConfirmModal from './DeleteConfirmModal.vue'
-import DeliverBookingModal from './DeliverBookingModal.vue'
-import ViewBookingModal from './ViewBookingModal.vue'
-import CancelBookingModal from './CancelBookingModal.vue'
+import DeliverBookingModal from '../calendar/DeliverBookingModal.vue'
+import ViewBookingModal from '../calendar/ViewBookingModal.vue'
+import CancelBookingModal from '../calendar/CancelBookingModal.vue'
 import ConfirmModal from '../ConfirmModal.vue'
 import { getLocalDateString } from '../../config/timezone'
 import '../../assets/tables.css'
@@ -636,8 +635,8 @@ function toggleFilters() {
     </div>
 
     <!-- Модальные окна -->
-    <AddBookingModal :isVisible="showAddModal" :defaultDate="addModalDefaultDate" @close="closeModal" />
-    <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
+    <BookingFormModal mode="add" :isVisible="showAddModal" :defaultDate="addModalDefaultDate" @close="closeModal" />
+    <BookingFormModal mode="edit" :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
     <DeliverBookingModal :isVisible="showDeliverModal" :booking="selectedBooking" @close="closeModal" />

@@ -4,7 +4,6 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
-import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -69,40 +68,42 @@ const handleSubmit = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Добавить оплату</div>
 
       <div v-if="bookingInfo" class="payment-info">
         <p><strong>Клиент:</strong> {{ bookingInfo.client }}</p>
         <p><strong>Общая сумма:</strong> {{ bookingInfo.total }} ₽</p>
         <p><strong>Оплачено:</strong> {{ bookingInfo.paid }} ₽</p>
-        <p><strong>Осталось:</strong> <span class="remaining-amount">{{ bookingInfo.remaining }} ₽</span></p>
+        <p><strong>Осталось:</strong> {{ bookingInfo.remaining }} ₽</p>
       </div>
 
       <div class="input-group">
-        <div class="input-field">
-          <label class="input-label">Сумма оплаты (₽):</label>
-          <input
-            v-model.number="paymentAmount"
-            type="number"
-            class="modal-input"
-            min="0"
-            step="0.01"
-            placeholder="Введите сумму"
-            @keyup.enter="handleSubmit"
-          />
-        </div>
+        <label class="input-label">Сумма оплаты (₽)</label>
+        <input
+          v-model.number="paymentAmount"
+          type="number"
+          class="modal-input"
+          min="0"
+          step="0.01"
+          placeholder="Введите сумму"
+          @keyup.enter="handleSubmit"
+        />
       </div>
 
       <div class="ButtonFooter PosRight">
         <!-- Кнопка "Отмена" -->
-        <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-          <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+        <button class="btnGlass iconText" @click="emit('close')">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
           <span>Отмена</span>
         </button>
         <!-- Кнопка "OK" -->
-        <button class="buttonGL buttonGL-textFix" @click="handleSubmit">
-          <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+        <button class="btnGlass iconText" @click="handleSubmit">
+          <span class="inner-glow"></span>
+          <span class="top-shine"></span>
+          <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
           <span>Сохранить</span>
         </button>        
       </div>

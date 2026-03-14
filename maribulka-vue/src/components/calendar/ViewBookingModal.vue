@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPrinterOutline, mdiCheckCircleOutline } from '@mdi/js'
-import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -90,7 +89,7 @@ const orderInfo = computed(() => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass view-modal">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Информация о заказе</div>
 
         <div v-if="orderInfo" class="order-details">
@@ -116,7 +115,7 @@ const orderInfo = computed(() => {
 
           <!-- Информация о клиенте и съёмке -->
           <div class="info-section">
-            <h3>Клиент и съёмка</h3>
+            <div class="info-section-title">Клиент и съёмка</div>
             <div class="info-row">
               <span class="info-label">Клиент:</span>
               <span class="info-value">{{ orderInfo.client }}</span>
@@ -143,7 +142,7 @@ const orderInfo = computed(() => {
 
           <!-- Даты -->
           <div class="info-section">
-            <h3>Даты</h3>
+            <div class="info-section-title">Даты</div>
             <div class="info-row">
               <span class="info-label">Дата создания:</span>
               <span class="info-value">{{ orderInfo.bookingDate }}</span>
@@ -166,7 +165,7 @@ const orderInfo = computed(() => {
 
           <!-- Финансы -->
           <div class="info-section">
-            <h3>Финансы</h3>
+            <div class="info-section-title">Финансы</div>
             <div class="info-row">
               <span class="info-label">Базовая стоимость:</span>
               <span class="info-value">{{ orderInfo.basePrice }} ₽</span>
@@ -193,7 +192,7 @@ const orderInfo = computed(() => {
           <div v-if="orderInfo.notes" class="notes-section">
             <div class="divider"></div>
             <div class="info-section">
-              <h3>Примечания</h3>
+              <div class="info-section-title">Примечания</div>
               <div class="notes-text">{{ orderInfo.notes }}</div>
             </div>
           </div>
@@ -201,13 +200,17 @@ const orderInfo = computed(() => {
 
         <div class="ButtonFooter PosRight">
           <!-- Кнопка "Печать" -->
-          <button class="buttonGL buttonGL-textFix" @click="handlePrint">
-            <svg-icon type="mdi" :path="mdiPrinterOutline" />
+          <button class="btnGlass iconText" @click="handlePrint">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiPrinterOutline" class="btn-icon" />
             <span>Печать</span>
           </button>
           <!-- Кнопка "Закрыть" -->
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
         </div>

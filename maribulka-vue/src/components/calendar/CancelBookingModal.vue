@@ -5,7 +5,6 @@ import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiCurrencyRub } from '@m
 import { useBookingsStore } from '../../stores/bookings'
 import AlertModal from '../AlertModal.vue'
 import RefundModal from './RefundModal.vue'
-import '../../assets/responsive.css'
 
 const props = defineProps<{
   isVisible: boolean
@@ -97,7 +96,7 @@ const handleRefundCreated = async () => {
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
-      <div class="modal-glass">
+      <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Отменить запись</div>
 
         <div v-if="bookingInfo" class="cancel-info">
@@ -136,28 +135,34 @@ const handleRefundCreated = async () => {
         </div>
 
         <div class="ButtonFooter PosRight">
-          <button class="buttonGL buttonGL-textFix" @click="emit('close')">
-            <svg-icon type="mdi" :path="mdiCloseCircleOutline" />
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
             <span>Закрыть</span>
           </button>
 
           <!-- Если НЕ было оплаты - кнопка "Отменить" -->
           <button
             v-if="bookingInfo && !bookingInfo.hasPayment"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleCancelWithoutRefund"
           >
-            <svg-icon type="mdi" :path="mdiCheckCircleOutline" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCheckCircleOutline" class="btn-icon" />
             <span>Отменить</span>
           </button>
 
           <!-- Если была оплата - кнопка "Возврат" -->
           <button
             v-if="bookingInfo && bookingInfo.hasPayment"
-            class="buttonGL buttonGL-textFix"
+            class="btnGlass iconText"
             @click="handleOpenRefund"
           >
-            <svg-icon type="mdi" :path="mdiCurrencyRub" />
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiCurrencyRub" class="btn-icon" />
             <span>Возврат</span>
           </button>
         </div>
