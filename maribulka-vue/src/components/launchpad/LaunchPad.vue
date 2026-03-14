@@ -49,6 +49,11 @@ function openCalendar() {
   close()
 }
 
+function openBookings() {
+  navStore.navigateTo('bookings')
+  close()
+}
+
 defineExpose({ close })
 
 const onLogoutConfirm = () => {
@@ -91,7 +96,7 @@ function onRipple(event: MouseEvent) {
             <p class="pad-icon-label">Календарь</p>
           </div>
           <div class="pad-icon-cell">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openBookings()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiTableLarge" class="btn-icon-big" />

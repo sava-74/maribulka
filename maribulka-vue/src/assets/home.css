@@ -27,6 +27,7 @@
   position: sticky;
   top: 110px; /* fallback, JS перезапишет */
   width: calc(100% - 40px);
+  max-width: 1200px;
   box-sizing: border-box;
   opacity: var(--panel-opacity, 1);
   will-change: opacity;

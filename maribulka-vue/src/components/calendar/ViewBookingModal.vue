@@ -88,7 +88,7 @@ const orderInfo = computed(() => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Информация о заказе</div>
 

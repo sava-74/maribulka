@@ -1,35 +1,18 @@
 # CLAUDE.md
 
-# 🚫🚫🚫 АБСОЛЮТНЫЙ ЗАПРЕТ 🚫🚫🚫
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## НИКОГДА НЕ ВНОСИТЬ ИЗМЕНЕНИЯ В ФАЙЛЫ БЕЗ ОДОБРЕНИЯ ПОЛЬЗОВАТЕЛЯ!
+## 🚫 АБСОЛЮТНЫЙ ЗАПРЕТ
 
-**ОБЯЗАТЕЛЬНЫЙ ПОРЯДОК — БЕЗ ИСКЛЮЧЕНИЙ:**
+**НИКОГДА не вносить изменения в файлы без одобрения пользователя.**
+
+Обязательный порядок без исключений:
 
 1. **ПЛАН** — описать что и где будет изменено
-2. **СТОП** — остановиться и ждать ответа пользователя
-3. **ОДОБРЕНИЕ** — пользователь написал "да" / "делай" / "одобряю"
-4. **ТОЛЬКО ТОГДА** — вносить изменения в файлы
+2. **СТОП** — ждать ответа пользователя
+3. **ОДОБРЕНИЕ получено** → только тогда вносить изменения
 
-**НАРУШЕНИЕ ЭТОГО ПРАВИЛА НЕДОПУСТИМО.**
-Не важно насколько изменение кажется очевидным или простым — сначала план, потом одобрение, потом действие.
-
-
-# ⛔ КРИТИЧЕСКИЕ ПРАВИЛА
-
-## 🔴 ПРАВИЛО #0: ПЛАН → ОДОБРЕНИЕ → ПРИМЕНЕНИЕ
-
-**CRITICAL:**
-
-ЗАПРЕЩЕНО вносить любые изменения в код без предварительного плана и одобрения пользователя.
-
-**Workflow:**
-1. План
-2. СТОП — ждать одобрения
-3. Одобрение получено → выполнять
-
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**ЗАПРЕЩЕНО** делать `git commit` и `git push` — коммиты делает **только пользователь**!
 
 ## Project Overview
 
@@ -175,11 +158,20 @@ Symlink created during deploy: `public_html/media → ../media`
 - `.padGlass.modal-sm` — small modal panel (`min-width: auto; gap: 12px; padding: 20px`)
 
 ### Modals
+
+**Two-order system** — choose the overlay class based on modal type:
+
+| Order | Overlay class | z-index | Use for |
+| ----- | ------------ | ------- | ------- |
+| 1st | `.modal-overlay` | 9999 | Small service modals: AlertModal, ConfirmModal, AddPaymentModal, RefundModal, DeleteConfirmModal |
+| 2nd | `.modal-overlay-main` | 999 | Large working modals: BookingFormModal, ViewBookingModal, CancelBookingModal, ConfirmSessionModal, DeliverBookingModal |
+
+1st-order modals open **on top of** 2nd-order modals (e.g. AlertModal inside CancelBookingModal).
+
 - **Custom modals ONLY** - NO browser `alert()`/`confirm()`
-- Use: `AlertModal.vue`, `ConfirmModal.vue`, `LoginModal.vue`
 - **Structure:**
   ```html
-  <div class="modal-overlay">
+  <div class="modal-overlay">  <!-- or modal-overlay-main -->
     <div class="padGlass modal-sm">
       <div class="modal-glassTitle">Title</div>  <!-- NO <h2>! -->
       <!-- content -->
@@ -262,10 +254,11 @@ maribulka/
 ├── maribulka-vue/          # Frontend app
 │   ├── src/
 │   │   ├── components/     # Vue SFCs
-│   │   │   ├── accounting/ # Admin booking/finance components
+│   │   │   ├── accounting/ # Archive of old components — reference only, NOT imported
+│   │   │   ├── calendar/   # Booking calendar + table + all booking modals
 │   │   │   ├── home/       # Public home page: Home.vue, EditBlockModal.vue
-│   │   │   ├── TopBar.vue, SideBar.vue
-│   │   │   └── *Modal.vue  # Reusable modals
+│   │   │   ├── TopBar.vue
+│   │   │   └── *Modal.vue  # Reusable modals (AlertModal, ConfirmModal, LoginModal)
 │   │   ├── views/          # Page-level components
 │   │   ├── stores/         # Pinia state
 │   │   ├── assets/         # CSS files (NO images here!)
@@ -300,9 +293,11 @@ maribulka/
 ## Memory Files
 
 The project has extensive documentation in `C:\Users\sava\.claude\projects\d--GitHub-maribulka\memory\`:
-- `MEMORY.md` - Quick reference (always loaded)
+
+- `MEMORY.md` - Quick reference index (always loaded)
+- `modal-orders.md` - Two-order modal system (z-index, component list)
+- `calendar.md` - Booking calendar: statuses, colors, slots, flatpickr patterns
 - `home-stack.md` - Home page: sticky panels, CKEditor, smart scroll logic
-- `buttons-refactoring.md` - Button system (refactoring completed Mar 2, 2026)
 - `styles.md` - CSS organization details
 - `patterns.md` - Code patterns and examples
 - `architecture.md` - Technical architecture deep-dive

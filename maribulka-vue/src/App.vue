@@ -8,6 +8,7 @@ import LaunchPad from './components/launchpad/LaunchPad.vue'
 import Home from './components/home/Home.vue'
 import CalendarPanel from './components/calendar/CalendarPanel.vue'
 import CalendarSidebar from './components/calendar/CalendarSidebar.vue'
+import BookingsTable from './components/calendar/BookingsTable.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -64,6 +65,7 @@ onMounted(async () => {
           @select="calendarPanelRef?.handleSidebarSelect($event)"
         />
       </template>
+      <BookingsTable v-if="navStore.currentPage === 'bookings'" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

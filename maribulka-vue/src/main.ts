@@ -12,6 +12,7 @@ import './assets/flatpickr.css'
 import './assets/animations.css'
 import './assets/home.css'
 import './assets/calendar.css'
+import './assets/calendar-table.css'
 import 'ckeditor5/ckeditor5.css'
 import './assets/editor.css'
 

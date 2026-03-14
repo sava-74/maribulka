@@ -1,0 +1,136 @@
+/* =============================================
+   Bookings Table Styles
+   Использует только переменные из style.css
+   ============================================= */
+
+/* --- Обёртка страницы --- */
+.bookings-table-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 20px);
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* --- Строка фильтра дат --- */
+.bookings-table-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.bookings-table-filter-label {
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.bookings-table-filter-input {
+  box-sizing: border-box;
+  padding: 6px 10px;
+  font-size: var(--genTextSize);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--padRadius) / 2);
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 120px;
+  cursor: pointer;
+}
+
+.bookings-table-filter-input:focus {
+  border-color: var(--text-secondary);
+}
+
+/* --- Контейнер прокрутки таблицы --- */
+.bookings-table-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  min-height: 0;
+  width: 100%;
+}
+
+/* --- Таблица --- */
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--genTextSize);
+  color: var(--text-primary);
+}
+
+.bookings-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.bookings-table th {
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: var(--genTextSizeSmall);
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.bookings-table th.sortable {
+  cursor: pointer;
+}
+
+.bookings-table th.sortable:hover {
+  color: var(--text-primary);
+}
+
+.bookings-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+
+/* --- Строки --- */
+.bookings-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.bookings-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bookings-table tbody tr.row-selected {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Отменённые записи */
+.bookings-table tbody tr.row-cancelled {
+  opacity: 0.45;
+}
+
+/* Просроченные "новые" записи */
+.bookings-table tbody tr.row-overdue {
+  color: var(--text-secondary);
+}
+
+/* --- Сумма --- */
+.bookings-table .cell-amount {
+  font-weight: 600;
+}
+
+/* --- Пустое состояние --- */
+.bookings-table-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: var(--genTextSizeH1);
+}
