@@ -17,7 +17,7 @@ import { mdiFilterRemoveOutline, mdiFilterMenuOutline, mdiTextBoxPlusOutline, md
 import { useBookingsStore } from '../../stores/bookings'
 import BookingFormModal from '../calendar/BookingFormModal.vue'
 import AddPaymentModal from '../calendar/AddPaymentModal.vue'
-import DeleteConfirmModal from './DeleteConfirmModal.vue'
+import DeleteConfirmModal from '../calendar/DeleteConfirmModal.vue'
 import DeliverBookingModal from '../calendar/DeliverBookingModal.vue'
 import ViewBookingModal from '../calendar/ViewBookingModal.vue'
 import CancelBookingModal from '../calendar/CancelBookingModal.vue'
