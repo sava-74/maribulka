@@ -180,6 +180,21 @@
   min-width: 100px;
 }
 
+.btnGlass.iconTextStart {
+  display: flex;
+  justify-content: flex-start;
+  padding: 5.25px 18px 5.25px 12px;
+  gap: 3px;
+  min-width: 100px;
+}
+
+/* Неактивная кнопка */
+.btnGlass:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Только иконка (pill) */
 .btnGlass.icon-only {
   padding: 5.25px 16.47px;

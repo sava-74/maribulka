@@ -115,7 +115,7 @@ const orderInfo = computed(() => {
 
           <!-- Информация о клиенте и съёмке -->
           <div class="info-section">
-            <h3>Клиент и съёмка</h3>
+            <div class="info-section-title">Клиент и съёмка</div>
             <div class="info-row">
               <span class="info-label">Клиент:</span>
               <span class="info-value">{{ orderInfo.client }}</span>
@@ -142,7 +142,7 @@ const orderInfo = computed(() => {
 
           <!-- Даты -->
           <div class="info-section">
-            <h3>Даты</h3>
+            <div class="info-section-title">Даты</div>
             <div class="info-row">
               <span class="info-label">Дата создания:</span>
               <span class="info-value">{{ orderInfo.bookingDate }}</span>
@@ -165,7 +165,7 @@ const orderInfo = computed(() => {
 
           <!-- Финансы -->
           <div class="info-section">
-            <h3>Финансы</h3>
+            <div class="info-section-title">Финансы</div>
             <div class="info-row">
               <span class="info-label">Базовая стоимость:</span>
               <span class="info-value">{{ orderInfo.basePrice }} ₽</span>
@@ -192,7 +192,7 @@ const orderInfo = computed(() => {
           <div v-if="orderInfo.notes" class="notes-section">
             <div class="divider"></div>
             <div class="info-section">
-              <h3>Примечания</h3>
+              <div class="info-section-title">Примечания</div>
               <div class="notes-text">{{ orderInfo.notes }}</div>
             </div>
           </div>

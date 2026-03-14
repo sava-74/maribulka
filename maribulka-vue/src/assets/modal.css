@@ -14,6 +14,17 @@
   -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
+.modal-overlay-main {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(var(--padBlur));
+  -webkit-backdrop-filter: blur(var(--padBlur));
+}
+
 .modal-overlay-launch {
   position: absolute;
   align-items: flex-start;
@@ -70,6 +81,13 @@
 
 .modal-input:focus {
   border-color: var(--text-secondary);
+}
+
+.modal-input[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  user-select: none;
+  pointer-events: none;
 }
 
 textarea.modal-input {
@@ -174,6 +192,16 @@ textarea.modal-input {
   padding-right: 4px;
 }
 
+.modal-body::-webkit-scrollbar-track {
+    margin-top: 15px;     /* Обрезать сверху */
+    margin-bottom: 15px;  /* Обрезать снизу */
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
 .ButtonFooter {
   display: flex;
   gap: 8px;
@@ -247,6 +275,204 @@ textarea.modal-input {
 .payment-input-inline::-webkit-inner-spin-button,
 .payment-input-inline::-webkit-outer-spin-button {
   appearance: none;
+}
+
+.payment-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-primary);
+  font-size: var(--genTextSize);
+}
+
+.payment-info p {
+  margin: 0;
+}
+
+/* ========== CANCEL / DELIVERY INFO ========== */
+
+.cancel-info,
+.delivery-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-primary);
+  font-size: var(--genTextSize);
+}
+
+.cancel-info p,
+.delivery-info p {
+  margin: 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 4px 0;
+}
+
+.cancel-reason {
+  margin-top: 4px;
+}
+
+.payment-warning .hint {
+  color: var(--text-secondary);
+  font-size: var(--genTextSize);
+}
+
+.confirm-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-primary);
+  font-size: var(--genTextSize);
+}
+
+.confirm-info p {
+  margin: 0;
+}
+
+.confirm-info ul {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+}
+
+.confirm-info li {
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+}
+
+.prepayment-ok {
+  color: var(--text-primary);
+}
+
+.prepayment-warning {
+  color: var(--text-secondary);
+}
+
+.info-box {
+  margin-top: 4px;
+}
+
+.delivery-info .remaining-warning {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.delivery-info .remaining-amount {
+  font-weight: 600;
+}
+
+.delivery-info .paid-full {
+  font-weight: 600;
+}
+
+.order-result-section {
+  margin-top: 4px;
+}
+
+/* ========== VIEW BOOKING (ORDER DETAILS) ========== */
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-section-title {
+  font-size: var(--genTextSize);
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: var(--genTextSize);
+}
+
+.info-label {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.info-value a {
+  color: var(--text-primary);
+}
+
+.info-value.strong {
+  font-weight: 600;
+}
+
+.info-value.discount {
+  color: var(--text-secondary);
+}
+
+.info-value.paid {
+  font-weight: 600;
+}
+
+.info-value.remaining {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.notes-text {
+  font-size: var(--genTextSize);
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* ========== RADIO BUTTONS ========== */
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: var(--genTextSize);
+  color: var(--text-primary);
+  padding: 4px 6px;
+  border-radius: calc(var(--padRadius) / 2);
+  transition: background 0.2s;
+}
+
+.radio-label:hover {
+  background: var(--glass-border);
+}
+
+.radio-label input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--text-primary);
+}
+
+.radio-label span {
+  user-select: none;
 }
 
 @media (pointer: coarse) {

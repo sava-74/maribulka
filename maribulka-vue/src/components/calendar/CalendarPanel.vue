@@ -10,8 +10,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPlus } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
-import AddBookingModal from './AddBookingModal.vue'
-import EditBookingModal from './EditBookingModal.vue'
+import BookingFormModal from './BookingFormModal.vue'
 import AddPaymentModal from './AddPaymentModal.vue'
 import DeleteConfirmModal from './DeleteConfirmModal.vue'
 import DeliverBookingModal from './DeliverBookingModal.vue'
@@ -255,8 +254,8 @@ defineExpose({ handleSidebarAdd, handleSidebarSelect })
     />
 
     <!-- Modals -->
-    <AddBookingModal :isVisible="showAddModal" :defaultDate="selectedDate" @close="closeModal" />
-    <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
+    <BookingFormModal mode="add" :isVisible="showAddModal" :defaultDate="selectedDate" @close="closeModal" />
+    <BookingFormModal mode="edit" :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
     <ConfirmSessionModal :isVisible="showConfirmSessionModal" :booking="selectedBooking" @close="closeModal" @openPayment="handlePayment" />

@@ -71,58 +71,58 @@ const canRefund = computed(() => {
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: -8px; margin-bottom: 4px;">
           {{ booking?.shooting_type_name }}
         </div>
-
+ 
         <div class="ButtonFooter PosCenter" style="flex-direction: column; gap: 8px;">
-          <button class="btnGlass iconText" @click="$emit('view')">
+          <button class="btnGlass iconTextStart" @click="$emit('view')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiEyeOutline" class="btn-icon" />
             <span>Просмотр</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canEdit" @click="$emit('edit')">
+          <button class="btnGlass iconTextStart" :disabled="!canEdit" @click="$emit('edit')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiFileEditOutline" class="btn-icon" />
             <span>Редактировать</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canPayment" @click="$emit('payment')">
+          <button class="btnGlass iconTextStart" :disabled="!canPayment" @click="$emit('payment')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiCashMultiple" class="btn-icon" />
             <span>Оплата</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canConfirmSession" @click="$emit('confirmSession')">
+          <button class="btnGlass iconTextStart" :disabled="!canConfirmSession" @click="$emit('confirmSession')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiCameraOutline" class="btn-icon" />
             <span>Подтвердить съёмку</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canDeliver" @click="$emit('deliver')">
+          <button class="btnGlass iconTextStart" :disabled="!canDeliver" @click="$emit('deliver')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiFolderPlayOutline" class="btn-icon" />
             <span>Выдать заказ</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canCancel" @click="$emit('cancel')">
+          <button class="btnGlass iconTextStart" :disabled="!canCancel" @click="$emit('cancel')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiCameraOffOutline" class="btn-icon" />
             <span>Отменить</span>
           </button>
 
-          <button class="btnGlass iconText" v-if="canRefund" @click="$emit('refund')">
+          <button class="btnGlass iconTextStart" v-if="canRefund" @click="$emit('refund')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiCashRefund" class="btn-icon" />
             <span>Возврат средств</span>
           </button>
 
-          <button class="btnGlass iconText" :disabled="!canDelete" @click="$emit('delete')">
+          <button class="btnGlass iconTextStart" :disabled="!canDelete" @click="$emit('delete')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiTrashCanOutline" class="btn-icon" />

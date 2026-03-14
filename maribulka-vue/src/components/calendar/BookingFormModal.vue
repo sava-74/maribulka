@@ -11,13 +11,19 @@ import flatpickr from 'flatpickr'
 import { Russian } from 'flatpickr/dist/l10n/ru.js'
 import 'flatpickr/dist/flatpickr.min.css'
 
-const props = defineProps<{ isVisible: boolean, defaultDate?: string }>()
+const props = defineProps<{
+  isVisible: boolean
+  mode: 'add' | 'edit'
+  booking?: any | null
+  defaultDate?: string
+}>()
 const emit = defineEmits(['close'])
 
 const bookingsStore = useBookingsStore()
 const referencesStore = useReferencesStore()
 
 // Form fields
+const bookingId = ref(0)
 const shootingDate = ref('')
 const shootingTime = ref('10:00')
 const processingDays = ref(10)
@@ -28,6 +34,7 @@ const quantity = ref(1)
 const promotionId = ref('')
 const notes = ref('')
 const paymentAmount = ref(0)
+const paidAmount = ref(0)
 const generatedOrderNumber = ref('')
 
 // Alert modal
@@ -114,7 +121,7 @@ watch(() => props.isVisible, async (visible) => {
       fpInstance = flatpickr(dateInputRef.value, {
         locale: Russian,
         dateFormat: 'd.m.Y',
-        minDate: new Date(),
+        minDate: props.mode === 'add' ? new Date() : undefined,
         allowInput: false,
         clickOpens: true,
         onReady: (_dates: Date[], _str: string, fp: any) => {
@@ -172,6 +179,13 @@ watch(() => props.isVisible, async (visible) => {
         }
       })
 
+      // Если режим edit и дата уже выбрана — установить в flatpickr
+      // Передаём Date-объект, т.к. строка YYYY-MM-DD не совпадает с dateFormat 'd.m.Y'
+      if (props.mode === 'edit' && shootingDate.value) {
+        const parts = shootingDate.value.split('-').map(Number)
+        fpInstance.setDate(new Date(parts[0]!, (parts[1]! - 1), parts[2]!), false)
+      }
+
       document.addEventListener('click', onMonthDropdownDocClick, true)
       document.addEventListener('click', onClientDocClick, true)
     }
@@ -185,7 +199,7 @@ watch(() => props.isVisible, async (visible) => {
   }
 })
 
-// Load reference data on mount and generate order number
+// Load reference data on mount and generate order number (only for add mode)
 onMounted(async () => {
   if (referencesStore.shootingTypes.length === 0) {
     await referencesStore.fetchShootingTypes()
@@ -197,16 +211,45 @@ onMounted(async () => {
     await referencesStore.fetchClients()
   }
 
-  // Генерируем order_number
-  const nextId = await bookingsStore.getNextId()
-  const today = new Date()
-  const day = today.getDate()
-  const month = today.getMonth() + 1
-  const year = today.getFullYear().toString().slice(-2)
-  const magicNumber = day * month
-
-  generatedOrderNumber.value = `МБ${nextId}${magicNumber}${year}`
+  if (props.mode === 'add') {
+    // Генерируем order_number
+    const nextId = await bookingsStore.getNextId()
+    const today = new Date()
+    const day = today.getDate()
+    const month = today.getMonth() + 1
+    const year = today.getFullYear().toString().slice(-2)
+    const magicNumber = day * month
+    generatedOrderNumber.value = `МБ${nextId}${magicNumber}${year}`
+  }
 })
+
+// Заполнение формы при открытии в режиме edit
+watch(() => props.booking, (newBooking) => {
+  if (props.mode === 'edit' && newBooking) {
+    bookingId.value = newBooking.id
+    generatedOrderNumber.value = newBooking.order_number || ''
+    // Разделяем дату и время
+    const dateTime = newBooking.shooting_date || ''
+    const [datePart, timePart] = dateTime.split(' ')
+    shootingDate.value = datePart?.split('T')[0] || datePart || ''
+    shootingTime.value = timePart?.substring(0, 5) || '10:00'
+    processingDays.value = newBooking.processing_days || 10
+    clientName.value = newBooking.client_name || ''
+    phone.value = newBooking.phone || ''
+    shootingTypeId.value = newBooking.shooting_type_id ? String(newBooking.shooting_type_id) : ''
+    quantity.value = newBooking.quantity || 1
+    promotionId.value = newBooking.promotion_id ? String(newBooking.promotion_id) : ''
+    notes.value = newBooking.notes || ''
+    paidAmount.value = newBooking.paid_amount ? parseFloat(newBooking.paid_amount) : 0
+    paymentAmount.value = 0
+
+    // Если flatpickr уже инициализирован — установить дату через Date-объект
+    if (fpInstance && shootingDate.value) {
+      const parts = shootingDate.value.split('-').map(Number)
+      fpInstance.setDate(new Date(parts[0]!, (parts[1]! - 1), parts[2]!), false)
+    }
+  }
+}, { immediate: true })
 
 // Computed: Автоматический расчёт даты выдачи
 const deliveryDate = computed(() => {
@@ -274,69 +317,58 @@ const selectedClient = computed(() => {
   return referencesStore.clients.find(c => c.name === clientName.value)
 })
 
-// Watch: Автоподстановка телефона при выборе клиента
+// Watch: Автоподстановка телефона при выборе клиента (только в режиме add)
 watch(selectedClient, (client) => {
-  if (client && client.phone) {
+  if (props.mode === 'add' && client && client.phone) {
     phone.value = client.phone
   }
 })
 
-// Оплата по умолчанию = 0 (пользователь вводит сам)
-
 // Функция поиска активной акции для даты съёмки
 function getActivePromotionForDate(date: string): number | null {
-  // Если дата съёмки выбрана - ищем срочную акцию на эту дату
   if (date) {
     const timedPromotion = referencesStore.promotions.find(promo => {
       if (!promo.start_date || !promo.end_date) return false
       return date >= promo.start_date && date <= promo.end_date
     })
-
     if (timedPromotion) return timedPromotion.id
   }
 
-  // Если даты нет ИЛИ нет срочной акции - берём бессрочную "Без скидки"
   const permanentPromotion = referencesStore.promotions.find(promo => {
     return !promo.start_date && !promo.end_date
   })
-
   return permanentPromotion ? permanentPromotion.id : null
 }
 
-// Computed: Доступные акции для dropdown (бессрочные + актуальные на сегодня)
+// Computed: Доступные акции для dropdown (бессрочные + актуальные на дату съёмки)
 const availablePromotions = computed(() => {
-  // Используем дату съёмки, если выбрана, иначе сегодня (UTC+5 из конфига)
   const targetDate = shootingDate.value || getLocalDateString()
 
   return referencesStore.promotions.filter(promo => {
-    // Бессрочные акции всегда доступны
     if (!promo.start_date && !promo.end_date) return true
-
-    // Срочные акции доступны только если дата съёмки в диапазоне
     if (promo.start_date && promo.end_date) {
       return targetDate >= promo.start_date && targetDate <= promo.end_date
     }
-
     return false
   })
 })
 
-// Подставляем дату из календаря при открытии
+// Подставляем дату из календаря при открытии (только в режиме add)
 watch(() => props.isVisible, (visible) => {
-  if (visible && props.defaultDate) {
+  if (visible && props.mode === 'add' && props.defaultDate) {
     shootingDate.value = props.defaultDate
   }
 })
 
-// Автовыбор акции при изменении даты съёмки
+// Автовыбор акции при изменении даты съёмки (только в режиме add)
 watch(() => shootingDate.value, (newDate) => {
-  if (newDate) {
+  if (props.mode === 'add' && newDate) {
     const activePromotionId = getActivePromotionForDate(newDate)
     promotionId.value = activePromotionId ? activePromotionId.toString() : ''
   }
 }, { immediate: true })
 
-// Сегодняшняя дата (для ограничения min)
+// Сегодняшняя дата
 const todayStr = computed(() => {
   const t = new Date()
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
@@ -355,12 +387,15 @@ const allTimeSlots = computed(() => {
   return slots
 })
 
-// Занятые блоки на выбранную дату: массив [startMin, endMin]
+// Занятые блоки на выбранную дату
 const busyBlocks = computed(() => {
   if (!shootingDate.value) return [] as [number, number][]
   const blocks: [number, number][] = []
 
   for (const booking of bookingsStore.bookings) {
+    // В режиме edit — пропускаем текущую редактируемую запись
+    if (props.mode === 'edit' && booking.id === bookingId.value) continue
+
     if (booking.status === 'cancelled' || booking.status === 'cancelled_client' ||
         booking.status === 'cancelled_photographer' || booking.status === 'failed') {
       continue
@@ -375,7 +410,7 @@ const busyBlocks = computed(() => {
     )
     const duration = shootingType?.duration_minutes || 30
     const startMin = bDate.getHours() * 60 + bDate.getMinutes()
-    const endMin = startMin + duration + 30 // duration + обязательный перерыв
+    const endMin = startMin + duration + 30
     blocks.push([startMin, endMin])
   }
   return blocks
@@ -387,12 +422,11 @@ const newBookingBlock = computed(() => {
   return (selectedShootingType.value.duration_minutes || 30) + 30
 })
 
-// Свободные слоты: только те, куда новый блок влезает целиком без пересечений
+// Свободные слоты
 const freeTimeSlots = computed(() => {
   if (!shootingTypeId.value || newBookingBlock.value === 0) return [] as string[]
 
   const blockLen = newBookingBlock.value
-  // Текущее время в минутах (для фильтрации прошедших слотов на сегодня)
   const now = new Date()
   const nowMinutes = now.getHours() * 60 + now.getMinutes()
 
@@ -405,25 +439,21 @@ const freeTimeSlots = computed(() => {
     const candidateStart = hh * 60 + mm
     const candidateEnd = candidateStart + blockLen
 
-    // На сегодня — пропускаем слоты раньше текущего времени
-    if (isToday.value && candidateStart <= nowMinutes) return false
+    // На сегодня (только в режиме add) — пропускаем слоты раньше текущего времени
+    if (props.mode === 'add' && isToday.value && candidateStart <= nowMinutes) return false
 
-    // Проверяем что блок не выходит за рабочий день (до 23:00 = 1380 мин)
     if (candidateEnd > 23 * 60) return false
 
-    // Проверяем пересечение с каждым занятым блоком
     for (const [busyStart, busyEnd] of busyBlocks.value) {
-      if (candidateStart < busyEnd && candidateEnd > busyStart) {
-        return false // пересечение
-      }
+      if (candidateStart < busyEnd && candidateEnd > busyStart) return false
     }
     return true
   })
 })
 
-// При смене даты/типа — выбрать первый свободный слот
+// При смене даты/типа — выбрать первый свободный слот (только в режиме add)
 watch([() => shootingDate.value, () => shootingTypeId.value, freeTimeSlots], () => {
-  if (freeTimeSlots.value.length > 0) {
+  if (props.mode === 'add' && freeTimeSlots.value.length > 0) {
     const firstSlot = freeTimeSlots.value[0]
     if (firstSlot) {
       shootingTime.value = firstSlot
@@ -431,38 +461,39 @@ watch([() => shootingDate.value, () => shootingTypeId.value, freeTimeSlots], () 
   }
 })
 
+// В режиме edit — предупреждение если текущий слот стал недоступен
+watch([() => shootingTypeId.value, freeTimeSlots], () => {
+  if (props.mode === 'edit' && freeTimeSlots.value.length > 0 && !freeTimeSlots.value.includes(shootingTime.value)) {
+    alertTitle.value = 'Внимание'
+    alertMessage.value = 'Выбранное время не подходит для нового типа съёмки. Выберите другое время.'
+    showAlert.value = true
+    const firstSlot = freeTimeSlots.value[0]
+    if (firstSlot) shootingTime.value = firstSlot
+  }
+})
+
 // Маска для телефона
 function formatPhone(event: Event) {
   const input = event.target as HTMLInputElement
-  let value = input.value.replace(/\D/g, '') // Убираем все кроме цифр
+  let value = input.value.replace(/\D/g, '')
 
   if (value.length > 0 && value[0] !== '7') {
     value = '7' + value
   }
-
   if (value.length > 11) {
     value = value.substring(0, 11)
   }
 
   let formatted = '+7'
-  if (value.length > 1) {
-    formatted += '(' + value.substring(1, 4)
-  }
-  if (value.length >= 5) {
-    formatted += ')' + value.substring(4, 7)
-  }
-  if (value.length >= 8) {
-    formatted += '-' + value.substring(7, 9)
-  }
-  if (value.length >= 10) {
-    formatted += '-' + value.substring(9, 11)
-  }
+  if (value.length > 1) formatted += '(' + value.substring(1, 4)
+  if (value.length >= 5) formatted += ')' + value.substring(4, 7)
+  if (value.length >= 8) formatted += '-' + value.substring(7, 9)
+  if (value.length >= 10) formatted += '-' + value.substring(9, 11)
 
   phone.value = formatted
 }
 
 const handleSubmit = async () => {
-  // Validation
   if (!shootingDate.value || !clientName.value || !phone.value || !shootingTypeId.value) {
     alertTitle.value = 'Ошибка'
     alertMessage.value = 'Заполните обязательные поля: Дата съёмки, Клиент, Телефон, Тип съёмки'
@@ -470,59 +501,80 @@ const handleSubmit = async () => {
     return
   }
 
-  // Находим или создаём клиента
-  let clientId = selectedClient.value?.id
-
-  if (!clientId) {
-    // Создаём нового клиента
-    const clientResult = await referencesStore.createClient({
-      name: clientName.value,
-      phone: phone.value
-    })
-    if (clientResult.success) {
-      clientId = clientResult.id
-    } else {
-      alertTitle.value = 'Ошибка'
-      alertMessage.value = 'Ошибка при создании клиента'
-      showAlert.value = true
-      return
-    }
-  }
-
-  // Объединяем дату и время
   const shootingDateTime = `${shootingDate.value} ${shootingTime.value}:00`
 
-  const data = {
-    order_number: generatedOrderNumber.value,
-    shooting_date: shootingDateTime,
-    processing_days: processingDays.value,
-    client_id: clientId,
-    phone: phone.value,
-    shooting_type_id: parseInt(shootingTypeId.value),
-    quantity: quantity.value,
-    promotion_id: promotionId.value ? parseInt(promotionId.value) : null,
-    notes: notes.value || null,
-    payment_amount: paymentAmount.value > 0 ? paymentAmount.value : null
-  }
+  if (props.mode === 'add') {
+    // Находим или создаём клиента
+    let clientId = selectedClient.value?.id
 
-  const result = await bookingsStore.createBooking(data)
-  if (result.success) {
-    // Reset form
-    shootingDate.value = ''
-    shootingTime.value = '10:00'
-    processingDays.value = 10
-    clientName.value = ''
-    phone.value = ''
-    shootingTypeId.value = ''
-    quantity.value = 1
-    promotionId.value = ''
-    notes.value = ''
-    paymentAmount.value = 0
-    emit('close')
+    if (!clientId) {
+      const clientResult = await referencesStore.createClient({
+        name: clientName.value,
+        phone: phone.value
+      })
+      if (clientResult.success) {
+        clientId = clientResult.id
+      } else {
+        alertTitle.value = 'Ошибка'
+        alertMessage.value = 'Ошибка при создании клиента'
+        showAlert.value = true
+        return
+      }
+    }
+
+    const data = {
+      order_number: generatedOrderNumber.value,
+      shooting_date: shootingDateTime,
+      processing_days: processingDays.value,
+      client_id: clientId,
+      phone: phone.value,
+      shooting_type_id: parseInt(shootingTypeId.value),
+      quantity: quantity.value,
+      promotion_id: promotionId.value ? parseInt(promotionId.value) : null,
+      notes: notes.value || null,
+      payment_amount: paymentAmount.value > 0 ? paymentAmount.value : null
+    }
+
+    const result = await bookingsStore.createBooking(data)
+    if (result.success) {
+      // Reset form
+      shootingDate.value = ''
+      shootingTime.value = '10:00'
+      processingDays.value = 10
+      clientName.value = ''
+      phone.value = ''
+      shootingTypeId.value = ''
+      quantity.value = 1
+      promotionId.value = ''
+      notes.value = ''
+      paymentAmount.value = 0
+      emit('close')
+    } else {
+      alertTitle.value = 'Ошибка'
+      alertMessage.value = 'Ошибка при создании записи: ' + (result.error || 'Неизвестная ошибка')
+      showAlert.value = true
+    }
   } else {
-    alertTitle.value = 'Ошибка'
-    alertMessage.value = 'Ошибка при создании записи: ' + (result.error || 'Неизвестная ошибка')
-    showAlert.value = true
+    // mode === 'edit'
+    const data = {
+      id: bookingId.value,
+      shooting_date: shootingDateTime,
+      processing_days: processingDays.value,
+      phone: phone.value,
+      shooting_type_id: parseInt(shootingTypeId.value),
+      quantity: quantity.value,
+      promotion_id: promotionId.value ? parseInt(promotionId.value) : null,
+      notes: notes.value || null
+    }
+
+    const result = await bookingsStore.updateBooking(data)
+    if (result.success) {
+      emit('close')
+    } else {
+      alertTitle.value = 'Ошибка'
+      alertMessage.value = 'Ошибка при обновлении записи: ' + (result.error || 'Неизвестная ошибка')
+      showAlert.value = true
+    }
   }
 }
 </script>
@@ -531,7 +583,7 @@ const handleSubmit = async () => {
   <Teleport to="body">
     <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
       <div class="padGlass modal-sm modal-wide">
-      <div class="modal-glassTitle">Добавить запись на съёмку</div>
+      <div class="modal-glassTitle">{{ mode === 'add' ? 'Добавить запись на съёмку' : 'Редактировать запись' }}</div>
 
       <!-- Номер заказа -->
       <div v-if="generatedOrderNumber" class="order-number-preview">
@@ -566,7 +618,7 @@ const handleSubmit = async () => {
           </div>
           <div class="input-field">
             <label class="input-label">Дата выдачи:</label>
-            <input :value="deliveryDate" type="date" class="modal-input" readonly />
+            <input :value="deliveryDate" type="date" class="modal-input" disabled />
           </div>
         </div>
 
@@ -574,7 +626,9 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Клиент: *</label>
+            <!-- В режиме add — редактируемый с автокомплитом, в edit — readonly -->
             <input
+              v-if="mode === 'add'"
               ref="clientInputRef"
               v-model="clientName"
               type="text"
@@ -583,6 +637,13 @@ const handleSubmit = async () => {
               autocomplete="off"
               @input="onClientInput"
               @focus="onClientInput"
+            />
+            <input
+              v-else
+              :value="clientName"
+              type="text"
+              class="modal-input"
+              disabled
             />
           </div>
           <div class="input-field input-field-phone">
@@ -622,11 +683,16 @@ const handleSubmit = async () => {
             <span class="price-label">Итого (×{{ quantity }}):</span>
             <span class="price-value total-value">{{ Math.round(totalAmount) }} ₽</span>
           </div>
-          <div class="price-row">
+          <!-- В режиме add — поле ввода оплаты, в edit — показываем оплаченную сумму -->
+          <div class="price-row" v-if="mode === 'add'">
             <span class="price-label">Оплата:</span>
             <span class="price-value">
               <input v-model.number="paymentAmount" type="number" class="payment-input-inline" min="0" :max="Math.round(totalAmount)" /> ₽
             </span>
+          </div>
+          <div class="price-row" v-else>
+            <span class="price-label">Оплачено:</span>
+            <span class="price-value">{{ Math.round(paidAmount) }} ₽</span>
           </div>
         </div>
 
@@ -638,14 +704,12 @@ const handleSubmit = async () => {
       </div>
 
       <div class="ButtonFooter PosRight">
-        <!-- Кнопка "Отмена" -->
         <button class="btnGlass iconText" @click="emit('close')">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
           <svg-icon type="mdi" :path="mdiCloseCircleOutline" class="btn-icon" />
           <span>Отмена</span>
         </button>
-        <!-- Кнопка "OK" -->
         <button class="btnGlass iconText" @click="handleSubmit">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
@@ -657,8 +721,8 @@ const handleSubmit = async () => {
   </div>
     <AlertModal :isVisible="showAlert" :message="alertMessage" :title="alertTitle" @close="showAlert = false" />
 
-    <!-- Автокомплит клиентов -->
-    <template v-if="clientDropdownOpen">
+    <!-- Автокомплит клиентов (только в режиме add) -->
+    <template v-if="mode === 'add' && clientDropdownOpen">
       <div class="combo-box-dropdown" :style="clientDropdownStyle">
         <div
           v-for="client in filteredClients"

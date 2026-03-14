@@ -75,22 +75,20 @@ const handleSubmit = async () => {
         <p><strong>Клиент:</strong> {{ bookingInfo.client }}</p>
         <p><strong>Общая сумма:</strong> {{ bookingInfo.total }} ₽</p>
         <p><strong>Оплачено:</strong> {{ bookingInfo.paid }} ₽</p>
-        <p><strong>Осталось:</strong> <span class="remaining-amount">{{ bookingInfo.remaining }} ₽</span></p>
+        <p><strong>Осталось:</strong> {{ bookingInfo.remaining }} ₽</p>
       </div>
 
       <div class="input-group">
-        <div class="input-field">
-          <label class="input-label">Сумма оплаты (₽):</label>
-          <input
-            v-model.number="paymentAmount"
-            type="number"
-            class="modal-input"
-            min="0"
-            step="0.01"
-            placeholder="Введите сумму"
-            @keyup.enter="handleSubmit"
-          />
-        </div>
+        <label class="input-label">Сумма оплаты (₽)</label>
+        <input
+          v-model.number="paymentAmount"
+          type="number"
+          class="modal-input"
+          min="0"
+          step="0.01"
+          placeholder="Введите сумму"
+          @keyup.enter="handleSubmit"
+        />
       </div>
 
       <div class="ButtonFooter PosRight">

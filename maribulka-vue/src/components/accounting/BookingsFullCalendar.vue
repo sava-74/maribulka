@@ -9,14 +9,13 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiTextBoxPlusOutline, mdiFileTableBoxOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
-import AddBookingModal from './AddBookingModal.vue'
-import EditBookingModal from './EditBookingModal.vue'
-import AddPaymentModal from './AddPaymentModal.vue'
+import BookingFormModal from '../calendar/BookingFormModal.vue'
+import AddPaymentModal from '../calendar/AddPaymentModal.vue'
 import DeleteConfirmModal from './DeleteConfirmModal.vue'
-import DeliverBookingModal from './DeliverBookingModal.vue'
-import ViewBookingModal from './ViewBookingModal.vue'
-import CancelBookingModal from './CancelBookingModal.vue'
-import ConfirmSessionModal from './ConfirmSessionModal.vue'
+import DeliverBookingModal from '../calendar/DeliverBookingModal.vue'
+import ViewBookingModal from '../calendar/ViewBookingModal.vue'
+import CancelBookingModal from '../calendar/CancelBookingModal.vue'
+import ConfirmSessionModal from '../calendar/ConfirmSessionModal.vue'
 import BookingActionsModal from './BookingActionsModal.vue'
 import '../../assets/buttons.css'
 import '../../assets/layout.css'
@@ -448,8 +447,8 @@ function closeActionsModal() {
     />
 
     <!-- Модальные окна -->
-    <AddBookingModal :isVisible="showAddModal" :defaultDate="selectedDate" @close="closeModal" />
-    <EditBookingModal :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
+    <BookingFormModal mode="add" :isVisible="showAddModal" :defaultDate="selectedDate" @close="closeModal" />
+    <BookingFormModal mode="edit" :isVisible="showEditModal" :booking="selectedBooking" @close="closeModal" />
     <AddPaymentModal :isVisible="showPaymentModal" :booking="selectedBooking" @close="closeModal" />
     <DeleteConfirmModal :isVisible="showDeleteModal" :booking="selectedBooking" @close="closeModal" />
     <ConfirmSessionModal :isVisible="showConfirmSessionModal" :booking="selectedBooking" @close="closeModal" @openPayment="handlePayment" />

@@ -72,6 +72,16 @@
   max-height: 200px;
 }
 
+.combo-box-dropdown::-webkit-scrollbar-track {
+    margin-top: 15px;     /* Обрезать сверху */
+    margin-bottom: 15px;  /* Обрезать снизу */
+}
+
+.combo-box-dropdown::-webkit-scrollbar-thumb {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
 .combo-box-option {
   padding: 8px 12px;
   font-size: var(--genTextSize);
