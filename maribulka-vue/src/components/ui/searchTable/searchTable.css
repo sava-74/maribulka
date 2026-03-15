@@ -1,0 +1,64 @@
+/* ========================================
+   SearchTable — стеклянный инпут поиска
+   searchTable.css
+   ======================================== */
+
+/* ── Обёртка ── */
+.search-table {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  font-size: var(--genTextSize);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--padRadius) / 2);
+  outline: none;
+  transition: border-color 0.2s ease;
+  min-width: 180px;
+}
+
+.search-table--active {
+  border-color: var(--text-secondary);
+}
+
+/* ── Иконка лупы ── */
+.search-table__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.search-table--active .search-table__icon {
+  color: var(--text-primary);
+}
+
+/* ── Счётчик результатов ── */
+.search-table__count {
+  flex-shrink: 0;
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Поле ввода ── */
+.search-table__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--genTextSize);
+  font-family: inherit;
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.search-table__input::placeholder {
+  color: var(--text-secondary);
+}

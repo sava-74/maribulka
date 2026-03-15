@@ -4,11 +4,13 @@ import {
   useVueTable,
   getCoreRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
   type ColumnDef,
   type SortingState,
   FlexRender
 } from '@tanstack/vue-table'
-import DatePicker, { type DateRange } from '../ui/DatePicker.vue'
+import DatePicker, { type DateRange } from '../ui/datePicker/DatePicker.vue'
+import SearchTable from '../ui/searchTable/SearchTable.vue'
 import { useBookingsStore } from '../../stores/bookings'
 import BookingActionsModal from './BookingActionsModal.vue'
 import BookingFormModal from './BookingFormModal.vue'
@@ -89,6 +91,20 @@ function getPaymentStatusText(status: string): string {
   return map[status] ?? status
 }
 
+function bookingGlobalFilterFn(row: any, columnId: string, filterValue: string): boolean {
+  const search = filterValue.toLowerCase()
+  let value = row.getValue(columnId)
+
+  if (columnId === 'status') {
+    value = getStatusText(value as string)
+  } else if (columnId === 'payment_status') {
+    value = getPaymentStatusText(value as string)
+  }
+
+  if (value === null || value === undefined) return false
+  return String(value).toLowerCase().includes(search)
+}
+
 const columns: ColumnDef<any>[] = [
   { accessorKey: 'order_number', header: 'ID заказа', cell: ({ getValue }) => getValue() || '—' },
   { accessorKey: 'booking_date', header: 'Дата создания', cell: ({ getValue }) => formatDate(getValue() as string) },
@@ -121,6 +137,7 @@ const columns: ColumnDef<any>[] = [
 ]
 
 const sorting = ref<SortingState>([{ id: 'order_number', desc: true }])
+const searchQuery = ref('')
 const selectedIndex = ref<number | null>(null)
 
 const table = useVueTable({
@@ -128,12 +145,18 @@ const table = useVueTable({
   columns,
   state: {
     get sorting() { return sorting.value },
+    get globalFilter() { return searchQuery.value },
   },
   onSortingChange: updater => {
     sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater
   },
+  onGlobalFilterChange: updater => {
+    searchQuery.value = typeof updater === 'function' ? updater(searchQuery.value) : updater
+  },
   getCoreRowModel: getCoreRowModel(),
   getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  globalFilterFn: bookingGlobalFilterFn,
 })
 
 const selectedBooking = computed(() => {
@@ -204,6 +227,11 @@ function getRowClass(booking: any, rowIndex: number): Record<string, boolean> {
     <!-- Фильтр диапазона дат -->
     <div class="bookings-table-filter">
       <DatePicker mode="range" v-model="dateRange" :showPresets="true" />
+      <SearchTable
+        v-model="searchQuery"
+        :count="table.getFilteredRowModel().rows.length"
+        placeholder="Поиск по записям..."
+      />
     </div>
 
     <!-- Таблица -->
