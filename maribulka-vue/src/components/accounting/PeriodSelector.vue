@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import flatpickr from 'flatpickr'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import 'flatpickr/dist/flatpickr.min.css'
+// АРХИВ: flatpickr удалён из проекта (15.03.2026). Этот компонент не используется.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const flatpickr: any = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Russian: any = null
 
 const props = defineProps<{
   periodStart: Date

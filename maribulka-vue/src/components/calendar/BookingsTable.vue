@@ -8,9 +8,7 @@ import {
   type SortingState,
   FlexRender
 } from '@tanstack/vue-table'
-import flatpickr from 'flatpickr'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import 'flatpickr/dist/flatpickr.min.css'
+import DatePicker, { type DateRange } from '../ui/DatePicker.vue'
 import { useBookingsStore } from '../../stores/bookings'
 import BookingActionsModal from './BookingActionsModal.vue'
 import BookingFormModal from './BookingFormModal.vue'
@@ -24,55 +22,26 @@ import RefundModal from './RefundModal.vue'
 
 const bookingsStore = useBookingsStore()
 
-function getDefaultStart(): Date {
+function getDefaultRange(): DateRange {
   const d = new Date()
-  return new Date(d.getFullYear(), d.getMonth(), 1)
-}
-function getDefaultEnd(): Date {
-  const d = new Date()
-  return new Date(d.getFullYear(), d.getMonth() + 1, 0)
-}
-
-const periodStart = ref<Date>(getDefaultStart())
-const periodEnd = ref<Date>(getDefaultEnd())
-
-function formatForApi(date: Date): string {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, '0')
-  const d = String(date.getDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const lastDay = new Date(y, d.getMonth() + 1, 0).getDate()
+  return {
+    from: `${y}-${m}-01`,
+    to: `${y}-${m}-${String(lastDay).padStart(2, '0')}`
+  }
 }
 
-const startInputRef = ref<HTMLInputElement | null>(null)
-const endInputRef = ref<HTMLInputElement | null>(null)
+const dateRange = ref<DateRange>(getDefaultRange())
 
 onMounted(() => {
-  if (startInputRef.value) {
-    flatpickr(startInputRef.value, {
-      locale: Russian,
-      dateFormat: 'd.m.Y',
-      defaultDate: periodStart.value,
-      onChange: (dates) => {
-        if (dates[0]) periodStart.value = dates[0]
-      }
-    })
-  }
-  if (endInputRef.value) {
-    flatpickr(endInputRef.value, {
-      locale: Russian,
-      dateFormat: 'd.m.Y',
-      defaultDate: periodEnd.value,
-      onChange: (dates) => {
-        if (dates[0]) periodEnd.value = dates[0]
-      }
-    })
-  }
-  bookingsStore.fetchBookings(formatForApi(periodStart.value), formatForApi(periodEnd.value))
+  bookingsStore.fetchBookings(dateRange.value.from, dateRange.value.to)
 })
 
-watch([periodStart, periodEnd], ([start, end]) => {
-  bookingsStore.fetchBookings(formatForApi(start), formatForApi(end))
-})
+watch(dateRange, (range) => {
+  bookingsStore.fetchBookings(range.from, range.to)
+}, { deep: true })
 
 function formatDate(dateString: string): string {
   if (!dateString) return ''
@@ -234,10 +203,7 @@ function getRowClass(booking: any, rowIndex: number): Record<string, boolean> {
 
     <!-- Фильтр диапазона дат -->
     <div class="bookings-table-filter">
-      <span class="bookings-table-filter-label">С:</span>
-      <input ref="startInputRef" class="bookings-table-filter-input" placeholder="дд.мм.гггг" readonly />
-      <span class="bookings-table-filter-label">По:</span>
-      <input ref="endInputRef" class="bookings-table-filter-input" placeholder="дд.мм.гггг" readonly />
+      <DatePicker mode="range" v-model="dateRange" :showPresets="true" />
     </div>
 
     <!-- Таблица -->

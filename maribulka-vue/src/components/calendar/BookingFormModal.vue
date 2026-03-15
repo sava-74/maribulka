@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
@@ -7,9 +7,7 @@ import { useReferencesStore } from '../../stores/references'
 import { getLocalDateString } from '../../config/timezone'
 import AlertModal from '../AlertModal.vue'
 import SelectBox from '../SelectBox.vue'
-import flatpickr from 'flatpickr'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import 'flatpickr/dist/flatpickr.min.css'
+import DatePicker from '../ui/DatePicker.vue'
 
 const props = defineProps<{
   isVisible: boolean
@@ -41,10 +39,6 @@ const generatedOrderNumber = ref('')
 const showAlert = ref(false)
 const alertMessage = ref('')
 const alertTitle = ref('Ошибка')
-
-// Flatpickr
-const dateInputRef = ref<HTMLInputElement | null>(null)
-let fpInstance: any = null
 
 // Автокомплит клиента
 const clientInputRef = ref<HTMLInputElement | null>(null)
@@ -79,122 +73,12 @@ function onClientDocClick(e: MouseEvent) {
   }
 }
 
-// Кастомный дропдаун месяца
-const monthDropdownOpen = ref(false)
-const monthDropdownStyle = ref({ top: '0px', left: '0px', width: '0px' })
-const monthDropdownCurrentMonth = ref(0)
-const monthDropdownCurrentYear = ref(new Date().getFullYear())
-let monthTriggerEl: HTMLElement | null = null
-
-const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
-
-function openMonthDropdown() {
-  if (!monthTriggerEl) return
-  const rect = monthTriggerEl.getBoundingClientRect()
-  monthDropdownStyle.value = {
-    top: `${rect.bottom + 4}px`,
-    left: `${rect.left}px`,
-    width: 'auto',
-  }
-  monthDropdownOpen.value = true
-}
-
-function selectMonth(monthIndex: number) {
-  monthDropdownOpen.value = false
-  if (fpInstance) {
-    fpInstance.changeMonth(monthIndex - fpInstance.currentMonth, false)
-  }
-}
-
-function onMonthDropdownDocClick(_e: MouseEvent) {
-  if (monthDropdownOpen.value) {
-    monthDropdownOpen.value = false
-  }
-}
-
-// Инициализация flatpickr при открытии модалки
-watch(() => props.isVisible, async (visible) => {
+// Инициализация при открытии/закрытии модалки
+watch(() => props.isVisible, (visible) => {
   if (visible) {
-    await nextTick()
-    if (dateInputRef.value) {
-      if (fpInstance) { fpInstance.destroy(); fpInstance = null }
-      fpInstance = flatpickr(dateInputRef.value, {
-        locale: Russian,
-        dateFormat: 'd.m.Y',
-        minDate: props.mode === 'add' ? new Date() : undefined,
-        allowInput: false,
-        clickOpens: true,
-        onReady: (_dates: Date[], _str: string, fp: any) => {
-          // Масштабировать календарь под ширину инпута без мелькания
-          if (dateInputRef.value && fp.calendarContainer) {
-            fp.calendarContainer.style.visibility = 'hidden'
-            requestAnimationFrame(() => {
-              if (!dateInputRef.value || !fp.calendarContainer) return
-              const inputWidth = dateInputRef.value.getBoundingClientRect().width
-              const calWidth = fp.calendarContainer.offsetWidth || 307
-              if (calWidth > inputWidth) {
-                const scale = inputWidth / calWidth
-                fp.calendarContainer.style.transformOrigin = 'top left'
-                fp.calendarContainer.style.transform = `scale(${scale})`
-              }
-              fp.calendarContainer.style.visibility = 'visible'
-            })
-          }
-
-          // Найти нативный select месяца и скрыть его
-          const nativeSelect = fp.calendarContainer?.querySelector('.flatpickr-monthDropdown-months') as HTMLSelectElement | null
-          if (nativeSelect) {
-            nativeSelect.style.display = 'none'
-            // Создать кастомный триггер
-            const trigger = document.createElement('div')
-            trigger.className = 'fp-month-trigger'
-            trigger.setAttribute('tabindex', '0')
-            nativeSelect.parentNode?.insertBefore(trigger, nativeSelect)
-            monthTriggerEl = trigger
-
-            const updateTrigger = () => {
-              trigger.textContent = monthNames[fp.currentMonth] ?? ''
-              monthDropdownCurrentMonth.value = fp.currentMonth
-              monthDropdownCurrentYear.value = fp.currentYear
-            }
-            updateTrigger()
-
-            trigger.addEventListener('click', (e) => {
-              e.stopPropagation()
-              updateTrigger()
-              openMonthDropdown()
-            })
-
-            // Обновлять триггер при смене месяца кнопками
-            fp.calendarContainer?.addEventListener('click', () => {
-              setTimeout(updateTrigger, 0)
-            })
-          }
-        },
-        onChange: (selectedDates: Date[]) => {
-          if (selectedDates[0]) {
-            const d = selectedDates[0]
-            shootingDate.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-          }
-        }
-      })
-
-      // Если режим edit и дата уже выбрана — установить в flatpickr
-      // Передаём Date-объект, т.к. строка YYYY-MM-DD не совпадает с dateFormat 'd.m.Y'
-      if (props.mode === 'edit' && shootingDate.value) {
-        const parts = shootingDate.value.split('-').map(Number)
-        fpInstance.setDate(new Date(parts[0]!, (parts[1]! - 1), parts[2]!), false)
-      }
-
-      document.addEventListener('click', onMonthDropdownDocClick, true)
-      document.addEventListener('click', onClientDocClick, true)
-    }
+    document.addEventListener('click', onClientDocClick, true)
   } else {
-    monthDropdownOpen.value = false
     clientDropdownOpen.value = false
-    monthTriggerEl = null
-    if (fpInstance) { fpInstance.destroy(); fpInstance = null }
-    document.removeEventListener('click', onMonthDropdownDocClick, true)
     document.removeEventListener('click', onClientDocClick, true)
   }
 })
@@ -242,12 +126,6 @@ watch(() => props.booking, (newBooking) => {
     notes.value = newBooking.notes || ''
     paidAmount.value = newBooking.paid_amount ? parseFloat(newBooking.paid_amount) : 0
     paymentAmount.value = 0
-
-    // Если flatpickr уже инициализирован — установить дату через Date-объект
-    if (fpInstance && shootingDate.value) {
-      const parts = shootingDate.value.split('-').map(Number)
-      fpInstance.setDate(new Date(parts[0]!, (parts[1]! - 1), parts[2]!), false)
-    }
   }
 }, { immediate: true })
 
@@ -604,9 +482,11 @@ const handleSubmit = async () => {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Дата съёмки: *</label>
-            <div class="date-input-wrap">
-              <input ref="dateInputRef" type="text" class="modal-input" placeholder="Выберите дату" />
-            </div>
+            <DatePicker
+              v-model="shootingDate"
+              :minDate="mode === 'add' ? todayStr : undefined"
+              :showToday="false"
+            />
           </div>
           <div class="input-field input-field-narrow">
             <label class="input-label">Время: *</label>
@@ -732,21 +612,6 @@ const handleSubmit = async () => {
           @mousedown.prevent="selectClient(client.name)"
         >
           {{ client.name }}
-        </div>
-      </div>
-    </template>
-
-    <!-- Кастомный дропдаун месяцев для flatpickr -->
-    <template v-if="monthDropdownOpen">
-      <div class="combo-box-dropdown fp-month-dropdown" :style="monthDropdownStyle">
-        <div
-          v-for="(name, index) in monthNames"
-          :key="index"
-          class="combo-box-option"
-          :class="{ 'combo-box-option--selected': index === monthDropdownCurrentMonth }"
-          @click.stop="selectMonth(index)"
-        >
-          {{ name }}
         </div>
       </div>
     </template>

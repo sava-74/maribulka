@@ -1,0 +1,299 @@
+/* ========================================
+   DatePicker — стеклянный компонент выбора даты
+   datePicker.css
+   ======================================== */
+
+/* ── Переменные выбранного дня (по теме) ── */
+[data-theme] {
+  --dp-selected-bg: rgba(255, 255, 255, 0.25);
+}
+[data-theme="light"] {
+  --dp-selected-bg: rgba(68, 87, 197, 0.25);
+}
+
+/* ── Обёртка: инпут + кнопки ── */
+.dp-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dp-btn-today {
+  flex-shrink: 0;
+}
+
+/* ── Инпут (стиль combo-box-wrap из selectBox.css, скопирован) ── */
+.dp-input {
+  position: relative;
+  box-sizing: border-box;
+  width: auto;
+  padding: 8px 12px;
+  font-size: var(--genTextSize);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--padRadius) / 2);
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  user-select: none;
+  transition: border-color 0.2s ease;
+}
+
+.dp-input:focus,
+.dp-input--open {
+  border-color: var(--text-secondary);
+}
+
+.dp-input-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dp-input-placeholder {
+  color: var(--text-secondary);
+}
+
+.dp-input-arrow {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.dp-input--open .dp-input-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── Анимация попапа (keyframes изолированы, без зависимости от animations.css) ── */
+@keyframes dp-genie-in {
+  0%   { opacity: 0; transform: translate(var(--genie-dx, 0), var(--genie-dy, 0)) scale(0.05); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes dp-genie-out {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--genie-dx, 0), var(--genie-dy, 0)) scale(0.05); }
+}
+
+.dp-popup-enter-active {
+  animation: dp-genie-in 0.45s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.dp-popup-leave-active {
+  animation: dp-genie-out 0.35s ease-in forwards;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* ── Попап-календарь ── */
+.dp-popup {
+  position: fixed;
+  z-index: 1000;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  border: 2px groove var(--glass-border);
+  border-radius: var(--padRadius);
+  box-shadow: var(--glass-shadow);
+  color: var(--text-primary);
+  min-width: 240px;
+  padding: 9px;
+  box-sizing: border-box;
+}
+
+/* ── Шапка: ← [Март ▼] 2026 → ── */
+.dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.dp-nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  border-radius: calc(var(--padRadius) / 3);
+  transition: background 0.15s;
+}
+
+.dp-nav-btn:hover {
+  background: var(--glass-border);
+}
+
+.dp-header-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--genTextSize);
+}
+
+.dp-year {
+  color: var(--text-primary);
+  font-size: var(--genTextSizeH1);
+}
+
+/* ── Подпись режима range ── */
+@keyframes dp-label-pulse {
+  0%   { transform: scale(2); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.dp-range-label {
+  font-size: var(--genTextSizeH1);
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 2px;
+  transform-origin: center;
+  animation: dp-label-pulse 2s ease-out forwards;
+}
+
+/* ── Дни недели ── */
+.dp-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 4px;
+}
+
+.dp-weekday {
+  text-align: center;
+  font-size: var(--genTextSizeSmall);
+  color: var(--text-secondary);
+  padding: 4px 0;
+}
+
+/* ── Сетка дней ── */
+.dp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dp-day {
+  text-align: center;
+  padding: 6px 2px;
+  font-size: var(--genTextSize);
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: calc(var(--padRadius) / 3);
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.dp-day:hover:not(.dp-day--other):not(.dp-day--disabled) {
+  background: var(--glass-border);
+}
+
+.dp-day--other {
+  color: var(--text-secondary);
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.dp-day--today {
+  border-color: var(--text-secondary);
+}
+
+.dp-day--selected {
+  background: var(--dp-selected-bg);
+  font-weight: 600;
+}
+
+.dp-day--range {
+  background: var(--glass-border);
+  opacity: 1;
+}
+
+.dp-day--range-hover {
+  background: var(--glass-border);
+  opacity: 1;
+}
+
+.dp-day--disabled {
+  color: var(--text-secondary);
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Триггер дропдауна месяца ── */
+.dp-month-trigger {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 2px 2px 8px;
+  font-size: var(--genTextSizeH1);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--padRadius) / 4);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s ease;
+}
+
+.dp-month-trigger:hover {
+  border-color: var(--text-secondary);
+}
+
+/* ── Дропдаун месяца (стиль combo-box-dropdown, скопирован) ── */
+.dp-dropdown {
+  position: fixed;
+  z-index: 100000;
+  background: var(--glass-bg);
+  border: 1px groove var(--glass-border);
+  border-radius: calc(var(--padRadius) / 2);
+  backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--padBlur)) saturate(180%);
+  box-shadow: var(--glass-shadow);
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.dp-dropdown::-webkit-scrollbar-track {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.dp-dropdown::-webkit-scrollbar-thumb {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.dp-dropdown-option {
+  padding: 8px 12px;
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dp-dropdown-option:hover {
+  color: var(--text-primary);
+  background: var(--glass-border);
+}
+
+.dp-dropdown-option--selected {
+  color: var(--text-primary);
+  font-weight: 600;
+}

@@ -245,7 +245,7 @@ Backend uses SQL `SUM()`, `COUNT()`, `AVG()` and returns final numbers.
 - **Pinia** - State management
 - **TanStack Table** - Data tables
 - **Chart.js** - Analytics charts
-- **flatpickr** - Date/period pickers with presets
+- **DatePicker.vue** - Кастомный выбор даты/периода (`src/components/ui/DatePicker.vue`), заменил flatpickr (удалён 15.03.2026). Режимы: `single` / `range`. v-model: `string` (YYYY-MM-DD) или `DateRange`. Props: `mode`, `minDate`, `maxDate`, `showToday`, `showPresets`.
 
 ## Project Structure Details
 
@@ -296,7 +296,8 @@ The project has extensive documentation in `C:\Users\sava\.claude\projects\d--Gi
 
 - `MEMORY.md` - Quick reference index (always loaded)
 - `modal-orders.md` - Two-order modal system (z-index, component list)
-- `calendar.md` - Booking calendar: statuses, colors, slots, flatpickr patterns
+- `datepicker.md` - DatePicker.vue: кастомный выбор даты/периода, props, примеры (flatpickr удалён!)
+- `calendar.md` - Booking calendar: statuses, colors, slots
 - `home-stack.md` - Home page: sticky panels, CKEditor, smart scroll logic
 - `styles.md` - CSS organization details
 - `patterns.md` - Code patterns and examples
