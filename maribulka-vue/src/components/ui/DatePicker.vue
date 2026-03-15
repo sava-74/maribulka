@@ -242,7 +242,7 @@ function openPopup() {
 }
 
 // Вызывается Transition перед началом анимации входа — попап уже в DOM, можно мерить размеры
-function onPopupBeforeEnter(el: Element) {
+function onPopupBeforeEnter() {
   nextTick(() => positionPopup())
 }
 
