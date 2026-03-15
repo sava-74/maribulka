@@ -62,6 +62,7 @@
   border-collapse: collapse;
   font-size: var(--genTextSize);
   color: var(--text-primary);
+  margin: 5px 10px;
 }
 
 .bookings-table thead {
