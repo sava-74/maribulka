@@ -28,6 +28,7 @@ async function handleSave() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        user_id: 1,
         amount: parseFloat(amount.value),
         date: today,
         notes: notes.value || null
@@ -59,10 +60,6 @@ async function handleSave() {
         <div class="info-row">
           <span class="info-label">Дата:</span>
           <input type="text" class="modal-input" :value="today" disabled />
-        </div>
-        <div class="info-row">
-          <span class="info-label">От кого:</span>
-          <input type="text" class="modal-input" value="Администратор" disabled />
         </div>
         <div class="info-row">
           <span class="info-label">Сумма:</span>

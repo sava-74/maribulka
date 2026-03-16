@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
 
         $bookingId = $input['booking_id'] ?? null;
+        $userId = $input['user_id'] ?? null;
         $amount = $input['amount'] ?? null;
         $category = $input['category'] ?? 'cash_in';
         $date = $input['date'] ?? date('Y-m-d');
@@ -58,10 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Создаём запись о платеже
         $stmt = $db->prepare("
-            INSERT INTO income (booking_id, client_id, amount, category, date, notes, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO income (booking_id, client_id, user_id, amount, category, date, notes, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
         ");
-        $stmt->execute([$bookingId, $clientId, $amount, $category, $date, $notes]);
+        $stmt->execute([$bookingId, $clientId, $userId, $amount, $category, $date, $notes]);
 
         // Обновляем статус оплаты заказа (только если привязан к заказу)
         if ($bookingId) {
@@ -165,11 +166,11 @@ try {
         $result = $stmt->fetchAll();
         echo json_encode($result);
     } elseif (isset($_GET['start']) && isset($_GET['end'])) {
-        // Платежи за период (НОВОЕ!)
+        // Платежи за период
         $stmt = $db->prepare("
             SELECT
                 i.*,
-                c.name as client_name,
+                COALESCE(c.name, u.name) as client_name,
                 c.phone,
                 st.name as shooting_type_name,
                 b.quantity,
@@ -187,6 +188,7 @@ try {
                 p.discount_percent as promo_discount_percent
             FROM income i
             LEFT JOIN clients c ON i.client_id = c.id
+            LEFT JOIN users u ON i.user_id = u.id
             LEFT JOIN bookings b ON i.booking_id = b.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
             LEFT JOIN promotions p ON b.promotion_id = p.id
@@ -201,7 +203,7 @@ try {
         $stmt = $db->prepare("
             SELECT
                 i.*,
-                c.name as client_name,
+                COALESCE(c.name, u.name) as client_name,
                 c.phone,
                 st.name as shooting_type_name,
                 b.quantity,
@@ -219,6 +221,7 @@ try {
                 p.discount_percent as promo_discount_percent
             FROM income i
             LEFT JOIN clients c ON i.client_id = c.id
+            LEFT JOIN users u ON i.user_id = u.id
             LEFT JOIN bookings b ON i.booking_id = b.id
             LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
             LEFT JOIN promotions p ON b.promotion_id = p.id
