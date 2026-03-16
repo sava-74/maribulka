@@ -67,8 +67,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Вход (теперь только устанавливает флаг, реальный вход через API в LoginModal)
-  function login(remember: boolean) {
+  function login(remember: boolean, user?: { id: number; name: string }) {
     isAdmin.value = true
+    if (user) {
+      userName.value = user.name ?? ''
+      userId.value = user.id ?? null
+    }
     if (remember) {
       localStorage.setItem('isAdmin', 'true')
       stopHeartbeat()

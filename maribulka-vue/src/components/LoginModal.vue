@@ -50,7 +50,7 @@ const handleLogin = async () => {
     if (response.ok) {
       const data = await response.json()
       if (data.success) {
-        auth.login(rememberMe.value)
+        auth.login(rememberMe.value, data.user)
         password.value = ''
         close()
       } else {

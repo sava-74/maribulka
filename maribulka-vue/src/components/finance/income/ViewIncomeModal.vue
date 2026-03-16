@@ -198,7 +198,28 @@ async function handlePayment() {
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Информация о платеже</div>
 
-        <div v-if="orderInfo">
+        <!-- Взнос в кассу (без привязки к заказу) -->
+        <div v-if="localIncome && !localIncome.booking_id">
+          <div class="info-row">
+            <span class="info-label">Дата:</span>
+            <span class="info-value">{{ formatDate(localIncome.date) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Вносит:</span>
+            <span class="info-value">{{ localIncome.client_name || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Сумма:</span>
+            <span class="info-value" style="font-weight:600">{{ Math.round(parseFloat(localIncome.amount)) }} ₽</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Примечания:</span>
+            <span class="info-value">{{ localIncome.notes || '—' }}</span>
+          </div>
+        </div>
+
+        <!-- Платёж по заказу -->
+        <div v-else-if="orderInfo">
           <!-- ID и статусы -->
           <div class="info-row">
             <span class="info-label">ID заказа:</span>
@@ -304,7 +325,7 @@ async function handlePayment() {
 
         <div class="ButtonFooter PosRight">
           <button
-            v-if="orderInfo && orderInfo.remaining > 0"
+            v-if="localIncome?.booking_id && orderInfo && orderInfo.remaining > 0"
             class="btnGlass iconText"
             @click="showPaymentConfirm"
           >
