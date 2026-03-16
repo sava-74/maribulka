@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useNavigationStore } from './navigation'
 
 export const useAuthStore = defineStore('auth', () => {
   const isAdmin = ref(false)
@@ -97,6 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
       userName.value = ''
       userId.value = null
       localStorage.removeItem('isAdmin')
+      useNavigationStore().navigateTo('home')
     }
   }
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useFinanceStore } from '../../../stores/finance'
 import { useReferencesStore } from '../../../stores/references'
 import { useAuthStore } from '../../../stores/auth'
 import AlertModal from '../../AlertModal.vue'
+import SelectBox from '../../SelectBox.vue'
 
 const props = defineProps<{
   isVisible: boolean
@@ -21,6 +22,10 @@ const authStore = useAuthStore()
 
 const today = new Date().toISOString().split('T')[0]
 const categoryId = ref<number | null>(null)
+
+const categoryOptions = computed(() =>
+  refsStore.expenseCategories.map(c => ({ value: c.id, label: c.name }))
+)
 const amount = ref('')
 const description = ref('')
 const showAlert = ref(false)
@@ -75,12 +80,7 @@ async function handleSave() {
         </div>
         <div class="info-row">
           <span class="info-label">Категория:</span>
-          <select class="modal-input" v-model="categoryId">
-            <option :value="null" disabled>— выберите —</option>
-            <option v-for="cat in refsStore.expenseCategories" :key="cat.id" :value="cat.id">
-              {{ cat.name }}
-            </option>
-          </select>
+          <SelectBox v-model="categoryId" :options="categoryOptions" placeholder="— выберите —" />
         </div>
         <div class="info-row">
           <span class="info-label">Сумма:</span>
