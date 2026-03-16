@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useFinanceStore } from '../../../stores/finance'
+import { useAuthStore } from '../../../stores/auth'
 import AlertModal from '../../AlertModal.vue'
 
 const props = defineProps<{
@@ -14,6 +15,7 @@ const props = defineProps<{
 const emit = defineEmits(['close'])
 
 const financeStore = useFinanceStore()
+const authStore = useAuthStore()
 const amount = ref('')
 const notes = ref('')
 const showAlert = ref(false)
@@ -28,7 +30,7 @@ async function handleSave() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        user_id: 1,
+        user_id: authStore.userId,
         amount: parseFloat(amount.value),
         date: today,
         notes: notes.value || null
@@ -59,7 +61,11 @@ async function handleSave() {
 
         <div class="info-row">
           <span class="info-label">Дата:</span>
-          <input type="text" class="modal-input" :value="today" disabled />
+          <span class="info-value">{{ today }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Вносит:</span>
+          <span class="info-value">{{ authStore.userName }}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Сумма:</span>

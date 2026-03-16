@@ -4,6 +4,8 @@ import { ref } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
   const isAdmin = ref(false)
   const isLoading = ref(false)
+  const userName = ref('')
+  const userId = ref<number | null>(null)
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
 
   function startHeartbeat() {
@@ -38,6 +40,8 @@ export const useAuthStore = defineStore('auth', () => {
         const data = await response.json()
         if (data.success && data.isAuthenticated && data.user?.role === 'admin') {
           isAdmin.value = true
+          userName.value = data.user.name ?? ''
+          userId.value = data.user.id ?? null
           localStorage.setItem('isAdmin', 'true')
           if (!data.rememberMe) startHeartbeat()
           return true
@@ -46,11 +50,15 @@ export const useAuthStore = defineStore('auth', () => {
 
       // Если сессия невалидна - очищаем
       isAdmin.value = false
+      userName.value = ''
+      userId.value = null
       localStorage.removeItem('isAdmin')
       return false
     } catch (error) {
       console.error('Ошибка проверки сессии:', error)
       isAdmin.value = false
+      userName.value = ''
+      userId.value = null
       localStorage.removeItem('isAdmin')
       return false
     } finally {
@@ -82,6 +90,8 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Ошибка выхода:', error)
     } finally {
       isAdmin.value = false
+      userName.value = ''
+      userId.value = null
       localStorage.removeItem('isAdmin')
     }
   }
@@ -90,6 +100,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     isAuthenticated: isAdmin,
     isLoading,
+    userName,
+    userId,
     login,
     logout,
     checkSession

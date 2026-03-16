@@ -49,7 +49,8 @@ if ($action === 'check') {
             'user' => [
                 'id' => $_SESSION['user']['id'],
                 'login' => $_SESSION['user']['login'],
-                'role' => $_SESSION['user']['role']
+                'role' => $_SESSION['user']['role'],
+                'name' => $_SESSION['user']['name'] ?? ''
             ]
         ]);
     } else {
@@ -90,7 +91,8 @@ if ($action === 'login') {
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'login' => $user['login'],
-                'role' => $user['role']
+                'role' => $user['role'],
+                'name' => $user['name'] ?? ''
             ];
             $_SESSION['remember_me'] = (bool)($input['rememberMe'] ?? false);
             $_SESSION['last_ping'] = time();
@@ -100,7 +102,8 @@ if ($action === 'login') {
                 'user' => [
                     'id' => $user['id'],
                     'login' => $user['login'],
-                    'role' => $user['role']
+                    'role' => $user['role'],
+                    'name' => $user['name'] ?? ''
                 ]
             ]);
         } else {
