@@ -28,35 +28,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $bookingId = $input['booking_id'] ?? null;
         $amount = $input['amount'] ?? null;
-        $category = $input['category'] ?? 'balance';
+        $category = $input['category'] ?? 'cash_in';
         $date = $input['date'] ?? date('Y-m-d');
+        $notes = $input['notes'] ?? null;
 
-        if (!$bookingId || !$amount) {
+        if (!$amount) {
             http_response_code(400);
-            echo json_encode(['error' => 'Не указаны обязательные поля']);
+            echo json_encode(['error' => 'Не указана сумма']);
             exit;
         }
 
-        // Получаем client_id из заказа
-        $stmt = $db->prepare("SELECT client_id FROM bookings WHERE id = ?");
-        $stmt->execute([$bookingId]);
-        $booking = $stmt->fetch();
+        $clientId = null;
 
-        if (!$booking) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Заказ не найден']);
-            exit;
+        if ($bookingId) {
+            // Получаем client_id из заказа
+            $stmt = $db->prepare("SELECT client_id FROM bookings WHERE id = ?");
+            $stmt->execute([$bookingId]);
+            $booking = $stmt->fetch();
+
+            if (!$booking) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Заказ не найден']);
+                exit;
+            }
+
+            $clientId = $booking['client_id'];
+            $category = $input['category'] ?? 'balance';
         }
 
         // Создаём запись о платеже
         $stmt = $db->prepare("
-            INSERT INTO income (booking_id, client_id, amount, category, date, created_at)
-            VALUES (?, ?, ?, ?, ?, NOW())
+            INSERT INTO income (booking_id, client_id, amount, category, date, notes, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
         ");
-        $stmt->execute([$bookingId, $booking['client_id'], $amount, $category, $date]);
+        $stmt->execute([$bookingId, $clientId, $amount, $category, $date, $notes]);
 
-        // Обновляем статус оплаты заказа
-        updatePaymentStatus($db, $bookingId);
+        // Обновляем статус оплаты заказа (только если привязан к заказу)
+        if ($bookingId) {
+            updatePaymentStatus($db, $bookingId);
+        }
 
         $lastId = $db->lastInsertId();
         echo json_encode(['success' => true, 'id' => (int)$lastId]);

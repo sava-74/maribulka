@@ -269,7 +269,6 @@ async function confirmDelete() {
 
     <AddIncomeModal
       :isVisible="showAddModal"
-      :income="selectedIncome"
       :dateFrom="dateRange.from"
       :dateTo="dateRange.to"
       @close="closeModal"
