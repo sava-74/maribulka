@@ -52,12 +52,14 @@ try {
                         e.*,
                         ec.name as category_name,
                         c.name as client_name,
-                        st.name as shooting_type_name
+                        st.name as shooting_type_name,
+                        u.name as created_by_name
                     FROM expenses e
                     LEFT JOIN expense_categories ec ON e.category = ec.id
                     LEFT JOIN bookings b ON e.booking_id = b.id
                     LEFT JOIN clients c ON b.client_id = c.id
                     LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                    LEFT JOIN users u ON e.created_by = u.id
                     WHERE e.date BETWEEN ? AND ?
                     ORDER BY e.date DESC
                 ");
@@ -71,12 +73,14 @@ try {
                         e.*,
                         ec.name as category_name,
                         c.name as client_name,
-                        st.name as shooting_type_name
+                        st.name as shooting_type_name,
+                        u.name as created_by_name
                     FROM expenses e
                     LEFT JOIN expense_categories ec ON e.category = ec.id
                     LEFT JOIN bookings b ON e.booking_id = b.id
                     LEFT JOIN clients c ON b.client_id = c.id
                     LEFT JOIN shooting_types st ON b.shooting_type_id = st.id
+                    LEFT JOIN users u ON e.created_by = u.id
                     WHERE DATE_FORMAT(e.date, '%Y-%m') = ?
                     ORDER BY e.date DESC
                 ");
@@ -115,8 +119,8 @@ try {
             }
 
             $stmt = $db->prepare("
-                INSERT INTO expenses (date, amount, category, description, booking_id)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO expenses (date, amount, category, description, booking_id, created_by)
+                VALUES (?, ?, ?, ?, ?, ?)
             ");
 
             $stmt->execute([
@@ -124,7 +128,8 @@ try {
                 $data['amount'],
                 $data['category'],
                 $data['description'],
-                $data['booking_id'] ?? null
+                $data['booking_id'] ?? null,
+                $data['created_by'] ?? null
             ]);
 
             echo json_encode([

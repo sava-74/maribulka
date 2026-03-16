@@ -10,6 +10,7 @@ import CalendarPanel from './components/calendar/CalendarPanel.vue'
 import CalendarSidebar from './components/calendar/CalendarSidebar.vue'
 import BookingsTable from './components/calendar/BookingsTable.vue'
 import IncomeTable from './components/finance/income/IncomeTable.vue'
+import ExpensesTable from './components/finance/expenses/ExpensesTable.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -68,6 +69,7 @@ onMounted(async () => {
       </template>
       <BookingsTable v-if="navStore.currentPage === 'bookings'" />
       <IncomeTable v-if="navStore.currentPage === 'income'" />
+      <ExpensesTable v-if="navStore.currentPage === 'expenses'" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

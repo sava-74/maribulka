@@ -59,6 +59,11 @@ function openIncome() {
   close()
 }
 
+function openExpenses() {
+  navStore.navigateTo('expenses')
+  close()
+}
+
 defineExpose({ close })
 
 const onLogoutConfirm = () => {
@@ -117,7 +122,7 @@ function onRipple(event: MouseEvent) {
             <p class="pad-icon-label">Приход</p>
           </div>
           <div class="pad-icon-cell">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openExpenses()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiTrendingDown" class="btn-icon-big" />
