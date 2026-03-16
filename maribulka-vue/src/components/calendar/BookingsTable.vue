@@ -222,10 +222,11 @@ function getRowClass(booking: any, rowIndex: number): Record<string, boolean> {
 </script>
 
 <template>
-  <div class="padGlass padGlass-work bookings-table-panel">
+  <div class="padGlass padGlass-work data-table-panel">
+    <div class="pad-title">Записи</div>
 
     <!-- Фильтр диапазона дат -->
-    <div class="bookings-table-filter">
+    <div class="data-table-filter">
       <DatePicker mode="range" v-model="dateRange" :showPresets="true" />
       <SearchTable
         v-model="searchQuery"
@@ -235,8 +236,8 @@ function getRowClass(booking: any, rowIndex: number): Record<string, boolean> {
     </div>
 
     <!-- Таблица -->
-    <div v-if="bookingsStore.bookings.length > 0" class="bookings-table-scroll">
-      <table class="bookings-table">
+    <div v-if="bookingsStore.bookings.length > 0" class="data-table-scroll">
+      <table class="data-table">
         <thead>
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <th
@@ -278,7 +279,7 @@ function getRowClass(booking: any, rowIndex: number): Record<string, boolean> {
     </div>
 
     <!-- Пустое состояние -->
-    <div v-else class="bookings-table-empty">
+    <div v-else class="data-table-empty">
       📭 Нет записей за выбранный период
     </div>
 
