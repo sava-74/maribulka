@@ -6,7 +6,7 @@ import { useFinanceStore } from '../../../stores/finance'
 import { useReferencesStore } from '../../../stores/references'
 import { useAuthStore } from '../../../stores/auth'
 import AlertModal from '../../AlertModal.vue'
-import SelectBox from '../../SelectBox.vue'
+import SelectBox from '../../ui/selectBox/SelectBox.vue'
 
 const props = defineProps<{
   isVisible: boolean

@@ -6,7 +6,7 @@ import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import { getLocalDateString } from '../../config/timezone'
 import AlertModal from '../AlertModal.vue'
-import SelectBox from '../SelectBox.vue'
+import SelectBox from '../ui/selectBox/SelectBox.vue'
 import DatePicker from '../ui/datePicker/DatePicker.vue'
 
 const props = defineProps<{
