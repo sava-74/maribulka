@@ -39,7 +39,7 @@ function formatDate(dateStr: string) {
           </div>
           <div class="info-row">
             <span class="info-label">Сумма:</span>
-            <span class="info-value" style="font-weight: 600;">{{ Math.round(parseFloat(expense.amount)) }} ₽</span>
+            <span class="info-value strong">{{ Math.round(parseFloat(expense.amount)) }} ₽</span>
           </div>
           <div class="info-row">
             <span class="info-label">Описание:</span>

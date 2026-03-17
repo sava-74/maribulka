@@ -47,6 +47,7 @@ watch(dateRange, (range) => {
 }, { deep: true })
 
 const selectedIndex = ref<number | null>(null)
+const isEmpty = ref(false)
 
 const selectedExpense = computed(() => {
   if (selectedIndex.value === null) return null
@@ -125,7 +126,13 @@ const showRefundModal = ref(false)
 const showDeleteModal = ref(false)
 
 function openActions() {
+  isEmpty.value = false
   if (selectedExpense.value) showActionsModal.value = true
+}
+
+function openEmptyActions() {
+  isEmpty.value = true
+  showActionsModal.value = true
 }
 
 function closeModal() {
@@ -178,7 +185,7 @@ async function confirmDelete() {
       />
     </div>
 
-    <div v-if="financeStore.expenses.length > 0" class="data-table-scroll">
+    <div class="data-table-scroll">
       <table class="data-table">
         <thead>
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
@@ -200,6 +207,14 @@ async function confirmDelete() {
         </thead>
         <tbody>
           <tr
+            v-if="financeStore.expenses.length === 0"
+            class="row-empty"
+            @click="openEmptyActions"
+          >
+            <td :colspan="columns.length" class="cell-empty">+ Добавить расход</td>
+          </tr>
+          <tr
+            v-else
             v-for="(row, rowIndex) in table.getRowModel().rows"
             :key="row.id"
             :class="{ 'row-selected': selectedIndex === rowIndex }"
@@ -226,13 +241,10 @@ async function confirmDelete() {
       </table>
     </div>
 
-    <div v-else class="data-table-empty">
-      📭 Нет расходов за выбранный период
-    </div>
-
     <ExpensesActionsModal
       v-if="showActionsModal"
       :expense="selectedExpense"
+      :isEmpty="isEmpty"
       @close="closeModal"
       @add="handleAdd"
       @view="handleView"

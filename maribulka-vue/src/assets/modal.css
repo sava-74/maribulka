@@ -206,11 +206,12 @@ textarea.modal-input {
   display: flex;
   gap: 8px;
 }
-
+ 
 .ButtonFooter.PosCenter { justify-content: center; }
 .ButtonFooter.PosRight  { justify-content: flex-end; }
 .ButtonFooter.PosLeft   { justify-content: flex-start; }
 .ButtonFooter.PosSpace  { justify-content: space-between; }
+.ButtonFooter.PosColumn { flex-direction: column; }
 
 /* Блок прайса */
 .price-info {

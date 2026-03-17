@@ -86,7 +86,7 @@ async function handleSave() {
         </div>
         <div class="info-row">
           <span class="info-label">Сумма возврата:</span>
-          <span class="info-value" style="font-weight: 600;">
+          <span class="info-value strong">
             {{ refundAmount > 0 ? refundAmount + ' ₽' : '—' }}
           </span>
         </div>

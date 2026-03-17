@@ -4,6 +4,7 @@ import { mdiCashMinus, mdiEyeOutline, mdiUndoVariant, mdiTrashCanOutline } from 
 
 const props = defineProps<{
   expense: any | null
+  isEmpty?: boolean
 }>()
 
 const emit = defineEmits(['close', 'add', 'view', 'refund', 'delete'])
@@ -14,12 +15,10 @@ const emit = defineEmits(['close', 'add', 'view', 'refund', 'delete'])
     <div class="modal-overlay" @click.self="emit('close')">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ expense?.category_name ?? 'Расход' }}</div>
-        <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: -8px; margin-bottom: 4px;">
-          {{ expense?.description ?? '—' }}
-        </div>
+        <p class="modal-message">{{ expense?.description ?? 'Добавить' }}</p>
 
-        <div class="ButtonFooter PosCenter" style="flex-direction: column; gap: 8px;">
-          <button class="btnGlass iconTextStart" @click="emit('view')">
+        <div class="ButtonFooter PosCenter PosColumn">
+          <button class="btnGlass iconTextStart" :disabled="props.isEmpty" @click="emit('view')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiEyeOutline" class="btn-icon" />
@@ -37,7 +36,7 @@ const emit = defineEmits(['close', 'add', 'view', 'refund', 'delete'])
             <svg-icon type="mdi" :path="mdiUndoVariant" class="btn-icon" />
             <span>Возврат</span>
           </button>
-          <button class="btnGlass iconTextStart" @click="emit('delete')">
+          <button class="btnGlass iconTextStart" :disabled="props.isEmpty" @click="emit('delete')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiTrashCanOutline" class="btn-icon" />
