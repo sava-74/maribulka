@@ -3,7 +3,8 @@
    editor.css
    ======================================== */
 
-/* Субстиль модалки редактора */
+/* Модалка редактора: растянута на весь экран (align-items stretch), z-index 1000 */
+/* ВАЖНО: z-index 1000 — НЕ 9999, чтобы balloon CKEditor не перекрывался оверлеем */
 .modal-overlay.modal-overlay-editor {
   align-items: stretch;
   padding: 20px;
@@ -11,6 +12,7 @@
   z-index: 1000;
 }
 
+/* Панель внутри модалки редактора: 100% ширина и высота, flex-колонка */
 .modal-overlay.modal-overlay-editor .padGlass.modal-sm {
   width: 100%;
   max-width: none;
@@ -20,12 +22,12 @@
   box-sizing: border-box;
 }
 
-/* Обёртка редактора */
+/* Обёртка редактора: 100% ширина */
 .ck-editor-wrapper {
   width: 100%;
 }
 
-/* В модалке редактора — обёртка и редактор тянутся по высоте */
+/* Обёртка редактора в модалке: flex 1, растягивается по высоте */
 .modal-overlay-editor .ck-editor-wrapper {
   flex: 1;
   min-height: 0;
@@ -33,34 +35,37 @@
   flex-direction: column;
 }
 
+/* CKEditor в модалке: flex 1 по высоте */
 .modal-overlay-editor .ck.ck-editor {
   flex: 1;
   min-height: 0;
 }
 
+/* Основная область CKEditor в модалке: flex 1, overflow-y auto */
 .modal-overlay-editor .ck.ck-editor__main {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
 }
 
+/* Редактируемая область в модалке: flex 1 */
 .modal-overlay-editor .ck.ck-editor__editable {
   flex: 1;
   min-height: 0;
 }
 
-/* Отключаем всплывающие подсказки */
+/* Скрываем всплывающие подсказки CKEditor */
 .ck.ck-tooltip {
   display: none !important;
 }
 
-/* Тулбар в glass стиле */
+/* Тулбар CKEditor: прозрачный фон, glass-стиль */
 .ck.ck-toolbar {
   background: transparent !important;
   border-radius: 0 !important;
 }
 
-/* Убираем рамку выделения кнопок тулбара */
+/* Убираем рамку выделения кнопок тулбара CKEditor */
 .ck.ck-toolbar .ck-button:focus,
 .ck.ck-toolbar .ck-button.ck-on:focus,
 .ck.ck-button:focus {
@@ -69,21 +74,24 @@
   border-color: transparent !important;
 }
 
+/* Кнопки тулбара CKEditor: цвет из темы */
 .ck.ck-toolbar .ck-toolbar__items .ck-button {
   color: var(--text-primary) !important;
   /*border-radius: 6px !important;*/
 }
 
+/* Список CKEditor: прозрачный фон */
 .ck.ck-list{
   background: transparent !important;
 }
 
+/* Кнопка тулбара при hover или активна: подсветка glass-border */
 .ck.ck-toolbar .ck-button:hover,
 .ck.ck-toolbar .ck-button.ck-on {
   background: var(--glass-border) !important;
 }
 
-/* Область редактирования */
+/* Область редактирования: прозрачный фон, рамка --text-secondary, min-height 300px */
 .ck.ck-editor__editable {
   background: transparent !important;
   border: 1px solid var(--text-secondary) !important;
@@ -95,30 +103,32 @@
   overflow-y: auto;
 }
 
-/* В полноэкранной модалке редактор растягивается по высоте */
+/* CKEditor в полноэкранной модалке: flex-колонка, 100% высота */
 .ck.ck-editor {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
+/* Основная область CKEditor: flex 1, overflow-y auto */
 .ck.ck-editor__main {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
 }
 
+/* Область редактирования в фокусе: без box-shadow */
 .ck.ck-editor__editable:focus {
   box-shadow: none !important;
   /*border-color: var(--accent, #00b4d8) !important;*/
 }
 
+/* Sticky-панель тулбара: без рамки */
 .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content{
   border: none;
   }
 
-
-/* Balloon (тулбар картинки) и dropdown (выпадающие списки) — тёмная тема */
+/* Balloon (тулбар картинки) и dropdown CKEditor: стеклянный фон */
 .ck.ck-balloon-panel,
 .ck.ck-dropdown__panel {
   background: var(--glass-bg) !important ;
@@ -135,55 +145,62 @@
   background: transparent !important;
 }*/
 
-.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_ne, 
+/* Dropdown CKEditor (north/south): стеклянный фон с blur */
+.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_ne,
 .ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_se {
-
     background: var(--gb-ComboBox) !important;
     backdrop-filter: blur(var(--padBlur)) !important;
-
 }
 
+/* Варианты в dropdown: цвет из темы, прозрачный фон */
 .ck.ck-dropdown__panel .ck-button:not(.ck-color-grid__tile),
 .ck.ck-dropdown__panel .ck-list__item {
   color: var(--text-primary) !important;
   background: transparent !important;
 }
 
+/* Вариант в dropdown при hover: подсветка glass-border */
 .ck.ck-dropdown__panel .ck-button:hover,
 .ck.ck-dropdown__panel .ck-list__item:hover {
   background: var(--glass-border) !important;
 }
 
-/* Изображения в редакторе */
+/* ========== ИЗОБРАЖЕНИЯ В РЕДАКТОРЕ ========== */
+
+/* Изображение в редакторе: max-width 100% */
 .ck.ck-editor__editable figure.image {
   max-width: 100%;
 }
 
+/* Img внутри figure в редакторе: max-width 100%, display block */
 .ck.ck-editor__editable figure.image img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* Изображения в контенте — ограничение размера */
+/* Изображения в публичном контенте (figure): max-width 100% */
 .home-panel-content figure.image {
   max-width: 100%;
 }
 
+/* Img внутри figure в публичном контенте: max-width 100%, display block */
 .home-panel-content figure.image img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* img напрямую в контенте (CKEditor inline/resized image) — width атрибут не должен перебивать инлайновый стиль */
+/* Img напрямую в контенте (CKEditor resized image): width auto, height auto */
 .home-block-content img {
   max-width: 100%;
   height: auto !important;
   width: auto;
 }
 
-/* Float изображения — для отображения контента на сайте */
+/* ========== FLOAT ИЗОБРАЖЕНИЙ (публичный контент) ========== */
+
+/* Изображение выровнено влево: float left, отступ справа и снизу */
 .home-panel-content .image-style-align-left,
 .description-content .image-style-align-left {
   float: left;
@@ -191,6 +208,7 @@
   clear: left;
 }
 
+/* Изображение выровнено вправо: float right, отступ слева и снизу */
 .home-panel-content .image-style-align-right,
 .description-content .image-style-align-right {
   float: right;
@@ -198,6 +216,7 @@
   clear: right;
 }
 
+/* Изображение как блок: display block, по центру, clear both */
 .home-panel-content .image-style-block,
 .description-content .image-style-block {
   display: block;
@@ -205,7 +224,7 @@
   clear: both;
 }
 
-/* Clearfix после блоков с float */
+/* Clearfix после блоков с float-изображениями */
 .home-panel-content::after,
 .description-content::after {
   content: '';

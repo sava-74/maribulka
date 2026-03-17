@@ -3,6 +3,9 @@
    modal.css
    ======================================== */
 
+/* ========== ОВЕРЛЕИ ========== */
+
+/* Оверлей 1-го порядка: fixed, z-index 9999 — поверх всего, для AlertModal, ConfirmModal */
 .modal-overlay, .modal-overlay-launch {
   position: fixed;
   inset: 0;
@@ -14,6 +17,7 @@
   -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
+/* Оверлей 2-го порядка: fixed, z-index 999 — для крупных рабочих модалок */
 .modal-overlay-main {
   position: fixed;
   inset: 0;
@@ -25,6 +29,7 @@
   -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
+/* Оверлей запуска из лаунчпада: absolute, align flex-start, padding-top 100px */
 .modal-overlay-launch {
   position: absolute;
   align-items: flex-start;
@@ -32,6 +37,7 @@
   z-index: 999;
 }
 
+/* Оверлей внутри рабочего стола: absolute, привязан к .worck-table */
 .worck-table .modal-overlay-worck-table {
   position: absolute;
   inset: 0;
@@ -43,7 +49,9 @@
   -webkit-backdrop-filter: blur(var(--padBlur));
 }
 
+/* ========== ЗАГОЛОВОК И СООБЩЕНИЕ ========== */
 
+/* Заголовок модалки: H1, font-weight 600, по центру — использовать ВМЕСТО <h2>! */
 .modal-glassTitle {
   font-size: var(--genTextSizeH1);
   font-weight: 600;
@@ -51,6 +59,7 @@
   color: var(--text-primary);
 }
 
+/* Текстовое сообщение модалки: вторичный цвет, по центру, line-height 1.5 */
 .modal-message {
   font-size: var(--genTextSize);
   color: var(--text-secondary);
@@ -58,6 +67,9 @@
   line-height: 1.5;
 }
 
+/* ========== ИНПУТЫ ========== */
+
+/* Обёртка группы полей формы: flex-колонка, gap 8px, 100% ширина */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -65,6 +77,7 @@
   width: 100%;
 }
 
+/* Базовый инпут модалки: стеклянный фон, рамка, border-radius половина padRadius */
 .modal-input {
   box-sizing: border-box;
   width: 100%;
@@ -79,10 +92,12 @@
   transition: border-color 0.2s ease;
 }
 
+/* Инпут в фокусе: подсвечивает рамку вторичным цветом */
 .modal-input:focus {
   border-color: var(--text-secondary);
 }
 
+/* Заблокированный инпут: opacity 0.5, cursor not-allowed */
 .modal-input[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
@@ -90,34 +105,40 @@
   pointer-events: none;
 }
 
+/* Textarea — вертикальный resize разрешён */
 textarea.modal-input {
   resize: vertical;
   line-height: 1.5;
 }
 
+/* Плейсхолдер инпута: вторичный цвет */
 .modal-input::placeholder {
   color: var(--text-secondary);
 }
 
+/* Скрытие стрелок у числового инпута (webkit) */
 .modal-input[type="number"]::-webkit-inner-spin-button,
 .modal-input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
 }
 
+/* Скрытие стрелок у числового инпута (стандарт) */
 .modal-input[type="number"] {
   appearance: textfield;
 }
 
-
+/* Обёртка инпута с иконкой даты: relative, полная ширина */
 .date-input-wrap {
   position: relative;
   width: 100%;
 }
 
+/* Инпут внутри обёртки даты: padding-right для иконки */
 .date-input-wrap .modal-input {
   padding-right: 32px;
 }
 
+/* Иконка календаря внутри инпута даты: absolute справа, pointer-events none */
 .date-input-icon {
   position: absolute;
   right: 10px;
@@ -129,6 +150,7 @@ textarea.modal-input {
   pointer-events: none;
 }
 
+/* Строка чекбокса "Запомнить": flex, cursor pointer */
 .remember-label {
   display: flex;
   align-items: center;
@@ -139,22 +161,30 @@ textarea.modal-input {
   user-select: none;
 }
 
+/* ========== МОДИФИКАТОРЫ ПАНЕЛИ ========== */
+
+/* Маленькая модалка: gap 12px, padding 20px, min-width auto */
 .padGlass.modal-sm {
   gap: 12px;
   padding: 20px;
   min-width: auto;
 }
 
+/* Широкая модалка (резерв) */
 .padGlass.modal-sm.modal-wide {
   /*width: min(820px, 95vw);*/
 }
 
+/* ========== СТРОКИ И ПОЛЯ ФОРМ ========== */
+
+/* Горизонтальная строка полей с переносом: flex-row, gap 8px */
 .input-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
+/* Поле формы: flex-колонка label+input, flex 1, min-width 160px */
 .input-field {
   display: flex;
   flex-direction: column;
@@ -163,26 +193,33 @@ textarea.modal-input {
   min-width: 160px;
 }
 
+/* Узкое поле формы: фиксированная ширина 80px */
 .input-field-narrow {
   flex: 0 0 80px;
   min-width: 80px;
 }
 
+/* Поле телефона: фиксированная ширина 160px */
 .input-field-phone {
   flex: 0 0 160px;
   min-width: 160px;
 }
 
+/* Поле промоакции: flex 1, min-width 140px */
 .input-field-promotion {
   flex: 1;
   min-width: 140px;
 }
 
+/* Подпись поля формы: базовый размер, вторичный цвет */
 .input-label {
   font-size: var(--genTextSize);
   color: var(--text-secondary);
 }
 
+/* ========== ТЕЛО МОДАЛКИ ========== */
+
+/* Прокручиваемое тело модалки: max-height 70vh, overflow-y auto */
 .modal-body {
   overflow-y: auto;
   max-height: 70vh;
@@ -192,28 +229,44 @@ textarea.modal-input {
   padding-right: 4px;
 }
 
+/* Трек скроллбара тела модалки: отступы сверху и снизу 15px */
 .modal-body::-webkit-scrollbar-track {
-    margin-top: 15px;     /* Обрезать сверху */
-    margin-bottom: 15px;  /* Обрезать снизу */
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
+/* Ползунок скроллбара тела модалки: отступы сверху и снизу 15px */
 .modal-body::-webkit-scrollbar-thumb {
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
+/* ========== ФУТЕР КНОПОК ========== */
+
+/* Контейнер кнопок футера модалки: flex, gap 8px */
 .ButtonFooter {
   display: flex;
   gap: 8px;
 }
- 
+
+/* Кнопки по центру */
 .ButtonFooter.PosCenter { justify-content: center; }
+
+/* Кнопки вправо */
 .ButtonFooter.PosRight  { justify-content: flex-end; }
+
+/* Кнопки влево */
 .ButtonFooter.PosLeft   { justify-content: flex-start; }
+
+/* Кнопки по краям (space-between) */
 .ButtonFooter.PosSpace  { justify-content: space-between; }
+
+/* Кнопки в колонку */
 .ButtonFooter.PosColumn { flex-direction: column; }
 
-/* Блок прайса */
+/* ========== БЛОК ПРАЙСА ========== */
+
+/* Блок отображения цены: стеклянный фон, border, flex-колонка */
 .price-info {
   box-sizing: border-box;
   width: 100%;
@@ -226,6 +279,7 @@ textarea.modal-input {
   gap: 4px;
 }
 
+/* Строка прайса: label + value, space-between, базовый размер */
 .price-row {
   display: flex;
   justify-content: space-between;
@@ -233,10 +287,12 @@ textarea.modal-input {
   font-size: var(--genTextSize);
 }
 
+/* Подпись в строке прайса: вторичный цвет */
 .price-label {
   color: var(--text-secondary);
 }
 
+/* Значение в строке прайса: основной цвет */
 .price-value {
   color: var(--text-primary);
   display: flex;
@@ -244,16 +300,18 @@ textarea.modal-input {
   gap: 4px;
 }
 
+/* Значение скидки: вторичный цвет */
 .price-value.discount-value {
   color: var(--text-secondary);
 }
 
+/* Итоговая строка прайса: font-weight 600 */
 .price-row.total .price-label,
 .price-row.total .price-value {
   font-weight: 600;
 }
 
-/* Инлайн инпут оплаты */
+/* Маленький инпут 80px для суммы оплаты прямо в строке прайса */
 .payment-input-inline {
   box-sizing: border-box;
   width: 80px;
@@ -269,15 +327,18 @@ textarea.modal-input {
   appearance: textfield;
 }
 
+/* Инлайн инпут оплаты в фокусе */
 .payment-input-inline:focus {
   border-color: var(--text-secondary);
 }
 
+/* Скрытие стрелок у инлайн инпута оплаты */
 .payment-input-inline::-webkit-inner-spin-button,
 .payment-input-inline::-webkit-outer-spin-button {
   appearance: none;
 }
 
+/* Информация об оплате: flex-колонка, gap 4px */
 .payment-info {
   width: 100%;
   display: flex;
@@ -293,7 +354,9 @@ textarea.modal-input {
 
 /* ========== CANCEL / DELIVERY INFO ========== */
 
+/* Блок информации отмены заказа: flex-колонка, gap 4px */
 .cancel-info,
+/* Блок информации выдачи заказа: flex-колонка, gap 4px */
 .delivery-info {
   display: flex;
   flex-direction: column;
@@ -307,21 +370,25 @@ textarea.modal-input {
   margin: 0;
 }
 
+/* Горизонтальный разделитель: линия через --glass-border */
 .divider {
   height: 1px;
   background: var(--glass-border);
   margin: 4px 0;
 }
 
+/* Причина отмены: margin-top 4px */
 .cancel-reason {
   margin-top: 4px;
 }
 
+/* Подсказка предупреждения оплаты: вторичный цвет */
 .payment-warning .hint {
   color: var(--text-secondary);
   font-size: var(--genTextSize);
 }
 
+/* Блок информации подтверждения записи: flex-колонка с ul/li */
 .confirm-info {
   display: flex;
   flex-direction: column;
@@ -344,10 +411,12 @@ textarea.modal-input {
   color: var(--text-secondary);
 }
 
+/* Предоплата внесена: основной цвет */
 .prepayment-ok {
   color: var(--text-primary);
 }
 
+/* Предоплата не внесена: вторичный цвет */
 .prepayment-warning {
   color: var(--text-secondary);
 }
@@ -356,15 +425,18 @@ textarea.modal-input {
   margin-top: 4px;
 }
 
+/* Предупреждение остатка к оплате: вторичный цвет, font-weight 600 */
 .delivery-info .remaining-warning {
   color: var(--text-secondary);
   font-weight: 600;
 }
 
+/* Сумма остатка: font-weight 600 */
 .delivery-info .remaining-amount {
   font-weight: 600;
 }
 
+/* Статус полной оплаты: font-weight 600 */
 .delivery-info .paid-full {
   font-weight: 600;
 }
@@ -373,20 +445,23 @@ textarea.modal-input {
   margin-top: 4px;
 }
 
-/* ========== VIEW BOOKING (ORDER DETAILS) ========== */
+/* ========== VIEW BOOKING (ДЕТАЛИ ЗАКАЗА) ========== */
 
+/* Блок деталей заказа: flex-колонка, gap 4px */
 .order-details {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Секция данных: flex-колонка, gap 4px */
 .info-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Заголовок секции данных: font-weight 600, вторичный цвет */
 .info-section-title {
   font-size: var(--genTextSize);
   font-weight: 600;
@@ -394,6 +469,7 @@ textarea.modal-input {
   margin: 0;
 }
 
+/* Строка данных: label + value, space-between, baseline, gap 8px */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -402,11 +478,13 @@ textarea.modal-input {
   font-size: var(--genTextSize);
 }
 
+/* Подпись строки данных: вторичный цвет, flex-shrink 0 */
 .info-label {
   color: var(--text-secondary);
   flex-shrink: 0;
 }
 
+/* Значение строки данных: основной цвет, text-align right */
 .info-value {
   color: var(--text-primary);
   text-align: right;
@@ -416,23 +494,28 @@ textarea.modal-input {
   color: var(--text-primary);
 }
 
+/* Значение жирным шрифтом */
 .info-value.strong {
   font-weight: 600;
 }
 
+/* Значение скидки: вторичный цвет */
 .info-value.discount {
   color: var(--text-secondary);
 }
 
+/* Значение оплачено: font-weight 600 */
 .info-value.paid {
   font-weight: 600;
 }
 
+/* Значение остатка к оплате: font-weight 600, вторичный цвет */
 .info-value.remaining {
   font-weight: 600;
   color: var(--text-secondary);
 }
 
+/* Текст заметок: pre-wrap, line-height 1.5 */
 .notes-text {
   font-size: var(--genTextSize);
   color: var(--text-primary);
@@ -440,8 +523,9 @@ textarea.modal-input {
   white-space: pre-wrap;
 }
 
-/* ========== RADIO BUTTONS ========== */
+/* ========== РАДИОКНОПКИ ========== */
 
+/* Группа радиокнопок: flex-колонка, gap 4px */
 .radio-group {
   display: flex;
   flex-direction: column;
@@ -449,6 +533,7 @@ textarea.modal-input {
   margin-top: 4px;
 }
 
+/* Строка радиокнопки: flex, cursor pointer, hover-подсветка */
 .radio-label {
   display: flex;
   align-items: center;
@@ -461,10 +546,12 @@ textarea.modal-input {
   transition: background 0.2s;
 }
 
+/* Подсветка строки радиокнопки при наведении */
 .radio-label:hover {
   background: var(--glass-border);
 }
 
+/* Сам инпут radio: 14×14px, accent-color из темы */
 .radio-label input[type="radio"] {
   width: 14px;
   height: 14px;
@@ -476,7 +563,10 @@ textarea.modal-input {
   user-select: none;
 }
 
+/* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
+
 @media (pointer: coarse) {
+  /* Мобильный оверлей лаунчпада: block, overflow-y auto, padding 95px сверху */
   .modal-overlay-launch {
     display: block;
     overflow-y: auto;

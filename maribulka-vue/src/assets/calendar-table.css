@@ -3,17 +3,17 @@
    Общие стили таблицы — в table.css
    ============================================= */
 
-/* --- Отменённые записи --- */
+/* Строка отменённой записи: opacity 0.45 */
 .data-table tbody tr.row-cancelled {
   opacity: 0.45;
 }
 
-/* --- Просроченные "новые" записи --- */
+/* Строка просроченной новой записи: вторичный цвет текста */
 .data-table tbody tr.row-overdue {
   color: var(--text-secondary);
 }
 
-/* --- Ячейка суммы --- */
+/* Ячейка суммы: font-weight 600 */
 .data-table .cell-amount {
   font-weight: 600;
 }

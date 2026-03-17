@@ -5,6 +5,8 @@
 
 /* ========== BASE ========== */
 
+/* Базовая стеклянная кнопка: pill-форма, blur + backdrop, transition пружина */
+/* ОБЯЗАТЕЛЬНО внутри каждой кнопки: <span class="inner-glow"> + <span class="top-shine"> */
 .btnGlass {
   position: relative;
   display: inline-flex;
@@ -34,7 +36,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Градиентная рамка */
+/* Псевдоэлемент декоративной градиентной рамки кнопки (тёмная тема) */
 .btnGlass::before {
   content: '';
   position: absolute;
@@ -55,6 +57,7 @@
   pointer-events: none;
 }
 
+/* Псевдоэлемент декоративной градиентной рамки кнопки (светлая тема) */
 [data-theme="light"] .btnGlass::before {
   background: linear-gradient(
     135deg,
@@ -65,7 +68,7 @@
   );
 }
 
-/* Блик-полоса при hover */
+/* Блик-полоса при hover: скользит справа налево (тёмная тема) */
 .btnGlass::after {
   content: '';
   position: absolute;
@@ -84,6 +87,7 @@
   pointer-events: none;
 }
 
+/* Блик-полоса при hover (светлая тема) */
 [data-theme="light"] .btnGlass::after {
   background: linear-gradient(
     105deg,
@@ -95,7 +99,7 @@
   );
 }
 
-/* Внутреннее свечение */
+/* Внутреннее свечение кнопки — обязателен внутри каждой .btnGlass */
 .btnGlass .inner-glow {
   position: absolute;
   inset: 0;
@@ -105,7 +109,7 @@
   transition: box-shadow 0.3s ease;
 }
 
-/* Верхний блик */
+/* Верхний блик кнопки (тёмная тема) — обязателен внутри каждой .btnGlass */
 .btnGlass .top-shine {
   position: absolute;
   top: 0;
@@ -117,12 +121,14 @@
   pointer-events: none;
 }
 
+/* Верхний блик кнопки (светлая тема) */
 [data-theme="light"] .btnGlass .top-shine {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
 }
 
 /* ========== СОСТОЯНИЯ ========== */
 
+/* Hover: scale 1.02 + запуск блика — только на устройствах с hover */
 @media (hover: hover) {
   .btnGlass:hover {
     transform: scale(1.02);
@@ -133,11 +139,13 @@
   }
 }
 
+/* Нажатие: scale 0.97, быстрый transition 0.1s */
 .btnGlass:active {
   transform: scale(0.97);
   transition-duration: 0.1s;
 }
 
+/* Фокус клавиатуры: синяя обводка 4px */
 .btnGlass:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.5), var(--glass-shadow);
@@ -145,6 +153,7 @@
 
 /* ========== RIPPLE ========== */
 
+/* Элемент ripple-волны при клике — создаётся динамически через JS */
 .btn-ripple {
   position: absolute;
   border-radius: 50%;
@@ -154,10 +163,12 @@
   pointer-events: none;
 }
 
+/* Ripple в светлой теме: тёмный полупрозрачный */
 [data-theme="light"] .btn-ripple {
   background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 70%);
 }
 
+/* Анимация расширения и затухания ripple */
 @keyframes btnRippleEffect {
   to {
     transform: scale(4);
@@ -167,19 +178,20 @@
 
 /* ========== МОДИФИКАТОРЫ РАЗМЕРА / ФОРМЫ ========== */
 
-/* Большая квадратная кнопка-иконка (для панелей) */
+/* Большая квадратная кнопка-иконка: padding 10px, border-radius padRadius — для TopBar и панелей */
 .btnGlass.bigIcon {
   padding: 10px;
   border-radius: var(--padRadius);
 }
 
-/* Иконка + текст */
+/* Кнопка иконка + текст: min-width 100px, меньший padding — для модалок и форм */
 .btnGlass.iconText {
   padding: 5.25px 18px 5.25px 12px;
   gap: 3px;
   min-width: 100px;
 }
 
+/* Кнопка иконка + текст с выравниванием содержимого по левому краю */
 .btnGlass.iconTextStart {
   display: flex;
   justify-content: flex-start;
@@ -188,26 +200,28 @@
   min-width: 100px;
 }
 
-/* Неактивная кнопка */
+/* Заблокированная кнопка: opacity 0.5, cursor not-allowed */
 .btnGlass:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-/* Только иконка (pill) */
+/* Только иконка в форме pill */
 .btnGlass.icon-only {
   padding: 5.25px 16.47px;
 }
 
 /* ========== ИКОНКИ ========== */
 
+/* SVG-иконка стандартного размера: --svgSize (20px) */
 .btn-icon {
   width: var(--svgSize);
   height: var(--svgSize);
   flex-shrink: 0;
 }
 
+/* SVG-иконка большого размера: --svgSizeBig (40px) */
 .btn-icon-big {
   width: var(--svgSizeBig);
   height: var(--svgSizeBig);
@@ -216,6 +230,7 @@
 
 /* ========== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ========== */
 
+/* Кнопка-переключатель темы: 56×32px, pill-форма, стеклянный фон */
 .btn-theme {
   position: relative;
   display: flex;
@@ -233,6 +248,7 @@
   transition: all 0.3s ease;
 }
 
+/* Декоративная градиентная рамка переключателя темы */
 .btn-theme::before {
   content: '';
   position: absolute;
@@ -246,6 +262,7 @@
   mask-composite: exclude;
 }
 
+/* Ползунок переключателя темы: круг 26px, цвет --text-primary */
 .btn-theme-indicator {
   position: absolute;
   left: 3px;
@@ -259,10 +276,12 @@
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
 }
 
+/* Ползунок в светлой теме: сдвигается вправо на 24px */
 [data-theme="light"] .btn-theme-indicator {
   transform: translateX(24px);
 }
 
+/* SVG иконка внутри ползунка: 16×16px, цвет --bg-primary */
 .btn-theme-indicator svg {
   width: 16px;
   height: 16px;
@@ -272,6 +291,7 @@
 
 /* ========== REDUCED MOTION ========== */
 
+/* Отключение анимаций для пользователей с prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .btnGlass::after,
   .btn-ripple,

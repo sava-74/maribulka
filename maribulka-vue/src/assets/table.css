@@ -3,7 +3,7 @@
    Использует только переменные из style.css
    ============================================= */
 
-/* --- Обёртка --- */
+/* Внешняя обёртка панели таблицы: flex-колонка, высота 100%-20px, gap 12px */
 .data-table-panel {
   display: flex;
   flex-direction: column;
@@ -12,7 +12,7 @@
   align-items: center;
 }
 
-/* --- Строка фильтров --- */
+/* Строка фильтров таблицы: flex-row, wrap, gap 12px, центрирование */
 .data-table-filter {
   display: flex;
   align-items: center;
@@ -22,7 +22,7 @@
   flex-wrap: wrap;
 }
 
-/* --- Контейнер прокрутки --- */
+/* Контейнер прокрутки таблицы: flex 1, overflow auto, min-height 0 */
 .data-table-scroll {
   flex: 1;
   overflow-x: auto;
@@ -31,7 +31,7 @@
   width: 100%;
 }
 
-/* --- Таблица --- */
+/* Базовая таблица: 100% ширина, border-collapse, базовый шрифт */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -40,12 +40,14 @@
   margin: 5px 10px;
 }
 
+/* Шапка таблицы: sticky top 0, z-index 1 */
 .data-table thead {
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
+/* Ячейка шапки: small шрифт, вторичный цвет, линия снизу, nowrap */
 .data-table th {
   padding: 8px 10px;
   text-align: left;
@@ -58,46 +60,52 @@
   user-select: none;
 }
 
+/* Сортируемый заголовок: cursor pointer */
 .data-table th.sortable {
   cursor: pointer;
 }
 
+/* Сортируемый заголовок при наведении: основной цвет */
 .data-table th.sortable:hover {
   color: var(--text-primary);
 }
 
+/* Ячейка данных: padding 7×10, линия снизу, nowrap */
 .data-table td {
   padding: 7px 10px;
   border-bottom: 1px solid var(--glass-border);
   white-space: nowrap;
 }
 
-/* --- Строки --- */
+/* Строка тела таблицы: cursor pointer, transition background */
 .data-table tbody tr {
   cursor: pointer;
   transition: background 0.12s;
 }
 
+/* Строка при наведении: лёгкая подсветка */
 .data-table tbody tr:hover {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* Выбранная строка: более яркая подсветка */
 .data-table tbody tr.row-selected {
   background: rgba(255, 255, 255, 0.09);
 }
 
-/* --- Строка итогов --- */
+/* Строка итогов: жирная линия сверху */
 .data-table tfoot tr {
   border-top: 2px solid var(--glass-border);
 }
 
+/* Ячейка итогов: font-weight 700, основной цвет */
 .data-table tfoot td {
   padding: 7px 10px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-/* --- Пустое состояние --- */
+/* Пустое состояние таблицы: центрированный текст H1, вторичный цвет */
 .data-table-empty {
   flex: 1;
   display: flex;
@@ -107,7 +115,7 @@
   font-size: var(--genTextSizeH1);
 }
 
-/* --- Мобильная адаптация --- */
+/* Мобильная адаптация: уменьшенные padding ячеек */
 @media (pointer: coarse) {
   .data-table th,
   .data-table td,

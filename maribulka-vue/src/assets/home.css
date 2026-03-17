@@ -3,7 +3,7 @@
    home.css
    ======================================== */
 
-/* Собственный scroll-контейнер домашней страницы */
+/* Собственный scroll-контейнер домашней страницы: absolute inset 0, overflow-y auto */
 .home-scroll-area {
   position: absolute;
   inset: 0;
@@ -11,8 +11,7 @@
   overflow-x: hidden;
 }
 
-/* Обёртка всех панелей — создаёт пространство для скролла */
-/* min-height устанавливается динамически в useStackFade.ts */
+/* Обёртка sticky-стопки панелей: flex-колонка, min-height задаётся динамически JS (useStackFade.ts) */
 .home-stack {
   display: flex;
   flex-direction: column;
@@ -21,8 +20,7 @@
   align-items: center;
 }
 
-/* Внешняя обёртка панели — sticky + opacity */
-/* top устанавливается динамически в useStackFade.ts */
+/* Внешняя обёртка панели: sticky, top и opacity управляются JS (useStackFade.ts) */
 .home-panel {
   position: sticky;
   top: 110px; /* fallback, JS перезапишет */
@@ -36,13 +34,13 @@
   /* sticky уже создаёт containing block, поэтому отдельный relative не нужен */
 }
 
-/* z-index: каждая следующая панель перекрывает предыдущую */
+/* z-index стопки: каждая следующая панель перекрывает предыдущую */
 .home-panel:nth-child(1) { z-index: 10; }
 .home-panel:nth-child(2) { z-index: 20; }
 .home-panel:nth-child(3) { z-index: 30; }
 .home-panel:nth-child(4) { z-index: 40; }
 
-/* Внутренний стеклянный слой — абсолютный, растягивается по .home-panel */
+/* Стеклянный слой панели: absolute inset 0, blur + border + shadow */
 .home-panel-glass {
   position: absolute;
   inset: 0;
@@ -56,7 +54,7 @@
   overflow: hidden;
 }
 
-/* Контентный слой поверх стекла — задаёт высоту всей панели */
+/* Контентный слой поверх стекла: relative z-index 1, min-height 100vh-110px-20px */
 .home-panel-content {
   position: relative;
   z-index: 1;
@@ -72,24 +70,28 @@
 }
 
 /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ ========== */
+
 @media (pointer: coarse) {
+  /* Мобильная стопка: меньший отступ сверху */
   .home-stack {
     padding-top: 100px;
     min-height: calc(100px + 100vh * 4 + 100vh);
   }
 
+  /* Мобильная панель: top 100px, 100% ширина */
   .home-panel {
     top: 100px;
     width: 100%;
   }
 
+  /* Мобильный контент панели: меньший min-height и padding */
   .home-panel-content {
     min-height: calc(100vh - 100px - 10px);
     padding-bottom: 10px;
   }
 }
 
-/* Кнопка редактирования блока — правый верхний угол панели */
+/* Кнопка редактирования блока: absolute правый верхний угол, z-index 2 */
 .home-panel-edit-btn {
   position: absolute;
   top: 12px;
@@ -97,7 +99,7 @@
   z-index: 2;
 }
 
-/* Контентная область блока */
+/* Контентная область блока: padding 20px, overflow-y auto */
 .home-block-content {
   width: 100%;
   padding: 20px;

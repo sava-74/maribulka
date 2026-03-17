@@ -6,8 +6,10 @@
 /* ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ========== */
 
 :root {
+  /* Базовый цвет стекла — используется для генерации градиентов панелей */
   --genColorGlass: rgb(68, 87, 197);
 
+  /* Шкала размеров текста: base=12px, от ExtraSmall до H4 */
   --genTextSizeExtraSmall: calc(var(--genTextSize) - 4px);
   --genTextSizeSmall: calc(var(--genTextSize) - 2px);
   --genTextSize: 12px;
@@ -16,14 +18,16 @@
   --genTextSizeH3: calc(var(--genTextSize) + 6px);
   --genTextSizeH4: calc(var(--genTextSize) + 8px);
 
+  /* Цвет и размер SVG-иконок по умолчанию */
   --svgColor: rgb(124, 124, 124);
   --svgSize: 20px;
   --svgSizeBig: 40px;
 
+  /* Радиус скругления (20px) и размытие (18px) стеклянных панелей */
   --padRadius: 20px;
   --padBlur: 18px;
 
-  /* градиенты стекла (используются в темах) */
+  /* Промежуточные переменные градиентов стекла для светлой (gbL) и тёмной (gbD) темы */
   --gbLLine1: color-mix(in srgb, var(--genColorGlass) 30%, transparent);
   --gbLLine2: color-mix(in srgb, var(--genColorGlass) 10%, transparent);
   --gbLLine3: color-mix(in srgb, var(--genColorGlass) 5%, transparent);
@@ -31,51 +35,92 @@
   --gbDLine2: color-mix(in srgb, var(--genColorGlass) 5%, transparent);
   --gbDLine3: color-mix(in srgb, var(--genColorGlass) 8%, transparent);
 
-  
+
 }
 
 /* ========== ТЁМНАЯ ТЕМА (по умолчанию) ========== */
 
-[data-theme] { 
+/* Тёмная тема — применяется по умолчанию на <html data-theme="dark"> */
+[data-theme] {
+  /* Цвета фона страницы */
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
+
+  /* Фон выпадающего списка ComboBox/SelectBox */
   --gb-ComboBox: color-mix(in srgb, rgb(54, 54, 94) 92%, transparent);
+
+  /* Стеклянный градиент панелей */
   --glass-bg: linear-gradient(180deg, var(--gbDLine1) 0%, var(--gbDLine2) 50%, var(--gbDLine3) 100%);
+
+  /* Рамка стеклянных панелей */
   --glass-border: rgba(255, 255, 255, 0.18);
+
+  /* Внутреннее свечение стеклянных панелей (верхняя и нижняя кромки) */
   --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+
+  /* Тень стеклянных панелей */
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* Основной и вторичный цвет текста */
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.6);
+
+  /* Градиенты трёх анимированных орбов фона */
   --orb-1: linear-gradient(135deg, #00ff88 0%, #00b4d8 50%, #0096c7 100%);
   --orb-2: linear-gradient(225deg, #0a84ff 0%, #5e5ce6 100%);
   --orb-3: linear-gradient(45deg, #ff6b6b 0%, #feca57 100%);
+
+  /* Прозрачность шума (текстура поверхности) */
   --noise-opacity: 0.03;
+
+  /* Цвет ползунка скроллбара и при наведении */
   --scrollbar-thumb: rgba(255, 255, 255, 0.2);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.35);
 }
 
 /* ========== СВЕТЛАЯ ТЕМА ========== */
 
+/* Светлая тема — применяется при data-theme="light" на <html> */
 [data-theme="light"] {
+  /* Цвета фона страницы */
   --bg-primary: #f5f5f7;
   --bg-secondary: #ffffff;
+
+  /* Фон выпадающего списка ComboBox/SelectBox */
   --gb-ComboBox: linear-gradient(180deg, var(--gbLLine1) 80%, var(--gbLLine2) 90%, var(--gbLLine3) 100%);
+
+  /* Стеклянный градиент панелей */
   --glass-bg: linear-gradient(180deg, var(--gbLLine1) 0%, var(--gbLLine2) 50%, var(--gbLLine3) 100%);
+
+  /* Рамка стеклянных панелей */
   --glass-border: rgba(0, 0, 0, 0.08);
+
+  /* Внутреннее свечение стеклянных панелей */
   --glass-inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+
+  /* Тень стеклянных панелей */
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  /* Основной и вторичный цвет текста */
   --text-primary: rgba(0, 0, 0, 0.85);
   --text-secondary: rgba(0, 0, 0, 0.5);
+
+  /* Градиенты трёх анимированных орбов фона */
   --orb-1: linear-gradient(135deg, #00c96e 0%, #00a8c8 50%, #0085a8 100%);
   --orb-2: linear-gradient(225deg, #007aff 0%, #5856d6 100%);
   --orb-3: linear-gradient(45deg, #ff3b30 0%, #ff9500 100%);
+
+  /* Прозрачность шума (текстура поверхности) */
   --noise-opacity: 0.02;
+
+  /* Цвет ползунка скроллбара и при наведении */
   --scrollbar-thumb: rgba(0, 0, 0, 0.2);
   --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
 }
 
 /* ========== BODY ========== */
 
+/* Базовые стили страницы: фон, цвет, минимальная ширина 355px */
 body {
   margin: 0;
   padding: 0;
@@ -103,9 +148,10 @@ body {
   padding: 102px 5px;
 }*/
 
+/* Корневой контейнер приложения: flex-колонка, высота 100vh, overflow hidden */
 .app-root{
   position: relative;
-  height: 100vh; 
+  height: 100vh;
   overflow: hidden;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -119,6 +165,7 @@ body {
   padding: 0px 5px;
 }
 
+/* Рабочий стол: fixed-контейнер для панелей, отступ сверху под TopBar (110px) */
 .worck-table {
   position: fixed;
   display: flex;
@@ -131,6 +178,7 @@ body {
   padding-top: 110px;
 }
 
+/* Мобильная адаптация рабочего стола — меньший отступ сверху */
 @media (pointer: coarse) {
   .worck-table {
     padding-top: 100px;
@@ -139,6 +187,7 @@ body {
 
 /* ========== ОРБЫ (анимированный фон) ========== */
 
+/* Обёртка анимированного фона: абсолютная, z-index 0, pointer-events none */
 .app-bg-layer {
   position: absolute;
   inset: 0;
@@ -147,6 +196,7 @@ body {
   pointer-events: none;
 }
 
+/* Базовый класс орба: круг с blur-эффектом 80px, z-index 0 */
 .orb {
   position: fixed;
   border-radius: 50%;
@@ -156,6 +206,7 @@ body {
   z-index: 0;
 }
 
+/* Первый орб — верхний левый угол экрана, цвет --orb-1 */
 .orb-1 {
   width: 350px;
   height: 350px;
@@ -165,6 +216,7 @@ body {
   animation: orbFloat1 40s ease-in-out infinite;
 }
 
+/* Второй орб — правая сторона экрана, цвет --orb-2 */
 .orb-2 {
   width: 400px;
   height: 400px;
@@ -174,6 +226,7 @@ body {
   animation: orbFloat2 35s ease-in-out infinite;
 }
 
+/* Третий орб — нижняя часть экрана, цвет --orb-3 */
 .orb-3 {
   width: 350px;
   height: 350px;
@@ -183,6 +236,7 @@ body {
   animation: orbFloat3 45s ease-in-out infinite;
 }
 
+/* Анимация плавного дрейфа первого орба (40s) */
 @keyframes orbFloat1 {
   0%   { transform: translate(0, 0) scale(1); }
   25%  { transform: translate(300px, 250px) scale(1.05); }
@@ -191,6 +245,7 @@ body {
   100% { transform: translate(0, 0) scale(1); }
 }
 
+/* Анимация плавного дрейфа второго орба (35s) */
 @keyframes orbFloat2 {
   0%   { transform: translate(0, 0) scale(1); }
   25%  { transform: translate(-200px, 100px) scale(1.1); }
@@ -199,6 +254,7 @@ body {
   100% { transform: translate(0, 0) scale(1); }
 }
 
+/* Анимация плавного дрейфа третьего орба (45s) */
 @keyframes orbFloat3 {
   0%   { transform: translate(0, 0) scale(1); }
   25%  { transform: translate(-200px, -150px) scale(1.05); }
@@ -209,20 +265,24 @@ body {
 
 /* ========== SCROLLBAR ========== */
 
+/* Тонкий скроллбар 2px для всего приложения */
 ::-webkit-scrollbar {
   width: 2px;
   height: 2px;
 }
 
+/* Трек скроллбара (фон полосы прокрутки) */
 ::-webkit-scrollbar-track {
   border-radius: 2px;
 }
 
+/* Ползунок скроллбара — цвет берётся из переменной темы */
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
   border-radius: 2px;
 }
 
+/* Ползунок скроллбара при наведении курсора */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }

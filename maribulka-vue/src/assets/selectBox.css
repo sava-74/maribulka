@@ -3,6 +3,7 @@
    selectBox.css
    ======================================== */
 
+/* Обёртка кастомного SelectBox: стеклянный инпут, flex, cursor pointer */
 .combo-box-wrap {
   position: relative;
   box-sizing: border-box;
@@ -24,16 +25,19 @@
   transition: border-color 0.2s ease;
 }
 
+/* Открытый/focused SelectBox: подсветка рамки вторичным цветом */
 .combo-box-wrap:focus,
 .combo-box-wrap--open {
   border-color: var(--text-secondary);
 }
 
+/* Заблокированный SelectBox: opacity 0.5, cursor not-allowed */
 .combo-box-wrap--disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Выбранное значение: flex 1, текст обрезается с ellipsis */
 .combo-box-value {
   flex: 1;
   overflow: hidden;
@@ -41,10 +45,12 @@
   white-space: nowrap;
 }
 
+/* Плейсхолдер SelectBox: вторичный цвет */
 .combo-box-placeholder {
   color: var(--text-secondary);
 }
 
+/* Стрелка дропдауна: 18×18px, поворот 180° при открытии */
 .combo-box-arrow {
   flex-shrink: 0;
   width: 18px;
@@ -53,11 +59,12 @@
   transition: transform 0.2s ease;
 }
 
+/* Стрелка в открытом состоянии: rotate(180deg) */
 .combo-box-wrap--open .combo-box-arrow {
   transform: rotate(180deg);
 }
 
-/* Дропдаун — стеклянная панель как padGlass */
+/* Список вариантов: fixed, z-index 9999, стеклянная панель, max-height 200px */
 .combo-box-dropdown {
   position: fixed;
   z-index: 9999;
@@ -72,16 +79,19 @@
   max-height: 200px;
 }
 
+/* Скроллбар дропдауна: отступы сверху/снизу 15px */
 .combo-box-dropdown::-webkit-scrollbar-track {
-    margin-top: 15px;     /* Обрезать сверху */
-    margin-bottom: 15px;  /* Обрезать снизу */
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
- 
+
+/* Ползунок скроллбара дропдауна: отступы сверху/снизу 15px */
 .combo-box-dropdown::-webkit-scrollbar-thumb {
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
+/* Вариант списка: padding 8×12, вторичный цвет, cursor pointer */
 .combo-box-option {
   padding: 8px 12px;
   font-size: var(--genTextSize);
@@ -90,11 +100,13 @@
   transition: background 0.15s;
 }
 
+/* Вариант при наведении: основной цвет, подсветка рамкой */
 .combo-box-option:hover {
   color: var(--text-primary);
   background: var(--glass-border);
 }
 
+/* Выбранный вариант: основной цвет, font-weight 600 */
 .combo-box-option--selected {
   color: var(--text-primary);
   font-weight: 600;
