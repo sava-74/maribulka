@@ -8,6 +8,7 @@ import {
   mdiTrendingDown,
   mdiChartBar,
   mdiAccountGroup,
+  mdiAccountMultiple,
   mdiCamera,
   mdiTagMultiple,
   mdiShapeOutline,
@@ -64,6 +65,11 @@ function openExpenses() {
   close()
 }
 
+function openUsers() {
+  navStore.navigateTo('users')
+  close()
+}
+
 defineExpose({ close })
 
 const onLogoutConfirm = () => {
@@ -113,7 +119,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Записи</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('income', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event); openIncome()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -121,7 +127,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Приход</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('expenses', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event); openExpenses()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -129,7 +135,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Расходы</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('reports', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -142,7 +148,7 @@ function onRipple(event: MouseEvent) {
         <!-- Секция: Справочники -->
         <div class="pad-title">Справочники</div>
         <div class="pad-icon-grid">
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('clients', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -150,7 +156,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Клиенты</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('shooting_types', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -158,7 +164,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Типы съёмок</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('promotions', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -166,7 +172,7 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Акции</p>
           </div>
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('expense_categories', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
@@ -174,12 +180,20 @@ function onRipple(event: MouseEvent) {
             </button>
             <p class="pad-icon-label">Категории расходов</p>
           </div>
+          <div class="pad-icon-cell" v-if="auth.can('users', 'view')">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openUsers()">
+              <span class="inner-glow"></span>
+              <span class="top-shine"></span>
+              <svg-icon type="mdi" :path="mdiAccountMultiple" class="btn-icon-big" />
+            </button>
+            <p class="pad-icon-label">Пользователи</p>
+          </div>
         </div>
 
         <!-- Секция: Администрирование -->
         <div class="pad-title">Администрирование</div>
         <div class="pad-icon-grid">
-          <div class="pad-icon-cell">
+          <div class="pad-icon-cell" v-if="auth.can('settings', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event)">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>

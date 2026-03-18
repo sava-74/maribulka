@@ -29,6 +29,38 @@ initSession();
 $action = $_GET['action'] ?? '';
 
 // ============================================
+// Вспомогательная функция: формирует массив пользователя для ответа
+// Читает специализации из записи users и персональные права из user_permissions
+// ============================================
+function buildUserResponse(array $user, PDO $pdo): array {
+    $specializations = [
+        'photographer' => (bool)($user['is_photographer'] ?? false),
+        'hairdresser'  => (bool)($user['is_hairdresser'] ?? false),
+        'admin_role'   => (bool)($user['is_admin_role'] ?? false),
+    ];
+
+    $stmt = $pdo->prepare(
+        "SELECT section, action, allowed FROM user_permissions WHERE user_id = ?"
+    );
+    $stmt->execute([$user['id']]);
+    $permissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $perms = array_map(fn($p) => [
+        'section' => $p['section'],
+        'action'  => $p['action'],
+        'allowed' => (bool)$p['allowed'],
+    ], $permissions);
+
+    return [
+        'id'              => $user['id'],
+        'login'           => $user['login'],
+        'name'            => $user['full_name'] ?? $user['name'] ?? '',
+        'role'            => $user['role'] ?? 'prouser',
+        'specializations' => $specializations,
+        'permissions'     => $perms,
+    ];
+}
+
+// ============================================
 // CHECK - проверка текущей сессии
 // ============================================
 if ($action === 'check') {
@@ -42,16 +74,13 @@ if ($action === 'check') {
             echo json_encode(['success' => true, 'isAuthenticated' => false]);
             exit;
         }
+        require_once 'database.php';
+        $pdo = Database::getInstance()->getConnection();
         echo json_encode([
             'success' => true,
             'isAuthenticated' => true,
             'rememberMe' => $rememberMe,
-            'user' => [
-                'id' => $_SESSION['user']['id'],
-                'login' => $_SESSION['user']['login'],
-                'role' => $_SESSION['user']['role'],
-                'name' => $_SESSION['user']['name'] ?? ''
-            ]
+            'user' => buildUserResponse($_SESSION['user_full'] ?? $_SESSION['user'], $pdo)
         ]);
     } else {
         echo json_encode([
@@ -94,17 +123,13 @@ if ($action === 'login') {
                 'role' => $user['role'],
                 'name' => $user['name'] ?? ''
             ];
+            $_SESSION['user_full'] = $user; // полная запись из БД для buildUserResponse
             $_SESSION['remember_me'] = (bool)($input['rememberMe'] ?? false);
             $_SESSION['last_ping'] = time();
 
             echo json_encode([
                 'success' => true,
-                'user' => [
-                    'id' => $user['id'],
-                    'login' => $user['login'],
-                    'role' => $user['role'],
-                    'name' => $user['name'] ?? ''
-                ]
+                'user' => buildUserResponse($user, $pdo)
             ]);
         } else {
             http_response_code(401);

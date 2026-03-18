@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useNavigationStore } from './navigation'
+import { hasPermission, type Role, type Section, type Action } from './permissions'
 
 export const useAuthStore = defineStore('auth', () => {
   const isAdmin = ref(false)
   const isLoading = ref(false)
   const userName = ref('')
   const userId = ref<number | null>(null)
+  const userRole = ref<Role>('prouser')
+  const userSpecializations = ref({ photographer: false, hairdresser: false, admin_role: false })
+  const userPermissions = ref<Array<{ section: string; action: string; allowed: boolean }>>([])
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
 
   function startHeartbeat() {
@@ -28,6 +32,30 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  function setUser(user: any) {
+    userRole.value = user.role ?? 'prouser'
+    userName.value = user.name ?? ''
+    userId.value = user.id ?? null
+    userSpecializations.value = user.specializations ?? { photographer: false, hairdresser: false, admin_role: false }
+    userPermissions.value = user.permissions ?? []
+    isAdmin.value = user.role === 'admin' || user.role === 'superuser'
+    localStorage.setItem('isAdmin', isAdmin.value ? 'true' : 'false')
+  }
+
+  function clearUser() {
+    userRole.value = 'prouser'
+    userName.value = ''
+    userId.value = null
+    userSpecializations.value = { photographer: false, hairdresser: false, admin_role: false }
+    userPermissions.value = []
+    isAdmin.value = false
+    localStorage.removeItem('isAdmin')
+  }
+
+  function can(section: Section, action: Action): boolean {
+    return hasPermission(userRole.value, section, action, userPermissions.value)
+  }
+
   // Проверка сессии на бэкенде
   async function checkSession() {
     isLoading.value = true
@@ -39,28 +67,19 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (response.ok) {
         const data = await response.json()
-        if (data.success && data.isAuthenticated && data.user?.role === 'admin') {
-          isAdmin.value = true
-          userName.value = data.user.name ?? ''
-          userId.value = data.user.id ?? null
-          localStorage.setItem('isAdmin', 'true')
+        if (data.success && data.isAuthenticated) {
+          setUser(data.user)
           if (!data.rememberMe) startHeartbeat()
           return true
         }
       }
 
       // Если сессия невалидна - очищаем
-      isAdmin.value = false
-      userName.value = ''
-      userId.value = null
-      localStorage.removeItem('isAdmin')
+      clearUser()
       return false
     } catch (error) {
       console.error('Ошибка проверки сессии:', error)
-      isAdmin.value = false
-      userName.value = ''
-      userId.value = null
-      localStorage.removeItem('isAdmin')
+      clearUser()
       return false
     } finally {
       isLoading.value = false
@@ -68,17 +87,16 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Вход (теперь только устанавливает флаг, реальный вход через API в LoginModal)
-  function login(remember: boolean, user?: { id: number; name: string }) {
-    isAdmin.value = true
+  function login(remember: boolean, user?: { id: number; name: string; role?: string; specializations?: any; permissions?: any[] }) {
     if (user) {
-      userName.value = user.name ?? ''
-      userId.value = user.id ?? null
+      setUser(user)
+    } else {
+      isAdmin.value = true
+      localStorage.setItem('isAdmin', 'true')
     }
     if (remember) {
-      localStorage.setItem('isAdmin', 'true')
       stopHeartbeat()
     } else {
-      localStorage.removeItem('isAdmin')
       startHeartbeat()
     }
   }
@@ -94,10 +112,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Ошибка выхода:', error)
     } finally {
-      isAdmin.value = false
-      userName.value = ''
-      userId.value = null
-      localStorage.removeItem('isAdmin')
+      clearUser()
       useNavigationStore().navigateTo('home')
     }
   }
@@ -108,6 +123,10 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading,
     userName,
     userId,
+    userRole,
+    userSpecializations,
+    userPermissions,
+    can,
     login,
     logout,
     checkSession
