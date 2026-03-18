@@ -148,8 +148,8 @@ Symlink created during deploy: `public_html/media → ../media`
 
 **EVERY button must have** `<span class="inner-glow">` and `<span class="top-shine">` inside.
 
-**Button System (old — admin/accounting UI only)**
-`.buttonGL` system — used only in `src/components/accounting/`. Do NOT migrate without explicit task.
+**Button System (old — archived)**
+`.buttonGL` system — archived in `src/components/accounting/`. Do NOT use or migrate.
 
 ### Panel System
 - `.padGlass` — base panel
@@ -245,7 +245,8 @@ Backend uses SQL `SUM()`, `COUNT()`, `AVG()` and returns final numbers.
 - **Pinia** - State management
 - **TanStack Table** - Data tables
 - **Chart.js** - Analytics charts
-- **DatePicker.vue** - Кастомный выбор даты/периода (`src/components/ui/DatePicker.vue`), заменил flatpickr (удалён 15.03.2026). Режимы: `single` / `range`. v-model: `string` (YYYY-MM-DD) или `DateRange`. Props: `mode`, `minDate`, `maxDate`, `showToday`, `showPresets`.
+- **DatePicker.vue** - Кастомный выбор даты/периода (`src/components/ui/datePicker/DatePicker.vue`), заменил flatpickr (удалён 15.03.2026). Режимы: `single` / `range`. v-model: `string` (YYYY-MM-DD) или `DateRange`. Props: `mode`, `minDate`, `maxDate`, `showToday`, `showPresets`. CSS: `src/components/ui/datePicker/datePicker.css`.
+- **SelectBox.vue** - Кастомный дропдаун (`src/components/ui/selectBox/SelectBox.vue`). Заменяет нативный `<select>` везде. Props: `options`, `modelValue`, `placeholder`. CSS: `src/components/ui/selectBox/selectBox.css`.
 
 ## Project Structure Details
 
@@ -254,7 +255,7 @@ maribulka/
 ├── maribulka-vue/          # Frontend app
 │   ├── src/
 │   │   ├── components/     # Vue SFCs
-│   │   │   ├── accounting/ # Archive of old components — reference only, NOT imported
+│   │   │   ├── accounting/ # АРХИВ старых компонентов — не импортируется, не трогать!
 │   │   │   ├── calendar/   # Booking calendar + table + all booking modals
 │   │   │   ├── home/       # Public home page: Home.vue, EditBlockModal.vue
 │   │   │   ├── TopBar.vue

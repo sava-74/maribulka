@@ -36,7 +36,8 @@
       "Bash(cp ../accounting/DeleteConfirmModal.vue .)",
       "Bash(cp ../accounting/DeliverBookingModal.vue .)",
       "Bash(cp ../accounting/EditBookingModal.vue .)",
-      "Bash(cp ../accounting/ViewBookingModal.vue .)"
+      "Bash(cp ../accounting/ViewBookingModal.vue .)",
+      "Bash(grep \"\"text\"\":\"\"[^\"\"]* 'd:/GitHub/maribulka/логика прав пользователя.json')"
     ]
   }
 }
