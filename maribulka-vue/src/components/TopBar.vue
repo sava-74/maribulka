@@ -42,7 +42,7 @@ const auth = useAuthStore()
 const props = defineProps<{ isLaunchpadOpen: boolean }>()
 const emit = defineEmits(['open-login', 'open-launchpad', 'close-launchpad'])
 
-const outinIcon = computed(() => auth.isAdmin ? mdiMenu : mdiAccountOutline)
+const outinIcon = computed(() => auth.isAuthenticated ? mdiMenu : mdiAccountOutline)
 
 const referencesStore = useReferencesStore()
 const navStore = useNavigationStore()
@@ -51,7 +51,7 @@ const handleAction = (event: MouseEvent) => {
   const btn = event.currentTarget as HTMLElement
   const r = btn.getBoundingClientRect()
   const origin = { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }
-  if (auth.isAdmin) {
+  if (auth.isAuthenticated) {
     if (props.isLaunchpadOpen) {
       emit('close-launchpad')
     } else {

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiPlus } from '@mdi/js'
 import { useAuthStore } from '../../stores/auth'
 import UserActionsModal from './UserActionsModal.vue'
 import UserFormModal from './UserFormModal.vue'
@@ -20,6 +18,7 @@ interface User {
   is_admin_role: boolean
   salary_type: string | null
   hired_at: string | null
+  fired_at: string | null
   notes: string | null
 }
 
@@ -30,6 +29,7 @@ const showForm = ref(false)
 const showFire = ref(false)
 const showPermissions = ref(false)
 const isCreating = ref(false)
+const isEmpty = ref(false)
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Admin',
@@ -54,11 +54,19 @@ async function loadUsers() {
 onMounted(loadUsers)
 
 function onRowClick(user: User) {
+  isEmpty.value = false
   selectedUser.value = user
   showActions.value = true
 }
 
+function onOpenEmptyActions() {
+  isEmpty.value = true
+  selectedUser.value = null
+  showActions.value = true
+}
+
 function onAdd() {
+  showActions.value = false
   selectedUser.value = null
   isCreating.value = true
   showForm.value = true
@@ -99,17 +107,10 @@ async function onFireConfirm() {
 </script>
 
 <template>
-  <div class="padGlass padGlass-work">
-    <div class="table-toolbar">
-      <span class="table-title">Пользователи</span>
-      <button class="btnGlass iconText" @click="onAdd">
-        <span class="inner-glow"></span>
-        <span class="top-shine"></span>
-        <svg-icon type="mdi" :path="mdiPlus" class="btn-icon" />
-        <span>Добавить</span>
-      </button>
-    </div>
+  <div class="padGlass padGlass-work data-table-panel">
+    <div class="pad-title">Пользователи</div>
 
+    <div class="data-table-scroll">
     <table class="data-table">
       <thead>
         <tr>
@@ -125,13 +126,13 @@ async function onFireConfirm() {
         </tr>
       </thead>
       <tbody>
-        <tr v-if="users.length === 0">
-          <td colspan="9" class="table-empty">+ Добавить пользователя</td>
+        <tr v-if="users.length === 0" class="row-empty" @click="onOpenEmptyActions">
+          <td colspan="9" class="cell-empty">+ Добавить пользователя</td>
         </tr>
         <tr
           v-for="user in users"
           :key="user.id"
-          class="table-row-clickable"
+          :class="{ 'row-cancelled': user.fired_at }"
           @click="onRowClick(user)"
         >
           <td>{{ user.full_name }}</td>
@@ -146,13 +147,16 @@ async function onFireConfirm() {
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <UserActionsModal
-    v-if="showActions && selectedUser"
-    :user="selectedUser"
+    v-if="showActions"
+    :user="selectedUser ?? { id: 0, full_name: null, login: '', role: '' }"
     :is-admin="auth.userRole === 'admin'"
+    :is-empty="isEmpty"
     @close="showActions = false"
+    @add="onAdd"
     @edit="onEdit"
     @fire="onFire"
     @permissions="onPermissions"

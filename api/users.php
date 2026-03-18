@@ -51,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
                 is_photographer, is_hairdresser, is_admin_role,
                 salary_type, hired_at, fired_at, notes, created_at
          FROM users
-         WHERE fired_at IS NULL
-         ORDER BY full_name"
+         ORDER BY fired_at IS NOT NULL, full_name"
     );
     echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
     exit;

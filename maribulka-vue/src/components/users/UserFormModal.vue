@@ -22,6 +22,7 @@ const props = defineProps<{ user: User | null }>()
 const emit = defineEmits(['close', 'save'])
 
 const isCreating = computed(() => !props.user)
+const isAdminUser = computed(() => props.user?.role === 'admin')
 
 const form = ref({
   full_name: '',
@@ -92,42 +93,42 @@ async function save() {
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ isCreating ? 'Новый пользователь' : 'Редактировать пользователя' }}</div>
 
-        <div class="form-row">
-          <label class="form-label">ФИО</label>
-          <input class="form-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
+        <div class="input-group">
+          <label class="input-label">ФИО</label>
+          <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Логин</label>
-          <input class="form-input" v-model="form.login" type="text" placeholder="Логин" required />
+        <div class="input-group">
+          <label class="input-label">Логин</label>
+          <input class="modal-input" v-model="form.login" type="text" placeholder="Логин" required :disabled="isAdminUser" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Пароль</label>
-          <input class="form-input" v-model="form.password" type="password"
-            :placeholder="isCreating ? 'Пароль' : 'Не менять'" :required="isCreating" />
+        <div class="input-group">
+          <label class="input-label">Пароль</label>
+          <input class="modal-input" v-model="form.password" type="password"
+            :placeholder="isCreating ? 'Придумайте пароль' : 'Оставьте пустым, чтобы не менять'" :required="isCreating" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Роль</label>
-          <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите роль" />
+        <div class="input-group">
+          <label class="input-label">Роль</label>
+          <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите роль" :disabled="isAdminUser" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Специализации</label>
+        <div class="input-group">
+          <label class="input-label">Специализации</label>
           <div>
-            <label><input type="checkbox" v-model="form.is_admin_role" /> Администратор</label>
-            <label><input type="checkbox" v-model="form.is_photographer" /> Фотограф</label>
-            <label><input type="checkbox" v-model="form.is_hairdresser" /> Парикмахер</label>
+            <label><input type="checkbox" v-model="form.is_admin_role" :disabled="isAdminUser" /> Администратор</label>
+            <label><input type="checkbox" v-model="form.is_photographer" :disabled="isAdminUser" /> Фотограф</label>
+            <label><input type="checkbox" v-model="form.is_hairdresser" :disabled="isAdminUser" /> Парикмахер</label>
           </div>
         </div>
-        <div class="form-row">
-          <label class="form-label">Тип зарплаты</label>
-          <SelectBox v-model="form.salary_type" :options="salaryOptions" placeholder="Тип зарплаты" />
+        <div class="input-group">
+          <label class="input-label">Тип зарплаты</label>
+          <SelectBox v-model="form.salary_type" :options="salaryOptions" placeholder="Тип зарплаты" :disabled="isAdminUser" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Дата приёма</label>
+        <div v-if="!isAdminUser" class="input-group">
+          <label class="input-label">Дата приёма</label>
           <DatePicker v-model="form.hired_at" mode="single" placeholder="Дата приёма" />
         </div>
-        <div class="form-row">
-          <label class="form-label">Примечания</label>
-          <textarea class="form-input" v-model="form.notes" rows="3" placeholder="Примечания"></textarea>
+        <div class="input-group">
+          <label class="input-label">Примечания</label>
+          <textarea class="modal-input" v-model="form.notes" rows="3" placeholder="Примечания"></textarea>
         </div>
 
         <div class="ButtonFooter PosSpace">

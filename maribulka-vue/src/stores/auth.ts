@@ -5,6 +5,7 @@ import { hasPermission, type Role, type Section, type Action } from './permissio
 
 export const useAuthStore = defineStore('auth', () => {
   const isAdmin = ref(false)
+  const isAuthenticated = ref(false)
   const isLoading = ref(false)
   const userName = ref('')
   const userId = ref<number | null>(null)
@@ -39,6 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
     userSpecializations.value = user.specializations ?? { photographer: false, hairdresser: false, admin_role: false }
     userPermissions.value = user.permissions ?? []
     isAdmin.value = user.role === 'admin' || user.role === 'superuser'
+    isAuthenticated.value = true
     localStorage.setItem('isAdmin', isAdmin.value ? 'true' : 'false')
   }
 
@@ -49,6 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
     userSpecializations.value = { photographer: false, hairdresser: false, admin_role: false }
     userPermissions.value = []
     isAdmin.value = false
+    isAuthenticated.value = false
     localStorage.removeItem('isAdmin')
   }
 
@@ -119,7 +122,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     isAdmin,
-    isAuthenticated: isAdmin,
+    isAuthenticated,
     isLoading,
     userName,
     userId,
