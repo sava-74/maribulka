@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiClose } from '@mdi/js'
+
+interface User {
+  id: number
+  full_name: string | null
+  login: string
+  role: string
+  is_photographer: boolean
+  is_hairdresser: boolean
+  is_admin_role: boolean
+  salary_type: string | null
+  hired_at: string | null
+  fired_at: string | null
+  notes: string | null
+}
+
+const props = defineProps<{ user: User }>()
+const emit = defineEmits(['close'])
+
+const ROLE_LABELS: Record<string, string> = {
+  admin: 'Admin',
+  superuser: 'SuperUser',
+  auser: 'AUser',
+  prouser: 'ProUser',
+  user: 'User',
+}
+
+const SALARY_LABELS: Record<string, string> = {
+  fixed: 'Оклад',
+  percent: 'Процент',
+  fixed_percent: 'Оклад + %',
+}
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return '—'
+  const [year, month, day] = dateStr.split('-')
+  return `${day}.${month}.${year}`
+}
+</script>
+
+<template>
+  <Teleport to="body">
+    <div class="modal-overlay-main" @click.self="emit('close')">
+      <div class="padGlass modal-sm">
+        <div class="modal-glassTitle">{{ user.full_name ?? user.login }}</div>
+
+        <div>
+          <div class="info-row">
+            <span class="info-label">Логин:</span>
+            <span class="info-value">{{ user.login }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Роль:</span>
+            <span class="info-value">{{ ROLE_LABELS[user.role] ?? user.role }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Администратор:</span>
+            <span class="info-value">{{ user.is_admin_role ? 'Да' : 'Нет' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Фотограф:</span>
+            <span class="info-value">{{ user.is_photographer ? 'Да' : 'Нет' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Парикмахер:</span>
+            <span class="info-value">{{ user.is_hairdresser ? 'Да' : 'Нет' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Тип зарплаты:</span>
+            <span class="info-value">{{ user.salary_type ? SALARY_LABELS[user.salary_type] ?? user.salary_type : '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Дата приёма:</span>
+            <span class="info-value">{{ formatDate(user.hired_at) }}</span>
+          </div>
+          <div v-if="user.fired_at" class="info-row">
+            <span class="info-label">Дата увольнения:</span>
+            <span class="info-value">{{ formatDate(user.fired_at) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Примечания:</span>
+            <span class="info-value">{{ user.notes || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="ButtonFooter PosRight">
+          <button class="btnGlass iconText" @click="emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiClose" class="btn-icon" />
+            <span>Закрыть</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>

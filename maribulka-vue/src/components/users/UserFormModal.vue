@@ -4,6 +4,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import SelectBox from '../ui/selectBox/SelectBox.vue'
 import DatePicker from '../ui/datePicker/DatePicker.vue'
+import AlertModal from '../AlertModal.vue'
 
 interface User {
   id: number
@@ -23,6 +24,7 @@ const emit = defineEmits(['close', 'save'])
 
 const isCreating = computed(() => !props.user)
 const isAdminUser = computed(() => props.user?.role === 'admin')
+const alertMessage = ref('')
 
 const form = ref({
   full_name: '',
@@ -83,11 +85,14 @@ async function save() {
   const data = await res.json()
   if (data.success) {
     emit('save')
+  } else {
+    alertMessage.value = data.message ?? 'Ошибка при сохранении'
   }
 }
 </script>
 
 <template>
+  <AlertModal :isVisible="!!alertMessage" :message="alertMessage" @close="alertMessage = ''" />
   <Teleport to="body">
     <div class="modal-overlay-main" @click.self="$emit('close')">
       <div class="padGlass modal-sm">

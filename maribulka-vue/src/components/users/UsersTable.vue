@@ -5,6 +5,7 @@ import UserActionsModal from './UserActionsModal.vue'
 import UserFormModal from './UserFormModal.vue'
 import FireUserModal from './FireUserModal.vue'
 import UserPermissionsModal from './UserPermissionsModal.vue'
+import ViewUserModal from './ViewUserModal.vue'
 
 const auth = useAuthStore()
 
@@ -25,6 +26,7 @@ interface User {
 const users = ref<User[]>([])
 const selectedUser = ref<User | null>(null)
 const showActions = ref(false)
+const showView = ref(false)
 const showForm = ref(false)
 const showFire = ref(false)
 const showPermissions = ref(false)
@@ -70,6 +72,11 @@ function onAdd() {
   selectedUser.value = null
   isCreating.value = true
   showForm.value = true
+}
+
+function onView() {
+  showActions.value = false
+  showView.value = true
 }
 
 function onEdit() {
@@ -121,13 +128,14 @@ async function onFireConfirm() {
           <th>Фотограф</th>
           <th>Парикмахер</th>
           <th>Тип зарплаты</th>
-          <th>Дата приёма</th>
+          <th>Принят</th>
+          <th>Уволен</th>
           <th>Примечания</th>
         </tr>
       </thead>
       <tbody>
         <tr v-if="users.length === 0" class="row-empty" @click="onOpenEmptyActions">
-          <td colspan="9" class="cell-empty">+ Добавить пользователя</td>
+          <td colspan="10" class="cell-empty">+ Добавить пользователя</td>
         </tr>
         <tr
           v-for="user in users"
@@ -143,6 +151,7 @@ async function onFireConfirm() {
           <td>{{ user.is_hairdresser ? '✓' : '' }}</td>
           <td>{{ user.salary_type ? SALARY_LABELS[user.salary_type] ?? user.salary_type : '' }}</td>
           <td>{{ user.hired_at }}</td>
+          <td>{{ user.fired_at }}</td>
           <td>{{ user.notes }}</td>
         </tr>
       </tbody>
@@ -157,9 +166,15 @@ async function onFireConfirm() {
     :is-empty="isEmpty"
     @close="showActions = false"
     @add="onAdd"
+    @view="onView"
     @edit="onEdit"
     @fire="onFire"
     @permissions="onPermissions"
+  />
+  <ViewUserModal
+    v-if="showView && selectedUser"
+    :user="selectedUser"
+    @close="showView = false"
   />
   <UserFormModal
     v-if="showForm"

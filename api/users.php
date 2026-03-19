@@ -75,25 +75,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
         exit;
     }
 
-    $stmt = $pdo->prepare(
-        "INSERT INTO users (full_name, login, password, role,
-            is_photographer, is_hairdresser, is_admin_role,
-            salary_type, hired_at, notes, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
-    );
-    $stmt->execute([
-        $input['full_name'] ?? null,
-        $input['login'],
-        $input['password'],
-        $input['role'] ?? 'prouser',
-        (int)($input['is_photographer'] ?? 0),
-        (int)($input['is_hairdresser'] ?? 0),
-        (int)($input['is_admin_role'] ?? 0),
-        $input['salary_type'] ?? null,
-        $input['hired_at'] ?? null,
-        $input['notes'] ?? null,
-    ]);
-    echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
+    // Check login uniqueness (exclude fired users)
+    $dup = $pdo->prepare("SELECT id FROM users WHERE login = ? AND fired_at IS NULL");
+    $dup->execute([$input['login']]);
+    if ($dup->fetch()) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Пользователь с таким логином уже существует']);
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            "INSERT INTO users (full_name, login, password, role,
+                is_photographer, is_hairdresser, is_admin_role,
+                salary_type, hired_at, notes, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+        );
+        $stmt->execute([
+            $input['full_name'] ?? null,
+            $input['login'],
+            $input['password'],
+            $input['role'] ?? 'prouser',
+            (int)($input['is_photographer'] ?? 0),
+            (int)($input['is_hairdresser'] ?? 0),
+            (int)($input['is_admin_role'] ?? 0),
+            $input['salary_type'] ?? null,
+            $input['hired_at'] ?? null,
+            $input['notes'] ?? null,
+        ]);
+        echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
+    } catch (PDOException $e) {
+        if ($e->getCode() === '23000') {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Пользователь с таким логином уже существует']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Ошибка при создании пользователя']);
+        }
+    }
     exit;
 }
 
@@ -111,6 +130,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
     if (empty($input['login'])) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Логин обязателен']);
+        exit;
+    }
+
+    // Check login uniqueness (exclude fired users and current user)
+    $dup = $pdo->prepare("SELECT id FROM users WHERE login = ? AND fired_at IS NULL AND id != ?");
+    $dup->execute([$input['login'], $id]);
+    if ($dup->fetch()) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Пользователь с таким логином уже существует']);
         exit;
     }
 
@@ -146,8 +174,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
         $params[] = $input['password'];
     }
     $params[] = $id;
-    $pdo->prepare("UPDATE users SET $fields WHERE id = ?")->execute($params);
-    echo json_encode(['success' => true]);
+    try {
+        $pdo->prepare("UPDATE users SET $fields WHERE id = ?")->execute($params);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        if ($e->getCode() === '23000') {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Пользователь с таким логином уже существует']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Ошибка при обновлении пользователя']);
+        }
+    }
     exit;
 }
 
