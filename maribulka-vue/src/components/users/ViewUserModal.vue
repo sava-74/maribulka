@@ -14,6 +14,13 @@ interface User {
   hired_at: string | null
   fired_at: string | null
   notes: string | null
+  region: string | null
+  city: string | null
+  house_building: string | null
+  flat: number | null
+  phone_user: string | null
+  email_user: string | null
+  date_of_birth: string | null
 }
 
 const props = defineProps<{ user: User }>()
@@ -50,6 +57,40 @@ function formatDate(dateStr: string | null) {
           <div class="info-row">
             <span class="info-label">Логин:</span>
             <span class="info-value">{{ user.login }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Телефон:</span>
+            <span class="info-value">
+              <a v-if="user.phone_user" :href="`tel:${user.phone_user}`">{{ user.phone_user }}</a>
+              <template v-else>—</template>
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value">
+              <a v-if="user.email_user" :href="`mailto:${user.email_user}`">{{ user.email_user }}</a>
+              <template v-else>—</template>
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Дата рождения:</span>
+            <span class="info-value">{{ user.date_of_birth ?? '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Область:</span>
+            <span class="info-value">{{ user.region || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Город:</span>
+            <span class="info-value">{{ user.city || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Дом/строение:</span>
+            <span class="info-value">{{ user.house_building || '—' }}</span>
+          </div>
+          <div class="info-row" v-if="user.flat">
+            <span class="info-label">Квартира:</span>
+            <span class="info-value">{{ user.flat }}</span>
           </div>
           <div class="info-row">
             <span class="info-label">Роль:</span>

@@ -21,6 +21,13 @@ interface User {
   hired_at: string | null
   fired_at: string | null
   notes: string | null
+  region: string | null
+  city: string | null
+  house_building: string | null
+  flat: number | null
+  phone_user: string | null
+  email_user: string | null
+  date_of_birth: string | null
 }
 
 const users = ref<User[]>([])

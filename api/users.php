@@ -49,7 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
     $stmt = $pdo->query(
         "SELECT id, full_name, login, role,
                 is_photographer, is_hairdresser, is_admin_role,
-                salary_type, hired_at, fired_at, notes, created_at
+                salary_type, hired_at, fired_at, notes, created_at,
+                region, city, house_building, flat,
+                phone_user, email_user, date_of_birth
          FROM users
          ORDER BY fired_at IS NOT NULL, full_name"
     );
@@ -88,8 +90,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
         $stmt = $pdo->prepare(
             "INSERT INTO users (full_name, login, password, role,
                 is_photographer, is_hairdresser, is_admin_role,
-                salary_type, hired_at, notes, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+                salary_type, hired_at, notes, created_at,
+                region, city, house_building, flat,
+                phone_user, email_user, date_of_birth)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)"
         );
         $stmt->execute([
             $input['full_name'] ?? null,
@@ -102,6 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
             $input['salary_type'] ?? null,
             $input['hired_at'] ?? null,
             $input['notes'] ?? null,
+            $input['region'] ?? null,
+            $input['city'] ?? null,
+            $input['house_building'] ?? null,
+            !empty($input['flat']) ? (int)$input['flat'] : null,
+            $input['phone_user'] ?? null,
+            $input['email_user'] ?? null,
+            $input['date_of_birth'] ?? null,
         ]);
         echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
     } catch (PDOException $e) {
@@ -156,7 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
 
     $fields = "full_name=?, login=?, role=?,
                is_photographer=?, is_hairdresser=?, is_admin_role=?,
-               salary_type=?, hired_at=?, notes=?";
+               salary_type=?, hired_at=?, notes=?,
+               region=?, city=?, house_building=?, flat=?,
+               phone_user=?, email_user=?, date_of_birth=?";
     $params = [
         $input['full_name'] ?? null,
         $input['login'] ?? null,
@@ -167,6 +180,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
         $input['salary_type'] ?? null,
         $input['hired_at'] ?? null,
         $input['notes'] ?? null,
+        $input['region'] ?? null,
+        $input['city'] ?? null,
+        $input['house_building'] ?? null,
+        !empty($input['flat']) ? (int)$input['flat'] : null,
+        $input['phone_user'] ?? null,
+        $input['email_user'] ?? null,
+        $input['date_of_birth'] ?? null,
     ];
     // Update password only if provided
     if (!empty($input['password'])) {
@@ -198,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'fire') {
         echo json_encode(['success' => false, 'message' => 'ID обязателен']);
         exit;
     }
-    $pdo->prepare("UPDATE users SET fired_at = CURDATE() WHERE id = ? AND fired_at IS NULL")
+    $pdo->prepare("UPDATE users SET fired_at = CURDATE(), login = NULL, password = NULL WHERE id = ? AND fired_at IS NULL")
         ->execute([$id]);
     echo json_encode(['success' => true]);
     exit;
