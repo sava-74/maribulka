@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import SelectBox from '../ui/selectBox/SelectBox.vue'
@@ -11,6 +11,7 @@ interface User {
   full_name: string | null
   login: string
   role: string
+  id_profession: number | null
   is_photographer: boolean
   is_hairdresser: boolean
   is_admin_role: boolean
@@ -19,6 +20,7 @@ interface User {
   notes: string | null
   region: string | null
   city: string | null
+  street: string | null
   house_building: string | null
   flat: number | null
   phone_user: string | null
@@ -31,21 +33,30 @@ const emit = defineEmits(['close', 'save'])
 
 const isCreating = computed(() => !props.user)
 const isAdminUser = computed(() => props.user?.role === 'admin')
+const isSuperUser = computed(() => props.user?.role === 'superuser')
+const isProfessionFixed = computed(() => isAdminUser.value || isSuperUser.value)
 const alertMessage = ref('')
+
+// Дата рождения: max = сегодня, min = -65 лет
+const today = new Date()
+const maxBirthDate = today.toISOString().slice(0, 10)
+const minBirthDate = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate()).toISOString().slice(0, 10)
 
 const form = ref({
   full_name: '',
   login: '',
   password: '',
   role: 'prouser',
+  id_profession: null as string | null,
   is_photographer: false,
   is_hairdresser: false,
   is_admin_role: false,
   salary_type: '',
-  hired_at: '',
+  hired_at: maxBirthDate,
   notes: '',
   region: '',
   city: '',
+  street: '',
   house_building: '',
   flat: '',
   phone_user: '',
@@ -60,6 +71,7 @@ watch(() => props.user, (user) => {
       login: user.login,
       password: '',
       role: user.role,
+      id_profession: user.id_profession !== null ? String(user.id_profession) : null,
       is_photographer: user.is_photographer,
       is_hairdresser: user.is_hairdresser,
       is_admin_role: user.is_admin_role,
@@ -68,6 +80,7 @@ watch(() => props.user, (user) => {
       notes: user.notes ?? '',
       region: user.region ?? '',
       city: user.city ?? '',
+      street: user.street ?? '',
       house_building: user.house_building ?? '',
       flat: user.flat !== null ? String(user.flat) : '',
       phone_user: user.phone_user ?? '',
@@ -77,12 +90,48 @@ watch(() => props.user, (user) => {
   }
 }, { immediate: true })
 
-const roleOptions = [
-  { value: 'admin', label: 'Admin' },
-  { value: 'superuser', label: 'SuperUser' },
-  { value: 'auser', label: 'AUser' },
-  { value: 'prouser', label: 'ProUser' },
-]
+// Список профессий
+const professionOptions = ref<{ value: string; label: string }[]>([])
+
+// Занятые роли (один экземпляр superuser и superuser1)
+const takenRoles = ref<string[]>([])
+
+onMounted(async () => {
+  const res = await fetch('/api/users.php?action=professions', { credentials: 'include' })
+  const data = await res.json()
+  if (data.success) {
+    professionOptions.value = data.data.map((p: any) => ({ value: String(p.id), label: p.title }))
+  }
+
+  const res2 = await fetch('/api/users.php?action=list', { credentials: 'include' })
+  const data2 = await res2.json()
+  if (data2.success) {
+    const active = data2.data.filter((u: any) => !u.fired_at)
+    const others = props.user ? active.filter((u: any) => u.id !== props.user!.id) : active
+    takenRoles.value = others.map((u: any) => u.role)
+  }
+})
+
+// Галка «Администратор» — управляется автоматически по роли
+const isAdminRoleDisabled = computed(() => isAdminUser.value || ['superuser', 'superuser1', 'auser', 'prouser'].includes(form.value.role))
+
+watch(() => form.value.role, (role) => {
+  if (role === 'superuser' || role === 'superuser1' || role === 'auser') {
+    form.value.is_admin_role = true
+  } else if (role === 'prouser') {
+    form.value.is_admin_role = false
+  }
+})
+
+const roleOptions = computed(() => {
+  const all = [
+    { value: 'superuser', label: 'Руководитель' },
+    { value: 'superuser1', label: 'Руководитель 2' },
+    { value: 'auser', label: 'Администратор' },
+    { value: 'prouser', label: 'Работник' },
+  ]
+  return all.filter(r => !takenRoles.value.includes(r.value))
+})
 
 const salaryOptions = [
   { value: 'fixed', label: 'Оклад' },
@@ -107,18 +156,20 @@ async function save() {
   if (!form.value.full_name.trim()) { alertMessage.value = 'Укажите ФИО'; return }
   if (!isAdminUser.value && !form.value.login.trim()) { alertMessage.value = 'Укажите логин'; return }
   if (isCreating.value && !form.value.password.trim()) { alertMessage.value = 'Укажите пароль'; return }
+  if (!form.value.id_profession) { alertMessage.value = 'Укажите профессию'; return }
+  if (!isAdminUser.value && !form.value.role) { alertMessage.value = 'Выберите права'; return }
+  if (!isAdminUser.value && !form.value.is_admin_role && !form.value.is_photographer && !form.value.is_hairdresser) { alertMessage.value = 'Выберите хотя бы одну специализацию'; return }
   if (!form.value.region.trim()) { alertMessage.value = 'Укажите область'; return }
   if (!form.value.city.trim()) { alertMessage.value = 'Укажите город'; return }
+  if (!form.value.street.trim()) { alertMessage.value = 'Укажите улицу'; return }
   if (!form.value.house_building.trim()) { alertMessage.value = 'Укажите дом/строение'; return }
   if (!form.value.phone_user.trim()) { alertMessage.value = 'Укажите телефон'; return }
-  if (!form.value.email_user.trim()) { alertMessage.value = 'Укажите email'; return }
   if (!form.value.date_of_birth) { alertMessage.value = 'Укажите дату рождения'; return }
-  if (!form.value.role) { alertMessage.value = 'Выберите роль'; return }
-  if (!form.value.is_admin_role && !form.value.is_photographer && !form.value.is_hairdresser) { alertMessage.value = 'Выберите хотя бы одну специализацию'; return }
   if (!form.value.salary_type) { alertMessage.value = 'Выберите тип зарплаты'; return }
   if (!isAdminUser.value && !form.value.hired_at) { alertMessage.value = 'Укажите дату приёма'; return }
 
   const payload: any = { ...form.value }
+  payload.id_profession = form.value.id_profession ? Number(form.value.id_profession) : null
   if (!isCreating.value) {
     payload.id = props.user!.id
     if (!payload.password) delete payload.password
@@ -146,9 +197,16 @@ async function save() {
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ isCreating ? 'Новый пользователь' : 'Редактировать пользователя' }}</div>
 
-        <div class="input-group">
-          <label class="input-label">ФИО *</label>
-          <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">ФИО *</label>
+            <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
+          </div>  
+          <div class="input-field">
+            <label class="input-label">Дата рождения *</label>
+            <DatePicker v-model="form.date_of_birth" mode="single" placeholder="Дата рождения"
+              :maxDate="maxBirthDate" :minDate="minBirthDate" :showToday="false" />
+          </div>
         </div>
 
         <div class="input-row">
@@ -176,8 +234,12 @@ async function save() {
 
         <div class="input-row">
           <div class="input-field">
+            <label class="input-label">Улица *</label>
+            <input class="modal-input" v-model="form.street" type="text" placeholder="Улица" />
+          </div>
+          <div class="input-field">
             <label class="input-label">Дом/строение *</label>
-            <input class="modal-input" v-model="form.house_building" type="text" placeholder="Дом, строение" />
+            <input class="modal-input" v-model="form.house_building" type="text" placeholder="Дом" />
           </div>
           <div class="input-field-narrow">
             <label class="input-label">Кв.</label>
@@ -192,38 +254,41 @@ async function save() {
               placeholder="+7(999)999-99-99" maxlength="16" @input="formatPhone" />
           </div>
           <div class="input-field">
-            <label class="input-label">Email *</label>
+            <label class="input-label">Email</label>
             <input class="modal-input" v-model="form.email_user" type="email" placeholder="email@example.com" />
           </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Дата рождения *</label>
-          <DatePicker v-model="form.date_of_birth" mode="single" placeholder="Дата рождения" />
-        </div>
-
-        <div class="input-group">
-          <label class="input-label">Роль *</label>
-          <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите роль" :disabled="isAdminUser" />
-        </div>
-
-        <div class="input-group">
-          <label class="input-label">Специализации *</label>
-          <div>
-            <label><input type="checkbox" v-model="form.is_admin_role" :disabled="isAdminUser" /> Администратор</label>
-            <label><input type="checkbox" v-model="form.is_photographer" :disabled="isAdminUser" /> Фотограф</label>
-            <label><input type="checkbox" v-model="form.is_hairdresser" :disabled="isAdminUser" /> Парикмахер</label>
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Профессия *</label>
+            <SelectBox v-model="form.id_profession" :options="professionOptions"
+              placeholder="Выберите профессию" :disabled="isProfessionFixed" />
+          </div>
+          <div v-if="!isAdminUser" class="input-field">
+            <label class="input-label">Права *</label>
+            <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите права" :disabled="isSuperUser" />
+          </div>
+          <div v-if="!isAdminUser" class="input-field">
+            <label class="input-label">Дата приёма *</label>
+            <DatePicker v-model="form.hired_at" mode="single" placeholder="Дата приёма" :showToday="false" />
           </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Тип зарплаты *</label>
-          <SelectBox v-model="form.salary_type" :options="salaryOptions" placeholder="Тип зарплаты" :disabled="isAdminUser" />
+        <div v-if="!isAdminUser" class="input-group">
+          <label class="input-label">Специализации *</label>
+          <div>
+            <label><input type="checkbox" v-model="form.is_admin_role" :disabled="isAdminRoleDisabled" /> Администратор</label>
+            <label><input type="checkbox" v-model="form.is_photographer" /> Фотограф</label>
+            <label><input type="checkbox" v-model="form.is_hairdresser" /> Парикмахер</label>
+          </div>
         </div>
 
-        <div v-if="!isAdminUser" class="input-group">
-          <label class="input-label">Дата приёма *</label>
-          <DatePicker v-model="form.hired_at" mode="single" placeholder="Дата приёма" />
+        <div class="input-row">
+          <div class="input-field">
+            <label class="input-label">Тип зарплаты *</label>
+            <SelectBox v-model="form.salary_type" :options="salaryOptions" placeholder="Тип зарплаты" :disabled="isAdminUser" />
+          </div>
         </div>
 
         <div class="input-group">

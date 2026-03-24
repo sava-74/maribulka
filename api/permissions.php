@@ -68,6 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'set') {
         echo json_encode(['success' => false, 'message' => 'user_id, section и action обязательны']);
         exit;
     }
+    $checkRole = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $checkRole->execute([(int)$input['user_id']]);
+    $targetUser = $checkRole->fetch(PDO::FETCH_ASSOC);
+    if (in_array($targetUser['role'] ?? '', ['admin', 'superuser'])) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Права этого пользователя не изменяемы']);
+        exit;
+    }
     $stmt = $pdo->prepare(
         "INSERT INTO user_permissions (user_id, section, action, allowed, granted_by)
          VALUES (?, ?, ?, ?, ?)
@@ -90,6 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'delete') {
     if (!$input || empty($input['user_id']) || empty($input['section']) || empty($input['action'])) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'user_id, section и action обязательны']);
+        exit;
+    }
+    $checkRole = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $checkRole->execute([(int)$input['user_id']]);
+    $targetUser = $checkRole->fetch(PDO::FETCH_ASSOC);
+    if (in_array($targetUser['role'] ?? '', ['admin', 'superuser'])) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Права этого пользователя не изменяемы']);
         exit;
     }
     $pdo->prepare(

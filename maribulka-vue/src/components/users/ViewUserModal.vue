@@ -7,6 +7,8 @@ interface User {
   full_name: string | null
   login: string
   role: string
+  id_profession: number | null
+  profession_title: string | null
   is_photographer: boolean
   is_hairdresser: boolean
   is_admin_role: boolean
@@ -16,6 +18,7 @@ interface User {
   notes: string | null
   region: string | null
   city: string | null
+  street: string | null
   house_building: string | null
   flat: number | null
   phone_user: string | null
@@ -28,10 +31,10 @@ const emit = defineEmits(['close'])
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Admin',
-  superuser: 'SuperUser',
-  auser: 'AUser',
-  prouser: 'ProUser',
-  user: 'User',
+  superuser: 'Руководитель',
+  auser: 'Администратор',
+  prouser: 'Работник',
+  user: 'Пользователь',
 }
 
 const SALARY_LABELS: Record<string, string> = {
@@ -59,6 +62,10 @@ function formatDate(dateStr: string | null) {
             <span class="info-value">{{ user.login }}</span>
           </div>
           <div class="info-row">
+            <span class="info-label">Профессия:</span>
+            <span class="info-value">{{ user.profession_title || '—' }}</span>
+          </div>
+          <div class="info-row">
             <span class="info-label">Телефон:</span>
             <span class="info-value">
               <a v-if="user.phone_user" :href="`tel:${user.phone_user}`">{{ user.phone_user }}</a>
@@ -83,6 +90,10 @@ function formatDate(dateStr: string | null) {
           <div class="info-row">
             <span class="info-label">Город:</span>
             <span class="info-value">{{ user.city || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Улица:</span>
+            <span class="info-value">{{ user.street || '—' }}</span>
           </div>
           <div class="info-row">
             <span class="info-label">Дом/строение:</span>

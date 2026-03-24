@@ -14,6 +14,8 @@ interface User {
   full_name: string | null
   login: string
   role: string
+  id_profession: number | null
+  profession_title: string | null
   is_photographer: boolean
   is_hairdresser: boolean
   is_admin_role: boolean
@@ -23,6 +25,7 @@ interface User {
   notes: string | null
   region: string | null
   city: string | null
+  street: string | null
   house_building: string | null
   flat: number | null
   phone_user: string | null
@@ -169,7 +172,7 @@ async function onFireConfirm() {
   <UserActionsModal
     v-if="showActions"
     :user="selectedUser ?? { id: 0, full_name: null, login: '', role: '' }"
-    :is-admin="auth.userRole === 'admin'"
+    :current-role="auth.userRole ?? ''"
     :is-empty="isEmpty"
     @close="showActions = false"
     @add="onAdd"

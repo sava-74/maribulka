@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiClose, mdiCheck, mdiCancel, mdiRefresh } from '@mdi/js'
 import { hasPermission, type Role, type Section, type Action } from '../../stores/permissions'
@@ -13,6 +13,8 @@ interface User {
 
 const props = defineProps<{ user: User }>()
 const emit = defineEmits(['close'])
+
+const isReadOnly = computed(() => ['admin', 'superuser'].includes(props.user.role))
 
 const SECTIONS: Array<{ key: Section; label: string }> = [
   { key: 'calendar', label: 'Календарь' },
@@ -125,6 +127,8 @@ async function resetAll() {
       <div class="padGlass">
         <div class="modal-glassTitle">Права: {{ user.full_name ?? user.login }}</div>
 
+        <div v-if="isReadOnly" class="modal-message">Права этого пользователя не изменяемы</div>
+
         <table class="data-table">
           <thead>
             <tr>
@@ -138,7 +142,8 @@ async function resetAll() {
               <td v-for="a in ACTIONS" :key="a">
                 <button
                   class="btnGlass icon-only"
-                  @click="toggle(s.key, a)"
+                  @click="!isReadOnly && toggle(s.key, a)"
+                  :disabled="isReadOnly"
                   :title="getState(s.key, a)"
                 >
                   <span class="inner-glow"></span>
@@ -155,7 +160,7 @@ async function resetAll() {
         </table>
 
         <div class="ButtonFooter PosSpace">
-          <button class="btnGlass iconText" @click="resetAll">
+          <button v-if="!isReadOnly" class="btnGlass iconText" @click="resetAll">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiRefresh" class="btn-icon" />

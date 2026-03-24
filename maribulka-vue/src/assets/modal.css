@@ -182,6 +182,7 @@ textarea.modal-input {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* Поле формы: flex-колонка label+input, flex 1, min-width 160px */

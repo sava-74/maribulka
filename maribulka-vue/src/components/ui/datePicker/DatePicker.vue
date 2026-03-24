@@ -108,7 +108,7 @@ const yearDropdownStyle = ref({ top: '0px', left: '0px' })
 const yearList = computed(() => {
   const current = new Date().getFullYear()
   const years = []
-  for (let y = current - 5; y <= current + 5; y++) years.push(y)
+  for (let y = current - 65; y <= current + 5; y++) years.push(y)
   return years
 })
 
