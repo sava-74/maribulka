@@ -51,6 +51,9 @@ const handleLogin = async () => {
       const data = await response.json()
       if (data.success) {
         auth.login(rememberMe.value, data.user)
+        if (data.mustChangePassword) {
+          auth.mustChangePassword = true
+        }
         password.value = ''
         close()
       } else {

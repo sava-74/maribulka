@@ -30,7 +30,7 @@ interface User {
   date_of_birth: string | null
 }
 
-const props = defineProps<{ user: User | null }>()
+const props = defineProps<{ user: User | null; forceEdit?: boolean }>()
 const emit = defineEmits(['close', 'save'])
 
 const isCreating = computed(() => !props.user)
@@ -224,7 +224,7 @@ async function save() {
   <ValidAlertModal :isVisible="showValidAlert" :messages="validErrors" @close="showValidAlert = false" />
   <AlertModal :isVisible="!!alertMessage" :message="alertMessage" @close="alertMessage = ''" />
   <Teleport v-if="!isLoading" to="body">
-    <div class="modal-overlay-main" @click.self="$emit('close')">
+    <div class="modal-overlay-main" @click.self="!forceEdit && $emit('close')">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ isCreating ? 'Новый пользователь' : 'Редактировать пользователя' }}</div>
 
@@ -327,8 +327,8 @@ async function save() {
           <textarea class="modal-input" v-model="form.notes" rows="3" placeholder="Примечания"></textarea>
         </div>
 
-        <div class="ButtonFooter PosSpace">
-          <button class="btnGlass iconText" @click="$emit('close')">
+        <div :class="forceEdit ? 'ButtonFooter PosCenter' : 'ButtonFooter PosSpace'">
+          <button v-if="!forceEdit" class="btnGlass iconText" @click="$emit('close')">
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiClose" class="btn-icon" />

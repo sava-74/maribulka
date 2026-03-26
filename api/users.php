@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
         $stmt->execute([
             $input['full_name'] ?? null,
             $input['login'],
-            $input['password'],
+            password_hash($input['password'], PASSWORD_BCRYPT),
             $input['role'] ?? 'prouser',
             !empty($input['id_profession']) ? (int)$input['id_profession'] : null,
             (int)($input['is_photographer'] ?? 0),
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
     // Update password only if provided
     if (!empty($input['password'])) {
         $fields .= ", password=?";
-        $params[] = $input['password'];
+        $params[] = password_hash($input['password'], PASSWORD_BCRYPT);
     }
     $params[] = $id;
     try {

@@ -110,25 +110,45 @@ if ($action === 'login') {
     $pdo = Database::getInstance()->getConnection();
 
     try {
-        // Проверяем пользователя
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE login = ? AND password = ?");
-        $stmt->execute([$login, $password]);
+        // Ищем пользователя по логину
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE login = ? AND fired_at IS NULL");
+        $stmt->execute([$login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Проверяем пароль: bcrypt или plain text (для обратной совместимости)
+        $passwordValid = false;
         if ($user) {
+            if (password_verify($password, $user['password'] ?? '')) {
+                $passwordValid = true;
+            } elseif ($user['password'] === $password) {
+                // plain text — устаревший формат, принимаем но хешируем сразу
+                $pdo->prepare("UPDATE users SET password = ? WHERE id = ?")
+                    ->execute([password_hash($password, PASSWORD_BCRYPT), $user['id']]);
+                $passwordValid = true;
+            }
+        }
+
+        if ($user && $passwordValid) {
+            // Флаг смены пароля для вечных пользователей с дефолтным паролем 123
+            $mustChangePassword = false;
+            if (in_array($user['role'], ['admin', 'superuser']) && password_verify('123', $user['password'] ?? '')) {
+                $mustChangePassword = true;
+            }
+
             // Создаём сессию
             $_SESSION['user'] = [
-                'id' => $user['id'],
+                'id'   => $user['id'],
                 'login' => $user['login'],
                 'role' => $user['role'],
                 'name' => $user['name'] ?? ''
             ];
-            $_SESSION['user_full'] = $user; // полная запись из БД для buildUserResponse
+            $_SESSION['user_full'] = $user;
             $_SESSION['remember_me'] = (bool)($input['rememberMe'] ?? false);
             $_SESSION['last_ping'] = time();
 
             echo json_encode([
                 'success' => true,
+                'mustChangePassword' => $mustChangePassword,
                 'user' => buildUserResponse($user, $pdo)
             ]);
         } else {

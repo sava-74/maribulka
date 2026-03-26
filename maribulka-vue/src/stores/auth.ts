@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userRole = ref<Role>('prouser')
   const userSpecializations = ref({ photographer: false, hairdresser: false, admin_role: false })
   const userPermissions = ref<Array<{ section: string; action: string; allowed: boolean }>>([])
+  const mustChangePassword = ref(false)
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
 
   function startHeartbeat() {
@@ -129,6 +130,7 @@ export const useAuthStore = defineStore('auth', () => {
     userRole,
     userSpecializations,
     userPermissions,
+    mustChangePassword,
     can,
     login,
     logout,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useNavigationStore } from './stores/navigation'
 import TopBar from './components/TopBar.vue'
@@ -12,6 +12,7 @@ import BookingsTable from './components/calendar/BookingsTable.vue'
 import IncomeTable from './components/finance/income/IncomeTable.vue'
 import ExpensesTable from './components/finance/expenses/ExpensesTable.vue'
 import UsersTable from './components/users/UsersTable.vue'
+import UserFormModal from './components/users/UserFormModal.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -39,6 +40,36 @@ function openLogin(origin: { x: number, y: number, w: number, h: number }) {
 function openLaunchpad(origin: { x: number, y: number, w: number, h: number }) {
   launchpadOrigin.value = origin
   showLaunchpad.value = true
+}
+
+// Текущий пользователь для UserFormModal при mustChangePassword
+const currentUserForForm = computed(() => {
+  if (!authStore.mustChangePassword) return null
+  return {
+    id: authStore.userId!,
+    full_name: authStore.userName,
+    login: '',
+    role: authStore.userRole,
+    id_profession: null,
+    is_photographer: false,
+    is_hairdresser: false,
+    is_admin_role: true,
+    salary_type: 'fixed',
+    hired_at: null,
+    notes: null,
+    region: null,
+    city: null,
+    street: null,
+    house_building: null,
+    flat: null,
+    phone_user: null,
+    email_user: null,
+    date_of_birth: null,
+  }
+})
+
+function onPasswordChanged() {
+  authStore.mustChangePassword = false
 }
 
 onMounted(async () => {
@@ -75,4 +106,10 @@ onMounted(async () => {
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />
+  <UserFormModal
+    v-if="authStore.mustChangePassword && currentUserForForm"
+    :user="currentUserForForm"
+    :force-edit="true"
+    @save="onPasswordChanged"
+  />
 </template>
