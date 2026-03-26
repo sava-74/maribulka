@@ -6,6 +6,7 @@ import UserFormModal from './UserFormModal.vue'
 import FireUserModal from './FireUserModal.vue'
 import UserPermissionsModal from './UserPermissionsModal.vue'
 import ViewUserModal from './ViewUserModal.vue'
+import PadLoader from '../ui/padLoader/PadLoader.vue'
 
 const auth = useAuthStore()
 
@@ -57,13 +58,21 @@ const SALARY_LABELS: Record<string, string> = {
   fixed_percent: 'Оклад + %',
 }
 
+const isLoading = ref(true)
+const loadProgress = ref(0)
+
 async function loadUsers() {
   const res = await fetch('/api/users.php?action=list', { credentials: 'include' })
   const data = await res.json()
   if (data.success) users.value = data.data
 }
 
-onMounted(loadUsers)
+onMounted(async () => {
+  await loadUsers()
+  loadProgress.value = 100
+  await new Promise(resolve => setTimeout(resolve, 250))
+  isLoading.value = false
+})
 
 function onRowClick(user: User) {
   isEmpty.value = false
@@ -124,6 +133,7 @@ async function onFireConfirm() {
 </script>
 
 <template>
+  <PadLoader v-if="isLoading" :progress="loadProgress" />
   <div class="padGlass padGlass-work data-table-panel">
     <div class="pad-title">Пользователи</div>
 

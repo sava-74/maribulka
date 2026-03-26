@@ -7,17 +7,19 @@
 ## Матрица прав (эталон)
 
 | Кто \ Чья форма | admin | SuperUser | SuperUser1 | AUser/User/ProUser |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | **admin** | Просмотр | Просмотр | Просмотр | Создать + Просмотр + Редактировать |
 | **SuperUser** | Просмотр + Редактировать | Просмотр + Редактировать | Создать + Просмотр + Редактировать + Уволить | Создать + Просмотр + Редактировать + Уволить |
 | **SuperUser1** | — | — | Просмотр | Создать + Просмотр + Редактировать + Уволить |
 
 ## Роли в БД (enum)
+
 `admin`, `superuser`, `superuser1`, `auser`, `prouser`, `user`
 
 ## Что меняется в текущем коде
 
 **Должно быть (строго по таблице):**
+
 - `admin` → форма admin: только Просмотр
 - `admin` → форма superuser: только Просмотр
 - `admin` → форма superuser1: только Просмотр
@@ -36,6 +38,7 @@
 ## Task 1: Обновить `api/users.php`
 
 **Files:**
+
 - Modify: `api/users.php`
 
 - [ ] **Step 1: Расширить доступ — добавить `superuser` к списку разрешённых ролей**
@@ -110,6 +113,7 @@ if (in_array($targetRole, ['admin', 'superuser'])) {
 ## Task 2: Обновить `UserActionsModal.vue`
 
 **Files:**
+
 - Modify: `maribulka-vue/src/components/users/UserActionsModal.vue`
 
 Текущий prop `isAdmin: boolean` заменить на `currentRole: string` — нужно знать точную роль текущего пользователя для матрицы.
@@ -187,6 +191,7 @@ const canPermissions = computed(() => {
 ## Task 3: Обновить `UsersTable.vue`
 
 **Files:**
+
 - Modify: `maribulka-vue/src/components/users/UsersTable.vue`
 
 - [ ] **Step 1: Обновить передачу prop в UserActionsModal**

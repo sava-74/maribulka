@@ -5,6 +5,8 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import SelectBox from '../ui/selectBox/SelectBox.vue'
 import DatePicker from '../ui/datePicker/DatePicker.vue'
 import AlertModal from '../AlertModal.vue'
+import ValidAlertModal from '../ValidAlertModal.vue'
+import PadLoader from '../ui/padLoader/PadLoader.vue'
 
 interface User {
   id: number
@@ -36,6 +38,8 @@ const isAdminUser = computed(() => props.user?.role === 'admin')
 const isSuperUser = computed(() => props.user?.role === 'superuser')
 const isProfessionFixed = computed(() => isAdminUser.value || isSuperUser.value)
 const alertMessage = ref('')
+const validErrors = ref<string[]>([])
+const showValidAlert = ref(false)
 
 // Дата рождения: max = сегодня, min = -65 лет
 const today = new Date()
@@ -92,17 +96,20 @@ watch(() => props.user, (user) => {
 
 // Список профессий
 const professionOptions = ref<{ value: string; label: string }[]>([])
-
-// Занятые роли (один экземпляр superuser и superuser1)
 const takenRoles = ref<string[]>([])
+const isLoading = ref(true)
+const loadProgress = ref(0)
 
 onMounted(async () => {
-  const res = await fetch('/api/users.php?action=professions', { credentials: 'include' })
-  const data = await res.json()
-  if (data.success) {
-    professionOptions.value = data.data.map((p: any) => ({ value: String(p.id), label: p.title }))
+  // Шаг 1: профессии → 25%
+  const res1 = await fetch('/api/users.php?action=professions', { credentials: 'include' })
+  const data1 = await res1.json()
+  if (data1.success) {
+    professionOptions.value = data1.data.map((p: any) => ({ value: String(p.id), label: p.title }))
   }
+  loadProgress.value = 25
 
+  // Шаг 2: занятые роли → 50%
   const res2 = await fetch('/api/users.php?action=list', { credentials: 'include' })
   const data2 = await res2.json()
   if (data2.success) {
@@ -110,6 +117,14 @@ onMounted(async () => {
     const others = props.user ? active.filter((u: any) => u.id !== props.user!.id) : active
     takenRoles.value = others.map((u: any) => u.role)
   }
+  loadProgress.value = 50
+
+  // Шаг 3: данные пользователя (props.user) готовы → 100%
+  loadProgress.value = 100
+
+  // Задержка 250мс перед скрытием лоадера
+  await new Promise(resolve => setTimeout(resolve, 250))
+  isLoading.value = false
 })
 
 // Галка «Администратор» — управляется автоматически по роли
@@ -152,21 +167,35 @@ function formatPhone(event: Event) {
   form.value.phone_user = formatted
 }
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/
+
 async function save() {
-  if (!form.value.full_name.trim()) { alertMessage.value = 'Укажите ФИО'; return }
-  if (!isAdminUser.value && !form.value.login.trim()) { alertMessage.value = 'Укажите логин'; return }
-  if (isCreating.value && !form.value.password.trim()) { alertMessage.value = 'Укажите пароль'; return }
-  if (!form.value.id_profession) { alertMessage.value = 'Укажите профессию'; return }
-  if (!isAdminUser.value && !form.value.role) { alertMessage.value = 'Выберите права'; return }
-  if (!isAdminUser.value && !form.value.is_admin_role && !form.value.is_photographer && !form.value.is_hairdresser) { alertMessage.value = 'Выберите хотя бы одну специализацию'; return }
-  if (!form.value.region.trim()) { alertMessage.value = 'Укажите область'; return }
-  if (!form.value.city.trim()) { alertMessage.value = 'Укажите город'; return }
-  if (!form.value.street.trim()) { alertMessage.value = 'Укажите улицу'; return }
-  if (!form.value.house_building.trim()) { alertMessage.value = 'Укажите дом/строение'; return }
-  if (!form.value.phone_user.trim()) { alertMessage.value = 'Укажите телефон'; return }
-  if (!form.value.date_of_birth) { alertMessage.value = 'Укажите дату рождения'; return }
-  if (!form.value.salary_type) { alertMessage.value = 'Выберите тип зарплаты'; return }
-  if (!isAdminUser.value && !form.value.hired_at) { alertMessage.value = 'Укажите дату приёма'; return }
+  const errors: string[] = []
+
+  if (!form.value.full_name.trim()) errors.push('Укажите ФИО')
+  if (!isAdminUser.value && !form.value.login.trim()) errors.push('Укажите логин')
+  if (isCreating.value && !form.value.password.trim()) {
+    errors.push('Укажите пароль')
+  } else if (form.value.password && !passwordRegex.test(form.value.password)) {
+    errors.push('Пароль должен содержать минимум 8 символов, заглавную и строчную букву, цифру и спецсимвол')
+  }
+  if (!form.value.id_profession) errors.push('Укажите профессию')
+  if (!isAdminUser.value && !form.value.role) errors.push('Выберите права')
+  if (!isAdminUser.value && !form.value.is_admin_role && !form.value.is_photographer && !form.value.is_hairdresser) errors.push('Выберите хотя бы одну специализацию')
+  if (!form.value.region.trim()) errors.push('Укажите область')
+  if (!form.value.city.trim()) errors.push('Укажите город')
+  if (!form.value.street.trim()) errors.push('Укажите улицу')
+  if (!form.value.house_building.trim()) errors.push('Укажите дом/строение')
+  if (!form.value.phone_user.trim()) errors.push('Укажите телефон')
+  if (!form.value.date_of_birth) errors.push('Укажите дату рождения')
+  if (!form.value.salary_type) errors.push('Выберите тип зарплаты')
+  if (!isAdminUser.value && !form.value.hired_at) errors.push('Укажите дату приёма')
+
+  if (errors.length > 0) {
+    validErrors.value = errors
+    showValidAlert.value = true
+    return
+  }
 
   const payload: any = { ...form.value }
   payload.id_profession = form.value.id_profession ? Number(form.value.id_profession) : null
@@ -191,8 +220,10 @@ async function save() {
 </script>
 
 <template>
+  <PadLoader v-if="isLoading" :progress="loadProgress" />
+  <ValidAlertModal :isVisible="showValidAlert" :messages="validErrors" @close="showValidAlert = false" />
   <AlertModal :isVisible="!!alertMessage" :message="alertMessage" @close="alertMessage = ''" />
-  <Teleport to="body">
+  <Teleport v-if="!isLoading" to="body">
     <div class="modal-overlay-main" @click.self="$emit('close')">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ isCreating ? 'Новый пользователь' : 'Редактировать пользователя' }}</div>

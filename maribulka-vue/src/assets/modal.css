@@ -170,10 +170,10 @@ textarea.modal-input {
   min-width: auto;
 }
 
-/* Широкая модалка (резерв) */
+/* Широкая модалка (резерв) 
 .padGlass.modal-sm.modal-wide {
-  /*width: min(820px, 95vw);*/
-}
+  width: min(820px, 95vw);
+}*/
 
 /* ========== СТРОКИ И ПОЛЯ ФОРМ ========== */
 
