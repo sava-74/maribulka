@@ -115,25 +115,23 @@ if ($action === 'login') {
         $stmt->execute([$login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Проверяем пароль: bcrypt или plain text (для обратной совместимости)
+        // Проверяем пароль: bcrypt или plain text
         $passwordValid = false;
+        $mustChangePassword = false;
         if ($user) {
             if (password_verify($password, $user['password'] ?? '')) {
                 $passwordValid = true;
             } elseif ($user['password'] === $password) {
-                // plain text — устаревший формат, принимаем но хешируем сразу
-                $pdo->prepare("UPDATE users SET password = ? WHERE id = ?")
-                    ->execute([password_hash($password, PASSWORD_BCRYPT), $user['id']]);
+                // plain text — принимаем без хеширования
                 $passwordValid = true;
+                // Если вечный пользователь с паролем 123 — требуем смену
+                if (in_array($user['role'], ['admin', 'superuser']) && $password === '123') {
+                    $mustChangePassword = true;
+                }
             }
         }
 
         if ($user && $passwordValid) {
-            // Флаг смены пароля для вечных пользователей с дефолтным паролем 123
-            $mustChangePassword = false;
-            if (in_array($user['role'], ['admin', 'superuser']) && password_verify('123', $user['password'] ?? '')) {
-                $mustChangePassword = true;
-            }
 
             // Создаём сессию
             $_SESSION['user'] = [
