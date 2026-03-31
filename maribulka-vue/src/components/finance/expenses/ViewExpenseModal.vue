@@ -20,7 +20,7 @@ function formatDate(dateStr: string) {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay-main">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Просмотр расхода</div>
 

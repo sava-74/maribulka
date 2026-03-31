@@ -33,7 +33,7 @@ const expenseInfo = computed(() => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay">
       <div class="modal-glass view-modal">
         <div class="modal-glassTitle">Информация о расходе</div>
 

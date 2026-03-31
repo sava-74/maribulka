@@ -84,7 +84,7 @@ const handleSubmit = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay">
       <div class="modal-glass">
         <div class="modal-glassTitle">Добавить тип съёмки</div>
 

@@ -69,7 +69,7 @@ const canRefund = computed(() => {
 
 <template>
   <Teleport to="body">
-    <div class="modal-overlay" @click.self="$emit('close')">
+    <div class="modal-overlay">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ booking?.client_name }}</div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: -8px; margin-bottom: 4px;">

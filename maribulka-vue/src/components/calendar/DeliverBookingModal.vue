@@ -69,7 +69,7 @@ const handleDeliver = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay-main">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Выдать заказ</div>
 

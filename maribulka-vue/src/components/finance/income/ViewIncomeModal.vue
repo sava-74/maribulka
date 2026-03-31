@@ -194,7 +194,7 @@ async function handlePayment() {
 <template>
   <Teleport to="body">
     <!-- Основная модалка просмотра — 2-й порядок, z-index 999 -->
-    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay-main">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Информация о платеже</div>
 
@@ -345,7 +345,7 @@ async function handlePayment() {
     </div>
 
     <!-- Модалка подтверждения платежа — 1-й порядок, z-index 9999 -->
-    <div v-if="showConfirmModal" class="modal-overlay" @click.self="showConfirmModal = false">
+    <div v-if="showConfirmModal" class="modal-overlay">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Принять платёж?</div>
         <p>Принять платёж на сумму <strong>{{ paymentAmount }} ₽</strong>?</p>

@@ -77,7 +77,7 @@ const handleLogin = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }" @click.self="close()">
+    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }">
       <div ref="panelRef" class="padGlass modal-sm" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
         <div class="modal-glassTitle">Вход в систему</div>
         <div class="input-group">

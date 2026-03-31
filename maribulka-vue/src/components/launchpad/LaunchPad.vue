@@ -97,7 +97,7 @@ function onRipple(event: MouseEvent) {
 
 <template>
   <template v-if="isVisible">
-  <div class="modal-overlay-launch" :class="{ 'overlay-leave': closing }" @click.self="close()">
+  <div class="modal-overlay-launch" :class="{ 'overlay-leave': closing }">
       <div ref="panelRef" class="padGlass padGlass-work" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
 
         <!-- Секция: Учёт -->

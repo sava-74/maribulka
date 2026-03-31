@@ -459,7 +459,7 @@ const handleSubmit = async () => {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay-main" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay-main">
       <div class="padGlass modal-sm modal-wide">
       <div class="modal-glassTitle">{{ mode === 'add' ? 'Добавить запись на съёмку' : 'Редактировать запись' }}</div>
 

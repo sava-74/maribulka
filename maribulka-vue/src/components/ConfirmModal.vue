@@ -17,7 +17,7 @@ const { closing, close } = useGenie(panelRef, () => props.isVisible, () => emit(
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }" @click.self="close()">
+    <div v-if="isVisible" class="modal-overlay" :class="{ 'overlay-leave': closing }">
       <div ref="panelRef" class="padGlass modal-sm" :class="closing ? 'fade-leave' : 'fade-enter'">
         <div class="modal-glassTitle">{{ title || 'Подтверждение' }}</div>
         <p class="modal-message">{{ message }}</p>

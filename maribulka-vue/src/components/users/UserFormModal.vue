@@ -265,7 +265,7 @@ async function save() {
   <ValidAlertModal :isVisible="showValidAlert" :messages="validErrors" @close="showValidAlert = false" />
   <AlertModal :isVisible="!!alertMessage" :message="alertMessage" @close="alertMessage = ''" />
   <Teleport v-if="!isLoading" to="body">
-    <div class="modal-overlay-main" @click.self="!forceEdit && $emit('close')">
+    <div class="modal-overlay-main">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ isCreating ? 'Новый пользователь' : 'Редактировать пользователя' }}</div>
 

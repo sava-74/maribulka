@@ -32,7 +32,7 @@ async function handleSave() {
 
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay modal-overlay-editor" @click.self="emit('close')">
+    <div v-if="isVisible" class="modal-overlay modal-overlay-editor">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">Редактирование блока {{ blockId }}</div>
 

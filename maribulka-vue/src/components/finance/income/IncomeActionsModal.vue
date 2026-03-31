@@ -12,7 +12,7 @@ const emit = defineEmits(['close', 'add', 'view', 'delete'])
 
 <template>
   <Teleport to="body">
-    <div class="modal-overlay" @click.self="emit('close')">
+    <div class="modal-overlay">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ income?.client_name }}</div>
         <p class="modal-message">{{ income?.order_number ?? 'Добавить' }}</p>

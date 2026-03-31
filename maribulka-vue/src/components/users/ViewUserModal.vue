@@ -48,7 +48,7 @@ function formatDate(dateStr: string | null) {
 
 <template>
   <Teleport to="body">
-    <div class="modal-overlay-main" @click.self="emit('close')">
+    <div class="modal-overlay-main">
       <div class="padGlass modal-sm">
         <div class="modal-glassTitle">{{ user.full_name ?? user.login }}</div>
 
