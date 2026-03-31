@@ -2,19 +2,19 @@
 import { ref, computed, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiClose, mdiCheck, mdiCancel, mdiRefresh } from '@mdi/js'
-import { hasPermission, type Role, type Section, type Action } from '../../stores/permissions'
+import { hasPermission, type Section, type Action } from '../../stores/permissions'
 
 interface User {
   id: number
   full_name: string | null
   login: string
-  role: string
+  role: number
 }
 
 const props = defineProps<{ user: User }>()
 const emit = defineEmits(['close'])
 
-const isReadOnly = computed(() => ['admin', 'superuser'].includes(props.user.role))
+const isReadOnly = computed(() => [1, 2].includes(props.user.role))
 
 const SECTIONS: Array<{ key: Section; label: string }> = [
   { key: 'calendar', label: 'Календарь' },
@@ -64,7 +64,7 @@ function getState(section: string, action: string): CellState {
 }
 
 function getDefaultIcon(section: Section, action: Action): string {
-  const allowed = hasPermission(props.user.role as Role, section, action, [])
+  const allowed = hasPermission(props.user.role, section, action, [])
   return allowed ? mdiCheck : mdiCancel
 }
 

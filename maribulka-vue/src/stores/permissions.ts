@@ -1,7 +1,7 @@
 // src/stores/permissions.ts
 // Дефолтные права по ролям. Секции и actions совпадают с api/permissions.php
 
-export type Role = 'admin' | 'superuser' | 'auser' | 'prouser' | 'user'
+export type Role = number
 export type Section =
   | 'calendar' | 'bookings' | 'income' | 'expenses' | 'reports'
   | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories'
@@ -13,32 +13,39 @@ export type Action = 'view' | 'create' | 'edit' | 'delete'
 // NO   = ничего
 type AccessLevel = 'FULL' | 'VIEW' | 'NO'
 
-export const ROLE_DEFAULTS: Record<Role, Record<Section, AccessLevel>> = {
-  admin: {
+// id=1 СисАдмин, id=2 Директор, id=3 Руководитель, id=4 Администратор, id=5 Работник, id=6 Пользователь
+export const ROLE_DEFAULTS: Record<number, Record<Section, AccessLevel>> = {
+  1: {
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
     reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
     expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'FULL',
   },
-  superuser: {
+  2: {
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
     reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
     expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'NO',
   },
-  auser: {
+  3: {
     calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
     expense_categories: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
   },
-  prouser: {
+  4: {
+    calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
+    reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
+    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
+  },
+  5: {
     calendar: 'VIEW', bookings: 'VIEW', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
     expense_categories: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
   },
-  user: {
+  6: {
     calendar: 'NO', bookings: 'NO', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
     expense_categories: 'NO', users: 'NO', settings: 'NO',

@@ -26,7 +26,7 @@ const form = ref({
   full_name: '',
   login: '',
   password: '',
-  role: 'prouser',
+  role: 5 as number,
   id_profession: null as string | null,
   is_photographer: false,
   is_hairdresser: false,
@@ -44,55 +44,64 @@ const form = ref({
   date_of_birth: '',
 })
 
-const isAdminUser = computed(() => form.value.role === 'admin')
-const isSuperUser = computed(() => form.value.role === 'superuser')
+const isAdminUser = computed(() => form.value.role === 1)
+const isSuperUser = computed(() => form.value.role === 2)
 const isProfessionFixed = computed(() => isAdminUser.value || isSuperUser.value)
 
 // Список профессий и типов зарплаты
 const professionOptions = ref<{ value: string; label: string }[]>([])
 const salaryTypeOptions = ref<{ value: string; label: string }[]>([])
-const takenRoles = ref<string[]>([])
+const allRoleOptions = ref<{ value: number; label: string }[]>([])
+const takenRoles = ref<number[]>([])
 const isLoading = ref(true)
 const loadProgress = ref(0)
 
 onMounted(async () => {
-  // Шаг 1: профессии → 25%
+  // Шаг 1: профессии → 20%
   const res1 = await fetch('/api/users.php?action=professions', { credentials: 'include' })
   const data1 = await res1.json()
   if (data1.success) {
     professionOptions.value = data1.data.map((p: any) => ({ value: String(p.id), label: p.title }))
   }
-  loadProgress.value = 25
+  loadProgress.value = 20
 
-  // Шаг 2: типы зарплаты → 50%
+  // Шаг 2: типы зарплаты → 40%
   const res2 = await fetch('/api/users.php?action=salary_types', { credentials: 'include' })
   const data2 = await res2.json()
   if (data2.success) {
     salaryTypeOptions.value = data2.data.map((s: any) => ({ value: String(s.id), label: s.title }))
   }
-  loadProgress.value = 50
+  loadProgress.value = 40
 
-  // Шаг 3: занятые роли → 75%
-  const res3 = await fetch('/api/users.php?action=list', { credentials: 'include' })
+  // Шаг 3: роли из БД → 60%
+  const res3 = await fetch('/api/users.php?action=permissions', { credentials: 'include' })
   const data3 = await res3.json()
   if (data3.success) {
-    const active = data3.data.filter((u: any) => !u.fired_at)
-    const others = props.userId ? active.filter((u: any) => u.id !== props.userId) : active
-    takenRoles.value = others.map((u: any) => u.role)
+    allRoleOptions.value = data3.data.map((r: any) => ({ value: r.id, label: r.name }))
   }
-  loadProgress.value = 75
+  loadProgress.value = 60
 
-  // Шаг 4: данные пользователя из БД → 100%
+  // Шаг 4: занятые роли → 80%
+  const res4 = await fetch('/api/users.php?action=list', { credentials: 'include' })
+  const data4 = await res4.json()
+  if (data4.success) {
+    const active = data4.data.filter((u: any) => !u.fired_at)
+    const others = props.userId ? active.filter((u: any) => u.id !== props.userId) : active
+    takenRoles.value = others.map((u: any) => Number(u.role))
+  }
+  loadProgress.value = 80
+
+  // Шаг 5: данные пользователя из БД → 100%
   if (props.userId) {
-    const res4 = await fetch(`/api/users.php?action=get&id=${props.userId}`, { credentials: 'include' })
-    const data4 = await res4.json()
-    if (data4.success) {
-      const user = data4.data
+    const res5 = await fetch(`/api/users.php?action=get&id=${props.userId}`, { credentials: 'include' })
+    const data5 = await res5.json()
+    if (data5.success) {
+      const user = data5.data
       form.value = {
         full_name: user.full_name ?? '',
         login: user.login ?? '',
         password: '',
-        role: user.role,
+        role: Number(user.role) ?? 5,
         id_profession: user.id_profession !== null ? String(user.id_profession) : null,
         is_photographer: !!user.is_photographer,
         is_hairdresser: !!user.is_hairdresser,
@@ -118,30 +127,25 @@ onMounted(async () => {
 })
 
 // Галка «Администратор» — управляется автоматически по роли
-const isAdminRoleDisabled = computed(() => isAdminUser.value || ['superuser', 'superuser1', 'auser', 'prouser'].includes(form.value.role))
+// id=2 Директор, id=3 Руководитель, id=4 Администратор — is_admin_role=true; id=5 Работник — false
+const isAdminRoleDisabled = computed(() => isAdminUser.value || [2, 3, 4, 5].includes(form.value.role))
 
 watch(() => form.value.role, (role) => {
-  if (role === 'superuser' || role === 'superuser1' || role === 'auser') {
+  if ([2, 3, 4].includes(role)) {
     form.value.is_admin_role = true
-  } else if (role === 'prouser') {
+  } else if (role === 5) {
     form.value.is_admin_role = false
   }
 })
 
-const roleOptions = computed(() => {
-  const all = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'superuser', label: 'Руководитель' },
-    { value: 'superuser1', label: 'Руководитель 2' },
-    { value: 'auser', label: 'Администратор' },
-    { value: 'prouser', label: 'Работник' },
-  ]
-  // Для вечных — только их роль
+// Доступные роли для выбора
+const roleOptions = computed<{ value: number; label: string }[]>(() => {
+  // Для вечных пользователей (admin=1, superuser=2) — только их роль, без изменений
   if (isAdminUser.value || isSuperUser.value) {
-    return all.filter(r => r.value === form.value.role)
+    return allRoleOptions.value.filter(r => r.value === form.value.role)
   }
-  // Для остальных — все кроме admin и занятых ролей
-  return all.filter(r => r.value !== 'admin' && !takenRoles.value.includes(r.value))
+  // Для остальных — все кроме admin(1) и занятых уникальных ролей (2=Директор, 3=Руководитель)
+  return allRoleOptions.value.filter(r => r.value !== 1 && !takenRoles.value.includes(r.value))
 })
 
 function formatPhone(event: Event) {

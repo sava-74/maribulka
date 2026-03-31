@@ -6,7 +6,8 @@ interface User {
   id: number
   full_name: string | null
   login: string
-  role: string
+  role: number
+  permission_name: string | null
   id_profession: number | null
   profession_title: string | null
   is_photographer: boolean
@@ -29,14 +30,6 @@ interface User {
 
 const props = defineProps<{ user: User }>()
 const emit = defineEmits(['close'])
-
-const ROLE_LABELS: Record<string, string> = {
-  admin: 'Admin',
-  superuser: 'Руководитель',
-  auser: 'Администратор',
-  prouser: 'Работник',
-  user: 'Пользователь',
-}
 
 
 function formatDate(dateStr: string | null) {
@@ -101,7 +94,7 @@ function formatDate(dateStr: string | null) {
           </div>
           <div class="info-row">
             <span class="info-label">Роль:</span>
-            <span class="info-value">{{ ROLE_LABELS[user.role] ?? user.role }}</span>
+            <span class="info-value">{{ user.permission_name ?? user.role }}</span>
           </div>
           <div class="info-row">
             <span class="info-label">Администратор:</span>

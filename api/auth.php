@@ -51,10 +51,11 @@ function buildUserResponse(array $user, PDO $pdo): array {
     ], $permissions);
 
     return [
-        'id'              => $user['id'],
+        'id'              => (int)$user['id'],
         'login'           => $user['login'],
         'name'            => $user['full_name'] ?? $user['name'] ?? '',
-        'role'            => $user['role'] ?? 'prouser',
+        'role'            => (int)($user['role'] ?? 5),
+        'permission_name' => $user['permission_name'] ?? '',
         'specializations' => $specializations,
         'permissions'     => $perms,
     ];
@@ -111,7 +112,12 @@ if ($action === 'login') {
 
     try {
         // Ищем пользователя по логину
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE login = ? AND fired_at IS NULL");
+        $stmt = $pdo->prepare(
+            "SELECT u.*, up.name AS permission_name
+             FROM users u
+             LEFT JOIN user_permissions up ON u.role = up.id
+             WHERE u.login = ? AND u.fired_at IS NULL"
+        );
         $stmt->execute([$login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -124,8 +130,8 @@ if ($action === 'login') {
             } elseif ($user['password'] === $password) {
                 // plain text — принимаем без хеширования
                 $passwordValid = true;
-                // Если вечный пользователь с паролем 123 — требуем смену
-                if (in_array($user['role'], ['admin', 'superuser']) && $password === '123') {
+                // Если вечный пользователь (1=admin, 2=superuser) с паролем 123 — требуем смену
+                if (in_array((int)($user['role'] ?? 0), [1, 2]) && $password === '123') {
                     $mustChangePassword = true;
                 }
             }
@@ -135,10 +141,10 @@ if ($action === 'login') {
 
             // Создаём сессию
             $_SESSION['user'] = [
-                'id'   => $user['id'],
+                'id'    => $user['id'],
                 'login' => $user['login'],
-                'role' => $user['role'],
-                'name' => $user['name'] ?? ''
+                'role'  => (int)$user['role'],
+                'name'  => $user['name'] ?? ''
             ];
             $_SESSION['user_full'] = $user;
             $_SESSION['remember_me'] = (bool)($input['rememberMe'] ?? false);

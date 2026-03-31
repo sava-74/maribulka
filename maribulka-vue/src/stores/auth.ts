@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref(false)
   const userName = ref('')
   const userId = ref<number | null>(null)
-  const userRole = ref<Role>('prouser')
+  const userRole = ref<Role>(5)
   const userSpecializations = ref({ photographer: false, hairdresser: false, admin_role: false })
   const userPermissions = ref<Array<{ section: string; action: string; allowed: boolean }>>([])
   const mustChangePassword = ref(false)
@@ -35,18 +35,18 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function setUser(user: any) {
-    userRole.value = user.role ?? 'prouser'
+    userRole.value = (user.role as number) ?? 5
     userName.value = user.name ?? ''
     userId.value = user.id ?? null
     userSpecializations.value = user.specializations ?? { photographer: false, hairdresser: false, admin_role: false }
     userPermissions.value = user.permissions ?? []
-    isAdmin.value = user.role === 'admin' || user.role === 'superuser'
+    isAdmin.value = userRole.value === 1 || userRole.value === 2
     isAuthenticated.value = true
     localStorage.setItem('isAdmin', isAdmin.value ? 'true' : 'false')
   }
 
   function clearUser() {
-    userRole.value = 'prouser'
+    userRole.value = 5
     userName.value = ''
     userId.value = null
     userSpecializations.value = { photographer: false, hairdresser: false, admin_role: false }
@@ -91,7 +91,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Вход (теперь только устанавливает флаг, реальный вход через API в LoginModal)
-  function login(remember: boolean, user?: { id: number; name: string; role?: string; specializations?: any; permissions?: any[] }) {
+  function login(remember: boolean, user?: { id: number; name: string; role?: number; specializations?: any; permissions?: any[] }) {
     if (user) {
       setUser(user)
     } else {

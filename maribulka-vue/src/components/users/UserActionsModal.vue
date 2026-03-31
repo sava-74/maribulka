@@ -7,37 +7,38 @@ interface User {
   id: number
   full_name: string | null
   login: string
-  role: string
+  role: number
   fired_at?: string | null
 }
 
-const props = defineProps<{ user: User; currentRole: string; isEmpty?: boolean }>()
+const props = defineProps<{ user: User; currentRole: number; isEmpty?: boolean }>()
 const emit = defineEmits(['close', 'add', 'view', 'edit', 'fire', 'permissions'])
 
-const canCreate = computed(() => ['admin', 'superuser', 'superuser1'].includes(props.currentRole))
+// id=1 СисАдмин, id=2 Директор, id=3 Руководитель
+const canCreate = computed(() => [1, 2, 3].includes(props.currentRole))
 
 const canEdit = computed(() => {
   if (props.isEmpty || props.user.fired_at) return false
-  if (props.currentRole === 'admin') return !['admin', 'superuser', 'superuser1'].includes(props.user.role)
-  if (props.currentRole === 'superuser') return true
-  if (props.currentRole === 'superuser1') return !['admin', 'superuser'].includes(props.user.role)
+  if (props.currentRole === 1) return ![1, 2, 3].includes(props.user.role)
+  if (props.currentRole === 2) return true
+  if (props.currentRole === 3) return ![1, 2].includes(props.user.role)
   return false
 })
 
 const canFire = computed(() => {
   if (props.isEmpty || props.user.fired_at) return false
-  if (props.currentRole === 'admin') return false
-  if (['admin', 'superuser'].includes(props.user.role)) return false
-  if (props.currentRole === 'superuser') return true
-  if (props.currentRole === 'superuser1') return !['admin', 'superuser', 'superuser1'].includes(props.user.role)
+  if (props.currentRole === 1) return false
+  if ([1, 2].includes(props.user.role)) return false
+  if (props.currentRole === 2) return true
+  if (props.currentRole === 3) return ![1, 2, 3].includes(props.user.role)
   return false
 })
 
 const canPermissions = computed(() => {
   if (props.isEmpty || props.user.fired_at) return false
-  if (['admin', 'superuser'].includes(props.user.role)) return false
-  if (props.currentRole === 'admin') return !['admin', 'superuser', 'superuser1'].includes(props.user.role)
-  if (props.currentRole === 'superuser') return true
+  if ([1, 2].includes(props.user.role)) return false
+  if (props.currentRole === 1) return ![1, 2, 3].includes(props.user.role)
+  if (props.currentRole === 2) return true
   return false
 })
 </script>

@@ -14,7 +14,7 @@ import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 
 const auth = useAuthStore()
-const isProUser = computed(() => auth.userRole === 'prouser')
+const isProUser = computed(() => auth.userRole === 5)
 
 const props = defineProps<{
   booking: any

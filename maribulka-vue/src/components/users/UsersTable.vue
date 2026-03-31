@@ -14,7 +14,8 @@ interface User {
   id: number
   full_name: string | null
   login: string
-  role: string
+  role: number
+  permission_name: string | null
   id_profession: number | null
   profession_title: string | null
   is_photographer: boolean
@@ -44,14 +45,6 @@ const showFire = ref(false)
 const showPermissions = ref(false)
 const isCreating = ref(false)
 const isEmpty = ref(false)
-
-const ROLE_LABELS: Record<string, string> = {
-  admin: 'Admin',
-  superuser: 'SuperUser',
-  auser: 'AUser',
-  prouser: 'ProUser',
-  user: 'User',
-}
 
 
 const isLoading = ref(true)
@@ -161,7 +154,7 @@ async function onFireConfirm() {
         >
           <td>{{ user.full_name }}</td>
           <td>{{ user.login }}</td>
-          <td>{{ ROLE_LABELS[user.role] ?? user.role }}</td>
+          <td>{{ user.permission_name ?? user.role }}</td>
           <td>{{ user.is_admin_role ? '✓' : '' }}</td>
           <td>{{ user.is_photographer ? '✓' : '' }}</td>
           <td>{{ user.is_hairdresser ? '✓' : '' }}</td>
@@ -177,8 +170,8 @@ async function onFireConfirm() {
 
   <UserActionsModal
     v-if="showActions"
-    :user="selectedUser ?? { id: 0, full_name: null, login: '', role: '' }"
-    :current-role="auth.userRole ?? ''"
+    :user="selectedUser ?? { id: 0, full_name: null, login: '', role: 0 }"
+    :current-role="auth.userRole ?? 5"
     :is-empty="isEmpty"
     @close="showActions = false"
     @add="onAdd"

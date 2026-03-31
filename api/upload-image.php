@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit();
 // Только для администратора
 require_once 'session.php';
 initSession();
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+if (!isset($_SESSION['user']) || (int)($_SESSION['user']['role'] ?? 0) !== 1) {
     http_response_code(403);
     echo json_encode(['error' => ['message' => 'Доступ запрещён']]);
     exit();

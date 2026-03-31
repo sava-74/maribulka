@@ -29,7 +29,7 @@ require_once 'database.php';
 initSession();
 
 // Only admin can manage permissions
-if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+if (!isset($_SESSION['user']) || (int)($_SESSION['user']['role'] ?? 0) !== 1) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Только admin может управлять правами']);
     exit;
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'set') {
     $checkRole = $pdo->prepare("SELECT role FROM users WHERE id = ?");
     $checkRole->execute([(int)$input['user_id']]);
     $targetUser = $checkRole->fetch(PDO::FETCH_ASSOC);
-    if (in_array($targetUser['role'] ?? '', ['admin', 'superuser'])) {
+    if (in_array((int)($targetUser['role'] ?? 0), [1, 2])) {
         http_response_code(403);
         echo json_encode(['success' => false, 'message' => 'Права этого пользователя не изменяемы']);
         exit;
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'delete') {
     $checkRole = $pdo->prepare("SELECT role FROM users WHERE id = ?");
     $checkRole->execute([(int)$input['user_id']]);
     $targetUser = $checkRole->fetch(PDO::FETCH_ASSOC);
-    if (in_array($targetUser['role'] ?? '', ['admin', 'superuser'])) {
+    if (in_array((int)($targetUser['role'] ?? 0), [1, 2])) {
         http_response_code(403);
         echo json_encode(['success' => false, 'message' => 'Права этого пользователя не изменяемы']);
         exit;

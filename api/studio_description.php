@@ -63,7 +63,7 @@ elseif ($method === 'POST') {
     require_once 'session.php';
     initSession();
 
-    if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+    if (!isset($_SESSION['user']) || (int)($_SESSION['user']['role'] ?? 0) !== 1) {
         http_response_code(403);
         echo json_encode([
             'success' => false,
