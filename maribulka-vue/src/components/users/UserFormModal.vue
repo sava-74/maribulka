@@ -130,12 +130,18 @@ watch(() => form.value.role, (role) => {
 
 const roleOptions = computed(() => {
   const all = [
+    { value: 'admin', label: 'Admin' },
     { value: 'superuser', label: 'Руководитель' },
     { value: 'superuser1', label: 'Руководитель 2' },
     { value: 'auser', label: 'Администратор' },
     { value: 'prouser', label: 'Работник' },
   ]
-  return all.filter(r => !takenRoles.value.includes(r.value))
+  // Для вечных пользователей показываем только их роль
+  if (isAdminUser.value || isSuperUser.value) {
+    return all.filter(r => r.value === form.value.role)
+  }
+  // Для остальных — все кроме admin и занятых ролей
+  return all.filter(r => r.value !== 'admin' && !takenRoles.value.includes(r.value))
 })
 
 function formatPhone(event: Event) {
@@ -237,7 +243,6 @@ async function save() {
   if (!isCreating.value) {
     payload.id = props.userId!
     if (!payload.password) delete payload.password
-    if (isAdminUser.value || isSuperUser.value) delete payload.role
   }
   const action = isCreating.value ? 'create' : 'update'
   const res = await fetch(`/api/users.php?action=${action}`, {
@@ -339,9 +344,9 @@ async function save() {
             <SelectBox v-model="form.id_profession" :options="professionOptions"
               placeholder="Выберите профессию" :disabled="isProfessionFixed" />
           </div>
-          <div v-if="!isAdminUser" class="input-field">
+          <div class="input-field">
             <label class="input-label">Права *</label>
-            <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите права" :disabled="isSuperUser" />
+            <SelectBox v-model="form.role" :options="roleOptions" placeholder="Выберите права" :disabled="isAdminUser || isSuperUser" />
           </div>
           <div v-if="!isAdminUser" class="input-field">
             <label class="input-label">Дата приёма *</label>

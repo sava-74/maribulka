@@ -113,6 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
     $input = json_decode(file_get_contents('php://input'), true);
 
+    // Роль обязательна при создании
+    if (empty($input['role'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Укажите роль пользователя']);
+        exit;
+    }
+
     // admin не может создавать admin, superuser, superuser1
     if ($currentRole === 'admin' && in_array($input['role'] ?? '', ['admin', 'superuser', 'superuser1'])) {
         http_response_code(403);
@@ -262,10 +269,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
                id_salary_type=?, hired_at=?, notes=?,
                region=?, city=?, street=?, house_building=?, flat=?,
                phone_user=?, email_user=?, date_of_birth=?";
+    // Для вечных пользователей роль не меняется никогда
+    $roleToSave = in_array($targetRole, ['admin', 'superuser']) ? $target['role'] : ($input['role'] ?? $target['role']);
+
     $params = [
         $input['full_name'] ?? null,
         $input['login'] ?? null,
-        $input['role'] ?? $target['role'],
+        $roleToSave,
         !empty($input['id_profession']) ? (int)$input['id_profession'] : null,
         (int)($input['is_photographer'] ?? 0),
         (int)($input['is_hairdresser'] ?? 0),
