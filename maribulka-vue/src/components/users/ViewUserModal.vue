@@ -12,7 +12,8 @@ interface User {
   is_photographer: boolean
   is_hairdresser: boolean
   is_admin_role: boolean
-  salary_type: string | null
+  id_salary_type: number | null
+  salary_type_title: string | null
   hired_at: string | null
   fired_at: string | null
   notes: string | null
@@ -37,11 +38,6 @@ const ROLE_LABELS: Record<string, string> = {
   user: 'Пользователь',
 }
 
-const SALARY_LABELS: Record<string, string> = {
-  fixed: 'Оклад',
-  percent: 'Процент',
-  fixed_percent: 'Оклад + %',
-}
 
 function formatDate(dateStr: string | null) {
   if (!dateStr) return '—'
@@ -121,7 +117,7 @@ function formatDate(dateStr: string | null) {
           </div>
           <div class="info-row">
             <span class="info-label">Тип зарплаты:</span>
-            <span class="info-value">{{ user.salary_type ? SALARY_LABELS[user.salary_type] ?? user.salary_type : '—' }}</span>
+            <span class="info-value">{{ user.salary_type_title || '—' }}</span>
           </div>
           <div class="info-row">
             <span class="info-label">Дата приёма:</span>

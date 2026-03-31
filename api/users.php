@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
     $params = [
         $input['full_name'] ?? null,
         $input['login'] ?? null,
-        $input['role'] ?? 'prouser',
+        $input['role'] ?? $target['role'],
         !empty($input['id_profession']) ? (int)$input['id_profession'] : null,
         (int)($input['is_photographer'] ?? 0),
         (int)($input['is_hairdresser'] ?? 0),

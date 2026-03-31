@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiEye, mdiEyeOff } from '@mdi/js'
 import SelectBox from '../ui/selectBox/SelectBox.vue'
 import DatePicker from '../ui/datePicker/DatePicker.vue'
 import AlertModal from '../AlertModal.vue'
@@ -151,6 +151,56 @@ function formatPhone(event: Event) {
   form.value.phone_user = formatted
 }
 
+// ФИО: только кириллица, пробел, дефис
+function filterFio(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^а-яёА-ЯЁ\s-]/g, '')
+  form.value.full_name = input.value
+}
+
+// Логин: только латиница и цифры
+function filterLogin(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^a-zA-Z0-9]/g, '')
+  form.value.login = input.value
+}
+
+// Адрес (область/город/улица): кириллица, цифры, пробел
+function filterAddress(event: Event, field: 'region' | 'city' | 'street') {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^а-яёА-ЯЁ0-9\s]/g, '')
+  form.value[field] = input.value
+}
+
+// Дом: цифры, кириллица, пробел, /, -
+function filterHouse(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^а-яёА-ЯЁ0-9\s\/-]/g, '')
+  form.value.house_building = input.value
+}
+
+// Квартира: только цифры
+function filterDigits(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^0-9]/g, '')
+  form.value.flat = input.value
+}
+
+// Email: без кириллицы
+function filterEmail(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[а-яёА-ЯЁ\s]/g, '')
+  form.value.email_user = input.value
+}
+
+const showPassword = ref(false)
+
+function filterPassword(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[а-яёА-ЯЁ]/g, '')
+  form.value.password = input.value
+}
+
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/
 
 async function save() {
@@ -187,6 +237,7 @@ async function save() {
   if (!isCreating.value) {
     payload.id = props.userId!
     if (!payload.password) delete payload.password
+    if (isAdminUser.value || isSuperUser.value) delete payload.role
   }
   const action = isCreating.value ? 'create' : 'update'
   const res = await fetch(`/api/users.php?action=${action}`, {
@@ -216,7 +267,7 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">ФИО *</label>
-            <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
+            <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" @input="filterFio" />
           </div>
           <div class="input-field">
             <label class="input-label">Дата рождения *</label>
@@ -228,38 +279,45 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Логин *</label>
-            <input class="modal-input" v-model="form.login" type="text" placeholder="Логин" :disabled="isAdminUser" />
+            <input class="modal-input" v-model="form.login" type="text" placeholder="Логин" :disabled="isAdminUser" @input="filterLogin" />
           </div>
           <div class="input-field">
             <label class="input-label">Пароль *</label>
-            <input class="modal-input" v-model="form.password" type="password"
-              :placeholder="isCreating ? 'Придумайте пароль' : 'Оставьте пустым, чтобы не менять'" />
+            <div class="input-with-icon">
+              <span class="input-eye-left" @click="showPassword = !showPassword">
+                <svg-icon type="mdi" :path="showPassword ? mdiEye : mdiEyeOff" class="btn-icon" />
+              </span>
+              <input class="modal-input input-with-icon-left" v-model="form.password"
+                :type="showPassword ? 'text' : 'password'"
+                :placeholder="isCreating ? 'Придумайте пароль' : 'Оставьте пустым, чтобы не менять'"
+                @input="filterPassword" />
+            </div>
           </div>
         </div>
 
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Область *</label>
-            <input class="modal-input" v-model="form.region" type="text" placeholder="Область" />
+            <input class="modal-input" v-model="form.region" type="text" placeholder="Область" @input="filterAddress($event, 'region')" />
           </div>
           <div class="input-field">
             <label class="input-label">Город *</label>
-            <input class="modal-input" v-model="form.city" type="text" placeholder="Город" />
+            <input class="modal-input" v-model="form.city" type="text" placeholder="Город" @input="filterAddress($event, 'city')" />
           </div>
         </div>
 
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Улица *</label>
-            <input class="modal-input" v-model="form.street" type="text" placeholder="Улица" />
+            <input class="modal-input" v-model="form.street" type="text" placeholder="Улица" @input="filterAddress($event, 'street')" />
           </div>
           <div class="input-field">
             <label class="input-label">Дом/строение *</label>
-            <input class="modal-input" v-model="form.house_building" type="text" placeholder="Дом" />
+            <input class="modal-input" v-model="form.house_building" type="text" placeholder="Дом" @input="filterHouse" />
           </div>
           <div class="input-field-narrow">
             <label class="input-label">Кв.</label>
-            <input class="modal-input" v-model="form.flat" type="number" placeholder="№" />
+            <input class="modal-input" v-model="form.flat" type="text" placeholder="№" @input="filterDigits" />
           </div>
         </div>
 
@@ -271,7 +329,7 @@ async function save() {
           </div>
           <div class="input-field">
             <label class="input-label">Email</label>
-            <input class="modal-input" v-model="form.email_user" type="email" placeholder="email@example.com" />
+            <input class="modal-input" v-model="form.email_user" type="email" placeholder="email@example.com" @input="filterEmail" />
           </div>
         </div>
 

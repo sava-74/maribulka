@@ -127,6 +127,30 @@ textarea.modal-input {
   appearance: textfield;
 }
 
+/* Обёртка инпута с иконкой слева: relative, полная ширина */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+/* Иконка-глаз слева внутри поля: absolute, cursor pointer */
+.input-eye-left {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+/* Инпут с отступом слева под иконку */
+.input-with-icon-left {
+  padding-left: 32px;
+}
+
 /* Обёртка инпута с иконкой даты: relative, полная ширина */
 .date-input-wrap {
   position: relative;

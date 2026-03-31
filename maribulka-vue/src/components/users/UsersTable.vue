@@ -20,7 +20,8 @@ interface User {
   is_photographer: boolean
   is_hairdresser: boolean
   is_admin_role: boolean
-  salary_type: string | null
+  id_salary_type: number | null
+  salary_type_title: string | null
   hired_at: string | null
   fired_at: string | null
   notes: string | null
@@ -52,11 +53,6 @@ const ROLE_LABELS: Record<string, string> = {
   user: 'User',
 }
 
-const SALARY_LABELS: Record<string, string> = {
-  fixed: 'Оклад',
-  percent: 'Процент',
-  fixed_percent: 'Оклад + %',
-}
 
 const isLoading = ref(true)
 const loadProgress = ref(0)
@@ -169,7 +165,7 @@ async function onFireConfirm() {
           <td>{{ user.is_admin_role ? '✓' : '' }}</td>
           <td>{{ user.is_photographer ? '✓' : '' }}</td>
           <td>{{ user.is_hairdresser ? '✓' : '' }}</td>
-          <td>{{ user.salary_type ? SALARY_LABELS[user.salary_type] ?? user.salary_type : '' }}</td>
+          <td>{{ user.salary_type_title || '' }}</td>
           <td>{{ user.hired_at }}</td>
           <td>{{ user.fired_at }}</td>
           <td>{{ user.notes }}</td>
