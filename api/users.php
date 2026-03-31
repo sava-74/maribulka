@@ -51,6 +51,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'professions') {
     exit;
 }
 
+// GET ?action=get&id=X — один пользователь
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'ID обязателен']);
+        exit;
+    }
+    $stmt = $pdo->prepare(
+        "SELECT u.id, u.full_name, u.login, u.role, u.id_profession,
+                u.is_photographer, u.is_hairdresser, u.is_admin_role,
+                u.salary_type, u.hired_at, u.fired_at, u.notes, u.created_at,
+                u.region, u.city, u.street, u.house_building, u.flat,
+                u.phone_user, u.email_user, u.date_of_birth,
+                p.title AS profession_title
+         FROM users u
+         LEFT JOIN profession p ON u.id_profession = p.id
+         WHERE u.id = ?"
+    );
+    $stmt->execute([$id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$user) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Пользователь не найден']);
+        exit;
+    }
+    echo json_encode(['success' => true, 'data' => $user]);
+    exit;
+}
+
 // GET ?action=list — список пользователей
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
     $stmt = $pdo->query(
