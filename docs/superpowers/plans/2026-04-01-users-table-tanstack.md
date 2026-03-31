@@ -1,3 +1,25 @@
+# UsersTable TanStack Migration — Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Переписать `UsersTable.vue` — добавить сортировку по столбцам и глобальный поиск по ФИО/логину с помощью TanStack Table, по аналогии с `BookingsTable.vue`.
+
+**Architecture:** Единственный изменяемый файл — `UsersTable.vue`. Статичный `<thead>/<tbody>` заменяется на TanStack-рендер через `FlexRender`. Добавляется `SearchTable` с `globalFilter`. Строка "пустой список" сохраняется — рендерится условием `v-else`. Сортировка — по клику на `<th class="sortable">` со стрелками ↑/↓. Строки с `fired_at` сохраняют класс `row-cancelled`.
+
+**Tech Stack:** Vue 3, TypeScript, TanStack Table (`@tanstack/vue-table`), `SearchTable` компонент.
+
+---
+
+### Task 1: Переписать UsersTable.vue с TanStack Table + SearchTable
+
+**Files:**
+- Modify: `maribulka-vue/src/components/users/UsersTable.vue`
+
+- [ ] **Шаг 1: Заменить содержимое файла**
+
+Файл: `maribulka-vue/src/components/users/UsersTable.vue`
+
+```vue
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import {
@@ -81,16 +103,16 @@ function formatDate(dateString: string | null): string {
 }
 
 const columns: ColumnDef<User>[] = [
-  { accessorKey: 'full_name',         header: 'ФИО',          cell: ({ getValue }) => (getValue() as string | null) ?? '—' },
-  { accessorKey: 'login',             header: 'Логин' },
-  { accessorKey: 'permission_name',   header: 'Тип',          cell: ({ row }) => row.original.permission_name ?? row.original.role },
-  { accessorKey: 'is_admin_role',     header: 'Адм',          cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
-  { accessorKey: 'is_photographer',   header: 'Фотограф',     cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
-  { accessorKey: 'is_hairdresser',    header: 'Парикмахер',   cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
-  { accessorKey: 'salary_type_title', header: 'Тип зарплаты', cell: ({ getValue }) => (getValue() as string | null) ?? '' },
-  { accessorKey: 'hired_at',          header: 'Принят',       cell: ({ getValue }) => formatDate(getValue() as string | null) },
-  { accessorKey: 'fired_at',          header: 'Уволен',       cell: ({ getValue }) => formatDate(getValue() as string | null) },
-  { accessorKey: 'notes',             header: 'Примечания',   cell: ({ getValue }) => (getValue() as string | null) ?? '' },
+  { accessorKey: 'full_name',        header: 'ФИО',           cell: ({ getValue }) => (getValue() as string | null) ?? '—' },
+  { accessorKey: 'login',            header: 'Логин' },
+  { accessorKey: 'permission_name',  header: 'Тип',           cell: ({ row }) => row.original.permission_name ?? row.original.role },
+  { accessorKey: 'is_admin_role',    header: 'Адм',           cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
+  { accessorKey: 'is_photographer',  header: 'Фотограф',      cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
+  { accessorKey: 'is_hairdresser',   header: 'Парикмахер',    cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
+  { accessorKey: 'salary_type_title',header: 'Тип зарплаты',  cell: ({ getValue }) => (getValue() as string | null) ?? '' },
+  { accessorKey: 'hired_at',         header: 'Принят',        cell: ({ getValue }) => formatDate(getValue() as string | null) },
+  { accessorKey: 'fired_at',         header: 'Уволен',        cell: ({ getValue }) => formatDate(getValue() as string | null) },
+  { accessorKey: 'notes',            header: 'Примечания',    cell: ({ getValue }) => (getValue() as string | null) ?? '' },
 ]
 
 const sorting = ref<SortingState>([{ id: 'full_name', desc: false }])
@@ -269,3 +291,28 @@ async function onFireConfirm() {
     @close="showPermissions = false"
   />
 </template>
+```
+
+- [ ] **Шаг 2: Проверить билд**
+
+```bash
+cd maribulka-vue && npm run build
+```
+
+Ожидаемый результат: `✓ built in X.XXs` без ошибок TypeScript.
+
+- [ ] **Шаг 3: Проверить вручную**
+
+```bash
+npm run dev
+```
+
+Чеклист:
+- Таблица открывается, 10 колонок отображаются
+- Клик на заголовок "ФИО" — сортировка ↑, повторный клик — ↓
+- Клик на "Логин" — сортировка по логину
+- Поиск по части ФИО — строки фильтруются, счётчик обновляется
+- Поиск по части логина — строки фильтруются
+- Уволенные (fired_at не null) — класс `row-cancelled`
+- Пустой список — строка "+ Добавить пользователя"
+- Клик по строке — открывается UserActionsModal

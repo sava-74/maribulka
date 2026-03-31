@@ -300,7 +300,7 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">ФИО *</label>
-            <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" @input="filterFio" />
+            <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" inputmode="text" lang="ru" @input="filterFio" />
           </div>
           <div class="input-field">
             <label class="input-label">Дата рождения *</label>
@@ -312,7 +312,7 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Логин *</label>
-            <input class="modal-input" v-model="form.login" type="text" placeholder="Логин" :disabled="isAdminUser" @input="filterLogin" />
+            <input class="modal-input" v-model="form.login" type="text" placeholder="Логин" :inputmode="('latin' as any)" :disabled="isAdminUser" @input="filterLogin" />
           </div>
           <div class="input-field">
             <label class="input-label">Пароль *</label>
@@ -323,6 +323,7 @@ async function save() {
               <input class="modal-input input-with-icon-left" v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
                 :placeholder="isCreating ? 'Придумайте пароль' : 'Оставьте пустым, чтобы не менять'"
+                :inputmode="('latin' as any)"
                 @input="filterPassword" />
             </div>
           </div>
@@ -331,18 +332,18 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Область *</label>
-            <input class="modal-input" v-model="form.region" type="text" placeholder="Область" @input="filterAddress($event, 'region')" />
+            <input class="modal-input" v-model="form.region" type="text" placeholder="Область" inputmode="text" lang="ru" @input="filterAddress($event, 'region')" />
           </div>
           <div class="input-field">
             <label class="input-label">Город *</label>
-            <input class="modal-input" v-model="form.city" type="text" placeholder="Город" @input="filterAddress($event, 'city')" />
+            <input class="modal-input" v-model="form.city" type="text" placeholder="Город" inputmode="text" lang="ru" @input="filterAddress($event, 'city')" />
           </div>
         </div>
 
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Улица *</label>
-            <input class="modal-input" v-model="form.street" type="text" placeholder="Улица" @input="filterAddress($event, 'street')" />
+            <input class="modal-input" v-model="form.street" type="text" placeholder="Улица" inputmode="text" lang="ru" @input="filterAddress($event, 'street')" />
           </div>
           <div class="input-field">
             <label class="input-label">Дом/строение *</label>
@@ -362,7 +363,7 @@ async function save() {
           </div>
           <div class="input-field">
             <label class="input-label">Email</label>
-            <input class="modal-input" v-model="form.email_user" type="email" placeholder="email@example.com" @input="filterEmail" />
+            <input class="modal-input" v-model="form.email_user" type="email" placeholder="email@example.com" :inputmode="('latin' as any)" @input="filterEmail" />
           </div>
         </div>
 
