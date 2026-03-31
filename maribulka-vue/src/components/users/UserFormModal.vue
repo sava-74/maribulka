@@ -136,6 +136,11 @@ watch(() => form.value.role, (role) => {
   } else if (role === 5) {
     form.value.is_admin_role = false
   }
+  // Сбрасываем профессию если она не входит в допустимые для новой роли
+  const allowed = ROLE_PROFESSION_MAP[role]
+  if (allowed && !allowed.includes(Number(form.value.id_profession))) {
+    form.value.id_profession = null
+  }
 })
 
 // Доступные роли для выбора
@@ -144,8 +149,27 @@ const roleOptions = computed<{ value: number; label: string }[]>(() => {
   if (isAdminUser.value || isSuperUser.value) {
     return allRoleOptions.value.filter(r => r.value === form.value.role)
   }
-  // Для остальных — все кроме admin(1) и занятых уникальных ролей (2=Директор, 3=Руководитель)
-  return allRoleOptions.value.filter(r => r.value !== 1 && !takenRoles.value.includes(r.value))
+  // Для остальных — все кроме admin(1), user(6) и занятых уникальных ролей (2=Директор, 3=Руководитель)
+  return allRoleOptions.value.filter(r => ![1, 6].includes(r.value) && !takenRoles.value.includes(r.value))
+})
+
+// Профессии доступные по выбранному праву
+// role=1 СисАдмин → profession=1, role=2 Директор → profession=2 (вечные, не меняются)
+// role=3 Руководитель → profession=3
+// role=4 Администратор → profession=4
+// role=5 Работник → profession=5(Фотограф) или 6(Парикмахер)
+const ROLE_PROFESSION_MAP: Record<number, number[]> = {
+  1: [1],
+  2: [2],
+  3: [3],
+  4: [4],
+  5: [5, 6],
+}
+
+const availableProfessions = computed(() => {
+  const allowed = ROLE_PROFESSION_MAP[form.value.role]
+  if (!allowed) return professionOptions.value
+  return professionOptions.value.filter(p => allowed.includes(Number(p.value)))
 })
 
 function formatPhone(event: Event) {
@@ -345,7 +369,7 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Профессия *</label>
-            <SelectBox v-model="form.id_profession" :options="professionOptions"
+            <SelectBox v-model="form.id_profession" :options="availableProfessions"
               placeholder="Выберите профессию" :disabled="isProfessionFixed" />
           </div>
           <div class="input-field">
