@@ -251,12 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
         echo json_encode(['success' => false, 'message' => 'Недостаточно прав']);
         exit;
     }
-    // superuser не может назначить роль admin (только при смене, не при редактировании вечного)
-    if ($currentRole === 'superuser' && ($input['role'] ?? '') === 'admin' && $targetRole !== 'admin') {
-        http_response_code(403);
-        echo json_encode(['success' => false, 'message' => 'Нельзя назначить роль admin']);
-        exit;
-    }
     // superuser1 не может редактировать admin и superuser
     if ($currentRole === 'superuser1' && in_array($targetRole, ['admin', 'superuser'])) {
         http_response_code(403);
