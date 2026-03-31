@@ -128,20 +128,25 @@ watch(() => form.value.role, (role) => {
   }
 })
 
+const ROLE_LABEL_MAP: Record<string, string> = {
+  admin: 'Admin',
+  superuser: 'Руководитель',
+  superuser1: 'Руководитель 2',
+  auser: 'Администратор',
+  prouser: 'Работник',
+}
+
 const roleOptions = computed(() => {
-  const all = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'superuser', label: 'Руководитель' },
-    { value: 'superuser1', label: 'Руководитель 2' },
-    { value: 'auser', label: 'Администратор' },
-    { value: 'prouser', label: 'Работник' },
-  ]
-  // Для вечных пользователей показываем только их роль
-  if (isAdminUser.value || isSuperUser.value) {
-    return all.filter(r => r.value === form.value.role)
+  const role = form.value.role
+  // Для вечных пользователей — только их роль (чтобы SelectBox показал значение)
+  if (role === 'admin' || role === 'superuser') {
+    return [{ value: role, label: ROLE_LABEL_MAP[role] }]
   }
-  // Для остальных — все кроме admin и занятых ролей
-  return all.filter(r => r.value !== 'admin' && !takenRoles.value.includes(r.value))
+  // Для остальных — все кроме admin и занятых ролей (кроме текущей)
+  const available = ['superuser', 'superuser1', 'auser', 'prouser']
+  return available
+    .filter(r => !takenRoles.value.includes(r) || r === role)
+    .map(r => ({ value: r, label: ROLE_LABEL_MAP[r] ?? r }))
 })
 
 function formatPhone(event: Event) {
