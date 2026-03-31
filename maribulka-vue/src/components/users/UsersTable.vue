@@ -198,7 +198,7 @@ async function onFireConfirm() {
   />
   <UserFormModal
     v-if="showForm"
-    :user="isCreating ? null : selectedUser"
+    :user-id="isCreating ? null : selectedUser?.id ?? null"
     @close="showForm = false"
     @save="onFormSave"
   />

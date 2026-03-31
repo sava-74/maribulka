@@ -8,35 +8,11 @@ import AlertModal from '../AlertModal.vue'
 import ValidAlertModal from '../ValidAlertModal.vue'
 import PadLoader from '../ui/padLoader/PadLoader.vue'
 
-interface User {
-  id: number
-  full_name: string | null
-  login: string
-  role: string
-  id_profession: number | null
-  is_photographer: boolean
-  is_hairdresser: boolean
-  is_admin_role: boolean
-  salary_type: string | null
-  hired_at: string | null
-  notes: string | null
-  region: string | null
-  city: string | null
-  street: string | null
-  house_building: string | null
-  flat: number | null
-  phone_user: string | null
-  email_user: string | null
-  date_of_birth: string | null
-}
-
-const props = defineProps<{ user: User | null; forceEdit?: boolean }>()
+const props = defineProps<{ userId: number | null; forceEdit?: boolean }>()
 const emit = defineEmits(['close', 'save'])
 
-const isCreating = computed(() => !props.user)
-const isAdminUser = computed(() => props.user?.role === 'admin')
-const isSuperUser = computed(() => props.user?.role === 'superuser')
-const isProfessionFixed = computed(() => isAdminUser.value || isSuperUser.value)
+const isCreating = computed(() => !props.userId)
+
 const alertMessage = ref('')
 const validErrors = ref<string[]>([])
 const showValidAlert = ref(false)
@@ -55,7 +31,7 @@ const form = ref({
   is_photographer: false,
   is_hairdresser: false,
   is_admin_role: false,
-  salary_type: '',
+  id_salary_type: null as string | null,
   hired_at: maxBirthDate,
   notes: '',
   region: '',
@@ -68,34 +44,13 @@ const form = ref({
   date_of_birth: '',
 })
 
-watch(() => props.user, (user) => {
-  if (user) {
-    form.value = {
-      full_name: user.full_name ?? '',
-      login: user.login,
-      password: '',
-      role: user.role,
-      id_profession: user.id_profession !== null ? String(user.id_profession) : null,
-      is_photographer: user.is_photographer,
-      is_hairdresser: user.is_hairdresser,
-      is_admin_role: user.is_admin_role,
-      salary_type: user.salary_type ?? '',
-      hired_at: user.hired_at ?? '',
-      notes: user.notes ?? '',
-      region: user.region ?? '',
-      city: user.city ?? '',
-      street: user.street ?? '',
-      house_building: user.house_building ?? '',
-      flat: user.flat !== null ? String(user.flat) : '',
-      phone_user: user.phone_user ?? '',
-      email_user: user.email_user ?? '',
-      date_of_birth: user.date_of_birth ?? '',
-    }
-  }
-}, { immediate: true })
+const isAdminUser = computed(() => form.value.role === 'admin')
+const isSuperUser = computed(() => form.value.role === 'superuser')
+const isProfessionFixed = computed(() => isAdminUser.value || isSuperUser.value)
 
-// Список профессий
+// Список профессий и типов зарплаты
 const professionOptions = ref<{ value: string; label: string }[]>([])
+const salaryTypeOptions = ref<{ value: string; label: string }[]>([])
 const takenRoles = ref<string[]>([])
 const isLoading = ref(true)
 const loadProgress = ref(0)
@@ -109,20 +64,55 @@ onMounted(async () => {
   }
   loadProgress.value = 25
 
-  // Шаг 2: занятые роли → 50%
-  const res2 = await fetch('/api/users.php?action=list', { credentials: 'include' })
+  // Шаг 2: типы зарплаты → 50%
+  const res2 = await fetch('/api/users.php?action=salary_types', { credentials: 'include' })
   const data2 = await res2.json()
   if (data2.success) {
-    const active = data2.data.filter((u: any) => !u.fired_at)
-    const others = props.user ? active.filter((u: any) => u.id !== props.user!.id) : active
-    takenRoles.value = others.map((u: any) => u.role)
+    salaryTypeOptions.value = data2.data.map((s: any) => ({ value: String(s.id), label: s.title }))
   }
   loadProgress.value = 50
 
-  // Шаг 3: данные пользователя (props.user) готовы → 100%
+  // Шаг 3: занятые роли → 75%
+  const res3 = await fetch('/api/users.php?action=list', { credentials: 'include' })
+  const data3 = await res3.json()
+  if (data3.success) {
+    const active = data3.data.filter((u: any) => !u.fired_at)
+    const others = props.userId ? active.filter((u: any) => u.id !== props.userId) : active
+    takenRoles.value = others.map((u: any) => u.role)
+  }
+  loadProgress.value = 75
+
+  // Шаг 4: данные пользователя из БД → 100%
+  if (props.userId) {
+    const res4 = await fetch(`/api/users.php?action=get&id=${props.userId}`, { credentials: 'include' })
+    const data4 = await res4.json()
+    if (data4.success) {
+      const user = data4.data
+      form.value = {
+        full_name: user.full_name ?? '',
+        login: user.login ?? '',
+        password: '',
+        role: user.role,
+        id_profession: user.id_profession !== null ? String(user.id_profession) : null,
+        is_photographer: !!user.is_photographer,
+        is_hairdresser: !!user.is_hairdresser,
+        is_admin_role: !!user.is_admin_role,
+        id_salary_type: user.id_salary_type !== null ? String(user.id_salary_type) : null,
+        hired_at: user.hired_at ?? '',
+        notes: user.notes ?? '',
+        region: user.region ?? '',
+        city: user.city ?? '',
+        street: user.street ?? '',
+        house_building: user.house_building ?? '',
+        flat: user.flat !== null ? String(user.flat) : '',
+        phone_user: user.phone_user ?? '',
+        email_user: user.email_user ?? '',
+        date_of_birth: user.date_of_birth ?? '',
+      }
+    }
+  }
   loadProgress.value = 100
 
-  // Задержка 250мс перед скрытием лоадера
   await new Promise(resolve => setTimeout(resolve, 250))
   isLoading.value = false
 })
@@ -147,12 +137,6 @@ const roleOptions = computed(() => {
   ]
   return all.filter(r => !takenRoles.value.includes(r.value))
 })
-
-const salaryOptions = [
-  { value: 'fixed', label: 'Оклад' },
-  { value: 'percent', label: 'Процент' },
-  { value: 'fixed_percent', label: 'Оклад + %' },
-]
 
 function formatPhone(event: Event) {
   const input = event.target as HTMLInputElement
@@ -188,7 +172,7 @@ async function save() {
   if (!form.value.house_building.trim()) errors.push('Укажите дом/строение')
   if (!form.value.phone_user.trim()) errors.push('Укажите телефон')
   if (!form.value.date_of_birth) errors.push('Укажите дату рождения')
-  if (!form.value.salary_type) errors.push('Выберите тип зарплаты')
+  if (!form.value.id_salary_type) errors.push('Выберите тип зарплаты')
   if (!isAdminUser.value && !form.value.hired_at) errors.push('Укажите дату приёма')
 
   if (errors.length > 0) {
@@ -199,8 +183,9 @@ async function save() {
 
   const payload: any = { ...form.value }
   payload.id_profession = form.value.id_profession ? Number(form.value.id_profession) : null
+  payload.id_salary_type = form.value.id_salary_type ? Number(form.value.id_salary_type) : null
   if (!isCreating.value) {
-    payload.id = props.user!.id
+    payload.id = props.userId!
     if (!payload.password) delete payload.password
   }
   const action = isCreating.value ? 'create' : 'update'
@@ -232,7 +217,7 @@ async function save() {
           <div class="input-field">
             <label class="input-label">ФИО *</label>
             <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" />
-          </div>  
+          </div>
           <div class="input-field">
             <label class="input-label">Дата рождения *</label>
             <DatePicker v-model="form.date_of_birth" mode="single" placeholder="Дата рождения"
@@ -318,7 +303,7 @@ async function save() {
         <div class="input-row">
           <div class="input-field">
             <label class="input-label">Тип зарплаты *</label>
-            <SelectBox v-model="form.salary_type" :options="salaryOptions" placeholder="Тип зарплаты" :disabled="isAdminUser" />
+            <SelectBox v-model="form.id_salary_type" :options="salaryTypeOptions" placeholder="Тип зарплаты" :disabled="isAdminUser" />
           </div>
         </div>
 

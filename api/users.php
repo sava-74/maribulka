@@ -51,6 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'professions') {
     exit;
 }
 
+// GET ?action=salary_types — список типов зарплаты
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'salary_types') {
+    $stmt = $pdo->query("SELECT id, title FROM salary_type ORDER BY id");
+    echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+    exit;
+}
+
 // GET ?action=get&id=X — один пользователь
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
     $id = (int)($_GET['id'] ?? 0);
@@ -62,12 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
     $stmt = $pdo->prepare(
         "SELECT u.id, u.full_name, u.login, u.role, u.id_profession,
                 u.is_photographer, u.is_hairdresser, u.is_admin_role,
-                u.salary_type, u.hired_at, u.fired_at, u.notes, u.created_at,
+                u.id_salary_type, u.hired_at, u.fired_at, u.notes, u.created_at,
                 u.region, u.city, u.street, u.house_building, u.flat,
                 u.phone_user, u.email_user, u.date_of_birth,
-                p.title AS profession_title
+                p.title AS profession_title,
+                st.title AS salary_type_title
          FROM users u
          LEFT JOIN profession p ON u.id_profession = p.id
+         LEFT JOIN salary_type st ON u.id_salary_type = st.id
          WHERE u.id = ?"
     );
     $stmt->execute([$id]);
@@ -86,12 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
     $stmt = $pdo->query(
         "SELECT u.id, u.full_name, u.login, u.role, u.id_profession,
                 u.is_photographer, u.is_hairdresser, u.is_admin_role,
-                u.salary_type, u.hired_at, u.fired_at, u.notes, u.created_at,
+                u.id_salary_type, u.hired_at, u.fired_at, u.notes, u.created_at,
                 u.region, u.city, u.street, u.house_building, u.flat,
                 u.phone_user, u.email_user, u.date_of_birth,
-                p.title AS profession_title
+                p.title AS profession_title,
+                st.title AS salary_type_title
          FROM users u
          LEFT JOIN profession p ON u.id_profession = p.id
+         LEFT JOIN salary_type st ON u.id_salary_type = st.id
          ORDER BY u.fired_at IS NOT NULL, u.full_name"
     );
     echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
@@ -156,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
         $stmt = $pdo->prepare(
             "INSERT INTO users (full_name, login, password, role, id_profession,
                 is_photographer, is_hairdresser, is_admin_role,
-                salary_type, hired_at, notes, created_at,
+                id_salary_type, hired_at, notes, created_at,
                 region, city, street, house_building, flat,
                 phone_user, email_user, date_of_birth)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -170,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
             (int)($input['is_photographer'] ?? 0),
             (int)($input['is_hairdresser'] ?? 0),
             (int)($input['is_admin_role'] ?? 0),
-            $input['salary_type'] ?? null,
+            !empty($input['id_salary_type']) ? (int)$input['id_salary_type'] : null,
             $input['hired_at'] ?? null,
             $input['notes'] ?? null,
             $input['region'] ?? null,
@@ -248,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
 
     $fields = "full_name=?, login=?, role=?, id_profession=?,
                is_photographer=?, is_hairdresser=?, is_admin_role=?,
-               salary_type=?, hired_at=?, notes=?,
+               id_salary_type=?, hired_at=?, notes=?,
                region=?, city=?, street=?, house_building=?, flat=?,
                phone_user=?, email_user=?, date_of_birth=?";
     $params = [
@@ -259,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
         (int)($input['is_photographer'] ?? 0),
         (int)($input['is_hairdresser'] ?? 0),
         (int)($input['is_admin_role'] ?? 0),
-        $input['salary_type'] ?? null,
+        !empty($input['id_salary_type']) ? (int)$input['id_salary_type'] : null,
         $input['hired_at'] ?? null,
         $input['notes'] ?? null,
         $input['region'] ?? null,
