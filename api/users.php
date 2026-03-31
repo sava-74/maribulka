@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'salary_types') {
 
 // GET ?action=permissions
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'permissions') {
-    $stmt = $pdo->query("SELECT id, name FROM user_permissions WHERE active = 1 ORDER BY id");
+    $stmt = $pdo->query("SELECT id, name FROM user_role WHERE active = 1 ORDER BY id");
     echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
     exit;
 }
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
          FROM users u
          LEFT JOIN profession p ON u.id_profession = p.id
          LEFT JOIN salary_type st ON u.id_salary_type = st.id
-         LEFT JOIN user_permissions ur ON u.role = ur.id
+         LEFT JOIN user_role ur ON u.role = ur.id
          WHERE u.id = ?"
     );
     $stmt->execute([$id]);
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
          FROM users u
          LEFT JOIN profession p ON u.id_profession = p.id
          LEFT JOIN salary_type st ON u.id_salary_type = st.id
-         LEFT JOIN user_permissions ur ON u.role = ur.id
+         LEFT JOIN user_role ur ON u.role = ur.id
          ORDER BY u.fired_at IS NOT NULL, u.full_name"
     );
     echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);

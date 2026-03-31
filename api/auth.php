@@ -115,7 +115,7 @@ if ($action === 'login') {
         $stmt = $pdo->prepare(
             "SELECT u.*, up.name AS permission_name
              FROM users u
-             LEFT JOIN user_permissions up ON u.role = up.id
+             LEFT JOIN user_role up ON u.role = up.id
              WHERE u.login = ? AND u.fired_at IS NULL"
         );
         $stmt->execute([$login]);
