@@ -188,51 +188,64 @@ function formatPhone(event: Event) {
 // ФИО: только кириллица, пробел, дефис
 function filterFio(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[^а-яёА-ЯЁ\s-]/g, '')
-  form.value.full_name = input.value
+  const cleaned = input.value.replace(/[^а-яёА-ЯЁ\s-]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте кириллицу'
+  input.value = cleaned
+  form.value.full_name = cleaned
 }
 
 // Логин: только латиница и цифры
 function filterLogin(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[^a-zA-Z0-9]/g, '')
-  form.value.login = input.value
+  const cleaned = input.value.replace(/[^a-zA-Z0-9]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте латиницу'
+  input.value = cleaned
+  form.value.login = cleaned
 }
 
 // Адрес (область/город/улица): кириллица, цифры, пробел
 function filterAddress(event: Event, field: 'region' | 'city' | 'street') {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[^а-яёА-ЯЁ0-9\s]/g, '')
-  form.value[field] = input.value
+  const cleaned = input.value.replace(/[^а-яёА-ЯЁ0-9\s]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте кириллицу'
+  input.value = cleaned
+  form.value[field] = cleaned
 }
 
 // Дом: цифры, кириллица, пробел, /, -
 function filterHouse(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[^а-яёА-ЯЁ0-9\s\/-]/g, '')
-  form.value.house_building = input.value
+  const cleaned = input.value.replace(/[^а-яёА-ЯЁ0-9\s\/-]/g, '')
+  input.value = cleaned
+  form.value.house_building = cleaned
 }
 
 // Квартира: только цифры
 function filterDigits(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[^0-9]/g, '')
-  form.value.flat = input.value
+  const cleaned = input.value.replace(/[^0-9]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте цифры'
+  input.value = cleaned
+  form.value.flat = cleaned
 }
 
 // Email: без кириллицы
 function filterEmail(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[а-яёА-ЯЁ\s]/g, '')
-  form.value.email_user = input.value
+  const cleaned = input.value.replace(/[а-яёА-ЯЁ\s]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте латиницу'
+  input.value = cleaned
+  form.value.email_user = cleaned
 }
 
 const showPassword = ref(false)
 
 function filterPassword(event: Event) {
   const input = event.target as HTMLInputElement
-  input.value = input.value.replace(/[а-яёА-ЯЁ]/g, '')
-  form.value.password = input.value
+  const cleaned = input.value.replace(/[а-яёА-ЯЁ]/g, '')
+  if (cleaned !== input.value) alertMessage.value = 'Используйте латиницу'
+  input.value = cleaned
+  form.value.password = cleaned
 }
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/
