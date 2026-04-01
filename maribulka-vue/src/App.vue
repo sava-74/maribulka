@@ -13,6 +13,7 @@ import IncomeTable from './components/finance/income/IncomeTable.vue'
 import ExpensesTable from './components/finance/expenses/ExpensesTable.vue'
 import UsersTable from './components/users/UsersTable.vue'
 import UserFormModal from './components/users/UserFormModal.vue'
+import SalaryTypesTable from './components/salaryTypes/SalaryTypesTable.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -77,6 +78,7 @@ onMounted(async () => {
       <IncomeTable v-if="navStore.currentPage === 'income'" />
       <ExpensesTable v-if="navStore.currentPage === 'expenses'" />
       <UsersTable v-if="navStore.currentPage === 'users'" />
+      <SalaryTypesTable v-if="navStore.currentPage === 'salary_types'" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

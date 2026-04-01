@@ -4,7 +4,7 @@
 export type Role = number
 export type Section =
   | 'calendar' | 'bookings' | 'income' | 'expenses' | 'reports'
-  | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories'
+  | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories' | 'salary_types'
   | 'users' | 'settings' | 'home' | 'news' | 'portfolio' | 'logs'
 export type Action = 'view' | 'create' | 'edit' | 'delete'
 
@@ -18,37 +18,37 @@ export const ROLE_DEFAULTS: Record<number, Record<Section, AccessLevel>> = {
   1: {
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
     reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
-    expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
+    expense_categories: 'FULL', salary_types: 'FULL', users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'FULL',
   },
   2: {
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
     reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
-    expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
+    expense_categories: 'FULL', salary_types: 'FULL', users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'NO',
   },
   3: {
     calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
-    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    expense_categories: 'NO', salary_types: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
   },
   4: {
     calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
-    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    expense_categories: 'NO', salary_types: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
   },
   5: {
     calendar: 'VIEW', bookings: 'VIEW', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
-    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    expense_categories: 'NO', salary_types: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
   },
   6: {
     calendar: 'NO', bookings: 'NO', income: 'NO', expenses: 'NO',
     reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
-    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    expense_categories: 'NO', salary_types: 'NO', users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
   },
 }

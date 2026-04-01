@@ -12,6 +12,7 @@ import {
   mdiCamera,
   mdiTagMultiple,
   mdiShapeOutline,
+  mdiCashEdit,
   mdiCog,
   mdiLogout,
 } from '@mdi/js'
@@ -67,6 +68,11 @@ function openExpenses() {
 
 function openUsers() {
   navStore.navigateTo('users')
+  close()
+}
+
+function openSalaryTypes() {
+  navStore.navigateTo('salary_types')
   close()
 }
 
@@ -184,6 +190,14 @@ function onRipple(event: MouseEvent) {
               <svg-icon type="mdi" :path="mdiShapeOutline" class="btn-icon-big" />
             </button>
             <p class="pad-icon-label">Категории расходов</p>
+          </div>
+          <div class="pad-icon-cell" v-if="auth.can('salary_types', 'view')">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openSalaryTypes()">
+              <span class="inner-glow"></span>
+              <span class="top-shine"></span>
+              <svg-icon type="mdi" :path="mdiCashEdit" class="btn-icon-big" />
+            </button>
+            <p class="pad-icon-label">Зарплаты</p>
           </div>
           <div class="pad-icon-cell" v-if="auth.can('users', 'view')">
             <button class="btnGlass bigIcon" @click="onRipple($event); openUsers()">
