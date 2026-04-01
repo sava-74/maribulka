@@ -1,4 +1,4 @@
-# План реализации: Подключение справочников (ИСПРАВЛЕННЫЙ)
+# План реализации: Подключение справочников (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 **Дата:** 1 апреля 2026
 **Статус:** Готов к реализации
@@ -103,20 +103,22 @@ users/
 
 ---
 
-### 2.5 `salary_type` — Типы зарплат (ИСПРАВЛЕНО!)
+### 2.5 `salary_type` — Типы зарплат (ИСПРАВЛЕНО! 2 апреля)
 
 **ВАЖНО:** Эта таблица НЕ рассчитывает зарплату, только хранит настройки как рассчитывать!
+
+**ПОЛЯ БД (реальные из init-database.sql):**
 
 | Поле | Тип | Описание |
 |------|-----|----------|
 | id | INT | PK |
-| title | VARCHAR(255) | Название типа |
+| title | VARCHAR(255) | **Название типа** (обязательное поле) |
 | monthly_salary | TINYINT | Оклад в месяц (0/1) |
 | salary_value | INT | Значение оклада (руб) |
 | percentage_of_the_order | TINYINT | Процент от заказа (0/1) |
 | the_percentage_value | INT | Значение процента (%) |
 | interest_dividends | TINYINT | Проценты дивидендов (0/1) |
-| value_dividend_percentages | INT | Значение дивидендов (%) |
+| value_dividend_percentages | INT | Значение процентов (%) |
 | fixed_order | TINYINT | Фиксированное от заказа (0/1) |
 | fixed_value_order | INT | Фиксированное значение (руб) |
 
@@ -126,114 +128,154 @@ users/
 - **Удаление:** невозможно при наличии пользователей с этим типом зарплаты
 
 **Форма редактирования (ИСПРАВЛЕНО!):**
-4 строки с паттерном `[checkbox] [input поле]`:
+
+**Первое поле:** Название (text input, обязательное)
+
+**4 начисления НЕ взаимоисключающие:** паттерн `[checkbox] [input поле]`:
 
 ```
 ┌─────────────────────────────────────────────┐
-│ ☐ Оклад в месяц      [__________] руб      │
-│ ☐ Процент от заказа  [__________] %        │
-│ ☐ Проценты дивидендов [_________] %        │
-│ ☐ Фиксированное от заказа [______] руб     │
+│ Название: [_________________________________] │
+│                                             │
+│ ☐ Оклад в месяц       [__________] руб      │
+│    monthly_salary     salary_value          │
+│                                             │
+│ ☐ Процент от заказа   [__________] %        │
+│    percentage_of_the_order                  │
+│    the_percentage_value                     │
+│                                             │
+│ ☐ Проценты дивидендов [__________] %        │
+│    interest_dividends                       │
+│    value_dividend_percentages               │
+│                                             │
+│ ☐ Фиксированное       [__________] руб      │
+│    fixed_order        fixed_value_order     │
 └─────────────────────────────────────────────┘
 ```
 
 **Логика формы:**
 - Галка включена → поле активно (вводишь значение)
-- Галка выключена → поле неактивно (disabled), значение обнуляется
+- Галка выключена → поле неактивно (disabled), значение = 0
 - **Можно выбрать несколько вариантов одновременно** (НЕ взаимоисключающие!)
+- Это просто справочник настроек зарплаты, не более!
 - Это просто справочник настроек зарплаты, не более!
 
 ---
 
-## 3. Права доступа (ИСПРАВЛЕНО!)
+## 3. Права доступа (ИСПРАВЛЕНО! 2 апреля)
 
-### Жёсткое требование: все справочники наследуют права от секции `"references"`
+### Жёсткое требование: ОТДЕЛЬНЫЕ секции для каждого справочника
 
-**НЕ создавать отдельные секции для каждого справочника!**
+**НЕ объединять в единую секцию `references`!** Использовать отдельные секции как в permissions.ts.
 
-### Единая секция: `references`
+### Секции справочников:
 ```typescript
 export type Section =
   | 'calendar' | 'bookings' | 'income' | 'expenses' | 'reports'
-  | 'references'  // ← ЕДИНАЯ секция для ВСЕХ справочников
+  | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories' | 'salary_types'
   | 'users' | 'settings' | 'home' | 'news' | 'portfolio' | 'logs'
 ```
 
 ### Проверка прав:
 ```typescript
-auth.can('references', 'full')  // FULL доступ ко всем справочникам
-auth.can('references', 'view')  // VIEW доступ ко всем справочникам
-auth.can('references', 'no')    // NO доступ ко всем справочникам
+auth.can('clients', 'full')           // FULL доступ к клиентам
+auth.can('shooting_types', 'view')    // VIEW доступ к типам съёмок
+auth.can('promotions', 'view')        // VIEW доступ к акциям
+auth.can('expense_categories', 'no')  // NO доступ к категориям расходов
+auth.can('salary_types', 'view')      // VIEW доступ к зарплатам
 ```
 
-### Права по умолчанию (ROLE_DEFAULTS):
+### Права по умолчанию (ROLE_DEFAULTS) — текущие из permissions.ts:
 ```typescript
 export const ROLE_DEFAULTS: Record<number, Record<Section, AccessLevel>> = {
   1: { // admin
-    references: 'FULL',  // Все справочники: FULL
-    users: 'FULL',
-    // ...
+    calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
+    reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
+    expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
+    home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'FULL',
+    // salary_types: 'FULL' — добавить
   },
   2: { // superuser
-    references: 'FULL',  // Все справочники: FULL
-    users: 'FULL',
-    // ...
+    calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
+    reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
+    expense_categories: 'FULL', users: 'FULL', settings: 'FULL',
+    home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'NO',
+    // salary_types: 'FULL' — добавить
   },
   3: { // superuser1
-    references: 'VIEW',  // Все справочники: VIEW
-    users: 'NO',
-    // ...
+    calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
+    reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
+    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
+    // salary_types: 'NO' — добавить
   },
   4: { // auser
-    references: 'VIEW',  // Все справочники: VIEW
-    users: 'NO',
-    // ...
+    calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
+    reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
+    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
+    // salary_types: 'NO' — добавить
   },
-  5: { // worker
-    references: 'NO',    // Все справочники: NO
-    users: 'NO',
-    // ...
+  5: { // prouser
+    calendar: 'VIEW', bookings: 'VIEW', income: 'NO', expenses: 'NO',
+    reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
+    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
+    // salary_types: 'NO' — добавить
   },
   6: { // user
-    references: 'NO',    // Все справочники: NO
-    users: 'NO',
-    // ...
+    calendar: 'NO', bookings: 'NO', income: 'NO', expenses: 'NO',
+    reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
+    expense_categories: 'NO', users: 'NO', settings: 'NO',
+    home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
+    // salary_types: 'NO' — добавить
   },
 }
 ```
 
-**Все справочники используют одну секцию:**
-- clients
-- shooting_types
-- promotions
-- expense_categories
-- salary_types
+**Отдельные секции для каждого справочника:**
+- `clients` — клиенты
+- `shooting_types` — типы съёмок
+- `promotions` — акции
+- `expense_categories` — категории расходов
+- `salary_types` — зарплаты (добавить)
 
 ---
 
-## 4. Удаление элементов (ИСПРАВЛЕНО!)
+## 4. Удаление элементов (ФИНАЛЬНАЯ ВЕРСИЯ!)
 
 ### Критическое правило: удаление возможно ТОЛЬКО если элемент нигде не участвует
 
 **Для всех таблиц в проекте!**
 
-### Проверка связей перед удалением:
+### Паттерн реализации (как в expense-categories.php):
 
-| Справочник | Где проверяется связь | Таблица связи | Поле связи |
-|------------|----------------------|---------------|------------|
-| **clients** | bookings, income | `bookings` | `client_id` |
-| | | `income` | `client_id` |
-| **shooting_types** | bookings | `bookings` | `shooting_type_id` |
-| **promotions** | bookings | `bookings` | `promotion_id` |
-| **expense_categories** | expenses | `expenses` | `category` |
-| **salary_type** | users | `users` | `id_salary_type` |
+**Бэкенд:**
+1. Проверка связей: `SELECT COUNT(*) FROM {table} WHERE {fk} = ?`
+2. Если count > 0 → вернуть 409 с сообщением
+3. Если count = 0 → DELETE
+
+**Фронтенд:**
+1. Сначала `?check_relations=1&id=X` → если true → alert «Удаление невозможно»
+2. Если false → показать DeleteModal
+3. После подтверждения → DELETE
+
+### Таблица проверок связей:
+
+| Справочник | SQL запрос проверки |
+|------------|---------------------|
+| **clients** | `SELECT COUNT(*) FROM bookings WHERE client_id = ?` + `SELECT COUNT(*) FROM income WHERE client_id = ?` |
+| **shooting_types** | `SELECT COUNT(*) FROM bookings WHERE shooting_type_id = ?` |
+| **promotions** | `SELECT COUNT(*) FROM bookings WHERE promotion_id = ?` |
+| **expense_categories** | `SELECT COUNT(*) FROM expenses WHERE category = ?` |
+| **salary_type** | `SELECT COUNT(*) FROM users WHERE id_salary_type = ?` |
 
 ### API endpoint (пример для clients.php):
 ```php
 // Проверка связей
 if (isset($_GET['check_relations']) && isset($_GET['id'])) {
     $relations = [];
-    
+
     // Проверка bookings
     $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE client_id = ?");
     $stmt->execute([$_GET['id']]);
@@ -241,7 +283,7 @@ if (isset($_GET['check_relations']) && isset($_GET['id'])) {
     if ($count > 0) {
         $relations[] = "Записи на съёмку: {$count}";
     }
-    
+
     // Проверка income
     $stmt = $db->prepare("SELECT COUNT(*) as count FROM income WHERE client_id = ?");
     $stmt->execute([$_GET['id']]);
@@ -249,7 +291,7 @@ if (isset($_GET['check_relations']) && isset($_GET['id'])) {
     if ($count > 0) {
         $relations[] = "Платежи: {$count}";
     }
-    
+
     if (!empty($relations)) {
         http_response_code(409);
         echo json_encode([
@@ -258,9 +300,16 @@ if (isset($_GET['check_relations']) && isset($_GET['id'])) {
         ]);
         exit;
     }
-    
+
     echo json_encode(false);  // Связей нет
     break;
+}
+
+// Удаление (только если check_relations вернул false)
+if ($action === 'delete' && isset($_GET['id'])) {
+    $stmt = $db->prepare("DELETE FROM clients WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    echo json_encode(['success' => true]);
 }
 ```
 
@@ -272,6 +321,32 @@ if (isset($_GET['check_relations']) && isset($_GET['id'])) {
   :message="`Категорию &quot;${name}&quot; удалить нельзя. С этой категорией связаны другие документы:\n\n${relations.join('\n')}`"
   @close="showAlert = false"
 />
+```
+
+### Фронтенд логика удаления:
+```typescript
+async function checkRelations(id: number) {
+  const response = await fetch(`/api/clients.php?check_relations=1&id=${id}`)
+  
+  if (response.status === 409) {
+    const data = await response.json()
+    showAlert.value = true
+    alertTitle.value = 'Удаление невозможно'
+    alertMessage.value = `Категорию "${name}" удалить нельзя. С этой категорией связаны другие документы:\n\n${data.relations.join('\n')}`
+    return true
+  }
+  
+  return false  // Связей нет, можно показывать DeleteModal
+}
+
+async function deleteClient(id: number) {
+  const hasRelations = await checkRelations(id)
+  if (hasRelations) return
+  
+  // Показываем DeleteModal для подтверждения
+  showDeleteModal.value = true
+  clientToDelete.value = id
+}
 ```
 
 ---
@@ -309,7 +384,7 @@ if (isset($_GET['check_relations']) && isset($_GET['id'])) {
 
 ```vue
 <!-- После кнопки "Категории расходов" -->
-<div class="pad-icon-cell" v-if="auth.can('references', 'view')">
+<div class="pad-icon-cell" v-if="auth.can('salary_types', 'view')">
   <button class="btnGlass bigIcon" @click="onRipple($event); openSalaryTypes()">
     <span class="inner-glow"></span>
     <span class="top-shine"></span>
@@ -345,7 +420,7 @@ function openSalaryTypes() {
 | **salary_types** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
 | **Итого** | **5** | **5** | **5** | **5** | **5** | **25** |
 
-**Структура каталогов:**
+**Структура каталогов (camelCase! ИСПРАВЛЕНО! 2 апреля):**
 ```
 components/
 ├── clients/
@@ -354,7 +429,7 @@ components/
 │   ├── ViewClientModal.vue
 │   ├── ClientActionsModal.vue
 │   └── DeleteClientModal.vue
-├── shooting_types/
+├── shootingTypes/              ← camelCase!
 │   ├── ShootingTypesTable.vue
 │   ├── ShootingTypeFormModal.vue
 │   ├── ViewShootingTypeModal.vue
@@ -366,13 +441,13 @@ components/
 │   ├── ViewPromotionModal.vue
 │   ├── PromotionActionsModal.vue
 │   └── DeletePromotionModal.vue
-├── expense_categories/
+├── expenseCategories/          ← camelCase!
 │   ├── ExpenseCategoriesTable.vue
 │   ├── ExpenseCategoryFormModal.vue
 │   ├── ViewExpenseCategoryModal.vue
 │   ├── ExpenseCategoryActionsModal.vue
 │   └── DeleteExpenseCategoryModal.vue
-└── salary_types/
+└── salaryTypes/                ← camelCase!
     ├── SalaryTypesTable.vue
     ├── SalaryTypeFormModal.vue
     ├── ViewSalaryTypeModal.vue
@@ -391,76 +466,82 @@ components/
 - Добавить импорт иконки `mdiCashEdit`
 - Добавить функцию `openSalaryTypes()`
 - Добавить кнопку для зарплат в секцию "Справочники"
-- Проверка прав: `v-if="auth.can('references', 'view')"`
+- Проверка прав: `v-if="auth.can('salary_types', 'view')"`
 
-### 8.2 `permissions.ts`
+### 8.2 `permissions.ts` (ИСПРАВЛЕНО! 2 апреля)
 **Путь:** `maribulka-vue/src/stores/permissions.ts`
 
 **Изменения:**
-- Заменить отдельные секции справочников на единую `'references'`
-- Добавить права по умолчанию для всех ролей
+- Добавить секцию `'salary_types'` в тип `Section`
+- Добавить `'salary_types'` в ROLE_DEFAULTS для всех ролей
 
 ```typescript
 export type Section =
   | 'calendar' | 'bookings' | 'income' | 'expenses' | 'reports'
-  | 'references'  // ← ЕДИНАЯ секция для ВСЕХ справочников
+  | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories' | 'salary_types'
   | 'users' | 'settings' | 'home' | 'news' | 'portfolio' | 'logs'
 
 export const ROLE_DEFAULTS: Record<number, Record<Section, AccessLevel>> = {
-  1: {
+  1: { // admin
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
-    reports: 'FULL', references: 'FULL',  // ← Все справочники: FULL
+    reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
+    expense_categories: 'FULL', salary_types: 'FULL',  // ← ДОБАВИТЬ
     users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'FULL',
   },
-  2: {
+  2: { // superuser
     calendar: 'FULL', bookings: 'FULL', income: 'FULL', expenses: 'FULL',
-    reports: 'FULL', references: 'FULL',  // ← Все справочники: FULL
+    reports: 'FULL', clients: 'FULL', shooting_types: 'FULL', promotions: 'FULL',
+    expense_categories: 'FULL', salary_types: 'FULL',  // ← ДОБАВИТЬ
     users: 'FULL', settings: 'FULL',
     home: 'FULL', news: 'FULL', portfolio: 'FULL', logs: 'NO',
   },
-  3: {
+  3: { // superuser1
     calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
-    reports: 'NO', references: 'VIEW',  // ← Все справочники: VIEW
+    reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
+    expense_categories: 'NO', salary_types: 'NO',  // ← ДОБАВИТЬ
     users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
   },
-  4: {
+  4: { // auser
     calendar: 'FULL', bookings: 'FULL', income: 'NO', expenses: 'NO',
-    reports: 'NO', references: 'VIEW',  // ← Все справочники: VIEW
+    reports: 'NO', clients: 'FULL', shooting_types: 'VIEW', promotions: 'VIEW',
+    expense_categories: 'NO', salary_types: 'NO',  // ← ДОБАВИТЬ
     users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'FULL', portfolio: 'VIEW', logs: 'NO',
   },
-  5: {
+  5: { // prouser
     calendar: 'VIEW', bookings: 'VIEW', income: 'NO', expenses: 'NO',
-    reports: 'NO', references: 'NO',  // ← Все справочники: NO
+    reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
+    expense_categories: 'NO', salary_types: 'NO',  // ← ДОБАВИТЬ
     users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
   },
-  6: {
+  6: { // user
     calendar: 'NO', bookings: 'NO', income: 'NO', expenses: 'NO',
-    reports: 'NO', references: 'NO',  // ← Все справочники: NO
+    reports: 'NO', clients: 'NO', shooting_types: 'NO', promotions: 'NO',
+    expense_categories: 'NO', salary_types: 'NO',  // ← ДОБАВИТЬ
     users: 'NO', settings: 'NO',
     home: 'VIEW', news: 'VIEW', portfolio: 'VIEW', logs: 'NO',
   },
 }
 ```
 
-### 8.3 `App.vue`
+### 8.3 `App.vue` (ИСПРАВЛЕНО! 2 апреля)
 **Путь:** `maribulka-vue/src/App.vue`
 
 **Изменения:**
-- Добавить импорты компонентов справочников
+- Добавить импорты компонентов справочников (camelCase для каталогов!)
 - Добавить роутинг через навигацию
 
 ```vue
 <script setup lang="ts">
 // Импорты
 import ClientsTable from './components/clients/ClientsTable.vue'
-import ShootingTypesTable from './components/shooting_types/ShootingTypesTable.vue'
+import ShootingTypesTable from './components/shootingTypes/ShootingTypesTable.vue'  ← camelCase!
 import PromotionsTable from './components/promotions/PromotionsTable.vue'
-import ExpenseCategoriesTable from './components/expense_categories/ExpenseCategoriesTable.vue'
-import SalaryTypesTable from './components/salary_types/SalaryTypesTable.vue'
+import ExpenseCategoriesTable from './components/expenseCategories/ExpenseCategoriesTable.vue'  ← camelCase!
+import SalaryTypesTable from './components/salaryTypes/SalaryTypesTable.vue'  ← camelCase!
 </script>
 
 <template>
@@ -472,11 +553,19 @@ import SalaryTypesTable from './components/salary_types/SalaryTypesTable.vue'
 </template>
 ```
 
-### 8.4 `navigation.ts` (если существует)
+### 8.4 `navigation.ts`
 **Путь:** `maribulka-vue/src/stores/navigation.ts`
 
 **Изменения:**
-- Добавить типы навигации для справочников
+- Добавить типы навигации для справочников в `PageType`
+- Убедиться что все 5 справочников поддерживаются
+
+```typescript
+export type PageType =
+  | 'calendar' | 'bookings' | 'income' | 'expenses' | 'reports'
+  | 'clients' | 'shooting_types' | 'promotions' | 'expense_categories' | 'salary_types'  ← ДОБАВИТЬ
+  | 'users' | 'settings' | 'home' | 'news' | 'portfolio' | 'logs'
+```
 
 ---
 
@@ -490,10 +579,10 @@ import SalaryTypesTable from './components/salary_types/SalaryTypesTable.vue'
 
 ### Этап 2: Компоненты таблиц (5 справочников)
 - [ ] `components/clients/ClientsTable.vue`
-- [ ] `components/shooting_types/ShootingTypesTable.vue`
+- [ ] `components/shootingTypes/ShootingTypesTable.vue`  ← camelCase!
 - [ ] `components/promotions/PromotionsTable.vue`
-- [ ] `components/expense_categories/ExpenseCategoriesTable.vue`
-- [ ] `components/salary_types/SalaryTypesTable.vue`
+- [ ] `components/expenseCategories/ExpenseCategoriesTable.vue`  ← camelCase!
+- [ ] `components/salaryTypes/SalaryTypesTable.vue`  ← camelCase!
 
 **Структура каждой таблицы:**
 - TanStack Table с сортировкой и фильтрацией
@@ -523,12 +612,12 @@ import SalaryTypesTable from './components/salary_types/SalaryTypesTable.vue'
 - [ ] Добавить иконку `mdiCashEdit` в импорт
 - [ ] Добавить функцию `openSalaryTypes()`
 - [ ] Добавить кнопку в секцию "Справочники"
-- [ ] Проверка прав: `v-if="auth.can('references', 'view')"`
+- [ ] Проверка прав: `v-if="auth.can('salary_types', 'view')"`
 
 ### Этап 6: Права доступа
-- [ ] Заменить отдельные секции на `'references'` в `permissions.ts`
+- [ ] Добавить секцию `'salary_types'` в `permissions.ts`
 - [ ] Настроить права по умолчанию для всех ролей
-- [ ] Проверить работу `auth.can('references', 'view')`
+- [ ] Проверить работу `auth.can('salary_types', 'view')`
 
 ### Этап 7: Тестирование
 - [ ] Проверить CRUD для каждого справочника
@@ -541,14 +630,98 @@ import SalaryTypesTable from './components/salary_types/SalaryTypesTable.vue'
 
 ## 10. Технические детали
 
-### API endpoints
-| Справочник | Endpoint | Статус |
-|------------|----------|--------|
-| clients | `/api/clients.php` | ✅ Готов |
-| shooting_types | `/api/shooting-types.php` | ✅ Готов |
-| promotions | `/api/promotions.php` | ✅ Готов |
-| expense_categories | `/api/expense-categories.php` | ✅ Готов |
-| salary_types | `/api/salary-types.php` | ❌ Требуется создать |
+### Аудит безопасности (2 апреля 2026)
+
+**🔴 Критические проблемы бэкенда:**
+
+| Файл | Проблема | Риск | Решение |
+|------|----------|------|---------|
+| `clients.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Переписать по паттерну users.php |
+| `shooting-types.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Переписать по паттерну users.php |
+| `promotions.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Переписать по паттерну users.php |
+| `expense-categories.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Переписать по паттерну users.php |
+| `bookings.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Отдельный план |
+| `income.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Отдельный план |
+| `expenses.php` | Нет сессии и проверки роли | Любой может DELETE/POST/PUT | Отдельный план |
+
+**🟡 Высокие проблемы фронтенда:**
+
+| Проблема | Где | Решение |
+|----------|-----|---------|
+| `salary_types` нет в `Section` type | `permissions.ts` | Добавить в тип Section |
+| Компоненты не проверяют права перед запросами | Таблицы справочников | Обернуть кнопки в `v-if="auth.can(...)"` |
+
+**✅ Что уже работает:**
+- `ROLE_DEFAULTS` полностью заполнен для всех 6 ролей
+- `hasPermission()` работает корректно
+- Все секции в LaunchPad объявлены в `Section` type
+- `users.php` и `permissions.php` защищены сессией
+
+---
+
+### API endpoints (ИСПРАВЛЕНО! 2 апреля)
+
+**ВСЕ API файлы требуют переписывания по паттерну users.php!**
+
+| Справочник | Endpoint | Статус | Что добавить | Приоритет |
+|------------|----------|--------|--------------|-----------|
+| clients | `/api/clients.php` | ⚠️ Переписать | сессии, роли, ?action= | 🔴 Высокий |
+| shooting_types | `/api/shooting-types.php` | ⚠️ Переписать | сессии, роли, ?action= | 🔴 Высокий |
+| promotions | `/api/promotions.php` | ⚠️ Переписать | сессии, роли, ?action= | 🔴 Высокий |
+| expense_categories | `/api/expense-categories.php` | ⚠️ Переписать | сессии, роли, ?action= | 🔴 Высокий |
+| salary_types | `/api/salary-types.php` | ❌ Создать | сессии, роли, ?action= | 🔴 Высокий |
+
+**Паттерн users.php:**
+```php
+require_once 'session.php';
+require_once 'database.php';
+initSession();
+
+if (!isset($_SESSION['user'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
+}
+
+$currentRole = (int)($_SESSION['user']['role'] ?? 0);
+if (!in_array($currentRole, [1, 2, 3])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    exit;
+}
+
+$action = $_GET['action'] ?? 'list';
+
+// GET ?action=list
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
+    // ...
+}
+
+// GET ?action=get&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
+    // ...
+}
+
+// POST ?action=create
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
+    // ...
+}
+
+// PUT ?action=update
+if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $action === 'update') {
+    // ...
+}
+
+// DELETE ?action=delete&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
+    // ...
+}
+
+// GET ?action=check_relations&id=X
+if (isset($_GET['check_relations']) && isset($_GET['id'])) {
+    // Проверка связей → true/false
+}
+```
 
 ### Типы данных для форм
 ```typescript
@@ -587,34 +760,78 @@ interface ExpenseCategory {
   is_active?: boolean
 }
 
-// SalaryType (ИСПРАВЛЕНО!)
+// SalaryType (ФИНАЛЬНАЯ ВЕРСИЯ!)
 interface SalaryType {
   id?: number
-  title: string
-  monthly_salary?: boolean
-  salary_value?: number
-  percentage_of_the_order?: boolean
-  the_percentage_value?: number
-  interest_dividends?: boolean
-  value_dividend_percentages?: number
-  fixed_order?: boolean
-  fixed_value_order?: number
+  title: string  // Обязательное поле
+  percent_from_shooting?: boolean
+  percent_from_shooting_value?: number
+  fixed_amount?: boolean
+  fixed_amount_value?: number
+  hourly_rate?: boolean
+  hourly_rate_value?: number
+  other?: boolean
+  other_value?: number
+  other_description?: string
 }
 ```
 
-### Проверка прав (ИСПРАВЛЕНО!)
+### Проверка прав (ИСПРАВЛЕНО! 2 апреля)
+
+**В шаблоне — КОНКРЕТНЫЕ секции!**
 ```typescript
 import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 
-// В шаблоне
-<button v-if="auth.can('references', 'create')">Добавить</button>
+// Кнопки действий — проверять перед отображением!
+<button v-if="auth.can('clients', 'create')">Добавить клиента</button>
+<button v-if="auth.can('shooting_types', 'edit')">Редактировать</button>
+<button v-if="auth.can('salary_types', 'delete')" @click="handleDelete">Удалить</button>
 
-// В скрипте
-if (!auth.can('references', 'delete')) {
-  // Показать ошибку
+// Для зарплат
+<button v-if="auth.can('salary_types', 'view')">Открыть</button>
+```
+
+**В скрипте — двойная проверка!**
+```typescript
+async function handleDelete() {
+  if (!selectedItem.value) return
+  
+  // Проверка прав перед вызовом модалки
+  if (!auth.can('clients', 'delete')) {
+    showAlert('Нет прав на удаление')
+    return
+  }
+  
+  // Проверка связей
+  const hasRelations = await checkRelations(selectedItem.value.id)
+  if (hasRelations) {
+    showAlert('Удаление невозможно')
+    return
+  }
+  
+  // Показать модалку подтверждения
+  showDeleteModal.value = true
+}
+
+async function confirmDelete() {
+  // Финальная проверка перед запросом
+  if (!auth.can('clients', 'delete')) {
+    showAlert('Нет прав на удаление')
+    return
+  }
+  
+  const response = await fetch(`/api/clients.php?action=delete&id=${selectedItem.value.id}`, {
+    method: 'DELETE'
+  })
+  // ...
 }
 ```
+
+**Важно:**
+- LaunchPad скрывает кнопки через `v-if="auth.can(...)"` ✅
+- **Компоненты таблиц** тоже должны проверять права перед отображением кнопок ⚠️
+- **Функции действий** должны проверять права перед вызовом API ⚠️
 
 ### Стили (ИСПРАВЛЕНО!)
 - **Панель таблицы:** `padGlass padGlass-work data-table-panel`
@@ -647,20 +864,23 @@ if (!auth.can('references', 'delete')) {
 - **Решение:** Проверка связей, деактивация вместо удаления
 - **Особенность:** Простая структура — минимальная валидация
 
-### 11.5 salary_type (ИСПРАВЛЕНО!)
-- **Риск:** Сложная логика формы
+### 11.5 salary_type (ИСПРАВЛЕНО! 2 апреля)
+- **Риск:** Сложная логика формы (8 полей начислений)
 - **Решение:** 4 checkbox + input, галка включена → поле активно
 - **Особенности:**
   - Нет `is_active` — только удаление
   - Нет полей аудита (`created_by`, `updated_by`)
   - Используется только в `users` — нельзя удалить при наличии сотрудников
   - **4 варианта начисления НЕ взаимоисключающие** — могут быть выбраны несколько одновременно
+  - **Обязательное поле `title`** — название типа зарплаты
+  - **Реальные поля БД:** `monthly_salary`, `salary_value`, `percentage_of_the_order`, `the_percentage_value`, `interest_dividends`, `value_dividend_percentages`, `fixed_order`, `fixed_value_order`
   - Это просто справочник настроек зарплаты, не более!
 
-### 11.6 Общие риски
+### 11.6 Общие риски (ИСПРАВЛЕНО! 2 апреля)
 - **Стили:** Никаких новых стилей — копировать padGlass, btnGlass, неоновые акценты из users/
 - **Навигация:** LaunchPad не имеет кнопки для зарплат — добавить 1 кнопку
-- **Права:** Все справочники используют единую секцию `'references'`
+- **Права:** Отдельные секции для каждого справочника (`clients`, `shooting_types`, `promotions`, `expense_categories`, `salary_types`), НЕ объединять в `references`
+- **API:** Все файлы требуют переписывания с сессиями и ?action= паттерном
 
 ---
 
@@ -678,23 +898,27 @@ if (!auth.can('references', 'delete')) {
 - **TanStack Table:** единый подход к таблицам
 - **Модальные окна:** Actions → Form/View/Delete
 
-### Права доступа (ИСПРАВЛЕНО!)
-- **Role-based:** все справочники наследуют от секции `'references'`
-- **Проверка:** `auth.can('references', action)`
-- **Индивидуальные:** через `user_permissions` (опционально)
+### Права доступа (ИСПРАВЛЕНО! 2 апреля)
+- **Отдельные секции:** `clients`, `shooting_types`, `promotions`, `expense_categories`, `salary_types`
+- **Проверка:** `auth.can(section, action)`
+- **ROLE_DEFAULTS:** для каждой роли и секции (как в permissions.ts)
 
-### Удаление элементов (ИСПРАВЛЕНО!)
+### Удаление элементов (ИСПРАВЛЕНО! 2 апреля)
 - **Критическое правило:** удаление возможно ТОЛЬКО если элемент нигде не участвует
-- **Проверка связей:** для всех таблиц в проекте
-- **API endpoint:** возвращает ошибку с перечнем связей если они есть
-- **UI:** показывает модальное окно с перечнем связей где участвует элемент
+- **Проверка связей:** `?check_relations=1&id=X` → `true/false`
+- **API endpoint:** SELECT COUNT(*) → true/false
+- **UI:** alert если есть связи, DeleteModal если связей нет
 
 ---
 
-## 13. Итоговый список файлов
+## 13. Итоговый список файлов (ИСПРАВЛЕНО! 2 апреля)
 
-### API (1 файл)
-- [ ] `api/salary-types.php`
+### API (5 файлов — переписать + 1 создать)
+- [ ] `api/salary-types.php` — создать
+- [ ] `api/clients.php` — переписать (сессии, роли, ?action=)
+- [ ] `api/shooting-types.php` — переписать (сессии, роли, ?action=)
+- [ ] `api/promotions.php` — переписать (сессии, роли, ?action=)
+- [ ] `api/expense-categories.php` — переписать (сессии, роли, ?action=)
 
 ### Frontend компоненты (25 файлов)
 | Справочник | Table | Form | View | Actions | Delete | Итого |
@@ -706,32 +930,91 @@ if (!auth.can('references', 'delete')) {
 | salary_types | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
 | **Итого** | **5** | **5** | **5** | **5** | **5** | **25** |
 
-### Изменение существующих (4 файла)
+### Изменение существующих (3 файла)
 - [ ] `LaunchPad.vue`
 - [ ] `permissions.ts`
 - [ ] `App.vue`
-- [ ] `navigation.ts` (опционально)
 
 ---
 
-## 14. Критерии готовности (ИСПРАВЛЕНО!)
+## 14. Критерии готовности (ИСПРАВЛЕНО! 2 апреля)
 
+### Бэкенд (🔴 Критично)
+- [ ] Все 5 API переписаны с сессиями и ?action= паттерном
+- [ ] `initSession()` вызывается в начале каждого файла
+- [ ] Проверка роли: `if (!in_array($currentRole, [1, 2, 3]))`
+- [ ] Возврат 401/403 при отсутствии прав
+- [ ] `?check_relations=1&id=X` работает для всех справочников
+
+### Фронтенд (🟡 Важно)
 - [ ] Все 5 справочников имеют полный CRUD
 - [ ] Кнопка для зарплат добавлена в LaunchPad
-- [ ] Права доступа работают через единую секцию `'references'`
+- [ ] `salary_types` добавлена в тип `Section` в permissions.ts
+- [ ] Компоненты проверяют права перед отображением кнопок
+- [ ] Функции действий проверяют права перед вызовом API
 - [ ] Валидация форм соответствует БД
 - [ ] Удаление с проверкой связей для ВСЕХ справочников
 - [ ] Стили: glassmorphism + неоновые акценты (как в users/)
 - [ ] Навигация из LaunchPad работает
 - [ ] API для зарплат готов и протестирован
-- [ ] Форма salary_type: 4 checkbox + input (НЕ взаимоисключающие)
+- [ ] Форма salary_type: название + 4 checkbox + input (НЕ взаимоисключающие)
 
 ---
 
-*План исправлён: 1 апреля 2026*
-*Исправления внесены по критическим замечаниям:*
-1. *salary_type — НЕ рассчитывает зарплату, 4 checkbox + input НЕ взаимоисключающие*
-2. *Права доступа — единая секция `references` для всех справочников*
-3. *Удаление — проверка связей для ВСЕХ справочников*
-4. *Стили — копировать users/ (padGlass, btnGlass, неон)*
-5. *LaunchPad — кнопки есть, добавить только для зарплат*
+## 15. Финальные требования (ИСПРАВЛЕНО! 2 апреля)
+
+### 🔴 Приоритет 1: Безопасность (критично)
+
+**1. API — переписать все (5 файлов):**
+- Сессии: `initSession()`, проверка роли
+- Паттерн `?action=`: `list`, `get`, `create`, `update`, `delete`
+- Проверка связей: `?check_relations=1&id=X` → `true/false`
+- Возврат 401/403 при отсутствии прав
+
+**2. salary_types — поля БД (реальные!):**
+- `title` (обязательное)
+- `monthly_salary` + `salary_value` — Оклад в месяц
+- `percentage_of_the_order` + `the_percentage_value` — Процент от заказа
+- `interest_dividends` + `value_dividend_percentages` — Проценты дивидендов
+- `fixed_order` + `fixed_value_order` — Фиксированное от заказа
+- 4 начисления НЕ взаимоисключающие
+
+### 🟡 Приоритет 2: Фронтенд (важно)
+
+**3. Удаление — проверка в бэкенде:**
+- `SELECT COUNT(*)` → `true/false`
+- Фронтенд: сначала check_relations → alert или DeleteModal
+- Двойная проверка прав (в шаблоне + в скрипте)
+
+**4. Права — отдельные секции:**
+- `clients`, `shooting_types`, `promotions`, `expense_categories`, `salary_types`
+- `auth.can(section, action)`
+- `salary_types` добавить в тип `Section`
+
+**5. Стили — копировать users/:**
+- padGlass, btnGlass, неоновые акценты
+- Никаких новых стилей
+
+**6. LaunchPad — добавить 1 кнопку:**
+- Для зарплат с `mdiCashEdit`
+- Проверка: `v-if="auth.can('salary_types', 'view')"`
+
+**7. Структура каталогов — camelCase:**
+- `clients/`, `shootingTypes/`, `promotions/`, `expenseCategories/`, `salaryTypes/`
+
+---
+
+*План обновлён: 2 апреля 2026*  
+*Исправления по замечаниям:*
+1. *salary_type — реальные поля БД, НЕ выдуманные*
+2. *API — все требуют переписывания с сессиями и ?action=*
+3. *expense-categories.php — существует, но требует переписывания*
+4. *Права — отдельные секции, НЕ объединять в `references`*
+5. *Структура — camelCase для каталогов (expenseCategories/)*
+6. ***Правило: редактировать существующий план, а не создавать новый файл***
+
+*Аудит безопасности (2 апреля 2026):*
+- *🔴 7 API файлов без сессии и проверки роли (clients.php, shooting-types.php, promotions.php, expense-categories.php, bookings.php, income.php, expenses.php)*
+- *🟡 salary_types нет в Section type — добавить в permissions.ts*
+- *🟡 Компоненты не проверяют права перед запросами — обернуть кнопки в v-if="auth.can(...)"+*
+- *✅ ROLE_DEFAULTS полностью заполнен, hasPermission() работает корректно*
