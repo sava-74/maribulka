@@ -16,30 +16,30 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div v-if="isVisible" class="modal-overlay" @click.self="close">
+  <div v-if="isVisible" class="modal-overlay" @click.self="emit('close')">
     <div class="padGlass modal-sm">
       <h2 class="modal-title">Действия</h2>
       <p class="modal-subtitle">{{ salaryType?.title }}</p>
 
       <div class="modal-actions">
-        <button class="btnGlass" @click="view">
+        <button class="btnGlass" @click="emit('view')">
           <svg-icon type="mdi" :path="'M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5s5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5zm0-9C9.79 8.5 8.5 9.79 8.5 12s1.29 3.5 3.5 3.5 3.5-1.29 3.5-3.5S14.21 8.5 12 8.5z'" />
           Просмотр
         </button>
 
-        <button class="btnGlass" @click="edit">
+        <button class="btnGlass" @click="emit('edit')">
           <svg-icon type="mdi" :path="'M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z'" />
           Редактировать
         </button>
 
-        <button class="btnGlass btn-glass-danger" @click="delete">
+        <button class="btnGlass btn-glass-danger" @click="emit('delete')">
           <svg-icon type="mdi" :path="'M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12z'" />
           Удалить
         </button>
       </div>
 
       <div class="modal-footer">
-        <button class="btnGlass" @click="close">Отмена</button>
+        <button class="btnGlass" @click="emit('close')">Отмена</button>
       </div>
     </div>
   </div>

@@ -18,7 +18,7 @@ const emit = defineEmits<{
 const isDeleting = ref(false)
 const showAlert = ref(false)
 const alertTitle = ref('')
-const alertMessage = ref('')
+const alertMessage = ref<string[]>([])
 
 async function confirmDelete() {
   if (!props.salaryType) return
@@ -36,7 +36,7 @@ async function confirmDelete() {
     if (hasRelations) {
       showAlert.value = true
       alertTitle.value = 'Удаление невозможно'
-      alertMessage.value = `Тип зарплаты "${props.salaryType.title}" удалить нельзя. Этот тип зарплаты используется у сотрудников.`
+      alertMessage.value = [`Тип зарплаты "${props.salaryType.title}" удалить нельзя. Этот тип зарплаты используется у сотрудников.`]
       isDeleting.value = false
       return
     }
@@ -58,12 +58,12 @@ async function confirmDelete() {
     } else {
       showAlert.value = true
       alertTitle.value = 'Ошибка'
-      alertMessage.value = data.message || 'Не удалось удалить'
+      alertMessage.value = [data.message || 'Не удалось удалить']
     }
   } catch (e) {
     showAlert.value = true
     alertTitle.value = 'Ошибка'
-    alertMessage.value = 'Ошибка сети'
+    alertMessage.value = ['Ошибка сети']
   } finally {
     isDeleting.value = false
   }
@@ -99,7 +99,7 @@ async function confirmDelete() {
   <ValidAlertModal
     :is-visible="showAlert"
     :title="alertTitle"
-    :message="alertMessage"
+    :messages="alertMessage"
     @close="showAlert = false"
   />
 </template>

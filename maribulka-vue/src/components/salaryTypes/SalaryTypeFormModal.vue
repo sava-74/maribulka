@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import ValidAlertModal from '../ValidAlertModal.vue'
 
 const props = defineProps<{
@@ -39,7 +39,7 @@ const form = ref({
 const errors = ref<Record<string, string>>({})
 const showAlert = ref(false)
 const alertTitle = ref('')
-const alertMessage = ref('')
+const alertMessage = ref<string[]>([])
 const isSaving = ref(false)
 
 watch(() => props.salaryType, (val) => {
@@ -136,12 +136,12 @@ async function save() {
     } else {
       showAlert.value = true
       alertTitle.value = 'Ошибка'
-      alertMessage.value = data.message || 'Не удалось сохранить'
+      alertMessage.value = ['Не удалось сохранить']
     }
   } catch (e) {
     showAlert.value = true
     alertTitle.value = 'Ошибка'
-    alertMessage.value = 'Ошибка сети'
+    alertMessage.value = ['Ошибка сети']
   } finally {
     isSaving.value = false
   }
@@ -310,7 +310,7 @@ function toggleFixed() {
   <ValidAlertModal
     :is-visible="showAlert"
     :title="alertTitle"
-    :message="alertMessage"
+    :messages="alertMessage"
     @close="showAlert = false"
   />
 </template>

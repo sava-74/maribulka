@@ -132,7 +132,7 @@ const hasSingleSelection = computed(() => Object.keys(rowSelection.value).length
 const selectedSalaryTypeId = computed(() => {
   const keys = Object.keys(rowSelection.value)
   if (keys.length !== 1) return null
-  const id = parseInt(keys[0])
+  const id = parseInt(keys[0] || '0')
   return salaryTypes.value.find(s => s.id === id) || null
 })
 
@@ -143,26 +143,26 @@ function handleAdd() {
 }
 
 function handleActions() {
-  if (!hasSingleSelection.value) return
+  if (!hasSingleSelection.value || !selectedSalaryTypeId.value) return
   selectedSalaryType.value = selectedSalaryTypeId.value
   showActions.value = true
 }
 
 function handleView() {
-  if (!hasSingleSelection.value) return
+  if (!hasSingleSelection.value || !selectedSalaryTypeId.value) return
   selectedSalaryType.value = selectedSalaryTypeId.value
   showView.value = true
 }
 
 function handleEdit() {
-  if (!hasSingleSelection.value) return
+  if (!hasSingleSelection.value || !selectedSalaryTypeId.value) return
   selectedSalaryType.value = selectedSalaryTypeId.value
   isCreating.value = false
   showForm.value = true
 }
 
 function handleDelete() {
-  if (!hasSingleSelection.value) return
+  if (!hasSingleSelection.value || !selectedSalaryTypeId.value) return
   selectedSalaryType.value = selectedSalaryTypeId.value
   showDelete.value = true
 }
@@ -189,8 +189,8 @@ function handleClose() {
     </div>
 
     <SearchTable
-      v-model:search-query="searchQuery"
-      :placeholder="'Поиск по названию...'"
+      v-model="searchQuery"
+      placeholder="Поиск по названию..."
       :has-selected-row="hasSelectedRow"
       @add="handleAdd"
       @actions="handleActions"
@@ -206,7 +206,7 @@ function handleClose() {
 
     <div v-if="isLoading" class="progress-container">
       <div class="progress-bar"></div>
-      <PadLoader />
+      <PadLoader :progress="loadProgress" />
     </div>
 
     <div v-else class="padGlass padGlass-work data-table-panel">
