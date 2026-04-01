@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
   const isLoading = ref(false)
   const userName = ref('')
+  const userProfession = ref('')
   const userId = ref<number | null>(null)
   const userRole = ref<Role>(5)
   const userSpecializations = ref({ photographer: false, hairdresser: false, admin_role: false })
@@ -37,6 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
   function setUser(user: any) {
     userRole.value = (user.role as number) ?? 5
     userName.value = user.name ?? ''
+    userProfession.value = user.permission_name ?? ''
     userId.value = user.id ?? null
     userSpecializations.value = user.specializations ?? { photographer: false, hairdresser: false, admin_role: false }
     userPermissions.value = user.permissions ?? []
@@ -48,6 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
   function clearUser() {
     userRole.value = 5
     userName.value = ''
+    userProfession.value = ''
     userId.value = null
     userSpecializations.value = { photographer: false, hairdresser: false, admin_role: false }
     userPermissions.value = []
@@ -126,6 +129,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     isLoading,
     userName,
+    userProfession,
     userId,
     userRole,
     userSpecializations,

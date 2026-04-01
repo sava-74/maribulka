@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
+import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiEye, mdiEyeOff } from '@mdi/js'
 import { useAuthStore } from '../stores/auth'
 import AlertModal from './AlertModal.vue'
 import { useGenie } from '../composables/useGenie'
@@ -28,10 +28,14 @@ const genieStyle = computed(() => {
 const rememberMe = ref(false)
 const auth = useAuthStore()
 const password = ref('')
-const login = ref('admin') // Логин по умолчанию
+const login = ref(localStorage.getItem('lastLogin') ?? '')
+const showPassword = ref(false)
 
 watch(() => props.isVisible, (val) => {
-  if (!val) password.value = ''
+  if (!val) {
+    password.value = ''
+    showPassword.value = false
+  }
 })
 
 const showAlert = ref(false)
@@ -50,6 +54,7 @@ const handleLogin = async () => {
     if (response.ok) {
       const data = await response.json()
       if (data.success) {
+        localStorage.setItem('lastLogin', login.value)
         auth.login(rememberMe.value, data.user)
         if (data.mustChangePassword) {
           auth.mustChangePassword = true
@@ -82,7 +87,12 @@ const handleLogin = async () => {
         <div class="modal-glassTitle">Вход в систему</div>
         <div class="input-group">
           <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
-          <input v-model="password" type="password" class="modal-input" placeholder="Пароль" @keyup.enter="handleLogin" />
+          <div class="input-with-icon">
+            <span class="input-eye-left" @click="showPassword = !showPassword">
+              <svg-icon type="mdi" :path="showPassword ? mdiEye : mdiEyeOff" class="btn-icon" />
+            </span>
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" class="modal-input input-with-icon-left" placeholder="Пароль" @keyup.enter="handleLogin" />
+          </div>
           <label class="remember-label">
             <input type="checkbox" v-model="rememberMe"> Запомнить меня
           </label>

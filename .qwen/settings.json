@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where *)",
+      "Read(C:\\Users\\sava\\.qwen/**)",
+      "Bash(dir *)",
+      "Bash(npm *)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules/**)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code/**)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code\\locales/**)",
+      "WebFetch(qwenlm.github.io)"
+    ]
+  },
+  "$version": 3
+}

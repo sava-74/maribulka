@@ -100,6 +100,11 @@ function onRipple(event: MouseEvent) {
   <div class="modal-overlay-launch" :class="{ 'overlay-leave': closing }">
       <div ref="panelRef" class="padGlass padGlass-work" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
 
+        <!-- Профиль вошедшего -->
+        <div class="modal-glassTitle" v-if="auth.userName">
+          {{ auth.userProfession ? `${auth.userProfession} — ${auth.userName}` : auth.userName }}
+        </div>
+
         <!-- Секция: Учёт -->
         <div class="pad-title">Учёт</div>
         <div class="pad-icon-grid">
