@@ -8,7 +8,11 @@
       "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules/**)",
       "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code/**)",
       "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code\\locales/**)",
-      "WebFetch(qwenlm.github.io)"
+      "WebFetch(qwenlm.github.io)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code\\docs\\features/**)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code\\docs\\configuration/**)",
+      "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code/**)",
+      "Bash(ssh *)"
     ]
   },
   "$version": 3

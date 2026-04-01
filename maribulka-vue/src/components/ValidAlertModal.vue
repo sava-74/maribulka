@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline } from '@mdi/js'
 import { useGenie } from '../composables/useGenie'
-import './validAlertModal.css'
 
 const props = defineProps<{
   isVisible: boolean
