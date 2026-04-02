@@ -35,6 +35,13 @@
   --gbDLine2: color-mix(in srgb, var(--genColorGlass) 5%, transparent);
   --gbDLine3: color-mix(in srgb, var(--genColorGlass) 8%, transparent);
 
+  /* Calendar resizable панели */
+  --calendar-initial-width: 650px;
+  --sidebar-initial-width: 350px;
+  --calendar-min-width: 420px;
+  --sidebar-min-width: 300px;
+  --calendar-resizer-width: 24px;
+  --calendar-snap-duration: 0.5s;
 
 }
 

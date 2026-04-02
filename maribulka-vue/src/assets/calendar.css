@@ -5,15 +5,68 @@
 
 /* ========== СТРУКТУРА ПАНЕЛИ ========== */
 
-/* Основная панель календаря: flex-колонка, высота 100%-20px, overflow hidden */
+
+/* Calendar Container - position: relative, панели абсолютно позиционированы внутри */
+.calendar-container {
+  position: relative;
+  height: 100%;
+  max-width: 1200px;
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Calendar Resizer - абсолютно позиционирован, всегда поверх панелей */
+.calendar-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 20px;
+  width: var(--calendar-resizer-width);
+  left: var(--calendar-initial-width);
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  user-select: none;
+  z-index: 100;
+}
+
+.icon-svg {
+  color: var(--text-primary);
+  pointer-events: none;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-svg svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: currentColor;
+}
+
+/* Основная панель календаря: position absolute, left: 0 — левый край зафиксирован */
 .calendar-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 20px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 20px);
   gap: 0;
   overflow: hidden;
-  max-width: 100%;
   align-items: stretch;
+  width: var(--calendar-initial-width);
+  z-index: 1;
+}
+
+/* Плавная анимация при snap-back (только когда hidden-*) */
+.calendar-panel--animating {
+  transition: width var(--calendar-snap-duration) ease;
 }
 
 /* Внутренний layout: flex-row, FullCalendar слева + сайдбар справа */
@@ -56,16 +109,32 @@
 
 /* ========== САЙДБАР ========== */
 
-/* Сайдбар записей дня: ширина 250px, border-left, flex-колонка */
+/* Сайдбар: position absolute, right: 0 — правый край зафиксирован */
 .calendar-sidebar {
-  width: 250px;
-  height: calc(100% - 20px);
-  padding: 30px 10px;
-  flex-shrink: 0;
-  border-left: 1px solid var(--glass-border);
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 20px;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 30px 10px;
+  border-left: 1px solid var(--glass-border);
+  width: var(--sidebar-initial-width);
+}
+
+/* Плавная анимация при snap-back (только когда hidden-*) */
+.calendar-sidebar--animating {
+  transition: width var(--calendar-snap-duration) ease;
+}
+
+/* Скрытие сайдбара при режиме дня */
+.calendar-sidebar--hidden {
+  opacity: 0;
+  padding: 0;
+  border: none;
+  pointer-events: none;
 }
 
 /* Заголовок сайдбара: padding, font-weight 600, border-bottom */
@@ -143,12 +212,34 @@
   color: var(--color-success, #6c6);
 }
 
+/* Футер сайдбара: padding, border-top */
+.calendar-sidebar__footer {
+  padding: 10px;
+  border-top: 1px solid var(--glass-border);
+}
+
 /* Пустой сайдбар: центрированный текст, вторичный цвет */
 .calendar-sidebar__empty {
   text-align: center;
   color: var(--text-secondary);
   font-size: 12px;
   padding: 20px 0;
+}
+
+/* ========== STATUS BALL В ЯЧЕЙКАХ КАЛЕНДАРЯ ========== */
+
+/* Верхняя часть ячейки: номер дня + шарик рядом */
+.fc .fc-daygrid-day-top {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+/* Шарик внутри ячейки */
+.fc .status-ball {
+  flex-shrink: 0;
 }
 
 /* ========== FULLCALENDAR ПЕРЕОПРЕДЕЛЕНИЯ ========== */

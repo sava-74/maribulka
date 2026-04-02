@@ -178,6 +178,22 @@ Use the `Skill` tool to activate skills when appropriate:
 
 ---
 
+## ⚠️ КРИТИЧЕСКИЕ ПРАВИЛА ПРОЕКТА
+
+### 1. СТИЛИ — ТОЛЬКО В CSS ФАЙЛАХ!
+- **КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО** писать стили в `.vue` файлах (никаких `<style>` блоков)
+- **ВСЕГДА** создавай отдельный CSS файл в `assets/` или в существующий тематический файл
+- **Пример:** Для календаря — `assets/calendar.css`, для кнопок — `buttonGlass.css`
+
+### 2. CSS ПЕРЕМЕННЫЕ — ТОЛЬКО В style.css!
+- **ВСЕ** CSS переменные создаются ТОЛЬКО в `D:\GitHub\maribulka\maribulka-vue\src\style.css`
+- **ЗАПРЕЩЕНО** создавать `:root` переменные в других CSS файлах
+- **Пример:** Если нужна новая переменная для цвета/размера — добавляй в `:root` в `style.css`
+
+**НАРУШЕНИЕ ЭТИХ ПРАВИЛ = КРИТИЧЕСКАЯ ОШИБКА!**
+
+---
+
 ## 🔍 Chrome DevTools MCP Integration
 
 You have access to **Chrome DevTools MCP** skills for runtime debugging through live browser inspection. Use these tools to reproduce bugs, inspect errors in real-time, and verify fixes in the actual browser environment.

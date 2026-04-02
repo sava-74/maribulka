@@ -1,0 +1,16 @@
+
+> maribulka-vue@0.0.0 build
+> vue-tsc -b && vite build
+
+src/components/calendar/CalendarPanel.vue(26,9): error TS2339: Property 'calendarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarPanel.vue(26,24): error TS2339: Property 'isCalendarHidden' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(16,10): error TS2724: '"@mdi/light-js"' has no exported member named 'mdiDotsVertical'. Did you mean 'mdilDotsVertical'?
+src/components/calendar/CalendarResizer.vue(21,9): error TS2339: Property 'calendarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(21,24): error TS2339: Property 'sidebarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(21,38): error TS2339: Property 'isCalendarHidden' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(21,56): error TS2339: Property 'isSidebarHidden' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(21,73): error TS2339: Property 'updateCalendarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(21,94): error TS2339: Property 'updateSidebarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarResizer.vue(29,20): error TS6133: 'e' is declared but its value is never read.
+src/components/calendar/CalendarSidebar.vue(10,9): error TS2339: Property 'sidebarWidth' does not exist on type '{}'.
+src/components/calendar/CalendarSidebar.vue(10,23): error TS2339: Property 'isSidebarHidden' does not exist on type '{}'.

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, inject, nextTick } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -18,6 +18,26 @@ import ViewBookingModal from './ViewBookingModal.vue'
 import CancelBookingModal from './CancelBookingModal.vue'
 import ConfirmSessionModal from './ConfirmSessionModal.vue'
 import BookingActionsModal from './BookingActionsModal.vue'
+
+// Inject calendar context
+interface CalendarContext {
+  calendarWidth: any
+  calendarZ: any
+  snapState: any
+  setSidebarByDayView: (value: boolean) => void
+}
+
+const context = inject<CalendarContext>('calendar-context')
+if (!context) throw new Error('CalendarPanel must be inside CalendarContainer')
+
+const { calendarWidth, calendarZ, snapState, setSidebarByDayView } = context
+
+// position: absolute, left: 0 — левый край всегда у левой границы контейнера
+// width меняется через контекст
+const panelStyle = computed(() => ({
+  width: `${calendarWidth.value}px`,
+  zIndex: calendarZ.value,
+}))
 
 const emit = defineEmits<{
   sidebarUpdate: [payload: { date: string; bookings: any[]; isDayView: boolean }]
@@ -73,6 +93,22 @@ const sidebarBookings = computed(() => {
   })
 })
 
+// Красные статусы (отмена/провал)
+const RED_STATUSES = new Set(['cancelled', 'cancelled_client', 'cancelled_photographer', 'failed'])
+
+// Индекс шариков по дате: 'red' если есть хоть одна красная запись, иначе 'default'
+const ballsByDate = computed<Record<string, 'red' | 'default'>>(() => {
+  const result: Record<string, 'red' | 'default'> = {}
+  for (const booking of bookingsStore.bookings) {
+    const d = new Date(booking.shooting_date)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    if (!result[key] || result[key] === 'default') {
+      result[key] = RED_STATUSES.has(booking.status) ? 'red' : 'default'
+    }
+  }
+  return result
+})
+
 // Calendar events
 const calendarEvents = computed(() => {
   return bookingsStore.bookings.map(booking => {
@@ -112,6 +148,7 @@ function emitSidebar() {
 
 function handleDatesSet(info: any) {
   isDayView.value = info.view.type === 'timeGridDay'
+  setSidebarByDayView(isDayView.value)
   currentRangeStart.value = info.start
   currentRangeEnd.value = info.end
 
@@ -123,6 +160,20 @@ function handleDatesSet(info: any) {
 }
 
 watch([sidebarDate, sidebarBookings, isDayView], emitSidebar)
+
+watch(calendarWidth, async () => {
+  await nextTick()
+  calendarRef.value?.getApi().updateSize()
+})
+
+// При обновлении записей — перерендерить ячейки чтобы dayCellDidMount сработал повторно
+watch(ballsByDate, async () => {
+  await nextTick()
+  // Удаляем старые шарики вручную и даём FullCalendar перерендерить через render()
+  document.querySelectorAll('.fc-daygrid-day-top .status-ball').forEach(el => el.remove())
+  calendarRef.value?.getApi().render()
+})
+
 
 function handleDateClick(info: any) {
   const calendarApi = calendarRef.value?.getApi()
@@ -214,6 +265,16 @@ const calendarOptions = computed(() => ({
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
   handleWindowResize: true,
+  dayCellDidMount: (arg: any) => {
+    const d = arg.date
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const ball = ballsByDate.value[key]
+    if (!ball) return
+    const span = document.createElement('span')
+    span.className = 'status-ball' + (ball === 'red' ? ' status-ball--red' : '')
+    const top = arg.el.querySelector('.fc-daygrid-day-top')
+    if (top) top.appendChild(span)
+  },
 }))
 
 onMounted(async () => {
@@ -224,7 +285,11 @@ defineExpose({ handleSidebarAdd, handleSidebarSelect })
 </script>
 
 <template>
-  <div class="padGlass padGlass-work calendar-panel">
+  <div 
+    class="padGlass padGlass-work calendar-panel"
+    :class="{ 'calendar-panel--animating': snapState === 'hidden-left' || snapState === 'hidden-right' }"
+    :style="panelStyle"
+  >
 
     <FullCalendar ref="calendarRef" :options="calendarOptions" />
 

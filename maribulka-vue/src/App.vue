@@ -6,7 +6,9 @@ import TopBar from './components/TopBar.vue'
 import LoginModal from './components/LoginModal.vue'
 import LaunchPad from './components/launchpad/LaunchPad.vue'
 import Home from './components/home/Home.vue'
+import CalendarContainer from './components/calendar/CalendarContainer.vue'
 import CalendarPanel from './components/calendar/CalendarPanel.vue'
+import CalendarResizer from './components/calendar/CalendarResizer.vue'
 import CalendarSidebar from './components/calendar/CalendarSidebar.vue'
 import BookingsTable from './components/calendar/BookingsTable.vue'
 import IncomeTable from './components/finance/income/IncomeTable.vue'
@@ -30,12 +32,10 @@ const launchpadRef = ref<InstanceType<typeof LaunchPad> | null>(null)
 const calendarPanelRef = ref<InstanceType<typeof CalendarPanel> | null>(null)
 const sidebarDate = ref('')
 const sidebarBookings = ref<any[]>([])
-const sidebarIsDayView = ref(false)
 
 function onSidebarUpdate(payload: { date: string; bookings: any[]; isDayView: boolean }) {
   sidebarDate.value = payload.date
   sidebarBookings.value = payload.bookings
-  sidebarIsDayView.value = payload.isDayView
 }
 
 function openLogin(origin: { x: number, y: number, w: number, h: number }) {
@@ -70,14 +70,16 @@ onMounted(async () => {
       <LaunchPad ref="launchpadRef" :isVisible="showLaunchpad" :origin="launchpadOrigin" @close="showLaunchpad = false" />
       <Home v-if="navStore.currentPage === 'home'" />
       <template v-if="navStore.currentPage === 'calendar'">
-        <CalendarPanel ref="calendarPanelRef" @sidebar-update="onSidebarUpdate" />
-        <CalendarSidebar
-          v-if="!sidebarIsDayView"
-          :date="sidebarDate"
-          :bookings="sidebarBookings"
-          @add="calendarPanelRef?.handleSidebarAdd()"
-          @select="calendarPanelRef?.handleSidebarSelect($event)"
-        />
+        <CalendarContainer>
+          <CalendarPanel ref="calendarPanelRef" @sidebar-update="onSidebarUpdate" />
+          <CalendarResizer />
+          <CalendarSidebar
+            :date="sidebarDate"
+            :bookings="sidebarBookings"
+            @add="calendarPanelRef?.handleSidebarAdd()"
+            @select="calendarPanelRef?.handleSidebarSelect($event)"
+          />
+        </CalendarContainer>
       </template>
       <BookingsTable v-if="navStore.currentPage === 'bookings'" />
       <IncomeTable v-if="navStore.currentPage === 'income'" />

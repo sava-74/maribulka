@@ -1,7 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPlus } from '@mdi/js'
+
+// Inject calendar context
+interface CalendarContext {
+  sidebarWidth: any
+  sidebarZ: any
+  snapState: any
+  isSidebarByDayView: any
+}
+
+const context = inject<CalendarContext>('calendar-context')
+if (!context) throw new Error('CalendarSidebar must be inside CalendarContainer')
+
+const { sidebarWidth, sidebarZ, snapState, isSidebarByDayView } = context
+
+// position: absolute, right: 0 — правый край всегда у правой границы контейнера
+// width меняется через контекст
+const sidebarStyle = computed(() => ({
+  width: `${sidebarWidth.value}px`,
+  zIndex: sidebarZ.value,
+}))
 
 interface Booking {
   id: number
@@ -45,7 +65,11 @@ function getDebt(booking: Booking): number {
 </script>
 
 <template>
-  <div class="padGlass padGlass-work calendar-sidebar">
+  <div
+    class="padGlass padGlass-work calendar-sidebar"
+    :class="{ 'calendar-sidebar--hidden': isSidebarByDayView, 'calendar-sidebar--animating': snapState === 'hidden-left' || snapState === 'hidden-right' }"
+    :style="sidebarStyle"
+  >
     <div class="calendar-sidebar__header">{{ formattedDate || 'Выберите день' }}</div>
     <div class="calendar-sidebar__list">
       <template v-if="bookings.length">
@@ -72,7 +96,7 @@ function getDebt(booking: Booking): number {
       </template>
       <div v-else class="calendar-sidebar__empty">Нет записей</div>
     </div>
-    <div class="ButtonFooter PosCenter" style="padding: 10px; border-top: 1px solid var(--glass-border);">
+    <div class="ButtonFooter PosCenter calendar-sidebar__footer">
       <button class="btnGlass iconText" @click="$emit('add')">
         <span class="inner-glow"></span>
         <span class="top-shine"></span>
