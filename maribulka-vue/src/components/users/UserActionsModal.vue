@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiAccountPlusOutline, mdiEyeOutline, mdiFileEditOutline, mdiShieldAccountOutline, mdiAccountOffOutline } from '@mdi/js'
+import { mdiAccountPlusOutline, mdiEyeOutline, mdiFileEditOutline, mdiShieldAccountOutline, mdiAccountOffOutline, mdiClose } from '@mdi/js'
 
 interface User {
   id: number
@@ -78,6 +78,12 @@ const canPermissions = computed(() => {
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiAccountOffOutline" class="btn-icon" />
             <span>Уволить</span>
+          </button>
+          <button class="btnGlass iconTextStart" @click="$emit('close')">
+            <span class="inner-glow"></span>
+            <span class="top-shine"></span>
+            <svg-icon type="mdi" :path="mdiClose" class="btn-icon" />
+            <span>Закрыть</span>
           </button>
         </div>
       </div>

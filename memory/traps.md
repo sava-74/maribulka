@@ -259,10 +259,12 @@ if (status == 'completed') {
 **Проблема:**
 ```html
 <!-- Quill создаёт: -->
-<a href="mail.ru">mail.ru</a>
+<a href="example.ru">example.ru</a>
+<a href="vk.com/club123">ВКонтакте</a>
 
 <!-- URL становится: -->
-https://марибулька.рф/mail.ru  <!-- Неправильно! -->
+https://марибулька.рф/example.ru  <!-- Неправильно! -->
+https://марибулька.рф/vk.com/club123  <!-- Неправильно! -->
 ```
 
 **Решение (при сохранении):**
@@ -276,6 +278,11 @@ fixedContent = fixedContent.replace(
     return match
   }
 )
+```
+
+**Пример корректной ссылки:**
+```html
+<a href="mailto:info@example.ru">info@example.ru</a>
 ```
 
 **Файл:** `EditStudioDescriptionModal.vue` (строки 122-142)

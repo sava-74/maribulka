@@ -15,7 +15,8 @@
       "Bash(ssh *)",
       "Bash(del *)",
       "Bash(mkdir *)",
-      "Bash(ren *)"
+      "Bash(ren *)",
+      "Read(C:\\Users\\sava\\.qwen\\extensions\\superpowers/**)"
     ]
   },
   "$version": 3

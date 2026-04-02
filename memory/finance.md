@@ -888,4 +888,4 @@ const filtered = filterByPeriod(expenses, 'date', 'quarter', '2026-02')
 - [architecture.md](architecture.md) - архитектура проекта
 - [changelog.md](changelog.md) - история изменений
 - [patterns.md](patterns.md) - паттерны кода
-- [expenses-plan.md](expenses-plan.md) - план работ (устарел, реализовано)
+- ~~[expenses-plan.md](expenses-plan.md)~~ — план работ (устарел, реализовано, документация в [expenses.md](expenses.md))

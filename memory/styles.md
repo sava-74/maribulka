@@ -14,9 +14,9 @@
 
 ```
 assets/
-├── theme.css          # CSS переменные (ОБНОВЛЕНО 2026-02-25)
+├── style.css          # CSS переменные (ОБНОВЛЕНО 2026-02-25, до 05.03.2026 в theme.css)
 ├── buttons.css        # ВСЕ кнопки
-├── glass-panel.css    # Панели с вкладками (glass-panel-*)
+├── padGlass.css       # Панели с вкладками (padGlass-*)
 ├── calendar.css       # Календарь FullCalendar
 ├── tables.css         # Таблицы (table-*, filter-*, accounting-table)
 ├── modal.css          # Модальные окна (РЕФАКТОРИНГ 2026-02-25)
@@ -36,11 +36,13 @@ assets/
 2. **НЕТ inline стилей** в template (только классы)
 3. **Импорт CSS** только в главных компонентах
 4. При изменении стилей - **ВСЕГДА** в соответствующий .css файл
-5. **ИСПОЛЬЗОВАТЬ переменные** из theme.css (100% применение!)
+5. **ИСПОЛЬЗОВАТЬ переменные** из style.css (100% применение!)
 
 ---
 
-## 🆕 CSS переменные (theme.css) - ОБНОВЛЕНО 2026-02-25
+## 🆕 CSS переменные (style.css) - ОБНОВЛЕНО 2026-02-25
+
+**Примечание:** До 05.03.2026 CSS переменные находились в файле `theme.css`, затем перенесены в `style.css`.
 
 ### Цвета и общие настройки
 
@@ -397,7 +399,7 @@ assets/
 }
 ```
 
-### Эталон: Панели с вкладками (glass-panel.css)
+### Эталон: Панели с вкладками (padGlass.css)
 
 ```css
 .glass-panel-tabs-sticky {
@@ -461,7 +463,7 @@ assets/
 
 ---
 
-## Классы панелей с вкладками (glass-panel.css)
+## Классы панелей с вкладками (padGlass.css)
 
 ### 📂 Базовая панель
 
@@ -551,13 +553,13 @@ assets/
 ```vue
 <!-- App.vue -->
 <script setup lang="ts">
-import './assets/theme.css'
+import './assets/style.css'
 import './assets/buttons.css'
 import './assets/modal.css'
 import './assets/layout.css'
 import './assets/sidebar.css'
 import './assets/topbar.css'
-import './assets/glass-panel.css'
+import './assets/padGlass.css'
 import './assets/tables.css'
 // ...
 </script>
@@ -643,7 +645,7 @@ import './assets/tables.css'
 
 ### 2026-02-26: Анализ стилей кнопок
 - ✅ Проанализированы все CSS файлы проекта
-- ✅ Найдены стили кнопок в 7 файлах: buttons.css, glass-panel.css, tiptap.css, topbar.css, sidebar.css, calendar.css, modal.css
+- ✅ Найдены стили кнопок в 7 файлах: buttons.css, padGlass.css, tiptap.css, topbar.css, sidebar.css, calendar.css, modal.css
 - ✅ Выявлено 6 проблем: дублирование, закомментированный код, отсутствие комментариев, разбросанность стилей
 - ✅ Составлена структура нового buttons.css (13 блоков)
 - ✅ Определены правила комментирования (БЕЗ конкретных значений переменных!)

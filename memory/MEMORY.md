@@ -4,21 +4,35 @@
 
 Основная память разбита на тематические файлы для удобства:
 
-- **[topbar-design.md](topbar-design.md)** - 🆕 топбар: 4 кнопки, Лаунчпад, HTML из эталона
-- **[roadmap.md](roadmap.md)** - генеральный план развития проекта (8 этапов!)
-- **[glass-panel-guide.md](glass-panel-guide.md)** - 🆕 универсальная система панелей, миграция
-- **[deployment.md](deployment.md)** - сервер BeGet, деплой, SSH, медиа-файлы
-- **[architecture.md](architecture.md)** - структура проекта, ключевые файлы, БД
-- **[styles.md](styles.md)** - организация CSS, паттерны, переменные
-- **[calendar.md](calendar.md)** - календарь записей, статусы, цвета, слоты
-- **[mobile.md](mobile.md)** - мобильная адаптация, брейкпоинты
-- **[changelog.md](changelog.md)** - история изменений по датам
-- **[patterns.md](patterns.md)** - эталоны кода, таблицы, модалки
-- **[traps.md](traps.md)** - известные ловушки и баги
-- **[business-processes.md](business-processes.md)** - бизнес-процессы, правила работы с заказами
-- **[expenses-plan.md](expenses-plan.md)** - план работ: Расходы + Категории расходов
-- **[buttons-refactoring.md](buttons-refactoring.md)** - рефакторинг кнопок (26.02.2026)
-- **[glass-btn-guide.md](glass-btn-guide.md)** - 🆕 ЭТАЛОН новой системы glass-btn (04.03.2026)
+### 📖 Основная память
+- **[MEMORY.md](MEMORY.md)** — этот файл (главная память, правила, оглавление)
+- **[architecture.md](architecture.md)** — структура проекта, ключевые файлы, БД
+- **[styles.md](styles.md)** — организация CSS, паттерны, переменные
+- **[patterns.md](patterns.md)** — эталоны кода, таблицы, модалки
+- **[traps.md](traps.md)** — известные ловушки и баги
+- **[business-process.md](business-process.md)** — бизнес-процессы, правила работы с заказами
+- **[calendar.md](calendar.md)** — календарь записей, статусы, цвета, слоты
+- **[mobile.md](mobile.md)** — мобильная адаптация, брейкпоинты
+- **[deployment.md](deployment.md)** — сервер BeGet, деплой, SSH, медиа-файлы
+- **[finance.md](finance.md)** — финансы, доходы, расходы, отчёты
+- **[expenses.md](expenses.md)** — план и реализация расходов
+- **[filters-plan.md](filters-plan.md)** — фильтры и поиск
+- **[icons.md](icons.md)** — иконки, библиотеки, использование
+- **[patterns.md](patterns.md)** — эталоны кода, таблицы, модалки
+
+### 🔄 Системные файлы (автоматические)
+- **[auto-save.md](auto-save.md)** — 🆕 автосохранение сессий (авто при выходе)
+- **[changelog.md](changelog.md)** — история изменений проекта (авто + ручное)
+- **[SAVE-INSTRUCTIONS.md](SAVE-INSTRUCTIONS.md)** — 🆕 инструкция по сохранению
+
+### 📋 Планы и дорожные карты
+- **[roadmap.md](roadmap.md)** — генеральный план развития проекта (8 этапов!) `[ФАЙЛ УДАЛЁН]`
+
+### 🎨 Дизайн и UI
+- **[glass-panel-guide.md](glass-panel-guide.md)** — 🆕 универсальная система панелей, миграция `[ФАЙЛ УДАЛЁН]`
+- **[glass-btn-guide.md](glass-btn-guide.md)** — 🆕 ЭТАЛОН новой системы glass-btn `[ФАЙЛ УДАЛЁН]`
+- **[buttons-refactoring.md](buttons-refactoring.md)** — рефакторинг кнопок (26.02.2026) `[ФАЙЛ УДАЛЁН]`
+- **[topbar-design.md](topbar-design.md)** — 🆕 топбар: 4 кнопки, Лаунчпад, HTML из эталона `[ФАЙЛ УДАЛЁН]`
 
 ---
 
@@ -141,10 +155,12 @@ git push
 - **БД:** MySQL на BeGet
 - **Библиотеки:**
   - FullCalendar (календарь записей)
-  - **TipTap v3.20** (rich-text редактор, заменил Quill 26.02.2026)
-    - Включён resize изображений (ручки по углам/сторонам)
-    - Base64 изображения (allowBase64: true)
-    - Кастомная модалка ввода URL ссылки (БЕЗ window.prompt)
+  - **CKEditor 5 v47.6.0** (@ckeditor/ckeditor5-vue)
+    - Заменил TipTap 07.03.2026
+    - Glass-стилизация тулбара
+    - Float изображений (left/right/block)
+    - Кастомные модалки (БЕЗ window.prompt)
+    - Стили в `editor.css`
   - @mdi/js (иконки Material Design)
   - @jamescoyle/vue-icon (компонент для MDI иконок)
   - TanStack Table (таблицы)
@@ -198,6 +214,48 @@ git push
   - Закрытие LaunchPad кнопкой с анимацией: `defineExpose({ close })` + `launchpadRef?.close()`
 - 🚧 **Этап 1: Desktop дизайн** (в работе)
 - ⏳ Кнопка скрыть/показать таблицу
+
+---
+
+## 🔄 Система автосохранения сессий
+
+### Режимы сохранения
+
+| Режим | Когда | Что делает |
+|-------|-------|------------|
+| **Автосохранение при выходе** | При завершении сессии | Краткое резюме → `auto-save.md` + `changelog.md` |
+| **Ручное сохранение** | По команде `/сохранить` | Полное резюме с категоризацией → выбранный файл |
+| **Промежуточное сохранение** | Каждые 10 минут | Прогресс → `changelog.md` |
+
+### Команды ручного сохранения
+
+```
+/сохранить              → Сохранить прогресс в changelog.md
+/сохранить в patterns   → Сохранить как паттерн в patterns.md
+/сохранить в traps      → Сохранить как баг в traps.md
+/сохранить в styles     → Сохранить изменения стилей в styles.md
+/сохранить в architecture → Сохранить изменения архитектуры в architecture.md
+/сохранить в business   → Сохранить бизнес-процесс в business-process.md
+```
+
+### Примеры
+
+**После рефакторинга:**
+```
+Пользователь: /сохранить в patterns
+```
+
+**После исправления бага:**
+```
+Пользователь: /сохранить в traps
+```
+
+**Перед перерывом:**
+```
+Пользователь: /сохранить
+```
+
+Подробнее в [SAVE-INSTRUCTIONS.md](SAVE-INSTRUCTIONS.md)
 
 ---
 

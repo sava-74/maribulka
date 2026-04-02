@@ -1,5 +1,79 @@
 # Changelog - История изменений
 
+## 07.03.2026 - Миграция с TipTap на CKEditor 5
+
+**Причина:** TipTap не поддерживал float изображений (left/right/block)
+
+**Удалено:**
+- @tiptap/vue-3
+- @tiptap/starter-kit
+- @tiptap/extension-image
+- @tiptap/extension-text-align
+- @tiptap/extension-underline
+- @tiptap/extension-placeholder
+
+**Добавлено:**
+- ckeditor5: ^47.6.0
+- @ckeditor/ckeditor5-vue: ^7.3.1
+
+**Изменения:**
+- **Компонент:** `Editor.vue` — полная переработка
+- **Стили:** `editor.css` — glass-стилизация тулбара
+- **Функционал:**
+  - Float изображений (left/right/block)
+  - Resize с ручками
+  - Кастомная модалка редактора (БЕЗ window.prompt)
+  - Paste из Word/Google Docs
+  - Table support
+
+**Конфигурация:**
+```javascript
+ClassicEditor.create(element, {
+  toolbar: [...],
+  image: {
+    insert: { type: 'auto' }
+  },
+  allowBase64: true
+})
+```
+
+---
+
+## 02.04.2026 - Аудит памяти (критичные исправления)
+
+### ✅ Исправлены критичные несоответствия
+
+**1. Битые ссылки в MEMORY.md:**
+- Удалены ссылки на несуществующие файлы из оглавления
+- Помечены как `[ФАЙЛ УДАЛЁН]`: roadmap.md, glass-panel-guide.md, glass-btn-guide.md, buttons-refactoring.md, topbar-design.md
+
+**2. Структура CSS файлов (architecture.md):**
+- Заменена устаревшая структура (theme.css, buttons.css и др.)
+- Добавлена актуальная структура с 19 файлами
+- Указаны: style.css, buttonGlass.css, padGlass.css, modal.css, editor.css и др.
+
+**3. Информация о редакторе (architecture.md, MEMORY.md):**
+- Заменено: TipTap → CKEditor 5 v47.6.0
+- Добавлено: "Заменил TipTap 07.03.2026"
+- Указаны особенности: Glass-стилизация тулбара, Float изображений, кастомные модалки
+
+**4. API endpoints (architecture.md):**
+- Заменено: `/api/auth.php?action=login` → `/api/login.php`
+- Заменено: `/api/auth.php?action=logout/check` → `/api/session.php`
+- Добавлены endpoints: users.php, permissions.php, home_blocks.php
+- Добавлена секция "Файловая структура API" (14 файлов)
+
+**5. Компонент Accounting.vue (architecture.md):**
+- Заменено: "Accounting.vue - родительский компонент" → "Навигация по вкладкам: App.vue (через navStore.currentPage)"
+- Уточнено: Учёт (4 вкладки) и Справочники (4 вкладки) через References.vue
+
+**Файлы обновлены:**
+- `memory/MEMORY.md`
+- `memory/architecture.md`
+- `memory/changelog.md` (эта запись)
+
+---
+
 ## 06.03.2026 (продолжение) - Мобильная адаптация LaunchPad + TopBar
 
 ### ✅ Что сделано

@@ -40,7 +40,12 @@ maribulka/
 ### Библиотеки
 - **Календарь:** @fullcalendar/vue3
   - Плагины: dayGrid, timeGrid, interaction
-- **Редактор:** Quill (@vueup/vue-quill)
+- **Редактор:** CKEditor 5 v47.6.0 (@ckeditor/ckeditor5-vue)
+  - Заменил TipTap 07.03.2026
+  - Glass-стилизация тулбара
+  - Float изображений (left/right/block)
+  - Кастомные модалки (БЕЗ window.prompt)
+  - Стили в `editor.css`
 - **Иконки:** @mdi/light-js (Material Design Icons Light)
 - **Диаграммы:** Chart.js v4.5.1
   - Используется в Reports.vue для финансовых отчётов
@@ -79,16 +84,75 @@ maribulka/
 - `EditStudioDescriptionModal.vue` - редактор описания
 
 ### Вкладки
-- `Accounting.vue` - родительский компонент с 4 вкладками:
+- **Навигация по вкладкам:** `App.vue` (через `navStore.currentPage`)
+- **Учёт (4 вкладки):**
   - **Запись** - BookingsFullCalendar + BookingsCalendar
   - **Приход** - IncomeTable
   - **Расход** - ExpensesTable
   - **Отчёты** - Reports (диаграммы Chart.js)
-- `References.vue` - справочники с 4 вкладками:
+- **Справочники (4 вкладки):** `References.vue`
   - **Клиенты** - ClientsTable
   - **Типы съёмок** - ShootingTypesTable
   - **Акции** - PromotionsTable
   - **Категории расходов** - ExpenseCategoriesTable
+
+---
+
+## UI Компоненты (переиспользуемые)
+
+**selectBox** — кастомный селект с поиском
+- **Файлы:** `components/ui/selectBox/SelectBox.vue`, `assets/selectBox.css`
+- **Props:** `options`, `placeholder`, `modelValue`
+- **Events:** `update:modelValue`, `search`
+
+**datePicker** — выбор дат (flatpickr)
+- **Файлы:** `components/ui/datePicker/DatePicker.vue`, `assets/datePicker.css`
+- **Props:** `modelValue`, `mode` (single/range)
+- **Events:** `update:modelValue`, `change`
+
+**searchTable** — таблица с поиском и фильтрами
+- **Файлы:** `components/ui/searchTable/SearchTable.vue`, `assets/searchTable.css`
+- **Props:** `data`, `columns`, `filters`
+- **Events:** `search`, `filter`, `sort`
+
+**SwitchToggle** — переключатель вкл/выкл
+- **Файлы:** `components/ui/SwitchToggle/SwitchToggle.vue`, `assets/switchToggle.css`
+- **Props:** `modelValue`, `label`
+- **Events:** `update:modelValue`
+
+**padLoader** — лоадер в стиле padGlass
+- **Файлы:** `components/ui/padLoader/padLoader.vue`, `assets/padLoader.css`
+- **Props:** `text` (опционально)
+
+---
+
+## Навигация
+
+**Store:** `navigation.ts` (navStore)
+
+**Страницы (currentPage):**
+
+| Страница | Компонент | Описание |
+|----------|-----------|----------|
+| `home` | `Home.vue` | Главная страница |
+| `calendar` | `CalendarPanel.vue` + `CalendarSidebar.vue` | Календарь записей |
+| `bookings` | `BookingsCalendar.vue` | Таблица записей |
+| `income` | `IncomeTable.vue` | Таблица доходов |
+| `expenses` | `ExpensesTable.vue` | Таблица расходов |
+| `users` | `Users.vue` | Пользователи и разрешения |
+| `salary_types` | `SalaryTypes.vue` | Справочник типов зарплат |
+| `clients` | `References.vue` (вкладка) | Справочник клиентов |
+| `shooting_types` | `References.vue` (вкладка) | Типы съёмок |
+| `promotions` | `References.vue` (вкладка) | Акции |
+| `expense_categories` | `References.vue` (вкладка) | Категории расходов |
+| `sandbox` | `SandboxView.vue` | Песочница (glass-btn система) |
+
+**Переключение:**
+```typescript
+navStore.currentPage = 'calendar' // Переход на страницу
+```
+
+**TopBar:** Кнопки навигации используют `navStore.currentPage` для подсветки активной
 
 ---
 
@@ -205,6 +269,11 @@ id, booking_id, amount, payment_date, category, created_at
 
 ## API Endpoints
 
+### Аутентификация
+
+- `POST /api/login.php` — Авторизация
+- `GET/POST /api/session.php` — Проверка сессии / Выход
+
 ### Записи
 
 - `GET /api/bookings.php` - список записей
@@ -241,41 +310,69 @@ id, booking_id, amount, payment_date, category, created_at
 - `GET /api/shooting_types.php`
 - `GET /api/promotions.php`
 
+### Пользователи и разрешения
+
+- `GET /api/users.php` - список пользователей
+- `GET /api/permissions.php` - права пользователей
+
 ### Домашняя страница
+
+- `GET /api/home_blocks.php` - блоки главной страницы
+- `GET /api/studio_description.php` - получить описание
+- `POST /api/studio_description.php` - обновить описание (только admin)
 - `GET /api/studio_photos.php` - получить фото
 - `POST /api/studio_photos.php` - загрузить фото (только admin)
 - `DELETE /api/studio_photos.php?position=N` - удалить фото
-- `GET /api/studio_description.php` - получить описание
-- `POST /api/studio_description.php` - обновить описание (только admin)
-
-### Аутентификация
-
-- `POST /api/auth.php?action=login`
-- `POST /api/auth.php?action=logout`
-- `GET /api/auth.php?action=check`
 
 ---
 
-## Файловая структура CSS
+## Файловая структура API
+
+```
+api/
+├── login.php              # POST — Авторизация
+├── session.php            # GET/POST — Проверка/выход
+├── bookings.php           # Записи
+├── clients.php            # Клиенты
+├── expenses.php           # Расходы
+├── expense-categories.php # Категории расходов
+├── income.php             # Доходы
+├── promotions.php         # Акции
+├── shooting-types.php     # Типы съёмок
+├── salary-types.php       # Типы зарплат
+├── users.php              # Пользователи
+├── permissions.php        # Разрешения
+├── home_blocks.php        # Блоки главной
+├── studio_description.php # Описание студии
+└── studio_photos.php      # Фото студии
+```
 
 Все стили в отдельных CSS файлах (см. [styles.md](styles.md)):
 
 ```
-assets/
-├── theme.css          # CSS переменные
-├── buttons.css        # Все кнопки
-├── calendar.css       # FullCalendar
-├── tables.css         # Таблицы
-├── modal.css          # Модальные окна
-├── layout.css         # Layout, вкладки
-├── sidebar.css        # Боковое меню
-├── topbar.css         # Верхняя панель
-├── content.css        # Основной контент
-├── home.css           # Домашняя страница
-├── panel.css          # Панели и карточки
-├── responsive.css     # Медиа-запросы
-├── app.css            # Глобальные стили
-└── reports.css        # ✨ НОВОЕ - Стили финансовых отчётов
+maribulka-vue/src/
+├── style.css                    # Глобальные стили + темы
+├── assets/
+│   ├── buttonGlass.css          # Кнопки
+│   ├── padGlass.css             # Панели
+│   ├── modal.css                # Модалки
+│   ├── calendar.css             # Календарь
+│   ├── calendar-table.css       # Таблица календаря
+│   ├── table.css                # Таблицы
+│   ├── income-table.css         # Таблица доходов
+│   ├── home.css                 # Главная страница
+│   ├── editor.css               # CKEditor 5
+│   ├── animations.css           # Анимации
+│   └── validAlertModal.css      # Alert модалка
+├── components/
+│   ├── ui/*/
+│   │   ├── selectBox.css
+│   │   ├── datePicker.css
+│   │   ├── searchTable.css
+│   │   └── switchToggle.css
+│   ├── salaryTypes/salaryTypes.css
+│   └── sandbox/sandbox.css      # Песочница
+└── assets/oldCss/               # Старые CSS (не импортируются)
 ```
 
 ---

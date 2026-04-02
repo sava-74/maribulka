@@ -434,3 +434,31 @@ function formatDateFull(dateString: string): string {
   return `${day}.${month}.${year}`
 }
 ```
+
+---
+
+## LaunchPad — Главное Меню
+
+**Компонент:** `components/launchpad/LaunchPad.vue`
+
+**Паттерн:**
+- Выезжает из кнопки LaunchPad в TopBar
+- Анимация "джинн" (из TopBar в панель)
+- Закрывается по клику вне панели или по кнопке
+
+**Закрытие с анимацией:**
+```vue
+<LaunchPad ref="launchpadRef" @close="launchpadRef?.close()" />
+```
+
+**Стили:**
+- `.padGlass-work` — рабочая панель
+- `.launchpad-grid` — сетка кнопок навигации
+- `.launchpad-btn` — кнопка навигации
+
+**Навигация в LaunchPad:**
+```typescript
+navStore.currentPage = 'calendar' // и т.д.
+```
+
+**Эталон:** `components/launchpad/LaunchPad.vue` + `assets/padGlass.css`

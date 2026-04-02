@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# SessionEnd hook - автосохранение сессии в memory/
+# Запускается при завершении сессии Qwen Code
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+PROJECT_ROOT="D:/GitHub/maribulka"
+MEMORY_DIR="${PROJECT_ROOT}/memory"
+
+# Получаем резюме сессии из переменной окружения
+SESSION_SUMMARY="${QWEN_SESSION_SUMMARY:-}"
+TIMESTAMP=$(date +"%Y-%m-%d %H:%M")
+
+# Если резюме пустое - выходим тихо
+if [ -z "$SESSION_SUMMARY" ]; then
+  exit 0
+fi
+
+# Создаём файл автосохранения если не существует
+AUTO_SAVE_FILE="${MEMORY_DIR}/auto-save.md"
+if [ ! -f "$AUTO_SAVE_FILE" ]; then
+  cat > "$AUTO_SAVE_FILE" << 'EOF'
+# 🔄 Автосохранение сессий
+
+Этот файл автоматически обновляется при завершении каждой сессии.
+
+---
+
+## Последние сессии
+
+EOF
+fi
+
+# Формируем запись сессии
+{
+  echo "### 📅 ${TIMESTAMP}"
+  echo ""
+  echo "$SESSION_SUMMARY"
+  echo ""
+  echo "---"
+  echo ""
+} >> "$AUTO_SAVE_FILE"
+
+# Всегда обновляем changelog
+CHANGELOG_FILE="${MEMORY_DIR}/changelog.md"
+if [ -f "$CHANGELOG_FILE" ]; then
+  # Вставляем после заголовка
+  TEMP_FILE=$(mktemp)
+  {
+    head -n 1 "$CHANGELOG_FILE"
+    echo ""
+    echo "### 📅 ${TIMESTAMP}"
+    echo ""
+    echo "$SESSION_SUMMARY"
+    echo ""
+    tail -n +2 "$CHANGELOG_FILE"
+  } > "$TEMP_FILE"
+  mv "$TEMP_FILE" "$CHANGELOG_FILE"
+fi
+
+exit 0
