@@ -42,6 +42,22 @@ $action = $_GET['action'] ?? 'list';
 $canFull = in_array($currentRole, [1, 2, 3]);
 $canView = in_array($currentRole, [1, 2, 3, 4]);
 
+// GET ?check_relations=1&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['check_relations'])) {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE client_id = ?");
+    $stmt->execute([$id]);
+    $count = (int)$stmt->fetchColumn();
+    if ($count === 0) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM income WHERE client_id = ?");
+        $stmt->execute([$id]);
+        $count = (int)$stmt->fetchColumn();
+    }
+    echo json_encode($count > 0);
+    exit;
+}
+
 // GET ?action=list
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
     $stmt = $pdo->query("SELECT * FROM clients ORDER BY name");
@@ -58,22 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$row) { http_response_code(404); echo json_encode(['success' => false, 'message' => 'Клиент не найден']); exit; }
     echo json_encode(['success' => true, 'data' => $row]);
-    exit;
-}
-
-// GET ?check_relations=1&id=X
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['check_relations'])) {
-    $id = (int)($_GET['id'] ?? 0);
-    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE client_id = ?");
-    $stmt->execute([$id]);
-    $count = (int)$stmt->fetchColumn();
-    if ($count === 0) {
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM income WHERE client_id = ?");
-        $stmt->execute([$id]);
-        $count = (int)$stmt->fetchColumn();
-    }
-    echo json_encode($count > 0);
     exit;
 }
 
