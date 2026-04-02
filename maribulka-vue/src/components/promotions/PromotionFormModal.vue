@@ -91,6 +91,10 @@ async function onSave() {
             <label class="input-label">Название *</label>
             <input class="modal-input" v-model="form.name" type="text" placeholder="Название акции" />
           </div>
+          <div class="input-field input-field-auto">
+            <label class="input-label">Активна</label>
+            <SwitchToggle v-model="form.is_active" />
+          </div>
         </div>
 
         <div class="input-row">
@@ -98,25 +102,13 @@ async function onSave() {
             <label class="input-label">Скидка, % *</label>
             <input class="modal-input" v-model.number="form.discount_percent" type="number" min="1" max="100" placeholder="0" />
           </div>
-        </div>
-
-        <div class="input-row">
-          <div class="input-field">
+          <div class="input-field-date">
             <label class="input-label">Дата начала</label>
-            <DatePicker v-model="form.start_date" mode="single" placeholder="Начало (не обязательно)" :showToday="false" />
+            <DatePicker v-model="form.start_date" mode="single" placeholder="Не указана" :showToday="false" />
           </div>
-          <div class="input-field">
+          <div class="input-field-date">
             <label class="input-label">Дата окончания</label>
-            <DatePicker v-model="form.end_date" mode="single" placeholder="Конец (не обязательно)" :showToday="false" />
-          </div>
-        </div>
-
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Активна</label>
-            <div style="padding-top: 4px">
-              <SwitchToggle v-model="form.is_active" />
-            </div>
+            <DatePicker v-model="form.end_date" mode="single" placeholder="Не указана" :showToday="false" />
           </div>
         </div>
 

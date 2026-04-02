@@ -64,14 +64,9 @@ async function onSave() {
             <label class="input-label">Название *</label>
             <input class="modal-input" v-model="form.name" type="text" placeholder="Название категории" />
           </div>
-        </div>
-
-        <div class="input-row">
-          <div class="input-field">
+          <div class="input-field input-field-auto">
             <label class="input-label">Активна</label>
-            <div style="padding-top: 4px">
-              <SwitchToggle v-model="form.is_active" />
-            </div>
+            <SwitchToggle v-model="form.is_active" />
           </div>
         </div>
 

@@ -315,7 +315,7 @@ async function save() {
             <label class="input-label">ФИО *</label>
             <input class="modal-input" v-model="form.full_name" type="text" placeholder="Полное имя" inputmode="text" lang="ru" @input="filterFio" />
           </div>
-          <div class="input-field">
+          <div class="input-field-date">
             <label class="input-label">Дата рождения *</label>
             <DatePicker v-model="form.date_of_birth" mode="single" placeholder="Дата рождения"
               :maxDate="maxBirthDate" :minDate="minBirthDate" :showToday="false" />

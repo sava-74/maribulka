@@ -90,6 +90,10 @@ async function onSave() {
             <label class="input-label">Название *</label>
             <input class="modal-input" v-model="form.name" type="text" placeholder="Название типа съёмки" />
           </div>
+          <div class="input-field input-field-auto">
+            <label class="input-label">Активен</label>
+            <SwitchToggle v-model="form.is_active" />
+          </div>
         </div>
 
         <div class="input-row">
@@ -106,15 +110,6 @@ async function onSave() {
         <div class="input-group">
           <label class="input-label">Описание</label>
           <textarea class="modal-input" v-model="form.description" rows="3" placeholder="Описание"></textarea>
-        </div>
-
-        <div class="input-row">
-          <div class="input-field">
-            <label class="input-label">Активен</label>
-            <div style="padding-top: 4px">
-              <SwitchToggle v-model="form.is_active" />
-            </div>
-          </div>
         </div>
 
         <div class="ButtonFooter PosSpace">

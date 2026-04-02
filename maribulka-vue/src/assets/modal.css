@@ -224,6 +224,22 @@ textarea.modal-input {
   min-width: 80px;
 }
 
+/* Поле даты: flex-колонка, ширина по содержанию */
+.input-field-date {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Поле по содержанию: не растягивается, ширина по контенту */
+.input-field-auto {
+  flex: 0 0 auto;
+  min-width: 0;
+  justify-content: center;
+}
+
 /* Поле телефона: фиксированная ширина 160px */
 .input-field-phone {
   flex: 0 0 160px;

@@ -1,30 +1,6 @@
 ---
 name: project-architect
-description: "Используйте этого агента, когда пользователю нужен детальный план реализации задачи в проекте. Агент анализирует требования, разбивает задачу на этапы, предлагает архитектурные решения и создаёт пошаговую дорожную карту реализации. Примеры использования:
-- <example>
-  Context: Пользователь хочет добавить новую функцию аутентификации в проект.
-  user: \"Нужно реализовать систему аутентификации пользователей с JWT токенами\"
-  <commentary>
-  Поскольку пользователю нужен план реализации новой функции, используйте agent project-architect для создания детального плана реализации.
-  </commentary>
-  assistant: \"Сейчас я запущу агента project-architect для создания подробного плана реализации системы аутентификации\"
-</example>
-- <example>
-  Context: Пользователь хочет рефакторить существующий модуль.
-  user: \"Нужно оптимизировать модуль работы с базой данных, он слишком медленный\"
-  <commentary>
-  Поскольку требуется план оптимизации существующего компонента, используйте agent project-architect для анализа и создания плана рефакторинга.
-  </commentary>
-  assistant: \"Запускаю agent project-architect для создания плана оптимизации модуля базы данных\"
-</example>
-- <example>
-  Context: Пользователь начинает новый крупный функционал.
-  user: \"Хочу добавить систему кэширования в приложение\"
-  <commentary>
-  Поскольку это новая крупная функция требующая планирования, используйте agent project-architect для создания архитектурного плана.
-  </commentary>
-  assistant: \"Использую agent project-architect для разработки плана реализации системы кэширования\"
-</example>"
+description: "\"Используйте этого агента, когда пользователю нужен детальный план реализации задачи в проекте. Агент анализирует требования, разбивает задачу на этапы, предлагает архитектурные решения и создаёт пошаговую дорожную карту реализации. Примеры использования:"
 tools:
   - AskUserQuestion
   - ExitPlanMode
@@ -43,10 +19,15 @@ tools:
   - browser_take_screenshot (playwright-mcp MCP Server)
   - browser_wait_for (playwright-mcp MCP Server)
   - directory_tree (filesystem MCP Server)
+  - get_console_message (chrome-devtools MCP Server)
   - get_file_info (filesystem MCP Server)
   - list_allowed_directories (filesystem MCP Server)
+  - list_console_messages (chrome-devtools MCP Server)
   - list_directory (filesystem MCP Server)
   - list_directory_with_sizes (filesystem MCP Server)
+  - list_network_requests (chrome-devtools MCP Server)
+  - list_pages (chrome-devtools MCP Server)
+  - performance_analyze_insight (chrome-devtools MCP Server)
   - query-docs (context7-mcp MCP Server)
   - read_file (filesystem MCP Server)
   - read_media_file (filesystem MCP Server)
@@ -54,6 +35,11 @@ tools:
   - read_text_file (filesystem MCP Server)
   - resolve-library-id (context7-mcp MCP Server)
   - search_files (filesystem MCP Server)
+  - select_page (chrome-devtools MCP Server)
+  - wait_for (chrome-devtools MCP Server)
+  - Edit
+  - WriteFile
+  - Shell
 color: Green
 ---
 
