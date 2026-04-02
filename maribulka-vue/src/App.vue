@@ -12,8 +12,13 @@ import BookingsTable from './components/calendar/BookingsTable.vue'
 import IncomeTable from './components/finance/income/IncomeTable.vue'
 import ExpensesTable from './components/finance/expenses/ExpensesTable.vue'
 import UsersTable from './components/users/UsersTable.vue'
+import SandboxView from './sandbox/SandboxView.vue'
 import UserFormModal from './components/users/UserFormModal.vue'
 import SalaryTypesTable from './components/salaryTypes/SalaryTypesTable.vue'
+import ClientsTable from './components/clients/ClientsTable.vue'
+import ShootingTypesTable from './components/shootingTypes/ShootingTypesTable.vue'
+import PromotionsTable from './components/promotions/PromotionsTable.vue'
+import ExpenseCategoriesTable from './components/expenseCategories/ExpenseCategoriesTable.vue'
 
 const authStore = useAuthStore()
 const navStore = useNavigationStore()
@@ -79,6 +84,11 @@ onMounted(async () => {
       <ExpensesTable v-if="navStore.currentPage === 'expenses'" />
       <UsersTable v-if="navStore.currentPage === 'users'" />
       <SalaryTypesTable v-if="navStore.currentPage === 'salary_types'" />
+      <ClientsTable v-if="navStore.currentPage === 'clients'" />
+      <ShootingTypesTable v-if="navStore.currentPage === 'shooting_types'" />
+      <PromotionsTable v-if="navStore.currentPage === 'promotions'" />
+      <ExpenseCategoriesTable v-if="navStore.currentPage === 'expense_categories'" />
+      <SandboxView v-if="navStore.currentPage === 'sandbox'" />
     </div>
   </div>
   <LoginModal :isVisible="showLogin" :origin="loginOrigin" @close="showLogin = false" />

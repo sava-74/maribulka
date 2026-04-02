@@ -1,18 +1,17 @@
 <?php
-/**
- * API для работы с клиентами
- *
- * GET /api/clients.php - получить всех клиентов
- * GET /api/clients.php?id=1 - получить одного клиента
- * GET /api/clients.php?search=Иванов - поиск клиента по имени/телефону
- * POST /api/clients.php - создать нового клиента
- * PUT /api/clients.php - обновить клиента
- * DELETE /api/clients.php?id=1 - удалить клиента
- */
-
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    'http://localhost:5173',
+    'https://xn--80aac1alfd7a3a5g.xn--p1ai',
+    'http://xn--80aac1alfd7a3a5g.xn--p1ai'
+];
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+}
+header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -20,154 +19,136 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+require_once 'session.php';
 require_once 'database.php';
+initSession();
 
-$db = Database::getInstance()->getConnection();
-$method = $_SERVER['REQUEST_METHOD'];
-
-try {
-    switch ($method) {
-        case 'GET':
-            if (isset($_GET['check_relations'])) {
-                // Проверить связи клиента с документами
-                $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE client_id = ?");
-                $stmt->execute([$_GET['id']]);
-                $result = $stmt->fetch();
-
-                echo json_encode($result['count'] > 0);
-                exit;
-            } elseif (isset($_GET['id'])) {
-                // Получить одного клиента
-                $stmt = $db->prepare("SELECT * FROM clients WHERE id = ?");
-                $stmt->execute([$_GET['id']]);
-                $result = $stmt->fetch();
-
-                if ($result) {
-                    echo json_encode($result);
-                } else {
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Клиент не найден']);
-                }
-            } elseif (isset($_GET['search'])) {
-                // Поиск клиента по имени или телефону
-                $search = '%' . $_GET['search'] . '%';
-                $stmt = $db->prepare("
-                    SELECT * FROM clients
-                    WHERE name LIKE ? OR phone LIKE ?
-                    ORDER BY name
-                    LIMIT 10
-                ");
-                $stmt->execute([$search, $search]);
-                $result = $stmt->fetchAll();
-                echo json_encode($result);
-            } else {
-                // Получить всех клиентов
-                $stmt = $db->query("SELECT * FROM clients ORDER BY name");
-                $result = $stmt->fetchAll();
-                echo json_encode($result);
-            }
-            break;
-
-        case 'POST':
-            // Создать нового клиента
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!isset($data['name']) || !isset($data['phone'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указаны обязательные поля: name, phone']);
-                exit;
-            }
-
-            // Проверяем, не существует ли клиент с таким телефоном
-            $stmt = $db->prepare("SELECT id FROM clients WHERE phone = ?");
-            $stmt->execute([$data['phone']]);
-            if ($stmt->fetch()) {
-                http_response_code(409);
-                echo json_encode(['error' => 'Клиент с таким телефоном уже существует']);
-                exit;
-            }
-
-            $stmt = $db->prepare("
-                INSERT INTO clients (name, phone, notes)
-                VALUES (?, ?, ?)
-            ");
-
-            $stmt->execute([
-                $data['name'],
-                $data['phone'],
-                $data['notes'] ?? null
-            ]);
-
-            echo json_encode([
-                'success' => true,
-                'id' => $db->lastInsertId(),
-                'message' => 'Клиент создан'
-            ]);
-            break;
-
-        case 'PUT':
-            // Обновить клиента
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!isset($data['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указан ID']);
-                exit;
-            }
-
-            // Проверяем, не занят ли телефон другим клиентом
-            $stmt = $db->prepare("SELECT id FROM clients WHERE phone = ? AND id != ?");
-            $stmt->execute([$data['phone'], $data['id']]);
-            if ($stmt->fetch()) {
-                http_response_code(409);
-                echo json_encode(['error' => 'Телефон уже используется другим клиентом']);
-                exit;
-            }
-
-            $stmt = $db->prepare("
-                UPDATE clients
-                SET name = ?, phone = ?, notes = ?
-                WHERE id = ?
-            ");
-
-            $stmt->execute([
-                $data['name'],
-                $data['phone'],
-                $data['notes'] ?? null,
-                $data['id']
-            ]);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Клиент обновлён'
-            ]);
-            break;
-
-        case 'DELETE':
-            // Удалить клиента (проверка связей происходит на фронтенде через check_relations)
-            if (!isset($_GET['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указан ID']);
-                exit;
-            }
-
-            // Удаляем
-            $stmt = $db->prepare("DELETE FROM clients WHERE id = ?");
-            $stmt->execute([$_GET['id']]);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Клиент удалён'
-            ]);
-            break;
-
-        default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Метод не поддерживается']);
-            break;
-    }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Ошибка базы данных: ' . $e->getMessage()]);
+if (!isset($_SESSION['user'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
 }
-?>
+
+$currentRole = (int)($_SESSION['user']['role'] ?? 0);
+if (!in_array($currentRole, [1, 2, 3, 4])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    exit;
+}
+
+$pdo = Database::getInstance()->getConnection();
+$action = $_GET['action'] ?? 'list';
+
+$canFull = in_array($currentRole, [1, 2, 3]);
+$canView = in_array($currentRole, [1, 2, 3, 4]);
+
+// GET ?action=list
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
+    $stmt = $pdo->query("SELECT * FROM clients ORDER BY name");
+    echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+    exit;
+}
+
+// GET ?action=get&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT * FROM clients WHERE id = ?");
+    $stmt->execute([$id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) { http_response_code(404); echo json_encode(['success' => false, 'message' => 'Клиент не найден']); exit; }
+    echo json_encode(['success' => true, 'data' => $row]);
+    exit;
+}
+
+// GET ?check_relations=1&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['check_relations'])) {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE client_id = ?");
+    $stmt->execute([$id]);
+    $count = (int)$stmt->fetchColumn();
+    if ($count === 0) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM income WHERE client_id = ?");
+        $stmt->execute([$id]);
+        $count = (int)$stmt->fetchColumn();
+    }
+    echo json_encode($count > 0);
+    exit;
+}
+
+// POST ?action=create
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty(trim($data['name'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите имя клиента']); exit; }
+    if (empty(trim($data['phone'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите телефон']); exit; }
+    // Уникальность телефона
+    $stmt = $pdo->prepare("SELECT id FROM clients WHERE phone = ?");
+    $stmt->execute([trim($data['phone'])]);
+    if ($stmt->fetch()) { http_response_code(409); echo json_encode(['success' => false, 'message' => 'Клиент с таким телефоном уже существует']); exit; }
+    try {
+        $stmt = $pdo->prepare("INSERT INTO clients (name, phone, notes) VALUES (?, ?, ?)");
+        $stmt->execute([trim($data['name']), trim($data['phone']), $data['notes'] ?? null]);
+        echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// POST ?action=update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $id = (int)($data['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    if (empty(trim($data['name'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите имя клиента']); exit; }
+    if (empty(trim($data['phone'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите телефон']); exit; }
+    // Уникальность телефона (исключая текущего)
+    $stmt = $pdo->prepare("SELECT id FROM clients WHERE phone = ? AND id != ?");
+    $stmt->execute([trim($data['phone']), $id]);
+    if ($stmt->fetch()) { http_response_code(409); echo json_encode(['success' => false, 'message' => 'Телефон уже используется другим клиентом']); exit; }
+    try {
+        $stmt = $pdo->prepare("UPDATE clients SET name = ?, phone = ?, notes = ? WHERE id = ?");
+        $stmt->execute([trim($data['name']), trim($data['phone']), $data['notes'] ?? null, $id]);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// DELETE ?action=delete&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE client_id = ?");
+    $stmt->execute([$id]);
+    if ((int)$stmt->fetchColumn() > 0) {
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'Клиент используется в записях на съёмку']);
+        exit;
+    }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM income WHERE client_id = ?");
+    $stmt->execute([$id]);
+    if ((int)$stmt->fetchColumn() > 0) {
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'Клиент используется в платежах']);
+        exit;
+    }
+    try {
+        $pdo->prepare("DELETE FROM clients WHERE id = ?")->execute([$id]);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+http_response_code(400);
+echo json_encode(['success' => false, 'message' => 'Неизвестный action']);

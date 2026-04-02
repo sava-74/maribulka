@@ -1,0 +1,30 @@
+/* ========== SALARY TYPES — субстили компонентов salaryTypes/ ========== */
+
+/* Строка: toggle + название + инпут + единица — всё в одну линию */
+.salary-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Текст названия начисления: растягивается, вторичный цвет */
+.salary-check-row .salary-check-label {
+  flex: 1;
+  font-size: var(--genTextSize);
+  color: var(--text-primary);
+}
+
+/* Поле ввода суммы/процента: фиксированная ширина */
+.salary-check-row .salary-check-input {
+  width: 110px;
+  flex: 0 0 110px;
+}
+
+/* Единица измерения (руб / %): вторичный цвет, не сжимается */
+.salary-check-row .salary-unit {
+  font-size: var(--genTextSize);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  min-width: 28px;
+}

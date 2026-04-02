@@ -1,17 +1,17 @@
 <?php
-/**
- * API для работы с типами съёмок
- *
- * GET /api/shooting-types.php - получить все типы
- * GET /api/shooting-types.php?id=1 - получить один тип
- * POST /api/shooting-types.php - создать новый тип
- * PUT /api/shooting-types.php - обновить тип
- * DELETE /api/shooting-types.php?id=1 - удалить тип
- */
-
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    'http://localhost:5173',
+    'https://xn--80aac1alfd7a3a5g.xn--p1ai',
+    'http://xn--80aac1alfd7a3a5g.xn--p1ai'
+];
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+}
+header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -19,143 +19,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+require_once 'session.php';
 require_once 'database.php';
+initSession();
 
-$db = Database::getInstance()->getConnection();
-$method = $_SERVER['REQUEST_METHOD'];
-
-try {
-    switch ($method) {
-        case 'GET':
-            // Проверка связей с заказами
-            if (isset($_GET['check_relations']) && isset($_GET['id'])) {
-                $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE shooting_type_id = ?");
-                $stmt->execute([$_GET['id']]);
-                $result = $stmt->fetch();
-                echo json_encode($result['count'] > 0);
-                break;
-            }
-
-            if (isset($_GET['id'])) {
-                // Получить один тип съёмки
-                $stmt = $db->prepare("SELECT * FROM shooting_types WHERE id = ?");
-                $stmt->execute([$_GET['id']]);
-                $result = $stmt->fetch();
-
-                if ($result) {
-                    echo json_encode($result);
-                } else {
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Тип съёмки не найден']);
-                }
-            } else {
-                // Получить все типы съёмок
-                $stmt = $db->query("SELECT * FROM shooting_types WHERE is_active = 1 ORDER BY name");
-                $result = $stmt->fetchAll();
-                echo json_encode($result);
-            }
-            break;
-
-        case 'POST':
-            // Создать новый тип съёмки
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!isset($data['name']) || !isset($data['base_price'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указаны обязательные поля: name, base_price']);
-                exit;
-            }
-
-            $stmt = $db->prepare("
-                INSERT INTO shooting_types (name, base_price, duration_minutes, description, is_active)
-                VALUES (?, ?, ?, ?, ?)
-            ");
-
-            $stmt->execute([
-                $data['name'],
-                $data['base_price'],
-                $data['duration_minutes'] ?? 30,
-                $data['description'] ?? null,
-                $data['is_active'] ?? 1
-            ]);
-
-            echo json_encode([
-                'success' => true,
-                'id' => $db->lastInsertId(),
-                'message' => 'Тип съёмки создан'
-            ]);
-            break;
-
-        case 'PUT':
-            // Обновить тип съёмки
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!isset($data['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указан ID']);
-                exit;
-            }
-
-            $stmt = $db->prepare("
-                UPDATE shooting_types
-                SET name = ?, base_price = ?, duration_minutes = ?, description = ?, is_active = ?
-                WHERE id = ?
-            ");
-
-            $stmt->execute([
-                $data['name'],
-                $data['base_price'],
-                $data['duration_minutes'] ?? 30,
-                $data['description'] ?? null,
-                $data['is_active'] ?? 1,
-                $data['id']
-            ]);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Тип съёмки обновлён'
-            ]);
-            break;
-
-        case 'DELETE':
-            // Удалить тип съёмки
-            if (!isset($_GET['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Не указан ID']);
-                exit;
-            }
-
-            // Проверяем, используется ли тип в записях
-            $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings WHERE shooting_type_id = ?");
-            $stmt->execute([$_GET['id']]);
-            $result = $stmt->fetch();
-
-            if ($result['count'] > 0) {
-                http_response_code(409);
-                echo json_encode([
-                    'error' => 'Невозможно удалить тип съёмки',
-                    'message' => "Тип используется в {$result['count']} записях. Деактивируйте вместо удаления."
-                ]);
-                exit;
-            }
-
-            // Удаляем
-            $stmt = $db->prepare("DELETE FROM shooting_types WHERE id = ?");
-            $stmt->execute([$_GET['id']]);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Тип съёмки удалён'
-            ]);
-            break;
-
-        default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Метод не поддерживается']);
-            break;
-    }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Ошибка базы данных: ' . $e->getMessage()]);
+if (!isset($_SESSION['user'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
 }
-?>
+
+$currentRole = (int)($_SESSION['user']['role'] ?? 0);
+if (!in_array($currentRole, [1, 2, 3, 4])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    exit;
+}
+
+$pdo = Database::getInstance()->getConnection();
+$action = $_GET['action'] ?? 'list';
+
+$canFull = in_array($currentRole, [1, 2]);
+$canView = in_array($currentRole, [1, 2, 3, 4]);
+
+// GET ?action=list
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
+    $stmt = $pdo->query("SELECT * FROM shooting_types ORDER BY name");
+    echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+    exit;
+}
+
+// GET ?action=get&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT * FROM shooting_types WHERE id = ?");
+    $stmt->execute([$id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) { http_response_code(404); echo json_encode(['success' => false, 'message' => 'Тип съёмки не найден']); exit; }
+    echo json_encode(['success' => true, 'data' => $row]);
+    exit;
+}
+
+// GET ?check_relations=1&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['check_relations'])) {
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE shooting_type_id = ?");
+    $stmt->execute([$id]);
+    echo json_encode((int)$stmt->fetchColumn() > 0);
+    exit;
+}
+
+// POST ?action=create
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty(trim($data['name'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите название']); exit; }
+    if (!isset($data['base_price']) || (float)$data['base_price'] <= 0) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите базовую цену (> 0)']); exit; }
+    try {
+        $stmt = $pdo->prepare("INSERT INTO shooting_types (name, base_price, duration_minutes, description, is_active) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([trim($data['name']), (float)$data['base_price'], (int)($data['duration_minutes'] ?? 30), $data['description'] ?? null, (int)($data['is_active'] ?? 1)]);
+        echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// POST ?action=update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $id = (int)($data['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    if (empty(trim($data['name'] ?? ''))) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'Укажите название']); exit; }
+    try {
+        $stmt = $pdo->prepare("UPDATE shooting_types SET name = ?, base_price = ?, duration_minutes = ?, description = ?, is_active = ? WHERE id = ?");
+        $stmt->execute([trim($data['name']), (float)($data['base_price'] ?? 0), (int)($data['duration_minutes'] ?? 30), $data['description'] ?? null, (int)($data['is_active'] ?? 1), $id]);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// DELETE ?action=delete&id=X
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
+    if (!$canFull) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Доступ запрещён']); exit; }
+    $id = (int)($_GET['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['success' => false, 'message' => 'ID обязателен']); exit; }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE shooting_type_id = ?");
+    $stmt->execute([$id]);
+    if ((int)$stmt->fetchColumn() > 0) {
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'Тип съёмки используется в записях на съёмку']);
+        exit;
+    }
+    try {
+        $pdo->prepare("DELETE FROM shooting_types WHERE id = ?")->execute([$id]);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+http_response_code(400);
+echo json_encode(['success' => false, 'message' => 'Неизвестный action']);

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
+import SwitchToggle from '../components/ui/SwitchToggle/SwitchToggle.vue'
+
 import {
   mdiWeatherSunny,
   mdiWeatherNight,
@@ -17,6 +19,7 @@ import {
 
 const theme = ref<'dark' | 'light'>('dark')
 const themeIcon = computed(() => theme.value === 'dark' ? mdiWeatherNight : mdiWeatherSunny)
+const switchOn = ref(false)
 
 function toggleTheme() {
   theme.value = theme.value === 'dark' ? 'light' : 'dark'
@@ -201,6 +204,8 @@ function onRipple(event: MouseEvent) {
             <span class="top-shine"></span>
             <span>Отмена</span>
           </button>
+          <!-- Переключатель -->
+          <SwitchToggle v-model="switchOn" />            
         </div>
       </div>
 

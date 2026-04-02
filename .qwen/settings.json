@@ -14,7 +14,8 @@
       "Read(C:\\Users\\sava\\AppData\\Roaming\\npm\\node_modules\\@qwen-code/**)",
       "Bash(ssh *)",
       "Bash(del *)",
-      "Bash(mkdir *)"
+      "Bash(mkdir *)",
+      "Bash(ren *)"
     ]
   },
   "$version": 3

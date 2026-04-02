@@ -71,6 +71,26 @@ function openUsers() {
   close()
 }
 
+function openClients() {
+  navStore.navigateTo('clients')
+  close()
+}
+
+function openShootingTypes() {
+  navStore.navigateTo('shooting_types')
+  close()
+}
+
+function openPromotions() {
+  navStore.navigateTo('promotions')
+  close()
+}
+
+function openExpenseCategories() {
+  navStore.navigateTo('expense_categories')
+  close()
+}
+
 function openSalaryTypes() {
   navStore.navigateTo('salary_types')
   close()
@@ -160,7 +180,7 @@ function onRipple(event: MouseEvent) {
         <div class="pad-title">Справочники</div>
         <div class="pad-icon-grid">
           <div class="pad-icon-cell" v-if="auth.can('clients', 'view')">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openClients()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiAccountGroup" class="btn-icon-big" />
@@ -168,7 +188,7 @@ function onRipple(event: MouseEvent) {
             <p class="pad-icon-label">Клиенты</p>
           </div>
           <div class="pad-icon-cell" v-if="auth.can('shooting_types', 'view')">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openShootingTypes()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiCamera" class="btn-icon-big" />
@@ -176,7 +196,7 @@ function onRipple(event: MouseEvent) {
             <p class="pad-icon-label">Типы съёмок</p>
           </div>
           <div class="pad-icon-cell" v-if="auth.can('promotions', 'view')">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openPromotions()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiTagMultiple" class="btn-icon-big" />
@@ -184,7 +204,7 @@ function onRipple(event: MouseEvent) {
             <p class="pad-icon-label">Акции</p>
           </div>
           <div class="pad-icon-cell" v-if="auth.can('expense_categories', 'view')">
-            <button class="btnGlass bigIcon" @click="onRipple($event)">
+            <button class="btnGlass bigIcon" @click="onRipple($event); openExpenseCategories()">
               <span class="inner-glow"></span>
               <span class="top-shine"></span>
               <svg-icon type="mdi" :path="mdiShapeOutline" class="btn-icon-big" />

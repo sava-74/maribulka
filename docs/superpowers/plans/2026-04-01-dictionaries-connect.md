@@ -1,30 +1,62 @@
 # План реализации: Подключение справочников (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 **Дата:** 1 апреля 2026
-**Статус:** Готов к реализации
+**Обновлено:** 2 апреля 2026
+**Статус:** В работе — эталон salary_types готов
 **Автор:** Архитектор Maribulka
 
 ---
 
-## 1. Анализ эталона (users/)
+## 1. Эталон справочника — `components/salaryTypes/`
 
-### Структура каталога `components/users/`
+> **ВАЖНО:** Эталоном для всех справочников является `salaryTypes/`, а НЕ `users/`.
+> `users/` — сложный компонент с увольнением и правами, не подходит как образец для простых справочников.
+
+### Структура каталога `components/salaryTypes/` (ЭТАЛОН)
 ```
-users/
-├── UsersTable.vue           # Основная таблица (TanStack Table)
-├── UserFormModal.vue        # Форма создания/редактирования
-├── UserActionsModal.vue     # Модальное окно действий
-├── ViewUserModal.vue        # Просмотр карточки
-├── FireUserModal.vue        # Увольнение пользователя
-└── UserPermissionsModal.vue # Права доступа
+salaryTypes/
+├── SalaryTypesTable.vue        # Основная таблица (TanStack Table)
+├── SalaryTypeFormModal.vue     # Форма создания/редактирования
+├── SalaryTypeActionsModal.vue  # Модальное окно действий
+├── ViewSalaryTypeModal.vue     # Просмотр карточки
+└── salaryTypes.css             # Субстили компонента (импортируется в main.ts)
 ```
+
+**Отдельный DeleteModal НЕ нужен** — удаление реализуется через универсальный `ConfirmModal`.
 
 ### Ключевые особенности эталона:
-- **TanStack Table** для отображения данных
-- **Pinia store** для состояния (auth.can для прав)
-- **Модульная структура:** каждый компонент отвечает за одно действие
-- **Стили:** glassmorphism (padGlass, btnGlass) + неоновые акценты
-- **API:** единый endpoint `/api/users.php?action={action}`
+
+#### ActionsModal (ЭТАЛОН)
+- Оверлей **2-го порядка:** `modal-overlay-main` (z-index 999)
+- `onMounted` → `check_relations` → `hasRelations: boolean` (по умолчанию `true` — кнопка скрыта до ответа)
+- Кнопка "Удалить": `v-if="canDelete"` — скрыта если есть связи
+- `ConfirmModal` (1-й порядок, `modal-overlay`, z-index 9999) открывается поверх через собственный `Teleport`
+- Кнопка "Закрыть" всегда внизу списка
+- Emit: `close`, `add`, `view`, `edit`, `delete`
+
+#### FormModal (ЭТАЛОН)
+- Оверлей **2-го порядка:** `modal-overlay-main`
+- Поля с надписью `input-label` сверху, структура `input-row` → `input-field`
+- `ValidAlertModal` для ошибок валидации (не `AlertModal`!)
+- `AlertModal` для серверных ошибок
+- При успехе — сразу `emit('save')`, без алерта успеха
+- `SwitchToggle` вместо нативных `<input type="checkbox">`
+- Субстили в отдельном `.css` файле каталога (если нужны специфичные классы)
+
+#### CSS субстили
+- Специфичные классы компонента — в отдельном файле `{name}.css` в папке компонента
+- Импортируется в `main.ts` рядом с другими субстилями
+- Использует только CSS переменные из `style.css`
+
+#### API (ЭТАЛОН)
+- Эндпоинт: `/api/{name}.php?action={action}`
+- `GET ?action=list` — список
+- `GET ?action=get&id=X` — один элемент
+- `GET ?check_relations=1&id=X` — проверка связей (возвращает `true`/`false`)
+- `POST ?action=create` — создание
+- `POST ?action=update` — обновление (id в теле)
+- `DELETE ?action=delete&id=X` — удаление (сам проверяет связи, 409 если есть)
+- Защита: сессия + проверка роли по паттерну `users.php`
 
 ---
 
@@ -409,18 +441,18 @@ function openSalaryTypes() {
 ### 7.1 API endpoint (1 файл)
 - [ ] `api/salary-types.php` — CRUD для типов зарплат
 
-### 7.2 Frontend компоненты (25 файлов)
+### 7.2 Frontend компоненты (ИСПРАВЛЕНО! DeleteModal не нужен — используем ConfirmModal)
 
-| Справочник | Table | Form | View | Actions | Delete | Итого |
-|------------|-------|------|------|---------|--------|-------|
-| **clients** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
-| **shooting_types** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
-| **promotions** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
-| **expense_categories** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
+| Справочник | Table | Form | View | Actions | CSS | Итого |
+|------------|-------|------|------|---------|-----|-------|
+| **clients** | ❌ | ❌ | ❌ | ❌ | ❌ | 0 |
+| **shooting_types** | ❌ | ❌ | ❌ | ❌ | ❌ | 0 |
+| **promotions** | ❌ | ❌ | ❌ | ❌ | ❌ | 0 |
+| **expense_categories** | ❌ | ❌ | ❌ | ❌ | ❌ | 0 |
 | **salary_types** | ✅ | ✅ | ✅ | ✅ | ✅ | 5 |
-| **Итого** | **5** | **5** | **5** | **5** | **5** | **25** |
 
-**Структура каталогов (camelCase! ИСПРАВЛЕНО! 2 апреля):**
+**Структура каталогов (camelCase, по эталону salaryTypes/):**
+
 ```
 components/
 ├── clients/
@@ -428,32 +460,34 @@ components/
 │   ├── ClientFormModal.vue
 │   ├── ViewClientModal.vue
 │   ├── ClientActionsModal.vue
-│   └── DeleteClientModal.vue
-├── shootingTypes/              ← camelCase!
+│   └── clients.css             ← субстили (если нужны)
+├── shootingTypes/
 │   ├── ShootingTypesTable.vue
 │   ├── ShootingTypeFormModal.vue
 │   ├── ViewShootingTypeModal.vue
 │   ├── ShootingTypeActionsModal.vue
-│   └── DeleteShootingTypeModal.vue
+│   └── shootingTypes.css
 ├── promotions/
 │   ├── PromotionsTable.vue
 │   ├── PromotionFormModal.vue
 │   ├── ViewPromotionModal.vue
 │   ├── PromotionActionsModal.vue
-│   └── DeletePromotionModal.vue
-├── expenseCategories/          ← camelCase!
+│   └── promotions.css
+├── expenseCategories/
 │   ├── ExpenseCategoriesTable.vue
 │   ├── ExpenseCategoryFormModal.vue
 │   ├── ViewExpenseCategoryModal.vue
 │   ├── ExpenseCategoryActionsModal.vue
-│   └── DeleteExpenseCategoryModal.vue
-└── salaryTypes/                ← camelCase!
+│   └── expenseCategories.css
+└── salaryTypes/                ← ЭТАЛОН ✅ ГОТОВО
     ├── SalaryTypesTable.vue
     ├── SalaryTypeFormModal.vue
     ├── ViewSalaryTypeModal.vue
     ├── SalaryTypeActionsModal.vue
-    └── DeleteSalaryTypeModal.vue
+    └── salaryTypes.css
 ```
+
+**Удаление:** через универсальный `ConfirmModal` внутри ActionsModal — отдельный DeleteModal не создавать!
 
 ---
 
@@ -601,7 +635,14 @@ export type PageType =
 - **shooting_types:** цена (число > 0), длительность (минуты)
 - **promotions:** валидация дат (пересечение периодов), процент (0-100)
 - **expense_categories:** только название
-- **salary_types:** 4 checkbox + input (галка включена → поле активно)
+- **salary_types:** ✅ ГОТОВО — 4 `SwitchToggle` + input в строку `.salary-check-row`
+
+**Правила формы (по эталону SalaryTypeFormModal):**
+- Нативный `<input type="checkbox">` не использовать — только `SwitchToggle`
+- Каждая строка toggle+поле: `<div class="salary-check-row">` (или аналог в субстилях)
+- `ValidAlertModal` для ошибок валидации, `AlertModal` для серверных ошибок
+- При успехе сразу `emit('save')` — без алерта успеха
+- `watch` на toggle → при выключении сбрасывать значение поля в 0
 
 ### Этап 4: Интеграция в App.vue
 - [ ] Импортировать все компоненты таблиц

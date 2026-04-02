@@ -83,7 +83,7 @@ function formatDate(dateString: string | null): string {
 const columns: ColumnDef<User>[] = [
   { accessorKey: 'full_name',         header: 'ФИО',          cell: ({ getValue }) => (getValue() as string | null) ?? '—' },
   { accessorKey: 'login',             header: 'Логин' },
-  { accessorKey: 'permission_name',   header: 'Тип',          cell: ({ row }) => row.original.permission_name ?? row.original.role },
+  { accessorKey: 'permission_name',   header: 'Права',        cell: ({ row }) => row.original.permission_name ?? row.original.role },
   { accessorKey: 'is_admin_role',     header: 'Адм',          cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
   { accessorKey: 'is_photographer',   header: 'Фотограф',     cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },
   { accessorKey: 'is_hairdresser',    header: 'Парикмахер',   cell: ({ getValue }) => (getValue() as boolean) ? '✓' : '' },

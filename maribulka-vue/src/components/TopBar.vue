@@ -109,7 +109,7 @@ onMounted(() => {
         </button>
       </div>
       <div class="pad-icon-cell">
-        <button class="btnGlass bigIcon" @click="onRipple($event)">
+        <button class="btnGlass bigIcon" @click="navStore.navigateTo('sandbox'); props.isLaunchpadOpen && emit('close-launchpad'); onRipple($event)">
           <span class="inner-glow"></span>
           <span class="top-shine"></span>
           <svg-icon type="mdi" :path="mdiImageMultiple" class="btn-icon-big" />

@@ -4,22 +4,26 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountPlusOutline, mdiEyeOutline, mdiFileEditOutline, mdiDeleteOutline, mdiClose } from '@mdi/js'
 import ConfirmModal from '../ConfirmModal.vue'
 
-interface SalaryType {
+interface Client {
   id: number
-  title: string
+  name: string
+  phone: string
+  total_bookings: number
+  notes: string | null
+  created_at: string | null
 }
 
-const props = defineProps<{ salaryType: SalaryType; currentRole: number; isEmpty?: boolean }>()
+const props = defineProps<{ client: Client; currentRole: number; isEmpty?: boolean }>()
 const emit = defineEmits(['close', 'add', 'view', 'edit', 'delete'])
 
-const canFull = computed(() => [1, 2].includes(props.currentRole))
+const canFull = computed(() => [1, 2, 3].includes(props.currentRole))
 
-const hasRelations = ref(true) // по умолчанию true — кнопка скрыта до проверки
+const hasRelations = ref(true)
 const showConfirm = ref(false)
 
 onMounted(async () => {
-  if (props.isEmpty || !props.salaryType?.id) return
-  const res = await fetch(`/api/salary-types.php?check_relations=1&id=${props.salaryType.id}`, { credentials: 'include' })
+  if (props.isEmpty || !props.client?.id) return
+  const res = await fetch(`/api/clients.php?check_relations=1&id=${props.client.id}`, { credentials: 'include' })
   const data = await res.json()
   hasRelations.value = data === true
 })
@@ -28,29 +32,27 @@ const canDelete = computed(() => canFull.value && !props.isEmpty && !hasRelation
 
 async function onDeleteConfirm() {
   showConfirm.value = false
-  const res = await fetch(`/api/salary-types.php?action=delete&id=${props.salaryType.id}`, {
+  const res = await fetch(`/api/clients.php?action=delete&id=${props.client.id}`, {
     method: 'DELETE',
     credentials: 'include',
   })
   const data = await res.json()
-  if (data.success) {
-    emit('delete')
-  }
+  if (data.success) emit('delete')
 }
 </script>
 
 <template>
   <ConfirmModal
     :isVisible="showConfirm"
-    title="Удалить тип зарплаты"
-    :message="`Удалить «${salaryType.title}»? Это действие нельзя отменить.`"
+    title="Удалить клиента"
+    :message="`Удалить клиента «${client.name}»? Это действие нельзя отменить.`"
     @confirm="onDeleteConfirm"
     @cancel="showConfirm = false"
   />
   <Teleport to="body">
     <div class="modal-overlay-main">
       <div class="padGlass modal-sm">
-        <div class="modal-glassTitle">{{ isEmpty ? 'Типы зарплат' : salaryType.title }}</div>
+        <div class="modal-glassTitle">{{ isEmpty ? 'Клиенты' : client.name }}</div>
         <div class="ButtonFooter PosColumn">
           <button class="btnGlass iconTextStart" :disabled="props.isEmpty" @click="$emit('view')">
             <span class="inner-glow"></span>
@@ -62,7 +64,7 @@ async function onDeleteConfirm() {
             <span class="inner-glow"></span>
             <span class="top-shine"></span>
             <svg-icon type="mdi" :path="mdiAccountPlusOutline" class="btn-icon" />
-            <span>Добавить тип зарплаты</span>
+            <span>Добавить клиента</span>
           </button>
           <button v-if="canFull && !props.isEmpty" class="btnGlass iconTextStart" @click="$emit('edit')">
             <span class="inner-glow"></span>
