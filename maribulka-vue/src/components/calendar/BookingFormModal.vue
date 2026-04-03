@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js'
 import { useBookingsStore } from '../../stores/bookings'
@@ -46,9 +46,10 @@ const clientDropdownOpen = ref(false)
 const clientDropdownStyle = ref({ top: '0px', left: '0px', width: '0px' })
 
 const filteredClients = computed(() => {
-  if (!clientName.value) return referencesStore.clients
+  const clients = Array.isArray(referencesStore.clients) ? referencesStore.clients : []
+  if (!clientName.value) return clients
   const q = clientName.value.toLowerCase()
-  return referencesStore.clients.filter(c => c.name.toLowerCase().includes(q))
+  return clients.filter(c => c.name.toLowerCase().includes(q))
 })
 
 function onClientInput() {
@@ -73,30 +74,27 @@ function onClientDocClick(e: MouseEvent) {
   }
 }
 
-// Инициализация при открытии/закрытии модалки
-watch(() => props.isVisible, (visible) => {
-  if (visible) {
-    document.addEventListener('click', onClientDocClick, true)
-  } else {
-    clientDropdownOpen.value = false
-    document.removeEventListener('click', onClientDocClick, true)
-  }
-})
-
-// Load reference data on mount and generate order number (only for add mode)
-onMounted(async () => {
+// Загрузка справочников при открытии модалки
+watch(() => props.isVisible, async (visible) => {
+  if (!visible) return
+  
+  document.addEventListener('click', onClientDocClick, true)
+  
+  // Загружаем справочники если ещё не загружены
+  const promises: Promise<void>[] = []
   if (referencesStore.shootingTypes.length === 0) {
-    await referencesStore.fetchShootingTypes()
+    promises.push(referencesStore.fetchShootingTypes())
   }
   if (referencesStore.promotions.length === 0) {
-    await referencesStore.fetchPromotions()
+    promises.push(referencesStore.fetchPromotions())
   }
   if (referencesStore.clients.length === 0) {
-    await referencesStore.fetchClients()
+    promises.push(referencesStore.fetchClients())
   }
+  await Promise.all(promises)
 
+  // Генерируем order_number только в режиме add
   if (props.mode === 'add') {
-    // Генерируем order_number
     const nextId = await bookingsStore.getNextId()
     const today = new Date()
     const day = today.getDate()
@@ -104,6 +102,14 @@ onMounted(async () => {
     const year = today.getFullYear().toString().slice(-2)
     const magicNumber = day * month
     generatedOrderNumber.value = `МБ${nextId}${magicNumber}${year}`
+  }
+}, { immediate: true })
+
+// Очистка при закрытии
+watch(() => props.isVisible, (visible) => {
+  if (!visible) {
+    clientDropdownOpen.value = false
+    document.removeEventListener('click', onClientDocClick, true)
   }
 })
 
@@ -140,19 +146,22 @@ const deliveryDate = computed(() => {
 // Computed: Выбранный тип съёмки
 const selectedShootingType = computed(() => {
   if (!shootingTypeId.value) return null
-  return referencesStore.shootingTypes.find(t => t.id === parseInt(shootingTypeId.value))
+  const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
+  return types.find(t => t.id === parseInt(shootingTypeId.value))
 })
 
 // Computed: Выбранная акция
 const selectedPromotion = computed(() => {
   if (!promotionId.value) return null
-  return referencesStore.promotions.find(p => p.id === parseInt(promotionId.value))
+  const promos = Array.isArray(referencesStore.promotions) ? referencesStore.promotions : []
+  return promos.find(p => p.id === parseInt(promotionId.value))
 })
 
 // Опции для SelectBox
-const shootingTypeOptions = computed(() =>
-  referencesStore.shootingTypes.map(t => ({ value: t.id, label: t.name }))
-)
+const shootingTypeOptions = computed(() => {
+  const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
+  return types.map(t => ({ value: t.id, label: t.name }))
+})
 const promotionOptions = computed(() => [
   { value: '', label: 'Без акции' },
   ...availablePromotions.value.map(p => ({ value: p.id, label: `${p.name} (-${p.discount_percent}%)` }))
@@ -192,7 +201,8 @@ const totalAmount = computed(() => {
 // Computed: Выбранный клиент
 const selectedClient = computed(() => {
   if (!clientName.value) return null
-  return referencesStore.clients.find(c => c.name === clientName.value)
+  const clients = Array.isArray(referencesStore.clients) ? referencesStore.clients : []
+  return clients.find(c => c.name === clientName.value)
 })
 
 // Watch: Автоподстановка телефона при выборе клиента (только в режиме add)
@@ -204,15 +214,17 @@ watch(selectedClient, (client) => {
 
 // Функция поиска активной акции для даты съёмки
 function getActivePromotionForDate(date: string): number | null {
+  const promos = Array.isArray(referencesStore.promotions) ? referencesStore.promotions : []
+  
   if (date) {
-    const timedPromotion = referencesStore.promotions.find(promo => {
+    const timedPromotion = promos.find(promo => {
       if (!promo.start_date || !promo.end_date) return false
       return date >= promo.start_date && date <= promo.end_date
     })
     if (timedPromotion) return timedPromotion.id
   }
 
-  const permanentPromotion = referencesStore.promotions.find(promo => {
+  const permanentPromotion = promos.find(promo => {
     return !promo.start_date && !promo.end_date
   })
   return permanentPromotion ? permanentPromotion.id : null
@@ -220,9 +232,10 @@ function getActivePromotionForDate(date: string): number | null {
 
 // Computed: Доступные акции для dropdown (бессрочные + актуальные на дату съёмки)
 const availablePromotions = computed(() => {
+  const promos = Array.isArray(referencesStore.promotions) ? referencesStore.promotions : []
   const targetDate = shootingDate.value || getLocalDateString()
 
-  return referencesStore.promotions.filter(promo => {
+  return promos.filter(promo => {
     if (!promo.start_date && !promo.end_date) return true
     if (promo.start_date && promo.end_date) {
       return targetDate >= promo.start_date && targetDate <= promo.end_date
@@ -283,7 +296,8 @@ const busyBlocks = computed(() => {
     const bDateStr = `${bDate.getFullYear()}-${String(bDate.getMonth() + 1).padStart(2, '0')}-${String(bDate.getDate()).padStart(2, '0')}`
     if (bDateStr !== shootingDate.value) continue
 
-    const shootingType = referencesStore.shootingTypes.find(
+    const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
+    const shootingType = types.find(
       (t: any) => t.id === booking.shooting_type_id
     )
     const duration = shootingType?.duration_minutes || 30

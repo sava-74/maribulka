@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, inject, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -8,7 +8,6 @@ import interactionPlugin from '@fullcalendar/interaction'
 import ruLocale from '@fullcalendar/core/locales/ru'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPlus } from '@mdi/js'
-import { useBookingsStore } from '../../stores/bookings'
 import { useReferencesStore } from '../../stores/references'
 import BookingFormModal from './BookingFormModal.vue'
 import AddPaymentModal from './AddPaymentModal.vue'
@@ -19,43 +18,15 @@ import CancelBookingModal from './CancelBookingModal.vue'
 import ConfirmSessionModal from './ConfirmSessionModal.vue'
 import BookingActionsModal from './BookingActionsModal.vue'
 
-// Inject calendar context
-interface CalendarContext {
-  calendarWidth: any
-  calendarZ: any
-  snapState: any
-  setSidebarByDayView: (value: boolean) => void
-}
-
-const context = inject<CalendarContext>('calendar-context')
-if (!context) throw new Error('CalendarPanel must be inside CalendarContainer')
-
-const { calendarWidth, calendarZ, snapState, setSidebarByDayView } = context
-
-// position: absolute, left: 0 — левый край всегда у левой границы контейнера
-// width меняется через контекст
-const panelStyle = computed(() => ({
-  width: `${calendarWidth.value}px`,
-  zIndex: calendarZ.value,
-}))
-
-const emit = defineEmits<{
-  sidebarUpdate: [payload: { date: string; bookings: any[]; isDayView: boolean }]
-}>()
-
-const bookingsStore = useBookingsStore()
 const referencesStore = useReferencesStore()
 
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
 
-// View state
-const isDayView = ref(false)
-const selectedDate = ref<string>('')
-const currentRangeStart = ref<Date | null>(null)
-const currentRangeEnd = ref<Date | null>(null)
+// Локальное состояние записей
+const bookings = ref<any[]>([])
 
-// Sidebar state
-const sidebarDate = ref<string>('')
+// View state
+const selectedDate = ref<string>('')
 
 // Modal state
 const showAddModal = ref(false)
@@ -83,23 +54,13 @@ const STATUS_COLORS: Record<string, string> = {
 
 const INTERVAL_MINUTES = 30
 
-// Bookings filtered for the sidebar selected date
-const sidebarBookings = computed(() => {
-  if (!sidebarDate.value) return []
-  return bookingsStore.bookings.filter(b => {
-    const d = new Date(b.shooting_date)
-    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-    return dateStr === sidebarDate.value
-  })
-})
-
 // Красные статусы (отмена/провал)
 const RED_STATUSES = new Set(['cancelled', 'cancelled_client', 'cancelled_photographer', 'failed'])
 
-// Индекс шариков по дате: 'red' если есть хоть одна красная запись, иначе 'default'
+// Индекс шариков по дате
 const ballsByDate = computed<Record<string, 'red' | 'default'>>(() => {
   const result: Record<string, 'red' | 'default'> = {}
-  for (const booking of bookingsStore.bookings) {
+  for (const booking of bookings.value) {
     const d = new Date(booking.shooting_date)
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     if (!result[key] || result[key] === 'default') {
@@ -109,10 +70,22 @@ const ballsByDate = computed<Record<string, 'red' | 'default'>>(() => {
   return result
 })
 
-// Calendar events
-const calendarEvents = computed(() => {
-  return bookingsStore.bookings.map(booking => {
-    const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
+function padDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+// Прямая загрузка записей из API — БЕЗ store, БЕЗ кеша
+async function loadBookingsDirect(start: string, end: string): Promise<any[]> {
+  const url = `/api/bookings.php?start=${start}&end=${end}`
+  const response = await fetch(url, { credentials: 'include' })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return await response.json()
+}
+
+// Преобразование записей в формат событий FullCalendar
+function bookingsToEvents(items: any[]) {
+  const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
+  return items.map(booking => {
     const shootingType = types.find((t: any) => t.id === booking.shooting_type_id)
     const durationMinutes = shootingType?.duration_minutes || 30
     const start = new Date(booking.shooting_date)
@@ -129,47 +102,25 @@ const calendarEvents = computed(() => {
       extendedProps: { booking },
     }
   })
-})
-
-function formatDateForAPI(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
-async function loadBookings(start: Date, end: Date) {
-  await bookingsStore.fetchBookings(formatDateForAPI(start), formatDateForAPI(end))
-}
-
-function emitSidebar() {
-  emit('sidebarUpdate', {
-    date: sidebarDate.value,
-    bookings: sidebarBookings.value,
-    isDayView: isDayView.value,
-  })
-}
-
-function handleDatesSet(info: any) {
-  isDayView.value = info.view.type === 'timeGridDay'
-  setSidebarByDayView(isDayView.value)
-  currentRangeStart.value = info.start
-  currentRangeEnd.value = info.end
-
-  if (isDayView.value) {
-    sidebarDate.value = formatDateForAPI(info.start)
+// Функция-источник событий — FullCalendar вызывает её когда нужны события
+async function fetchEvents(fetchInfo: any, successCallback: (events: any[]) => void, failureCallback: (error: any) => void) {
+  try {
+    const start = padDate(fetchInfo.start)
+    const end = padDate(fetchInfo.end)
+    const data = await loadBookingsDirect(start, end)
+    bookings.value = data
+    await nextTick()
+    renderBalls()
+    successCallback(bookingsToEvents(data))
+  } catch (err) {
+    console.error('[Calendar] fetchEvents error:', err)
+    failureCallback(err)
   }
-
-  loadBookings(info.start, info.end).then(() => {
-    nextTick().then(renderBalls)
-  })
 }
 
-watch([sidebarDate, sidebarBookings, isDayView], emitSidebar)
-
-watch(calendarWidth, async () => {
-  await nextTick()
-  calendarRef.value?.getApi().updateSize()
-})
-
-// Вставка шариков в DOM — вызывается и при загрузке данных и при смене вида
+// Вставка шариков в DOM (только для daygrid — месяц/год)
 function renderBalls() {
   document.querySelectorAll('.fc-daygrid-day-frame .status-ball').forEach(el => el.remove())
   for (const [dateKey, ballType] of Object.entries(ballsByDate.value)) {
@@ -181,32 +132,11 @@ function renderBalls() {
   }
 }
 
-watch(ballsByDate, async () => {
-  await nextTick()
-  renderBalls()
-}, { flush: 'post' })
-
-
-function handleDateClick(info: any) {
-  const calendarApi = calendarRef.value?.getApi()
-  if (!calendarApi) return
-  if (info.view.type !== 'timeGridDay') {
-    sidebarDate.value = info.dateStr
-  }
+function handleDateClick(_info: any) {
+  // В режимах месяц/год/неделя — клик по дате ничего не делает
 }
 
 function handleEventClick(info: any) {
-  const calendarApi = calendarRef.value?.getApi()
-  if (!calendarApi) return
-
-  if (info.view.type !== 'timeGridDay') {
-    // In month/week/year view — click sets sidebar date and selects booking
-    const d = info.event.start!
-    sidebarDate.value = formatDateForAPI(d)
-    return
-  }
-
-  // In day view — open actions modal
   const booking = info.event.extendedProps.booking
   if (booking) {
     selectedBooking.value = booking
@@ -214,21 +144,11 @@ function handleEventClick(info: any) {
   }
 }
 
-function handleSidebarSelect(booking: any) {
-  selectedBooking.value = booking
-  showActionsModal.value = true
-}
-
-function handleSidebarAdd() {
-  selectedDate.value = sidebarDate.value
-  showAddModal.value = true
-}
-
-function handleAddFromDayView() {
+function handleAddBooking() {
   const calendarApi = calendarRef.value?.getApi()
   if (calendarApi) {
     const d = calendarApi.getDate()
-    selectedDate.value = formatDateForAPI(d)
+    selectedDate.value = padDate(d)
   }
   showAddModal.value = true
 }
@@ -254,9 +174,13 @@ function closeModal() {
   showCancelModal.value = false
   showActionsModal.value = false
   selectedBooking.value = null
+  // Перезагрузить события после закрытия модалки
+  const api = calendarRef.value?.getApi()
+  if (api) api.refetchEvents()
 }
 
-const calendarOptions = computed(() => ({
+// Статические options — НЕ computed, НЕ меняется
+const calendarOptions = {
   plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
   locale: ruLocale,
@@ -272,18 +196,18 @@ const calendarOptions = computed(() => ({
   dayMaxEvents: 2,
   moreLinkText: 'ещё',
   height: '100%',
-  events: calendarEvents.value,
+  // events как ФУНКЦИЯ — FullCalendar вызывает при каждом рендере событий
+  events: fetchEvents,
   views: {
     dayGridMonth: { eventDisplay: 'none' },
     multiMonthYear: { eventDisplay: 'none' },
   },
   dateClick: handleDateClick,
   eventClick: handleEventClick,
-  datesSet: handleDatesSet,
   handleWindowResize: true,
   dayCellDidMount: (arg: any) => {
     const d = arg.date
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const key = padDate(d)
     const ball = ballsByDate.value[key]
     if (!ball) return
     const span = document.createElement('span')
@@ -291,30 +215,24 @@ const calendarOptions = computed(() => ({
     const inner = arg.el.querySelector('.fc-daygrid-day-frame')
     if (inner) inner.appendChild(span)
   },
-}))
+}
 
 onMounted(async () => {
   await referencesStore.fetchShootingTypes()
 })
-
-defineExpose({ handleSidebarAdd, handleSidebarSelect })
 </script>
 
 <template>
-  <div 
-    class="padGlass padGlass-work calendar-panel"
-    :class="{ 'calendar-panel--animating': snapState === 'hidden-left' || snapState === 'hidden-right' }"
-    :style="panelStyle"
-  >
+  <div class="padGlass padGlass-work calendar-panel">
 
     <FullCalendar ref="calendarRef" :options="calendarOptions" />
 
-    <!-- Add button in day view -->
-    <div v-if="isDayView" class="calendar-add-btn-wrap">
-      <button class="btnGlass iconText" @click="handleAddFromDayView">
+    <!-- Add button -->
+    <div class="calendar-add-btn-wrap">
+      <button class="btnGlass iconText" @click="handleAddBooking">
         <span class="inner-glow"></span>
         <span class="top-shine"></span>
-        <svg-icon type="mdi" :path="mdiPlus" class="btn-icon" />
+        <SvgIcon type="mdi" :path="mdiPlus" class="btn-icon" />
         <span>Добавить запись</span>
       </button>
     </div>

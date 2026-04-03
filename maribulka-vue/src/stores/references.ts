@@ -27,14 +27,17 @@ export const useReferencesStore = defineStore('references', () => {
   async function fetchShootingTypes() {
     loadingShootingTypes.value = true
     try {
-      const response = await fetch(`${API_URL}/shooting-types.php`)
+      const url = `${API_URL}/shooting-types.php`
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      shootingTypes.value = await response.json()
+      const data = await response.json()
+      // API возвращает {success: true, data: [...]} — достаём массив
+      shootingTypes.value = Array.isArray(data) ? data : (data.data ?? [])
     } catch (error) {
-      console.error('Ошибка загрузки типов съёмок:', error)
-      shootingTypes.value = [] // Установить пустой массив при ошибке
+      console.error('[References] Ошибка загрузки типов съёмок:', error)
+      shootingTypes.value = []
     } finally {
       loadingShootingTypes.value = false
     }
@@ -126,14 +129,17 @@ export const useReferencesStore = defineStore('references', () => {
   async function fetchPromotions() {
     loadingPromotions.value = true
     try {
-      const response = await fetch(`${API_URL}/promotions.php`)
+      const url = `${API_URL}/promotions.php`
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      promotions.value = await response.json()
+      const data = await response.json()
+      // API возвращает {success: true, data: [...]} — достаём массив
+      promotions.value = Array.isArray(data) ? data : (data.data ?? [])
     } catch (error) {
-      console.error('Ошибка загрузки акций:', error)
-      promotions.value = [] // Установить пустой массив при ошибке
+      console.error('[References] Ошибка загрузки акций:', error)
+      promotions.value = []
     } finally {
       loadingPromotions.value = false
     }
@@ -225,14 +231,17 @@ export const useReferencesStore = defineStore('references', () => {
   async function fetchClients() {
     loadingClients.value = true
     try {
-      const response = await fetch(`${API_URL}/clients.php`)
+      const url = `${API_URL}/clients.php`
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      clients.value = await response.json()
+      const data = await response.json()
+      // API возвращает {success: true, data: [...]} — достаём массив
+      clients.value = Array.isArray(data) ? data : (data.data ?? [])
     } catch (error) {
-      console.error('Ошибка загрузки клиентов:', error)
-      clients.value = [] // Установить пустой массив при ошибке
+      console.error('[References] Ошибка загрузки клиентов:', error)
+      clients.value = []
     } finally {
       loadingClients.value = false
     }
