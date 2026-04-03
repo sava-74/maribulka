@@ -112,7 +112,7 @@ const ballsByDate = computed<Record<string, 'red' | 'default'>>(() => {
 // Calendar events
 const calendarEvents = computed(() => {
   return bookingsStore.bookings.map(booking => {
-    const types = referencesStore.shootingTypes.value || []
+    const types = Array.isArray(referencesStore.shootingTypes) ? referencesStore.shootingTypes : []
     const shootingType = types.find((t: any) => t.id === booking.shooting_type_id)
     const durationMinutes = shootingType?.duration_minutes || 30
     const start = new Date(booking.shooting_date)
