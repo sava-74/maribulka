@@ -86,12 +86,12 @@ const handleLogin = async () => {
       <div ref="panelRef" class="padGlass modal-sm" :class="closing ? 'genie-leave' : 'genie-enter'" :style="genieStyle">
         <div class="modal-glassTitle">Вход в систему</div>
         <div class="input-group">
-          <input v-model="login" type="text" class="modal-input" placeholder="Логин" />
+          <input v-model="login" type="text" class="modal-input" placeholder="Логин" autocomplete="off" />
           <div class="input-with-icon">
             <span class="input-eye-left" @click="showPassword = !showPassword">
               <svg-icon type="mdi" :path="showPassword ? mdiEye : mdiEyeOff" class="btn-icon" />
             </span>
-            <input v-model="password" :type="showPassword ? 'text' : 'password'" class="modal-input input-with-icon-left" placeholder="Пароль" @keyup.enter="handleLogin" />
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" class="modal-input input-with-icon-left" placeholder="Пароль" autocomplete="current-password" @keyup.enter="handleLogin" />
           </div>
           <label class="remember-label">
             <input type="checkbox" v-model="rememberMe"> Запомнить меня

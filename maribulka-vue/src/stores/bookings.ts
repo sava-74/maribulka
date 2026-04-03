@@ -9,6 +9,32 @@ export const useBookingsStore = defineStore('bookings', () => {
   const loading = ref(false)
   const currentMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
 
+  // Кеш по месяцам с TTL
+  const cache = ref<Record<string, { data: any[], loadedAt: number }>>({})
+  const CACHE_TTL = 5 * 60 * 1000 // 5 минут
+
+  function getCached(monthKey: string): any[] | null {
+    const entry = cache.value[monthKey]
+    if (!entry) return null
+    if (Date.now() - entry.loadedAt > CACHE_TTL) {
+      delete cache.value[monthKey]
+      return null
+    }
+    return entry.data
+  }
+
+  function setCached(monthKey: string, data: any[]) {
+    cache.value[monthKey] = { data, loadedAt: Date.now() }
+  }
+
+  function invalidateCache(monthKey?: string) {
+    if (monthKey) {
+      delete cache.value[monthKey]
+    } else {
+      cache.value = {}
+    }
+  }
+
   // ========================================
   // COMPUTED
   // ========================================
@@ -28,9 +54,17 @@ export const useBookingsStore = defineStore('bookings', () => {
   // ЗАПИСИ
   // ========================================
   async function fetchBookings(start?: string, end?: string) {
+    const monthKey = start ? start.slice(0, 7) : currentMonth.value
+
+    // Проверяем кеш
+    const cached = getCached(monthKey)
+    if (cached) {
+      bookings.value = cached
+      return
+    }
+
     loading.value = true
     try {
-      // Если переданы start и end, используем их, иначе текущий месяц
       let url = `${API_URL}/bookings.php`
       if (start && end) {
         url += `?start=${start}&end=${end}`
@@ -42,10 +76,12 @@ export const useBookingsStore = defineStore('bookings', () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      bookings.value = await response.json()
+      const data = await response.json()
+      setCached(monthKey, data)
+      bookings.value = data
     } catch (error) {
       console.error('Ошибка загрузки записей:', error)
-      bookings.value = [] // Установить пустой массив при ошибке
+      bookings.value = []
     } finally {
       loading.value = false
     }
@@ -95,6 +131,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -119,6 +156,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -141,6 +179,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -172,6 +211,7 @@ export const useBookingsStore = defineStore('bookings', () => {
 
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -201,6 +241,7 @@ export const useBookingsStore = defineStore('bookings', () => {
 
       const responseData = await response.json()
       if (responseData.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return responseData
@@ -230,6 +271,7 @@ export const useBookingsStore = defineStore('bookings', () => {
 
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -272,6 +314,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -294,6 +337,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       
       const result = await response.json()
       if (result.success) {
+        invalidateCache(currentMonth.value)
         await fetchBookings()
       }
       return result
@@ -330,6 +374,9 @@ export const useBookingsStore = defineStore('bookings', () => {
 
     // Computed
     bookingsByDate,
+
+    // Cache
+    invalidateCache,
 
     // Actions
     fetchBookings,

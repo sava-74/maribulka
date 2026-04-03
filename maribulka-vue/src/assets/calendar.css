@@ -226,9 +226,22 @@
   padding: 20px 0;
 }
 
+/* ========== СКРЫТЬ СОБЫТИЯ В РЕЖИМАХ МЕСЯЦ И ГОД ========== */
+.fc-dayGridMonth-view .fc-daygrid-event-harness,
+.fc-dayGridMonth-view .fc-daygrid-more-link,
+.fc-multiMonthYear-view .fc-daygrid-event-harness,
+.fc-multiMonthYear-view .fc-daygrid-more-link {
+  display: none !important;
+}
+
 /* ========== STATUS BALL В ЯЧЕЙКАХ КАЛЕНДАРЯ ========== */
 
-/* Верхняя часть ячейки: номер дня + шарик рядом */
+/* Фрейм ячейки — контейнер для абсолютного позиционирования шарика */
+.fc .fc-daygrid-day-frame {
+  position: relative;
+}
+
+/* Верхняя часть ячейки: номер дня */
 .fc .fc-daygrid-day-top {
   display: flex;
   align-items: center;

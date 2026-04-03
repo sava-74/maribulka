@@ -157,7 +157,9 @@ function handleDatesSet(info: any) {
     sidebarDate.value = formatDateForAPI(info.start)
   }
 
-  loadBookings(info.start, info.end)
+  loadBookings(info.start, info.end).then(() => {
+    nextTick().then(renderBalls)
+  })
 }
 
 watch([sidebarDate, sidebarBookings, isDayView], emitSidebar)
@@ -167,18 +169,21 @@ watch(calendarWidth, async () => {
   calendarRef.value?.getApi().updateSize()
 })
 
-// При обновлении записей — напрямую вставляем/обновляем шарики в DOM
-// render() не подходит — он не вызывает dayCellDidMount повторно
-watch(ballsByDate, async (newBalls) => {
-  await nextTick()
-  document.querySelectorAll('.fc-daygrid-day-top .status-ball').forEach(el => el.remove())
-  for (const [dateKey, ballType] of Object.entries(newBalls)) {
-    const cell = document.querySelector(`[data-date="${dateKey}"] .fc-daygrid-day-top`)
+// Вставка шариков в DOM — вызывается и при загрузке данных и при смене вида
+function renderBalls() {
+  document.querySelectorAll('.fc-daygrid-day-frame .status-ball').forEach(el => el.remove())
+  for (const [dateKey, ballType] of Object.entries(ballsByDate.value)) {
+    const cell = document.querySelector(`[data-date="${dateKey}"] .fc-daygrid-day-frame`)
     if (!cell) continue
     const span = document.createElement('span')
     span.className = 'status-ball' + (ballType === 'red' ? ' status-ball--red' : '')
     cell.appendChild(span)
   }
+}
+
+watch(ballsByDate, async () => {
+  await nextTick()
+  renderBalls()
 }, { flush: 'post' })
 
 
@@ -268,6 +273,10 @@ const calendarOptions = computed(() => ({
   moreLinkText: 'ещё',
   height: '100%',
   events: calendarEvents.value,
+  views: {
+    dayGridMonth: { eventDisplay: 'none' },
+    multiMonthYear: { eventDisplay: 'none' },
+  },
   dateClick: handleDateClick,
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
@@ -276,12 +285,11 @@ const calendarOptions = computed(() => ({
     const d = arg.date
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     const ball = ballsByDate.value[key]
-    console.log('[dayCellDidMount]', key, 'ball:', ball, 'ballsByDate keys:', Object.keys(ballsByDate.value).length)
     if (!ball) return
     const span = document.createElement('span')
     span.className = 'status-ball' + (ball === 'red' ? ' status-ball--red' : '')
-    const top = arg.el.querySelector('.fc-daygrid-day-top')
-    if (top) top.appendChild(span)
+    const inner = arg.el.querySelector('.fc-daygrid-day-frame')
+    if (inner) inner.appendChild(span)
   },
 }))
 
