@@ -38,7 +38,7 @@ export const useBookingsStore = defineStore('bookings', () => {
         url += `?month=${currentMonth.value}`
       }
 
-      const response = await fetch(url)
+      const response = await fetch(url, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -54,7 +54,7 @@ export const useBookingsStore = defineStore('bookings', () => {
   async function fetchBookingsByDate(date: string) {
     loading.value = true
     try {
-      const response = await fetch(`${API_URL}/bookings.php?date=${date}`)
+      const response = await fetch(`${API_URL}/bookings.php?date=${date}`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -69,7 +69,7 @@ export const useBookingsStore = defineStore('bookings', () => {
 
   async function getBooking(id: number) {
     try {
-      const response = await fetch(`${API_URL}/bookings.php?id=${id}`)
+      const response = await fetch(`${API_URL}/bookings.php?id=${id}`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -85,6 +85,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       const response = await fetch(`${API_URL}/bookings.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(data)
       })
       
@@ -108,6 +109,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       const response = await fetch(`${API_URL}/bookings.php`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(data)
       })
       
@@ -129,7 +131,8 @@ export const useBookingsStore = defineStore('bookings', () => {
   async function deleteBooking(id: number) {
     try {
       const response = await fetch(`${API_URL}/bookings.php?id=${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
       
       if (!response.ok) {
@@ -159,7 +162,8 @@ export const useBookingsStore = defineStore('bookings', () => {
   async function confirmSession(id: number) {
     try {
       const response = await fetch(`${API_URL}/bookings.php?action=confirm_session&id=${id}`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       })
 
       if (!response.ok) {
@@ -187,6 +191,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       const response = await fetch(`${API_URL}/bookings.php?action=complete_order&id=${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ result })
       })
 
@@ -215,6 +220,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       const response = await fetch(`${API_URL}/bookings.php?action=cancel&id=${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ cancelled_by: cancelledBy })
       })
 
@@ -256,6 +262,7 @@ export const useBookingsStore = defineStore('bookings', () => {
       const response = await fetch(`${API_URL}/bookings.php?action=payment&id=${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ amount })
       })
       
@@ -277,7 +284,8 @@ export const useBookingsStore = defineStore('bookings', () => {
   async function quickPayment(id: number) {
     try {
       const response = await fetch(`${API_URL}/bookings.php?action=quick_payment&id=${id}`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       })
       
       if (!response.ok) {
@@ -302,7 +310,7 @@ export const useBookingsStore = defineStore('bookings', () => {
 
   async function getNextId(): Promise<number> {
     try {
-      const response = await fetch(`${API_URL}/bookings.php?action=get_next_id`)
+      const response = await fetch(`${API_URL}/bookings.php?action=get_next_id`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }

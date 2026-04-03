@@ -48,7 +48,7 @@ export const useFinanceStore = defineStore('finance', () => {
         url += `?month=${currentMonth.value}`
       }
 
-      const response = await fetch(url)
+      const response = await fetch(url, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -63,7 +63,7 @@ export const useFinanceStore = defineStore('finance', () => {
 
   async function fetchIncomeByBooking(bookingId: number) {
     try {
-      const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`)
+      const response = await fetch(`${API_URL}/income.php?booking_id=${bookingId}`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -79,7 +79,7 @@ export const useFinanceStore = defineStore('finance', () => {
   // Получить заказы доступные для возврата (статус new/failed + есть оплата)
   async function fetchRefundableBookings() {
     try {
-      const response = await fetch(`${API_URL}/bookings.php?action=refundable`)
+      const response = await fetch(`${API_URL}/bookings.php?action=refundable`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -104,7 +104,7 @@ export const useFinanceStore = defineStore('finance', () => {
         url += `?month=${currentExpenseMonth.value}`
       }
 
-      const response = await fetch(url)
+      const response = await fetch(url, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -122,13 +122,14 @@ export const useFinanceStore = defineStore('finance', () => {
       const response = await fetch(`${API_URL}/expenses.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(data)
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      
+
       const result = await response.json()
       if (result.success) {
         await fetchExpenses()
@@ -145,6 +146,7 @@ export const useFinanceStore = defineStore('finance', () => {
       const response = await fetch(`${API_URL}/expenses.php`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(data)
       })
       
@@ -166,7 +168,8 @@ export const useFinanceStore = defineStore('finance', () => {
   async function deleteExpense(id: number) {
     try {
       const response = await fetch(`${API_URL}/expenses.php?id=${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
       
       if (!response.ok) {
@@ -187,7 +190,8 @@ export const useFinanceStore = defineStore('finance', () => {
   async function deleteIncome(id: number) {
     try {
       const response = await fetch(`${API_URL}/income.php?id=${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
       
       if (!response.ok) {
@@ -225,7 +229,7 @@ export const useFinanceStore = defineStore('finance', () => {
         url += `&month=${currentMonth.value}`
       }
 
-      const response = await fetch(url)
+      const response = await fetch(url, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -239,7 +243,7 @@ export const useFinanceStore = defineStore('finance', () => {
   // Получить общий баланс кассы (все приходы - все расходы)
   async function fetchCashBalance() {
     try {
-      const response = await fetch(`${API_URL}/expenses.php?balance=true`)
+      const response = await fetch(`${API_URL}/expenses.php?balance=true`, { credentials: 'include' })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }

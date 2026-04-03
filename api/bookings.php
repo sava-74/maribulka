@@ -23,7 +23,17 @@
  */
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    'http://localhost:5173',
+    'https://xn--80aac1alfd7a3a5g.xn--p1ai',
+    'http://xn--80aac1alfd7a3a5g.xn--p1ai'
+];
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+}
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -32,7 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+require_once 'session.php';
 require_once 'database.php';
+$currentRole = requireRole(1, 2, 3, 4, 5);
+
+// Флаги ролей
+$canFull  = in_array($currentRole, [1, 2, 3], true); // полный доступ
+$canAdmin = in_array($currentRole, [1, 2, 3, 4], true); // запись + оплата, без удаления и отмены
 
 $db = Database::getInstance()->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
@@ -40,7 +56,20 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     // Специальные действия
     if ($method === 'POST' && isset($_GET['action'])) {
-        handleSpecialAction($db, $_GET['action'], $_GET['id'] ?? null);
+        $action = $_GET['action'];
+        // confirm_session — разрешено всем (роли 1-5)
+        // остальные финансовые/статусные — только canAdmin или canFull
+        if (in_array($action, ['complete_order', 'payment', 'quick_payment']) && !$canAdmin) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Forbidden']);
+            exit;
+        }
+        if ($action === 'cancel' && !$canFull) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Forbidden']);
+            exit;
+        }
+        handleSpecialAction($db, $action, $_GET['id'] ?? null);
         exit;
     }
 
@@ -141,14 +170,29 @@ try {
             break;
 
         case 'POST':
+            if (!$canAdmin) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Forbidden']);
+                exit;
+            }
             handlePost($db);
             break;
 
         case 'PUT':
+            if (!$canAdmin) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Forbidden']);
+                exit;
+            }
             handlePut($db);
             break;
 
         case 'DELETE':
+            if (!$canFull) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Forbidden']);
+                exit;
+            }
             handleDelete($db);
             break;
 

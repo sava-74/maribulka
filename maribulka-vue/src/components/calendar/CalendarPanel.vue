@@ -112,7 +112,8 @@ const ballsByDate = computed<Record<string, 'red' | 'default'>>(() => {
 // Calendar events
 const calendarEvents = computed(() => {
   return bookingsStore.bookings.map(booking => {
-    const shootingType = referencesStore.shootingTypes.find((t: any) => t.id === booking.shooting_type_id)
+    const types = referencesStore.shootingTypes.value || []
+    const shootingType = types.find((t: any) => t.id === booking.shooting_type_id)
     const durationMinutes = shootingType?.duration_minutes || 30
     const start = new Date(booking.shooting_date)
     const end = new Date(start.getTime() + (durationMinutes + INTERVAL_MINUTES) * 60 * 1000)
@@ -166,13 +167,19 @@ watch(calendarWidth, async () => {
   calendarRef.value?.getApi().updateSize()
 })
 
-// При обновлении записей — перерендерить ячейки чтобы dayCellDidMount сработал повторно
-watch(ballsByDate, async () => {
+// При обновлении записей — напрямую вставляем/обновляем шарики в DOM
+// render() не подходит — он не вызывает dayCellDidMount повторно
+watch(ballsByDate, async (newBalls) => {
   await nextTick()
-  // Удаляем старые шарики вручную и даём FullCalendar перерендерить через render()
   document.querySelectorAll('.fc-daygrid-day-top .status-ball').forEach(el => el.remove())
-  calendarRef.value?.getApi().render()
-})
+  for (const [dateKey, ballType] of Object.entries(newBalls)) {
+    const cell = document.querySelector(`[data-date="${dateKey}"] .fc-daygrid-day-top`)
+    if (!cell) continue
+    const span = document.createElement('span')
+    span.className = 'status-ball' + (ballType === 'red' ? ' status-ball--red' : '')
+    cell.appendChild(span)
+  }
+}, { flush: 'post' })
 
 
 function handleDateClick(info: any) {
@@ -269,6 +276,7 @@ const calendarOptions = computed(() => ({
     const d = arg.date
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     const ball = ballsByDate.value[key]
+    console.log('[dayCellDidMount]', key, 'ball:', ball, 'ballsByDate keys:', Object.keys(ballsByDate.value).length)
     if (!ball) return
     const span = document.createElement('span')
     span.className = 'status-ball' + (ball === 'red' ? ' status-ball--red' : '')

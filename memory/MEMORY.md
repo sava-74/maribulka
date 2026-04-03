@@ -18,7 +18,7 @@
 - **[expenses.md](expenses.md)** — план и реализация расходов
 - **[filters-plan.md](filters-plan.md)** — фильтры и поиск
 - **[icons.md](icons.md)** — иконки, библиотеки, использование
-- **[patterns.md](patterns.md)** — эталоны кода, таблицы, модалки
+- **[users-roles-matrix.md](users-roles-matrix.md)** — 🆕 система ролей (ЧИСЛОВЫЕ ID), матрица прав доступа
 
 ### 🔄 Системные файлы (автоматические)
 - **[auto-save.md](auto-save.md)** — 🆕 автосохранение сессий (авто при выходе)
