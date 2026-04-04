@@ -245,9 +245,9 @@ const availablePromotions = computed(() => {
 })
 
 // Подставляем дату из календаря при открытии (только в режиме add)
-watch(() => props.isVisible, (visible) => {
-  if (visible && props.mode === 'add' && props.defaultDate) {
-    shootingDate.value = props.defaultDate
+watch([() => props.isVisible, () => props.defaultDate], ([visible, date]) => {
+  if (visible && props.mode === 'add' && date) {
+    shootingDate.value = date
   }
 })
 

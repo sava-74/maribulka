@@ -15,13 +15,13 @@
 /* Основная панель календаря — занимает всю ширину */
 .calendar-panel {
   position: relative;
-  width: 100%;
-  height: 100%;
+  height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   gap: 0;
   overflow: hidden;
   align-items: stretch;
+  padding-bottom: 0;
 }
 
 /* Обёртка кнопки добавления */
@@ -143,6 +143,12 @@
   cursor: pointer;
 }
 
+/* События в режиме месяц/год — pointer + hover */
+.fc-dayGridMonth-view .fc-event,
+.fc-multiMonthYear-view .fc-event {
+  cursor: pointer;
+}
+
 .fc .fc-event:hover {
   filter: brightness(1.15);
 }
@@ -150,6 +156,38 @@
 .fc .fc-daygrid-day,
 .fc .fc-timegrid-col {
   background: transparent !important;
+}
+
+/* Ячейки дня в режиме месяц/год — курсор pointer + hover */
+.fc-dayGridMonth-view .fc-daygrid-day,
+.fc-multiMonthYear-view .fc-daygrid-day {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fc-dayGridMonth-view .fc-daygrid-day:hover,
+.fc-multiMonthYear-view .fc-daygrid-day:hover {
+  background: rgba(100, 220, 100, 0.06) !important;
+}
+
+/* Ячейки в режиме неделя — тоже кликабельны */
+.fc-timeGridWeek-view .fc-timegrid-col {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-col:hover {
+  background: rgba(100, 220, 100, 0.06) !important;
+}
+
+/* Ячейки в режиме день — кликабельны для создания записи */
+.fc-timeGridDay-view .fc-timegrid-col {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fc-timeGridDay-view .fc-timegrid-col:hover {
+  background: rgba(100, 220, 100, 0.06) !important;
 }
 
 .fc .fc-timegrid-slot {

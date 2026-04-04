@@ -74,6 +74,19 @@ function padDate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+function extractDate(val: any): string {
+  if (val instanceof Date) return padDate(val)
+  if (typeof val === 'string') return val.slice(0, 10)
+  return ''
+}
+
+function isDateInPast(dateStr: string): boolean {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const target = new Date(dateStr + 'T00:00:00')
+  return target < today
+}
+
 // Прямая загрузка записей из API — БЕЗ store, БЕЗ кеша
 async function loadBookingsDirect(start: string, end: string): Promise<any[]> {
   const url = `/api/bookings.php?start=${start}&end=${end}`
@@ -132,23 +145,53 @@ function renderBalls() {
   }
 }
 
-function handleDateClick(_info: any) {
-  // В режимах месяц/год/неделя — клик по дате ничего не делает
+function handleDateClick(info: any) {
+  const calendarApi = calendarRef.value?.getApi()
+  if (!calendarApi) return
+
+  // Извлекаем чистую дату без времени
+  const dateStr = extractDate(info.date)
+
+  // В режиме месяц/год/неделя — клик по дате переключает на режим дня
+  if (info.view.type === 'dayGridMonth' || info.view.type === 'multiMonthYear' || info.view.type === 'timeGridWeek') {
+    calendarApi.changeView('timeGridDay', dateStr)
+    return
+  }
+
+  // В режиме день — клик по пустому месту открывает модалку создания
+  if (info.view.type === 'timeGridDay') {
+    // Запрещаем создание записи на прошедшую дату
+    if (isDateInPast(dateStr)) return
+    selectedDate.value = dateStr
+    showAddModal.value = true
+  }
 }
 
 function handleEventClick(info: any) {
   const booking = info.event.extendedProps.booking
-  if (booking) {
-    selectedBooking.value = booking
-    showActionsModal.value = true
+  if (!booking) return
+
+  const calendarApi = calendarRef.value?.getApi()
+  // В режиме месяц/год — клик по событию переключает на день
+  if (calendarApi && (info.view.type === 'dayGridMonth' || info.view.type === 'multiMonthYear')) {
+    const dateStr = extractDate(info.event.start)
+    calendarApi.changeView('timeGridDay', dateStr)
+    return
   }
+
+  // В режиме неделя/день — открываем модалку действий
+  selectedBooking.value = booking
+  showActionsModal.value = true
 }
 
 function handleAddBooking() {
   const calendarApi = calendarRef.value?.getApi()
   if (calendarApi) {
     const d = calendarApi.getDate()
-    selectedDate.value = padDate(d)
+    const dateStr = extractDate(d)
+    // Запрещаем создание записи на прошедшую дату
+    if (isDateInPast(dateStr)) return
+    selectedDate.value = dateStr
   }
   showAddModal.value = true
 }
@@ -201,6 +244,8 @@ const calendarOptions = {
   views: {
     dayGridMonth: { eventDisplay: 'none' },
     multiMonthYear: { eventDisplay: 'none' },
+    timeGridWeek: { eventDisplay: 'block' },
+    timeGridDay: { eventDisplay: 'block' },
   },
   dateClick: handleDateClick,
   eventClick: handleEventClick,
